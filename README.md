@@ -1,4 +1,4 @@
-DbQueryProject
+DbQuery
 ==============
 
 SQLite Query API for Android
@@ -31,27 +31,47 @@ Database Creation
     });
 
 
+
 Query 'SELECT'
 -----------
-Select all person's name whose age is over 50 y/o
+Select and return all columns whose age is over 50 y/o
 
     Cursor cursor = db.get("PersonTable").select("Age > ?", 50).query();
 
-Select all
+Select and return name whose age is over 50 y/o
 
-    Cursor cursor = db.get("PersonTable").select(null).query();
+    Cursor cursor = db.get("PersonTable").select("Age > ?", 50).columns("Name").query();
+
+Select all order by age
+
+    Cursor cursor = db.get("PersonTable").select(null).orderBy("Age").query();
+
 
 Query 'UPDATE'
 -----------
+
 Update age to 21 by id
 
     db.get("PersonTable").update("Age", 21, "Id = ?", 1).query();
+    
+Update using ContentValues
+
+    ContentValues v = new ContentValues();
+    ...
+    db.get("PersonTable").update(v, "Name = ?", "John").query();
+
 
 Query 'INSERT'
 -----------
-Adds a person's name
+Insert a person
 
     db.get("PersonTable").insert("Name", "Age").values("Ricky", 29).query();
+
+Insert a person using ContentValues
+
+    ContentValues v = new ContentValues();
+    ...
+    db.get("PersonTable").insert(v).query();
 
 
 Query 'DELETE'
@@ -66,15 +86,41 @@ Bulk-delete
     int deleted = db.get("PersonTable").delete(1,2,11,34).query();
 
 
-Query 'COUNT'
+
+Other Methods
 -----------
 
 Count everybody whose under 25 y/o
 
-    int count = db.get("PersonTable").count("Age < ?", 25).query();
+    int count = db.get("PersonTable").count("Age < ?", 25)();
+
+Count all rows
+
+    int count = db.get("PersonTable").count();
+    
+Run raw sql
+
+    String sql = ...    
+    db.get("PersonTable").raw(sql).query();
 
 
+License
+-----------
 
-
+    /**
+     * Copyright 2013 Ricky Tobing
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *        http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
 
 
