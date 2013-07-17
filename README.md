@@ -7,8 +7,9 @@ Database Creation
 --------------
 
     int dbVersion = 1;
+    ...
     IDatabase db = DbEngine.getDatabase("MyDb");
-    db.create(version, new SQLiteBuilder() {
+    db.create(dbVersion, new SQLiteBuilder() {
         @Override 
         public Context getContext() {
            return getApplicationContext();
@@ -29,6 +30,7 @@ Database Creation
                     .add("Age", "INTEGER");
         }
     });
+    ...
 
 
 
