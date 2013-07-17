@@ -19,7 +19,7 @@ package com.bingzer.android.dbv;
 /**
  * Represents a column
  *
- * Created by 11856 on 7/16/13.
+ * Created by Ricky Tobing on 7/16/13.
  */
 public interface IColumn {
 

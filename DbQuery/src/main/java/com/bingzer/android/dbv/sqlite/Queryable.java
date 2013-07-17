@@ -25,7 +25,7 @@ import com.bingzer.android.dbv.Util;
 import java.util.regex.Pattern;
 
 /**
- * Created by 11856 on 7/16/13.
+ * Created by Ricky Tobing on 7/16/13.
  */
 class Queryable<T> implements IQuery<T> {
 

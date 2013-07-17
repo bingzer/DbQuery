@@ -21,7 +21,7 @@ import com.bingzer.android.dbv.IQuery;
 import java.util.Collection;
 
 /**
- * Created by 11856 on 7/17/13.
+ * Created by Ricky Tobing on 7/17/13.
  */
 public interface Deletable {
 

@@ -16,9 +16,13 @@
 
 package com.bingzer.android.dbv;
 
+import android.content.Context;
+
+import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+
 /**
  * This will be removed
- * Created by 11856 on 7/16/13.
+ * Created by Ricky Tobing on 7/16/13.
  */
 class TestUsage {
 
@@ -27,26 +31,34 @@ class TestUsage {
         int version = 0;
 
         IDatabase db = DbEngine.getDatabase("Test");
-        db.create(version, new IDatabase.Builder() {
+        db.create(version, new SQLiteBuilder() {
+            @Override
+            public Context getContext() {
+                return null;
+            }
+
             @Override
             public MigrationMode getMode() {
-                return MigrationMode.ErrorIfExists;
+                return null;
             }
 
             @Override
             public void onCreate(IDatabase.Modeling modeling) {
-                modeling.add("");
+                modeling.add("Table1")
+                        .add("Column1", "INTEGER", "primary key autoincrement not null")
+                        .add("Column2", "TEXT");
+
             }
         });
 
 
-        db.get("table").select(null).columns("col1","col1").query();
+                db.get("table").select(null).columns("col1", "col1").query();
         // output = "SELECT col1, col2 FROM table"
 
         db.get("table").insert("col1", "col2").values(1, 2).query();
 
 
-
+        db.get("").select("Age > ?", 50).query();
     }
 
 
