@@ -511,7 +511,10 @@ class Table implements ITable {
         IQuery.Delete query = new QueryImpl.DeleteImpl(new IQuery<Integer>() {
             @Override
             public Integer query() {
-                return db.delete(getName(), whereClause, Util.toStringArray(whereArgs));
+                if(whereArgs == null)
+                    return db.delete(getName(), whereClause, null);
+                else
+                    return db.delete(getName(), whereClause, Util.toStringArray(whereArgs));
             }
         });
 

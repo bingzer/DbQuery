@@ -22,12 +22,14 @@ package com.bingzer.android.dbv;
 public class Util {
 
     public static String[] toStringArray(Object... args){
-        if(args == null) return null;
+        if(args == null || args.length == 0) return null;
 
         String[] array = new String[args.length];
         for(int i = 0; i < args.length; i++){
-            array[i] = args[i].toString();
+            if(args[i] != null) array[i] = args[i].toString();
         }
+
+        if(array != null && array[0] == null) return null;
 
         return array;
     }
