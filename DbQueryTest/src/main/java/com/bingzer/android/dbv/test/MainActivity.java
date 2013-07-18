@@ -81,9 +81,9 @@ public class MainActivity extends Activity {
 
         appendText("** Emptying out tables");
         // empty all tables
-        db.get("Persons").delete();
+        db.get("Persons").delete().query();
         appendText("-- Deleting Table PERSONS. Count = " + db.get("Persons").count());
-        db.get("Jobs").delete();
+        db.get("Jobs").delete().query();
         appendText("-- Deleting Table JOBS. Count = " + db.get("Jobs").count());
     }
 
