@@ -124,12 +124,16 @@ public class Database implements IDatabase {
         // -- get all tables..
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
-        while(cursor.moveToNext()){
-            int nameIndex = cursor.getColumnIndex("name");
-            String tableName = cursor.getString(nameIndex);
+        try{
+            while(cursor.moveToNext()){
+                String tableName = cursor.getString(0);
 
-            Table table = new Table(db, tableName);
-            tables.add(table);
+                Table table = new Table(db, tableName);
+                tables.add(table);
+            }
+        }
+        finally {
+            cursor.close();
         }
     }
 
