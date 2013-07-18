@@ -1,7 +1,8 @@
 DbQuery
 ==============
 
-SQLite Query API for Android. See code for concept.
+SQLite Query API for Android. See code for concept. DbQuery provides a new and simpler way to query data.
+
 Still a work in progress
 
 Database Creation
@@ -11,6 +12,7 @@ Database Creation
     ...
     IDatabase db = DbEngine.getDatabase("MyDb");
     db.create(dbVersion, new SQLiteBuilder() {
+    
         @Override 
         public Context getContext() {
            return getApplicationContext();
@@ -24,39 +26,45 @@ Database Creation
         @Override
         public void onCreate(IDatabase.Modeling modeling) {
            // do the database modeling here..
+           
            // this will create table PersonTable with Id and Name column
-           modeling.add("PersonTable")
-                    .add("Id", "INTEGER", "primary key autoincrement not null")
-                    .add("Name", "TEXT")
-                    .add("Age", "INTEGER");
+           modeling.add("PersonTable")           
+                // method-chaining : configure columns inside this PersonTable
+                .add("Id", "INTEGER", "primary key autoincrement not null")
+                .add("Name", "TEXT")
+                .add("Age", "INTEGER");
         }
     });
     ...
+    
+Using <code>ITable</code>
+-----------
+To access the newly-created or existing table in the database
 
+    ITable personTable = db.get("PersonTable");
 
+<code>ITable</code> provides lots of methods for you to use to achieve common CRUD tasks
 
 Query 'SELECT'
 -----------
 Select and return all columns whose age is over 50 y/o
 
-    Cursor cursor = db.get("PersonTable").select("Age > ?", 50).query();
+    Cursor cursor = personTable.select("Age > ?", 50).query();
 
 Select and return name whose age is over 50 y/o
 
-    Cursor cursor = db.get("PersonTable").select("Age > ?", 50).columns("Name").query();
+    Cursor cursor = personTable.select("Age > ?", 50).columns("Name").query();
 
 Select all order by age
 
-    Cursor cursor = db.get("PersonTable")
-                        .select(null)
+    Cursor cursor = personTable.select()
                         .orderBy("Age")
                         .query();
     
 Select with complex query. 
 (i.e: Return all person who's over 25 y/o and whose name starts with 'John')
 
-    Cursor curosr = db.get("PersonTable")
-                        .select("Age > ? AND Name LIKE ?", 25, "John%")
+    Cursor curosr = personTable.select("Age > ? AND Name LIKE ?", 25, "John%")
                         .orderBy("Age", "Name")
                         .query();
 
@@ -66,44 +74,44 @@ Query 'UPDATE'
 
 Update age to 21 by id
 
-    db.get("PersonTable").update("Age", 21, "Id = ?", 1).query();
+    personTable.update("Age", 21, "Id = ?", 1).query();
     
 Update using ContentValues.
 (i.e: Update with ContentValues whose name is John)
 
     ContentValues v = new ContentValues();
     ...
-    db.get("PersonTable").update(v, "Name = ?", "John").query();
+    personTable.update(v, "Name = ?", "John").query();
 
 
 Query 'INSERT'
 -----------
 Insert a person
 
-    db.get("PersonTable").insert("Name", "Age").values("Ricky", 29).query();
+    personTable.insert("Name", "Age").values("Ricky", 29).query();
 
 Insert a person using ContentValues
 
     ContentValues v = new ContentValues();
     ...
-    db.get("PersonTable").insert(v).query();
+    personTable.insert(v).query();
 
 
 Query 'DELETE'
 -----------
 Delete by id
 
-    int deleted = db.get("PersonTable").delete(1).query();
+    int deleted = personTable.delete(1).query();
 
 
 Bulk-delete
 
-    int deleted = db.get("PersonTable").delete(1,2,11,34).query();
+    int deleted = personTable.delete(1,2,11,34).query();
 
 Delete with condition
 (i.e: Delete whose name starts with 'John')
 
-    int deleted = db.get("PersonTable").delete("Name LIKE ?", "John%").query();
+    int deleted = personTable.delete("Name LIKE ?", "John%").query();
 
 
 Other Methods
@@ -111,19 +119,27 @@ Other Methods
 
 Count everybody whose under 25 y/o
 
-    int count = db.get("PersonTable").count("Age < ?", 25);
+    int count = personTable.count("Age < ?", 25);
 
 Count all rows
 
-    int count = db.get("PersonTable").count();
+    int count = personTable.count();
     
 Run raw sql
 
     String sql = ...    
     // unsafe
-    db.get("PersonTable").raw(sql).query();
+    personTable.raw(sql).query();
     // safe
-    db.get("PersonTable").raw(sql, <selectionArgs>).query();
+    personTable.raw(sql, <selectionArgs>).query();
+    
+Run raw sql from database level
+
+    String sql = ...
+    db.raw(sql).query();
+    // or
+    db.raw(sql, <selectionArgs>).query();
+    
 
 
 License
