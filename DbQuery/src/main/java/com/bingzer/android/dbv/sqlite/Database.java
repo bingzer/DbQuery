@@ -23,6 +23,7 @@ import android.util.Log;
 
 import com.bingzer.android.dbv.IColumn;
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
 
 import java.util.LinkedList;
@@ -112,7 +113,7 @@ public class Database implements IDatabase {
     public void create(int version, Builder builder) {
         this.version = version;
 
-        if(builder instanceof SQLiteBuilder)
+        if(!(builder instanceof SQLiteBuilder))
             throw new RuntimeException("Use SQLiteBuilder interface");
 
         // tell the builder to create using the meta data
@@ -137,8 +138,7 @@ public class Database implements IDatabase {
      * @return
      */
     public SQLiteOpenHelper getHelper(){
-        if(dbHelper == null)
-            throw new IllegalArgumentException("You must call create() first");
+        ensureDbHelperIsReady();
         return dbHelper;
     }
 
@@ -160,7 +160,7 @@ public class Database implements IDatabase {
             public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
                 Log.i(TAG, "Upgrading from " + oldVersion + " to " + newVersion);
 
-                switch (builder.getMode()){
+                switch (builder.getMigrationMode()){
                     case DropIfExists:
                         onCreate(db);
                         break;
@@ -187,6 +187,45 @@ public class Database implements IDatabase {
                 o = null;
             }
         };
+    }
+
+    /**
+     * Runs raw sql
+     *
+     * @param sql
+     * @return
+     */
+    @Override
+    public IQuery<Cursor> raw(String sql) {
+        return raw(sql, null);
+    }
+
+    /**
+     * Runs raw sql
+     *
+     * @param sql
+     * @param selectionArgs
+     * @return
+     */
+    @Override
+    public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
+        ensureDbHelperIsReady();
+        IQuery<Cursor> query = new IQuery<Cursor>() {
+            @Override
+            public Cursor query() {
+                return dbHelper.getWritableDatabase().rawQuery(sql, selectionArgs);
+            }
+        };
+
+        return query;
+    }
+
+    //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
+
+    private void ensureDbHelperIsReady(){
+        if(dbHelper == null)
+            throw new IllegalArgumentException("You must call create() first");
     }
 
     //////////////////////////////////////////////////////////

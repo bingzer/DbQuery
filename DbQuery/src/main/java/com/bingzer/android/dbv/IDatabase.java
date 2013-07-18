@@ -16,6 +16,8 @@
 
 package com.bingzer.android.dbv;
 
+import com.bingzer.android.dbv.queries.RawQueryable;
+
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ import java.util.List;
  *
  * Created by Ricky Tobing on 7/16/13.
  */
-public interface IDatabase {
+public interface IDatabase extends RawQueryable {
 
 
     /**
@@ -67,7 +69,7 @@ public interface IDatabase {
          * Returns the mode.
          * @return
          */
-        MigrationMode getMode();
+        MigrationMode getMigrationMode();
 
         /**
          * Called when database is about to create.
@@ -77,6 +79,7 @@ public interface IDatabase {
         void onCreate(Modeling modeling);
 
     }
+
 
     /**
      * Modeling that's used to query tables/column definition

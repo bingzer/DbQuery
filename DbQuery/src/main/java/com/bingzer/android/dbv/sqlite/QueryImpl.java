@@ -28,15 +28,15 @@ import java.util.regex.Pattern;
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
-class Queryable<T> implements IQuery<T> {
+class QueryImpl<T> implements IQuery<T> {
 
     StringBuilder builder;
 
-    Queryable(){
+    QueryImpl(){
         this(null);
     }
 
-    Queryable(Object any){
+    QueryImpl(Object any){
         builder = new StringBuilder();
         append(any);
     }
@@ -44,7 +44,7 @@ class Queryable<T> implements IQuery<T> {
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    Queryable append(Object any){
+    QueryImpl append(Object any){
         if(any != null) builder.append(any);
         return this;
     }
@@ -63,18 +63,30 @@ class Queryable<T> implements IQuery<T> {
     }
 
     /**
-     * Select
+     * SelectImpl
      */
-    static class Select extends Queryable<Cursor> implements IQuery.Select{
+    static class SelectImpl extends QueryImpl<Cursor> implements IQuery.Select{
 
-        private CharSequence orderBy;
+        private CharSequence orderByString;
+        private CharSequence columnString;
+        private CharSequence selectString;
 
-        Select(){
-            this(null);
+        SelectImpl(){
+            this(false);
         }
 
-        Select(Object any){
-            super(any);
+        SelectImpl(boolean distinct){
+            this(-1, distinct);
+        }
+
+        SelectImpl(int top, boolean distinct){
+            if(distinct)
+                selectString = "SELECT DISTINCT ";
+            else selectString = "SELECT ";
+
+            if(top > 0) selectString = "TOP " + top;
+
+            columnString = "*";
         }
 
         /**
@@ -86,26 +98,11 @@ class Queryable<T> implements IQuery<T> {
          */
         @Override
         public IQuery<Cursor> columns(String... columns) {
-            String all = super.builder.toString();
-
             if(columns != null){
-                super.builder.delete(0, super.builder.length());
-                super.builder = new StringBuilder();
-                super.builder.append(all.replace("*", Util.join(",", columns)));
+                columnString = Util.join(",", columns);
             }
             else{
-                if(columns == null && all.toLowerCase().contains("select *")){
-                    // we're good..
-                }
-                else if(columns == null && !all.toLowerCase().contains("select *")){
-                    super.builder.delete(0, super.builder.length());
-                    super.builder = new StringBuilder();
-
-                    Pattern p = Pattern.compile("(SELECT\\s*).*(FROM)\\s");
-                    all = p.matcher(all).replaceFirst("SELECT * FROM ");
-
-                    super.builder.append(all.replace("*", Util.join(",", columns)));
-                }
+                columnString = "*";
             }
 
             return this;
@@ -120,10 +117,10 @@ class Queryable<T> implements IQuery<T> {
         @Override
         public IQuery<Cursor> orderBy(String... columns) {
             if(columns != null){
-                orderBy = "ORDER BY " + Util.join(",", columns) + " ASC";
+                orderByString = "ORDER BY " + Util.join(",", columns) + " ASC";
             }
             else{
-                orderBy = null;
+                orderByString = null;
             }
             return this;
         }
@@ -136,10 +133,10 @@ class Queryable<T> implements IQuery<T> {
         @Override
         public IQuery<Cursor> orderByDesc(String... columns) {
             if(columns != null){
-                orderBy = "ORDER BY " + Util.join(",", columns) + " DESC";
+                orderByString = "ORDER BY " + Util.join(",", columns) + " DESC";
             }
             else{
-                orderBy = null;
+                orderByString = null;
             }
             return this;
         }
@@ -149,27 +146,34 @@ class Queryable<T> implements IQuery<T> {
          * @return
          */
         public String toString(){
-            String str = super.builder.toString();
-            if(orderBy != null)
-                return str + " " + orderBy;
-            return str;
+            StringBuilder sql = new StringBuilder();
+            sql.append(selectString).append(" ");
+            sql.append(columnString).append(" ");
+            // from and where
+            sql.append(super.builder);
+            // order by
+            if(orderByString != null){
+                sql.append(orderByString);
+            }
+
+            return sql.toString();
         }
     }
 
 
     /**
-     * Insert
+     * InsertImpl
      */
-    static class Insert implements IQuery.Insert {
+    static class InsertImpl implements IQuery.Insert {
 
         IQuery<Integer> query;
         String[] columnNames;
 
-        Insert(IQuery<Integer> query){
+        InsertImpl(IQuery<Integer> query){
             this.query = query;
         }
 
-        Insert(IQueryableAppendable query, String... columnNames){
+        InsertImpl(IQueryableAppendable query, String... columnNames){
             this.query = query;
             this.columnNames = columnNames;
         }
@@ -210,13 +214,13 @@ class Queryable<T> implements IQuery<T> {
 
 
     /**
-     * Update
+     * UpdateImpl
      */
-    static class Update implements IQuery.Update {
+    static class UpdateImpl implements IQuery.Update {
 
         IQuery<Integer> query;
 
-        Update(IQuery<Integer> query){
+        UpdateImpl(IQuery<Integer> query){
             this.query = query;
         }
 
@@ -232,11 +236,11 @@ class Queryable<T> implements IQuery<T> {
     }
 
 
-    static class Delete implements IQuery.Delete {
+    static class DeleteImpl implements IQuery.Delete {
 
         IQuery<Integer> query;
 
-        Delete(IQuery<Integer> query){
+        DeleteImpl(IQuery<Integer> query){
             this.query = query;
         }
 
@@ -251,21 +255,21 @@ class Queryable<T> implements IQuery<T> {
         }
     }
 
-    static class InnerJoin extends Join implements IQuery.InnerJoin {
-        InnerJoin(Table table, String tableNameToJoin, String onClause) {
+    static class InnerJoinImpl extends Join implements IQuery.InnerJoin {
+        InnerJoinImpl(Table table, String tableNameToJoin, String onClause) {
             super(table, "INNER JOIN", tableNameToJoin, onClause);
         }
     }
 
-    static class OuterJoin extends Join implements IQuery.OuterJoin {
-        OuterJoin(Table table, String tableNameToJoin, String onClause) {
+    static class OuterJoinImpl extends Join implements IQuery.OuterJoin {
+        OuterJoinImpl(Table table, String tableNameToJoin, String onClause) {
             super(table, "OUTER JOIN", tableNameToJoin, onClause);
         }
     }
 
 
 
-    private static class Join extends Select implements Selectable {
+    private static class Join extends SelectImpl implements Selectable {
 
         protected final Table table;
         protected CharSequence joinBuilder;
@@ -276,7 +280,7 @@ class Queryable<T> implements IQuery<T> {
         }
 
         /**
-         * Select top (x) add the specified condition
+         * SelectImpl top (x) add the specified condition
          *
          * @param top
          * @param condition
@@ -290,7 +294,7 @@ class Queryable<T> implements IQuery<T> {
         }
 
         /**
-         * Select some condition
+         * SelectImpl some condition
          *
          * @param condition
          * @return
@@ -303,7 +307,7 @@ class Queryable<T> implements IQuery<T> {
         }
 
         /**
-         * Select add id
+         * SelectImpl add id
          *
          * @param id
          * @return
@@ -316,7 +320,20 @@ class Queryable<T> implements IQuery<T> {
         }
 
         /**
-         * Select add whereClause
+         * SelectImpl multiple ids
+         *
+         * @param ids
+         * @return
+         */
+        @Override
+        public IQuery.Select select(int... ids) {
+            clear();
+            append(table.select(ids));
+            return this;
+        }
+
+        /**
+         * SelectImpl add whereClause
          *
          * @param whereClause
          * @param args
@@ -330,7 +347,7 @@ class Queryable<T> implements IQuery<T> {
         }
 
         /**
-         * Select
+         * SelectImpl
          *
          * @param whereClause
          * @param args
@@ -344,7 +361,7 @@ class Queryable<T> implements IQuery<T> {
         }
 
         /**
-         * Select distinct
+         * SelectImpl distinct
          *
          * @param condition
          * @return
@@ -357,7 +374,7 @@ class Queryable<T> implements IQuery<T> {
         }
 
         /**
-         * Select distinct add condition
+         * SelectImpl distinct add condition
          *
          * @param whereClause
          * @param args

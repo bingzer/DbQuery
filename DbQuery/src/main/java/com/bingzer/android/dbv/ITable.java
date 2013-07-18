@@ -16,13 +16,25 @@
 
 package com.bingzer.android.dbv;
 
+import com.bingzer.android.dbv.queries.Countable;
+import com.bingzer.android.dbv.queries.Deletable;
+import com.bingzer.android.dbv.queries.Droppable;
+import com.bingzer.android.dbv.queries.Insertable;
+import com.bingzer.android.dbv.queries.Joinable;
+import com.bingzer.android.dbv.queries.RawQueryable;
+import com.bingzer.android.dbv.queries.Selectable;
+import com.bingzer.android.dbv.queries.Updatable;
+
 import java.util.List;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
 
-public interface ITable extends IQueryableTable {
+public interface ITable extends
+        Selectable, Insertable, Deletable, Updatable,
+        Joinable.Inner, Joinable.Outer,
+        RawQueryable, Countable, Droppable {
 
     /**
      * Returns the name
@@ -41,6 +53,35 @@ public interface ITable extends IQueryableTable {
      * @return
      */
     int getColumnCount();
+
+    /////////////////////////////////////////////////
+    /////////////////////////////////////////////////
+    /////////////////////////////////////////////////
+
+    /**
+     * Check to see if this table has row add the spcified condition
+     * @param condition
+     * @return
+     */
+    boolean hasRow(String condition);
+
+    /**
+     * has row add id
+     * @param id
+     * @return
+     */
+    boolean hasRow(int id);
+
+    /**
+     * Check to see if this table has row add the specified clause and condition
+     * @param whereClause
+     * @param whereArgs
+     * @return
+     */
+    boolean hasRow(String whereClause, Object... whereArgs);
+
+    /////////////////////////////////////////////////
+    /////////////////////////////////////////////////
 
     /**
      * The model of this table

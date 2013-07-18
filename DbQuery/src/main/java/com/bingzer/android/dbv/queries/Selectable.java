@@ -46,6 +46,13 @@ public interface Selectable {
     IQuery.Select select(int id);
 
     /**
+     * Select multiple ids
+     * @param ids
+     * @return
+     */
+    IQuery.Select select(int... ids);
+
+    /**
      * Select add whereClause
      * @param whereClause
      * @param args

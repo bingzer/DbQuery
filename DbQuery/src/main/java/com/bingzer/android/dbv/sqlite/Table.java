@@ -117,7 +117,7 @@ class Table implements ITable {
     }
 
     /**
-     * Select some condition
+     * SelectImpl some condition
      *
      * @param condition
      * @return
@@ -128,7 +128,7 @@ class Table implements ITable {
     }
 
     /**
-     * Select top (x) add the specified condition
+     * SelectImpl top (x) add the specified condition
      *
      * @param top
      * @param condition
@@ -140,7 +140,7 @@ class Table implements ITable {
     }
 
     /**
-     * Select add id
+     * SelectImpl add id
      *
      * @param id
      * @return
@@ -151,7 +151,33 @@ class Table implements ITable {
     }
 
     /**
-     * Select add whereClause
+     * SelectImpl multiple ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public IQuery.Select select(int... ids) {
+        if(ids != null && ids.length > 0){
+            StringBuilder whereClause = new StringBuilder().append("IN (");
+            for(int i = 0; i < ids.length; i++){
+                whereClause.append(ids[i]);
+                if(i < ids.length - 1){
+                    whereClause.append(",");
+                }
+            }
+            whereClause.append(")");
+
+            return select(whereClause.toString());
+        }
+        else{
+            // select all
+            return select((String)null);
+        }
+    }
+
+    /**
+     * SelectImpl add whereClause
      *
      * @param whereClause
      * @param args
@@ -163,7 +189,7 @@ class Table implements ITable {
     }
 
     /**
-     * Select
+     * SelectImpl
      *
      * @param whereClause
      * @param args
@@ -171,14 +197,11 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select select(int top, String whereClause, Object... args) {
-        Queryable.Select query = new Queryable.Select("SELECT "){
+        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(top, false){
             @Override public Cursor query(){
                 return db.rawQuery(toString(), null);
             };
         };
-
-        if(top > 0) query.append(" TOP ").append(top);
-        else query.append(" * ");
 
         query.append(" FROM ").append(getName());
         if(whereClause != null){
@@ -193,7 +216,7 @@ class Table implements ITable {
     }
 
     /**
-     * Select distinct
+     * SelectImpl distinct
      *
      * @param condition
      * @return
@@ -204,7 +227,7 @@ class Table implements ITable {
     }
 
     /**
-     * Select distinct add condition
+     * SelectImpl distinct add condition
      *
      * @param whereClause
      * @param args
@@ -212,7 +235,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select selectDistinct(String whereClause, Object... args) {
-        Queryable.Select query = new Queryable.Select("SELECT DISTINCT "){
+        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(true){
             @Override public Cursor query(){
                 return db.rawQuery(toString(), null);
             };
@@ -238,7 +261,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Insert insert(final ContentValues contents) {
-        IQuery.Insert query = new Queryable.Insert(new IQuery<Integer>() {
+        IQuery.Insert query = new QueryImpl.InsertImpl(new IQuery<Integer>() {
             @Override public Integer query() {
                 return (int) db.insert(getName(), null, contents);
             }
@@ -273,7 +296,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Insert insert(String... columns) {
-        IQuery.Insert query = new Queryable.Insert(new Queryable.Insert.IQueryableAppendable() {
+        IQuery.Insert query = new QueryImpl.InsertImpl(new QueryImpl.InsertImpl.IQueryableAppendable() {
             private ContentValues contentValues;
 
             @Override
@@ -294,7 +317,7 @@ class Table implements ITable {
     }
 
     /**
-     * Update a column add its id
+     * UpdateImpl a column add its id
      *
      * @param column
      * @param value
@@ -307,7 +330,7 @@ class Table implements ITable {
     }
 
     /**
-     * Update a column add specified condition
+     * UpdateImpl a column add specified condition
      *
      * @param column
      * @param value
@@ -320,7 +343,7 @@ class Table implements ITable {
     }
 
     /**
-     * Update a column add specified condition
+     * UpdateImpl a column add specified condition
      *
      * @param column
      * @param value
@@ -363,11 +386,11 @@ class Table implements ITable {
             contentValues.put(columns[i], values[i].toString());
         }
 
-        return update(contentValues, whereClause, Util.toStringArray(whereArgs));
+        return update(contentValues, whereClause, Util.toStringArray((Object[])whereArgs));
     }
 
     /**
-     * Update using the contentvalues
+     * UpdateImpl using the contentvalues
      *
      * @param contents
      * @return
@@ -378,7 +401,7 @@ class Table implements ITable {
     }
 
     /**
-     * Update using contentvalues with specified id
+     * UpdateImpl using contentvalues with specified id
      *
      * @param contents
      * @param id
@@ -390,7 +413,7 @@ class Table implements ITable {
     }
 
     /**
-     * Update using the contentvalues
+     * UpdateImpl using the contentvalues
      *
      * @param contents
      * @param whereClause
@@ -399,7 +422,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
-        IQuery.Update query = new Queryable.Update(new IQuery<Integer>() {
+        IQuery.Update query = new QueryImpl.UpdateImpl(new IQuery<Integer>() {
             @Override
             public Integer query() {
                 String[] args = Util.toStringArray(whereArgs);
@@ -411,7 +434,7 @@ class Table implements ITable {
     }
 
     /**
-     * Delete by id
+     * DeleteImpl by id
      *
      * @param id
      * @return
@@ -429,16 +452,22 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Delete delete(int... ids) {
-        StringBuilder whereClause = new StringBuilder().append("IN (");
-        for(int i = 0; i < ids.length; i++){
-            whereClause.append(ids[i]);
-            if(i < ids.length - 1){
-                whereClause.append(",");
+        if(ids != null && ids.length > 0){
+            StringBuilder whereClause = new StringBuilder().append("IN (");
+            for(int i = 0; i < ids.length; i++){
+                whereClause.append(ids[i]);
+                if(i < ids.length - 1){
+                    whereClause.append(",");
+                }
             }
-        }
-        whereClause.append(")");
+            whereClause.append(")");
 
-        return delete(whereClause.toString(), (Object)null);
+            return delete(whereClause.toString(), (Object)null);
+        }
+        else{
+            // delete all
+            return deleteAll();
+        }
     }
 
     /**
@@ -460,7 +489,7 @@ class Table implements ITable {
     }
 
     /**
-     * Delete add specified condition
+     * DeleteImpl add specified condition
      *
      * @param condition
      * @return
@@ -471,7 +500,7 @@ class Table implements ITable {
     }
 
     /**
-     * Delete add sepcified where clause
+     * DeleteImpl add sepcified where clause
      *
      * @param whereClause
      * @param whereArgs
@@ -479,7 +508,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Delete delete(final String whereClause, final Object... whereArgs) {
-        IQuery.Delete query = new Queryable.Delete(new IQuery<Integer>() {
+        IQuery.Delete query = new QueryImpl.DeleteImpl(new IQuery<Integer>() {
             @Override
             public Integer query() {
                 return db.delete(getName(), whereClause, Util.toStringArray(whereArgs));
@@ -530,16 +559,7 @@ class Table implements ITable {
      */
     @Override
     public boolean hasRow(String whereClause, Object... whereArgs) {
-        Cursor cursor = select(whereClause, whereArgs).query();
-        try{
-            if(cursor.moveToNext()){
-                return true;
-            }
-        }
-        finally {
-            cursor.close();
-        }
-        return false;
+        return count(whereClause, whereArgs) > 0;
     }
 
     /**
@@ -611,7 +631,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
-        IQuery<Cursor> query = new Queryable<Cursor>(){
+        IQuery<Cursor> query = new QueryImpl<Cursor>(){
             @Override public Cursor query(){
                 return db.rawQuery(sql, selectionArgs);
             }
@@ -626,7 +646,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery<Boolean> drop() {
-        IQuery<Boolean> query = new Queryable<Boolean>(){
+        IQuery<Boolean> query = new QueryImpl<Boolean>(){
             @Override public Boolean query(){
                 try{
                     db.rawQuery("DROP TABLE " + getName(), null);
@@ -649,7 +669,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.InnerJoin join(String tableName, String onClause) {
-        IQuery.InnerJoin query = new Queryable.InnerJoin(this, tableName, onClause){
+        IQuery.InnerJoin query = new QueryImpl.InnerJoinImpl(this, tableName, onClause){
             @Override public Cursor query(){
                 return db.rawQuery(toString(), null);
             }
@@ -681,7 +701,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.OuterJoin outerJoin(String tableName, String onClause) {
-        IQuery.OuterJoin query = new Queryable.OuterJoin(this, tableName, onClause){
+        IQuery.OuterJoin query = new QueryImpl.OuterJoinImpl(this, tableName, onClause){
             @Override public Cursor query(){
                 return db.rawQuery(toString(), null);
             }

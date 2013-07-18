@@ -38,7 +38,7 @@ class TestUsage {
             }
 
             @Override
-            public MigrationMode getMode() {
+            public MigrationMode getMigrationMode() {
                 return null;
             }
 
@@ -51,8 +51,9 @@ class TestUsage {
             }
         });
 
+        //db.get("").select(1,2,3);
 
-                db.get("table").select(null).columns("col1", "col1").query();
+               // db.get("table").select().columns()
         // output = "SELECT col1, col2 FROM table"
 
         db.get("table").insert("col1", "col2").values(1, 2).query();

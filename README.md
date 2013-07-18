@@ -17,7 +17,7 @@ Database Creation
         }
         
         @Override 
-        public MigrationMode getMode() {
+        public MigrationMode getMigrationMode() {
            return MigrationMode.DropIfExists;
         }
         
