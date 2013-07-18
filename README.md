@@ -39,7 +39,7 @@ Database Creation
     
 Using <code>ITable</code>
 -----------
-To access the newly-created or existing table in the database
+<code>IDatabase</code> provides access to the newly-created or existing tables inside the database
 
     ITable personTable = db.get("PersonTable");
 
