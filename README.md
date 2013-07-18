@@ -1,7 +1,8 @@
 DbQuery
 ==============
 
-SQLite Query API for Android
+SQLite Query API for Android. See code for concept.
+Still a work in progress
 
 Database Creation
 --------------
@@ -46,7 +47,18 @@ Select and return name whose age is over 50 y/o
 
 Select all order by age
 
-    Cursor cursor = db.get("PersonTable").select(null).orderBy("Age").query();
+    Cursor cursor = db.get("PersonTable")
+                        .select(null)
+                        .orderBy("Age")
+                        .query();
+    
+Select with complex query. 
+(i.e: Return all person who's over 25 y/o and whose name starts with 'John')
+
+    Cursor curosr = db.get("PersonTable")
+                        .select("Age > ? AND Name LIKE ?", 25, "John%")
+                        .orderBy("Age", "Name")
+                        .query();
 
 
 Query 'UPDATE'
@@ -56,7 +68,8 @@ Update age to 21 by id
 
     db.get("PersonTable").update("Age", 21, "Id = ?", 1).query();
     
-Update using ContentValues
+Update using ContentValues.
+(i.e: Update with ContentValues whose name is John)
 
     ContentValues v = new ContentValues();
     ...
@@ -87,6 +100,10 @@ Bulk-delete
 
     int deleted = db.get("PersonTable").delete(1,2,11,34).query();
 
+Delete with condition
+(i.e: Delete whose name starts with 'John')
+
+    int deleted = db.get("PersonTable").delete("Name LIKE ?", "John%").query();
 
 
 Other Methods
@@ -94,7 +111,7 @@ Other Methods
 
 Count everybody whose under 25 y/o
 
-    int count = db.get("PersonTable").count("Age < ?", 25)();
+    int count = db.get("PersonTable").count("Age < ?", 25);
 
 Count all rows
 
@@ -103,7 +120,10 @@ Count all rows
 Run raw sql
 
     String sql = ...    
+    // unsafe
     db.get("PersonTable").raw(sql).query();
+    // safe
+    db.get("PersonTable").raw(sql, <selectionArgs>).query();
 
 
 License
