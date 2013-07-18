@@ -178,7 +178,7 @@ public class Database implements IDatabase {
                 Log.i(TAG, "Creating database for the first time");
 
                 for(TableModel model : dbModel.tableModles){
-                    db.execSQL(model.toCreateSql());
+                    db.execSQL(model.toString());
                 }
             }
 
@@ -243,14 +243,14 @@ public class Database implements IDatabase {
             return this;
         }
 
-        String toCreateSql(){
+        public String toString(){
             StringBuilder builder = new StringBuilder();
 
             builder.append("CREATE TABLE ").append(tableName).append("(");
             // ----- columns
             for (int i = 0; i < columnModels.size(); i++) {
                 ColumnModel col = columnModels.get(i);
-                builder.append(col.toCreateSql());
+                builder.append(col);
 
                 if (i < columnModels.size() - 1)
                     builder.append(",");
@@ -289,7 +289,8 @@ public class Database implements IDatabase {
             this.definition = definition;
         }
 
-        String toCreateSql(){
+        @Override
+        public String toString(){
             StringBuilder builder = new StringBuilder();
             builder.append(name).append(" ").append(dataType);
 

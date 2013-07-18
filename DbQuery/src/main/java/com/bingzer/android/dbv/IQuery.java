@@ -55,11 +55,18 @@ public interface IQuery<T> {
         IQuery<Cursor> columns(String... columns);
 
         /**
-         * Orders by
-         * @param column
+         * Ascending orders by columns
+         * @param columns
          * @return
          */
-        IQuery<Cursor> orderBy(String column);
+        IQuery<Cursor> orderBy(String... columns);
+
+        /**
+         * Descending order by columns
+         * @param columns
+         * @return
+         */
+        IQuery<Cursor> orderByDesc(String... columns);
     }
 
 

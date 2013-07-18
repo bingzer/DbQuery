@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DbQuery/DbQuery.iml" filepath="$PROJECT_DIR$/DbQuery/DbQuery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DbQuery/DbQuery-DbQuery.iml" filepath="$PROJECT_DIR$/DbQuery/DbQuery-DbQuery.iml" />
       <module fileurl="file://$PROJECT_DIR$/DbQueryProject.iml" filepath="$PROJECT_DIR$/DbQueryProject.iml" />
     </modules>
   </component>

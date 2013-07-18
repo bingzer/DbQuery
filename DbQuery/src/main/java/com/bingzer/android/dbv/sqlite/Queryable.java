@@ -66,6 +66,8 @@ class Queryable<T> implements IQuery<T> {
      */
     static class Select extends Queryable<Cursor> implements IQuery.Select{
 
+        private CharSequence orderBy;
+
         Select(){
             this(null);
         }
@@ -111,12 +113,34 @@ class Queryable<T> implements IQuery<T> {
         /**
          * Orders by
          *
-         * @param column
+         * @param columns
          * @return
          */
         @Override
-        public IQuery<Cursor> orderBy(String column) {
-            throw new UnsupportedOperationException("Not implemented");
+        public IQuery<Cursor> orderBy(String... columns) {
+            if(columns != null){
+                orderBy = "ORDER BY " + Util.join(",", columns) + " ASC";
+            }
+            else{
+                orderBy = null;
+            }
+            return this;
+        }
+
+        /**
+         * Order by descending
+         * @param columns
+         * @return
+         */
+        @Override
+        public IQuery<Cursor> orderByDesc(String... columns) {
+            if(columns != null){
+                orderBy = "ORDER BY " + Util.join(",", columns) + " DESC";
+            }
+            else{
+                orderBy = null;
+            }
+            return this;
         }
 
         /**
@@ -124,7 +148,10 @@ class Queryable<T> implements IQuery<T> {
          * @return
          */
         public String toString(){
-            return super.builder.toString();
+            String str = super.builder.toString();
+            if(orderBy != null)
+                return str + " " + orderBy;
+            return str;
         }
     }
 
