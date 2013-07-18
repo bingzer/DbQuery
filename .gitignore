@@ -1,4 +1,15 @@
 #################
+## Android studio
+#################
+gradlew
+gradlew.bat
+.idea
+.gradle
+gradle
+gen/
+
+
+#################
 ## Eclipse
 #################
 
