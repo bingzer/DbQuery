@@ -21,7 +21,6 @@ import com.bingzer.android.dbv.IQuery;
 /**
  * Created by Ricky Tobing on 7/17/13.
  */
-
 public interface Selectable {
 
     /**

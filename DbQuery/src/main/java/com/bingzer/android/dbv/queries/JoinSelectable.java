@@ -17,7 +17,7 @@
 package com.bingzer.android.dbv.queries;
 
 /**
- * Created by 11856 on 7/17/13.
+ * Created by Ricky Tobing on 7/17/13.
  */
 public interface JoinSelectable extends Joinable, Selectable {
 }
