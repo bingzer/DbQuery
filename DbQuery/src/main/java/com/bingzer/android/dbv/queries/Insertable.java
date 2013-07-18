@@ -25,7 +25,6 @@ import com.bingzer.android.dbv.IQuery;
  */
 public interface Insertable {
 
-
     /**
      * InsertWith content values
      * @param contents

@@ -18,6 +18,10 @@ package com.bingzer.android.dbv;
 
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.queries.JoinSelectable;
+import com.bingzer.android.dbv.queries.Joinable;
+import com.bingzer.android.dbv.queries.Selectable;
+
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
@@ -78,5 +82,11 @@ public interface IQuery<T> {
 
     }
 
+    public static interface InnerJoin extends Joinable, Selectable, Select{
 
+    }
+
+    public static interface OuterJoin extends Joinable, Selectable, Select{
+
+    }
 }

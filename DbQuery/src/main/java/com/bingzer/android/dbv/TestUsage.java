@@ -58,7 +58,7 @@ class TestUsage {
         db.get("table").insert("col1", "col2").values(1, 2).query();
 
 
-        db.get("").select("Age > ?", 50).query();
+
     }
 
 

@@ -238,7 +238,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Insert insert(final ContentValues contents) {
-        Queryable.Insert query = new Queryable.Insert(new IQuery<Integer>() {
+        IQuery.Insert query = new Queryable.Insert(new IQuery<Integer>() {
             @Override public Integer query() {
                 return (int) db.insert(getName(), null, contents);
             }
@@ -273,7 +273,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Insert insert(String... columns) {
-        Queryable.Insert query = new Queryable.Insert(new Queryable.Insert.IQueryableAppendable() {
+        IQuery.Insert query = new Queryable.Insert(new Queryable.Insert.IQueryableAppendable() {
             private ContentValues contentValues;
 
             @Override
@@ -399,7 +399,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
-        Queryable.Update query = new Queryable.Update(new IQuery<Integer>() {
+        IQuery.Update query = new Queryable.Update(new IQuery<Integer>() {
             @Override
             public Integer query() {
                 String[] args = Util.toStringArray(whereArgs);
@@ -638,5 +638,69 @@ class Table implements ITable {
             }
         };
         return query;
+    }
+
+    /**
+     * Joins a table
+     *
+     * @param tableName
+     * @param onClause
+     * @return
+     */
+    @Override
+    public IQuery.InnerJoin join(String tableName, String onClause) {
+        IQuery.InnerJoin query = new Queryable.InnerJoin(this, tableName, onClause){
+            @Override public Cursor query(){
+                return db.rawQuery(toString(), null);
+            }
+        };
+
+        // returns
+        return query;
+    }
+
+    /**
+     * Joins a table
+     *
+     * @param tableName
+     * @param column1
+     * @param column2
+     * @return
+     */
+    @Override
+    public IQuery.InnerJoin join(String tableName, String column1, String column2) {
+        return join(tableName, name + "." + column1 + " = " + tableName + "." + column2);
+    }
+
+    /**
+     * Joins a table
+     *
+     * @param tableName
+     * @param onClause
+     * @return
+     */
+    @Override
+    public IQuery.OuterJoin outerJoin(String tableName, String onClause) {
+        IQuery.OuterJoin query = new Queryable.OuterJoin(this, tableName, onClause){
+            @Override public Cursor query(){
+                return db.rawQuery(toString(), null);
+            }
+        };
+
+        // returns
+        return query;
+    }
+
+    /**
+     * Joins a table
+     *
+     * @param tableName
+     * @param column1
+     * @param column2
+     * @return
+     */
+    @Override
+    public IQuery.OuterJoin outerJoin(String tableName, String column1, String column2) {
+        return outerJoin(tableName, name + "." + column1 + " = " + tableName + "." + column2);
     }
 }

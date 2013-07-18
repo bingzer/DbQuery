@@ -21,6 +21,7 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.queries.Selectable;
 
 import java.util.regex.Pattern;
 
@@ -29,7 +30,7 @@ import java.util.regex.Pattern;
  */
 class Queryable<T> implements IQuery<T> {
 
-    private StringBuilder builder;
+    StringBuilder builder;
 
     Queryable(){
         this(null);
@@ -250,4 +251,139 @@ class Queryable<T> implements IQuery<T> {
         }
     }
 
+    static class InnerJoin extends Join implements IQuery.InnerJoin {
+        InnerJoin(Table table, String tableNameToJoin, String onClause) {
+            super(table, "INNER JOIN", tableNameToJoin, onClause);
+        }
+    }
+
+    static class OuterJoin extends Join implements IQuery.OuterJoin {
+        OuterJoin(Table table, String tableNameToJoin, String onClause) {
+            super(table, "OUTER JOIN", tableNameToJoin, onClause);
+        }
+    }
+
+
+
+    private static class Join extends Select implements Selectable {
+
+        protected final Table table;
+        protected CharSequence joinBuilder;
+
+        Join(Table table, String joinType, String tableNameToJoin, String onClause){
+            this.table = table;
+            this.joinBuilder = " " + joinType + " " + tableNameToJoin + " " + onClause;
+        }
+
+        /**
+         * Select top (x) add the specified condition
+         *
+         * @param top
+         * @param condition
+         * @return
+         */
+        @Override
+        public IQuery.Select select(int top, String condition) {
+            clear();
+            append(table.select(top, condition));
+            return this;
+        }
+
+        /**
+         * Select some condition
+         *
+         * @param condition
+         * @return
+         */
+        @Override
+        public IQuery.Select select(String condition) {
+            clear();
+            append(table.select(condition));
+            return this;
+        }
+
+        /**
+         * Select add id
+         *
+         * @param id
+         * @return
+         */
+        @Override
+        public IQuery.Select select(int id) {
+            clear();
+            append(table.select(id));
+            return this;
+        }
+
+        /**
+         * Select add whereClause
+         *
+         * @param whereClause
+         * @param args
+         * @return
+         */
+        @Override
+        public IQuery.Select select(String whereClause, Object... args) {
+            clear();
+            append(table.select(whereClause, args));
+            return this;
+        }
+
+        /**
+         * Select
+         *
+         * @param whereClause
+         * @param args
+         * @return
+         */
+        @Override
+        public IQuery.Select select(int top, String whereClause, Object... args) {
+            clear();
+            append(table.select(top, whereClause, args));
+            return this;
+        }
+
+        /**
+         * Select distinct
+         *
+         * @param condition
+         * @return
+         */
+        @Override
+        public IQuery.Select selectDistinct(String condition) {
+            clear();
+            append(table.selectDistinct(condition));
+            return this;
+        }
+
+        /**
+         * Select distinct add condition
+         *
+         * @param whereClause
+         * @param args
+         * @return
+         */
+        @Override
+        public IQuery.Select selectDistinct(String whereClause, Object... args) {
+            clear();
+            append(table.selectDistinct(whereClause, args));
+            return this;
+        }
+
+        /**
+         *
+         * @return
+         */
+        @Override
+        public String toString(){
+            return super.builder.toString() + " " + this.joinBuilder.toString();
+        }
+
+        /**
+         * Clear the StringBuilder
+         */
+        private void clear(){
+            super.builder.delete(0, super.builder.length());
+        }
+    }
 }

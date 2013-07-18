@@ -21,6 +21,7 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.queries.Deletable;
 import com.bingzer.android.dbv.queries.Insertable;
+import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.Selectable;
 import com.bingzer.android.dbv.queries.Updatable;
 
@@ -29,7 +30,7 @@ import com.bingzer.android.dbv.queries.Updatable;
  *
  * Created by Ricky Tobing on 7/16/13.
  */
-public interface IQueryableTable extends Selectable, Insertable, Deletable, Updatable {
+public interface IQueryableTable extends Selectable, Insertable, Deletable, Updatable, Joinable.Inner, Joinable.Outer {
 
     /////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////

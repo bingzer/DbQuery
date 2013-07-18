@@ -68,44 +68,7 @@
     <favorites_list name="DbQuery" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="Table.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Table.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="9" selection-start="965" selection-end="971" vertical-scroll-proportion="-4.76" vertical-offset="0" max-vertical-offset="10472">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Queryable.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Queryable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="150" column="0" selection-start="3917" selection-end="3917" vertical-scroll-proportion="-45.32" vertical-offset="1077" max-vertical-offset="4063">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestUsage.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/TestUsage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="0" selection-start="1440" selection-end="1440" vertical-scroll-proportion="0.35472372" vertical-offset="362" max-vertical-offset="935">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IQuery.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/IQuery.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="58" column="25" selection-start="1446" selection-end="1446" vertical-scroll-proportion="0.0" vertical-offset="448" max-vertical-offset="1258">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -172,22 +135,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/IDatabase.java" />
-        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/IQueryableTable.java" />
-        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/ITable.java" />
-        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/MigrationMode.java" />
         <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/Util.java" />
         <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Deletable.java" />
-        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Insertable.java" />
         <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Selectable.java" />
         <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Updatable.java" />
-        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/SQLiteBuilder.java" />
-        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Table.java" />
         <option value="$PROJECT_DIR$/local.properties" />
         <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Database.java" />
+        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/SQLiteBuilder.java" />
+        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Insertable.java" />
+        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/JoinSelectable.java" />
         <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/IQuery.java" />
-        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Queryable.java" />
+        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/InnerJoinable.java" />
+        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/IQueryableTable.java" />
+        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Table.java" />
         <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/TestUsage.java" />
+        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Queryable.java" />
+        <option value="$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Joinable.java" />
       </list>
     </option>
   </component>
@@ -325,6 +288,44 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="dbv" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbQuery" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbQuery" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbQuery" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbQuery" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dbv" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="queries" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -496,7 +497,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -507,14 +508,14 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32814237" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3270869" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24924242" sideWeight="0.6718576" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24924242" sideWeight="0.67291313" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -585,46 +586,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/ITable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="14" selection-start="677" selection-end="677" vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="1360" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/MigrationMode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="14" selection-start="673" selection-end="673" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="340" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/Util.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="14" selection-start="653" selection-end="653" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1309" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Deletable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="14" selection-start="731" selection-end="731" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1020" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Insertable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="14" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="935" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Selectable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="14" selection-start="701" selection-end="701" vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="1462" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Updatable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="14" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="1734" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/SQLiteBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="14" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="340" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="873" />
@@ -644,9 +605,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Table.java">
+    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/SQLiteBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="9" selection-start="965" selection-end="971" vertical-scroll-proportion="-4.76" vertical-offset="0" max-vertical-offset="10472">
+        <state line="29" column="7" selection-start="867" selection-end="867" vertical-scroll-proportion="0.3939394" vertical-offset="0" max-vertical-offset="561">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Insertable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="600" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="680">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/JoinSelectable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="55" selection-start="738" selection-end="738" vertical-scroll-proportion="0.6363636" vertical-offset="0" max-vertical-offset="561">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Selectable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="17" selection-start="748" selection-end="748" vertical-scroll-proportion="0.3030303" vertical-offset="0" max-vertical-offset="1224">
           <folding />
         </state>
       </provider>
@@ -658,23 +642,68 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/IQueryableTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="17" selection-start="1022" selection-end="1022" vertical-scroll-proportion="0.33333334" vertical-offset="17" max-vertical-offset="1581">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/ITable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="21" selection-start="834" selection-end="834" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1122">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/IQuery.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="25" selection-start="1446" selection-end="1446" vertical-scroll-proportion="0.0" vertical-offset="448" max-vertical-offset="1258">
+        <state line="84" column="28" selection-start="2023" selection-end="2023" vertical-scroll-proportion="0.57575756" vertical-offset="867" max-vertical-offset="1428">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-17/android.jar!/java/lang/Object.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="28" selection-start="669" selection-end="669" vertical-scroll-proportion="0.6060606" vertical-offset="34" max-vertical-offset="595">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Table.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="651" column="14" selection-start="16084" selection-end="16084" vertical-scroll-proportion="9.167558" vertical-offset="5380" max-vertical-offset="11560">
+          <folding>
+            <element signature="e#15219#15227#0" expanded="true" />
+            <element signature="e#15535#15544#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/queries/Joinable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="21" selection-start="781" selection-end="781" vertical-scroll-proportion="0.18716578" vertical-offset="337" max-vertical-offset="1258">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/sqlite/Queryable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="0" selection-start="3917" selection-end="3917" vertical-scroll-proportion="-45.32" vertical-offset="1077" max-vertical-offset="4063">
-          <folding />
+        <state line="32" column="4" selection-start="968" selection-end="968" vertical-scroll-proportion="0.21925133" vertical-offset="421" max-vertical-offset="6715">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DbQuery/src/main/java/com/bingzer/android/dbv/TestUsage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="0" selection-start="1440" selection-end="1440" vertical-scroll-proportion="0.35472372" vertical-offset="362" max-vertical-offset="935">
+        <state line="59" column="0" selection-start="1669" selection-end="1669" vertical-scroll-proportion="0.6666667" vertical-offset="357" max-vertical-offset="935">
           <folding />
         </state>
       </provider>
