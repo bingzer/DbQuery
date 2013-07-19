@@ -61,6 +61,29 @@ public interface IDatabase extends RawQueryable {
     void create(int version, Builder builder);
 
     /**
+     * Close the database. Free any resources
+     */
+    void close();
+
+    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+
+    /**
+     * Sets the config
+     * @param config
+     */
+    void setConfig(IConfig config);
+
+    /**
+     * Returns config
+     * @return
+     */
+    IConfig getConfig();
+
+    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+
+    /**
      * Interface that 'builds' database
      */
     public static interface Builder {

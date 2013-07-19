@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Db Engine
  */
-public class DbEngine {
+public class DbQuery {
 
     private static List<IDatabase> databaseList = new LinkedList<IDatabase>();
 
@@ -41,4 +41,5 @@ public class DbEngine {
 
         return getDatabase(databaseName);
     }
+
 }

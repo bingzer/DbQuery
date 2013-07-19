@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.test;
-
-import android.database.Cursor;
-
-import com.bingzer.android.dbv.IDatabase;
+package com.bingzer.android.dbv;
 
 /**
- * Created by Ricky Tobing on 7/18/13.
+ * Created by Ricky Tobing on 7/19/13.
  */
-public class Util {
+public interface IConfig {
 
-    static int getJobId(IDatabase db, String jobName){
-        Cursor c = db.get("Jobs").select("Name = ?", jobName).columns("Id").query();
-        try{
-            if(c.moveToFirst()) return c.getInt(0);
-        }
-        finally {
-            c.close();
-        }
-        return -1;
-    }
+    /**
+     * Sets naming convention for Id
+     * @param id
+     */
+    void setIdNamingConvention(String id);
+
+    /**
+     * Returns namving convention for id
+     * @return
+     */
+    String getIdNamingConvention();
+
 }

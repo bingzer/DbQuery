@@ -20,6 +20,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.Util;
@@ -34,46 +35,26 @@ import java.util.List;
 class Table implements ITable {
 
     private String name;
+    private String alias;
     private List<String> columns;
-    private SQLiteDatabase db;
+    private IDatabase db;
+    private SQLiteDatabase sqlDb;
 
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    Table (SQLiteDatabase sqLiteDatabase, String name){
+    Table (Database db, SQLiteDatabase sqlDb, String name){
         this.name = name;
-        this.db = sqLiteDatabase;
+        this.db = db;
+        this.sqlDb = sqlDb;
         this.columns = new LinkedList<String>();
 
-        Cursor cursor = db.rawQuery("PRAGMA table_info(" + name + ")", null);
+        Cursor cursor = sqlDb.rawQuery("PRAGMA table_info(" + name + ")", null);
         try{
             int nameIdx = cursor.getColumnIndexOrThrow("name");
-            /*
-            int typeIdx = cursor.getColumnIndexOrThrow("type");
-            int notNullIdx = cursor.getColumnIndexOrThrow("notnull");
-            int dfltValueIdx = cursor.getColumnIndexOrThrow("dflt_value");
-            ArrayList<String> integerDefault1NotNull = new ArrayList<String>();
-            */
             while (cursor.moveToNext()) {
                 columns.add(cursor.getString(nameIdx));
-
-                /*
-                String type = cursor.getString(typeIdx);
-                if ("INTEGER".equals(type)) {
-                    // Integer column
-                    if (cursor.getInt(notNullIdx) == 1) {
-                        // NOT NULL
-                        String defaultValue = cursor.getString(dfltValueIdx);
-                        if ("1".equals(defaultValue)) {
-                            integerDefault1NotNull.add(cursor.getString(nameIdx));
-                        }
-                    }
-                }
-                */
             }
-        }
-        catch (Throwable e){
-            e.printStackTrace();
         }
         finally {
             cursor.close();
@@ -91,6 +72,26 @@ class Table implements ITable {
     @Override
     public String getName() {
         return name;
+    }
+
+    /**
+     * Sets the current alias of this table
+     *
+     * @param alias
+     */
+    @Override
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    /**
+     * This table alias
+     *
+     * @return
+     */
+    @Override
+    public String getAlias() {
+        return alias;
     }
 
     /**
@@ -147,7 +148,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select select(int id) {
-        return select("Id=?", id);
+        return select(db.getConfig().getIdNamingConvention() + " = ?", id);
     }
 
     /**
@@ -159,7 +160,9 @@ class Table implements ITable {
     @Override
     public IQuery.Select select(int... ids) {
         if(ids != null && ids.length > 0){
-            StringBuilder whereClause = new StringBuilder().append("IN (");
+            StringBuilder whereClause = new StringBuilder();
+            whereClause.append(db.getConfig().getIdNamingConvention()).append(" ");
+            whereClause.append(" IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
                 if(i < ids.length - 1){
@@ -197,13 +200,12 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select select(int top, String whereClause, Object... args) {
-        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(top, false){
+        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(toString(), top, false){
             @Override public Cursor query(){
-                return db.rawQuery(toString(), null);
+                return sqlDb.rawQuery(toString(), null);
             };
         };
 
-        query.append(" FROM ").append(getName());
         if(whereClause != null){
             // append where if necessary
             if(!whereClause.toLowerCase().startsWith("where"))
@@ -235,13 +237,12 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select selectDistinct(String whereClause, Object... args) {
-        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(true){
+        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(toString(), true){
             @Override public Cursor query(){
-                return db.rawQuery(toString(), null);
+                return sqlDb.rawQuery(toString(), null);
             };
         };
 
-        query.append(" FROM ").append(getName());
         if(whereClause != null){
             // append where if necessary
             if(!whereClause.toLowerCase().startsWith("where"))
@@ -263,7 +264,7 @@ class Table implements ITable {
     public IQuery.Insert insert(final ContentValues contents) {
         IQuery.Insert query = new QueryImpl.InsertImpl(new IQuery<Integer>() {
             @Override public Integer query() {
-                return (int) db.insert(getName(), null, contents);
+                return (int) sqlDb.insertOrThrow(getName(), null, contents);
             }
         });
 
@@ -307,9 +308,9 @@ class Table implements ITable {
             @Override
             public Integer query() {
                 if(contentValues == null) {
-                    // todo: contentValues not set should display error here
+                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.Insert.values()");
                 }
-                return (int) db.insert(getName(), null, contentValues);
+                return (int) sqlDb.insertOrThrow(getName(), null, contentValues);
             }
         }, columns);
 
@@ -326,7 +327,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Update update(String column, Object value, int id) {
-        return update(column, value, "Id=?", id);
+        return update(column, value, db.getConfig().getIdNamingConvention() + " = ?", id);
     }
 
     /**
@@ -409,7 +410,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Update update(ContentValues contents, int id) {
-        return update(contents, "Id=?", id);
+        return update(contents, db.getConfig().getIdNamingConvention() + " = ?", id);
     }
 
     /**
@@ -426,7 +427,7 @@ class Table implements ITable {
             @Override
             public Integer query() {
                 String[] args = Util.toStringArray(whereArgs);
-                return db.update(getName(), contents, whereClause, args);
+                return sqlDb.update(getName(), contents, whereClause, args);
             }
         });
 
@@ -441,7 +442,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Delete delete(final int id) {
-        return delete("Id=?", id);
+        return delete(db.getConfig().getIdNamingConvention() + " = ?", id);
     }
 
     /**
@@ -453,7 +454,10 @@ class Table implements ITable {
     @Override
     public IQuery.Delete delete(int... ids) {
         if(ids != null && ids.length > 0){
-            StringBuilder whereClause = new StringBuilder().append("IN (");
+            StringBuilder whereClause = new StringBuilder();
+
+            whereClause.append(db.getConfig().getIdNamingConvention()).append(" ");
+            whereClause.append("IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
                 if(i < ids.length - 1){
@@ -511,10 +515,8 @@ class Table implements ITable {
         IQuery.Delete query = new QueryImpl.DeleteImpl(new IQuery<Integer>() {
             @Override
             public Integer query() {
-                if(whereArgs == null)
-                    return db.delete(getName(), whereClause, null);
-                else
-                    return db.delete(getName(), whereClause, Util.toStringArray(whereArgs));
+
+                return sqlDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs));
             }
         });
 
@@ -550,7 +552,7 @@ class Table implements ITable {
      */
     @Override
     public boolean hasRow(int id) {
-        return hasRow("Id=?", id);
+        return hasRow(db.getConfig().getIdNamingConvention() + " = ?", id);
     }
 
     /**
@@ -587,13 +589,13 @@ class Table implements ITable {
     public int count(String whereClause, Object... whereArgs) {
         int count = 0;
 
-        StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM " + getName());
+        StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM " + toString());
         if(whereClause != null){
             builder.append(" WHERE ");
             builder.append(Util.prepareWhereClause(whereClause, whereArgs));
         }
 
-        Cursor cursor = db.rawQuery(builder.toString(), null);
+        Cursor cursor = sqlDb.rawQuery(builder.toString(), null);
         try{
             if(cursor.moveToNext()){
                 count = cursor.getInt(0);
@@ -636,7 +638,7 @@ class Table implements ITable {
     public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
         IQuery<Cursor> query = new QueryImpl<Cursor>(){
             @Override public Cursor query(){
-                return db.rawQuery(sql, selectionArgs);
+                return sqlDb.rawQuery(sql, selectionArgs);
             }
         };
         return query;
@@ -652,7 +654,7 @@ class Table implements ITable {
         IQuery<Boolean> query = new QueryImpl<Boolean>(){
             @Override public Boolean query(){
                 try{
-                    db.rawQuery("DROP TABLE " + getName(), null);
+                    sqlDb.rawQuery("DROP TABLE " + getName(), null);
                     return true;
                 }
                 catch (Exception e){
@@ -674,7 +676,7 @@ class Table implements ITable {
     public IQuery.InnerJoin join(String tableName, String onClause) {
         IQuery.InnerJoin query = new QueryImpl.InnerJoinImpl(this, tableName, onClause){
             @Override public Cursor query(){
-                return db.rawQuery(toString(), null);
+                return sqlDb.rawQuery(toString(), null);
             }
         };
 
@@ -706,7 +708,7 @@ class Table implements ITable {
     public IQuery.OuterJoin outerJoin(String tableName, String onClause) {
         IQuery.OuterJoin query = new QueryImpl.OuterJoinImpl(this, tableName, onClause){
             @Override public Cursor query(){
-                return db.rawQuery(toString(), null);
+                return sqlDb.rawQuery(toString(), null);
             }
         };
 
@@ -725,5 +727,17 @@ class Table implements ITable {
     @Override
     public IQuery.OuterJoin outerJoin(String tableName, String column1, String column2) {
         return outerJoin(tableName, name + "." + column1 + " = " + tableName + "." + column2);
+    }
+
+    /**
+     * To String.
+     * If
+     * @return
+     */
+    @Override
+    public String toString(){
+        if(getAlias() != null && getAlias().length() > 0)
+            return getName() + " " + getAlias();
+        return getName();
     }
 }

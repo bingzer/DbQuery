@@ -25,7 +25,7 @@ Database Creation
         
         @Override
         public void onCreate(IDatabase.Modeling modeling) {
-           // do the database modeling here..
+           // do the db modeling here..
            
            // this will create table PersonTable with Id and Name column
            modeling.add("PersonTable")           
@@ -39,7 +39,7 @@ Database Creation
     
 Using <code>ITable</code>
 -----------
-<code>IDatabase</code> provides access to the newly-created or existing tables inside the database
+<code>IDatabase</code> provides access to the newly-created or existing tables inside the db
 
     ITable personTable = db.get("PersonTable");
 
@@ -133,7 +133,7 @@ Run raw sql
     // safe
     personTable.raw(sql, <selectionArgs>).query();
     
-Run raw sql from database level
+Run raw sql from db level
 
     String sql = ...
     db.raw(sql).query();

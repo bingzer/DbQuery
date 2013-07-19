@@ -30,7 +30,7 @@ class TestUsage {
 
         int version = 0;
 
-        IDatabase db = DbEngine.getDatabase("Test");
+        IDatabase db = DbQuery.getDatabase("Test");
         db.create(version, new SQLiteBuilder() {
             @Override
             public Context getContext() {
@@ -58,7 +58,7 @@ class TestUsage {
 
         db.get("table").insert("col1", "col2").values(1, 2).query();
 
-
+        IQuery q = db.get("").insert("").values(1,1);
     }
 
 

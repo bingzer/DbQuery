@@ -43,6 +43,18 @@ public interface ITable extends
     String getName();
 
     /**
+     * Sets the current alias of this table
+     * @param alias
+     */
+    void setAlias(String alias);
+
+    /**
+     * This table alias
+     * @return
+     */
+    String getAlias();
+
+    /**
      * Returns the column name
      * @return
      */
@@ -110,6 +122,13 @@ public interface ITable extends
          * @return
          */
         Model add(String columnName, String dataType, String columnDefinition);
+
+        /**
+         * Convenient way to adding an Id column
+         * @param columnName
+         * @return
+         */
+        Model addColumnId(String columnName);
 
     }
 }

@@ -21,7 +21,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.bingzer.android.dbv.Config;
 import com.bingzer.android.dbv.IColumn;
+import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
@@ -41,6 +43,7 @@ public class Database implements IDatabase {
     private final List<ITable> tables = new LinkedList<ITable>();
 
     private int version;
+    private IConfig config;
     private SQLiteOpenHelper dbHelper;
 
     ////////////////////////////////////////////////
@@ -49,6 +52,7 @@ public class Database implements IDatabase {
 
     public Database(String name){
         this.name = name;
+        this.config = new Config();  // default config
     }
 
     ////////////////////////////////////////////////
@@ -94,9 +98,20 @@ public class Database implements IDatabase {
      */
     @Override
     public ITable get(String tableName) {
+        String alias = null;
+        if(tableName.contains(" ")){
+            // split and get alias..
+            int index = tableName.indexOf(" ");
+            alias = tableName.substring(index).trim();
+            tableName = tableName.substring(0, index).trim();
+        }
+
         for(int i = 0; i < tables.size(); i++){
-            if(tables.get(i).getName().equalsIgnoreCase(tableName))
-                return tables.get(i);
+            if(tables.get(i).getName().equalsIgnoreCase(tableName)){
+                ITable table = tables.get(i);
+                table.setAlias(alias);
+                return table;
+            }
         }
 
         // not found
@@ -111,37 +126,70 @@ public class Database implements IDatabase {
      */
     @Override
     public void create(int version, Builder builder) {
-        this.version = version;
+        if(!(builder instanceof SQLiteBuilder)) throw new RuntimeException("Use SQLiteBuilder interface");
 
-        if(!(builder instanceof SQLiteBuilder))
-            throw new RuntimeException("Use SQLiteBuilder interface");
+        this.version = version;
 
         // tell the builder to create using the meta data
         builder.onCreate(dbModel);
 
         // assign builder
-        dbHelper = createHelper((SQLiteBuilder) builder);
-        // -- get all tables..
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
-        try{
-            while(cursor.moveToNext()){
-                String tableName = cursor.getString(0);
+        if(dbHelper == null){
+            dbHelper = createHelper((SQLiteBuilder) builder);
+            // -- get all tables..
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+            try{
+                while(cursor.moveToNext()){
+                    String tableName = cursor.getString(0);
 
-                Table table = new Table(db, tableName);
-                tables.add(table);
+                    Table table = new Table(this, db, tableName);
+                    tables.add(table);
+                }
+            }
+            finally {
+                cursor.close();
             }
         }
-        finally {
-            cursor.close();
+    }
+
+    /**
+     * Close the database. Free any resources
+     */
+    @Override
+    public void close() {
+        if(dbHelper != null){
+            dbHelper.close();
         }
+    }
+
+    /**
+     * Sets the config
+     *
+     * @param config
+     */
+    @Override
+    public void setConfig(IConfig config) {
+        if(config == null)
+            throw new IllegalArgumentException("Config cannot be null");
+        this.config = config;
+    }
+
+    /**
+     * Returns config
+     *
+     * @return
+     */
+    @Override
+    public IConfig getConfig() {
+        return config;
     }
 
     /**
      * DbHelper
      * @return
      */
-    public SQLiteOpenHelper getHelper(){
+    SQLiteOpenHelper getHelper(){
         ensureDbHelperIsReady();
         return dbHelper;
     }
@@ -161,20 +209,26 @@ public class Database implements IDatabase {
         return new SQLiteOpenHelper(builder.getContext(), getName(), null, getVersion()) {
 
             @Override
+            public void onOpen(SQLiteDatabase db){
+                Log.i(TAG, "SQLiteOpenHelper.open()");
+
+                super.onOpen(db);
+            }
+
+            @Override
             public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
                 Log.i(TAG, "Upgrading from " + oldVersion + " to " + newVersion);
 
                 switch (builder.getMigrationMode()){
                     case DropIfExists:
+                        dropAllTables(db);
                         onCreate(db);
                         break;
                     case ErrorIfExists:
-                        break;
+                        throw new UnsupportedOperationException("ErrorIfExists is not yet implemented. use MigrationMode.DropIfExists");
                     case UpgradeIfExists:
-                        break;
+                        throw new UnsupportedOperationException("UpgradeIfExists is not yet implemented. use MigrationMode.DropIfExists");
                 }
-
-                onCreate(db);
             }
 
             @Override
@@ -186,9 +240,9 @@ public class Database implements IDatabase {
                 }
             }
 
-            public void open(){
-                Object o = getWritableDatabase();
-                o = null;
+
+            private void dropAllTables(SQLiteDatabase db){
+                //db.execSQL("delete from sqlite_master where type in ('table', 'index', 'trigger')");
             }
         };
     }
@@ -286,6 +340,18 @@ public class Database implements IDatabase {
             return this;
         }
 
+        /**
+         * Convenient way to adding an Id column
+         *
+         * @param columnName
+         * @return
+         */
+        @Override
+        public ITable.Model addColumnId(String columnName) {
+            return add(columnName, "INTEGER", "primary key autoincrement not null");
+        }
+
+        @Override
         public String toString(){
             StringBuilder builder = new StringBuilder();
 
