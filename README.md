@@ -10,7 +10,7 @@ Database Creation
 
     int dbVersion = 1;
     ...
-    IDatabase db = DbEngine.getDatabase("MyDb");
+    IDatabase db = DbQuery.getDatabase("MyDb");
     db.create(dbVersion, new SQLiteBuilder() {
     
         @Override 
