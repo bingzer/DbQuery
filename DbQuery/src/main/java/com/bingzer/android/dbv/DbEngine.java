@@ -18,12 +18,27 @@ package com.bingzer.android.dbv;
 
 import com.bingzer.android.dbv.sqlite.Database;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Db Engine
  */
 public class DbEngine {
 
+    private static List<IDatabase> databaseList = new LinkedList<IDatabase>();
+
     public static IDatabase getDatabase(String databaseName){
-        return new Database(databaseName);
+        for(IDatabase db : databaseList){
+            if(db.getName().equalsIgnoreCase(databaseName)){
+                return db;
+            }
+        }
+
+        // else...
+        IDatabase db = new Database(databaseName);
+        databaseList.add(db);
+
+        return getDatabase(databaseName);
     }
 }

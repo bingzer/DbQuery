@@ -24,4 +24,6 @@
         </activity>
     </application>
 
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+                     android:targetPackage="com.bingzer.android.dbv.test" android:label="DBV test" />
 </manifest>
