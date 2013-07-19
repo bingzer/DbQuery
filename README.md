@@ -1,7 +1,8 @@
 DbQuery
 ==============
 
-SQLite Query API for Android. See code for concept. DbQuery provides a new and simpler way to query data.
+DbQuery is a lightweight and flexible SQLite Query API for Android. See code for concept. 
+DbQuery provides a new and simpler way to query data by minimizing the need to write SQL string inside the code.
 
 Still a work in progress
 
@@ -45,7 +46,7 @@ Using <code>ITable</code>
 
 <code>ITable</code> provides lots of methods for you to use to achieve common CRUD tasks
 
-Query 'SELECT'
+<code>Select</code> Query
 -----------
 Select and return all columns whose age is over 50 y/o
 
@@ -64,56 +65,68 @@ Select all order by age
 Select with complex query. 
 (i.e: Return all person who's over 25 y/o and whose name starts with 'John')
 
-    Cursor curosr = personTable.select("Age > ? AND Name LIKE ?", 25, "John%")
+    Cursor cursor = personTable.select("Age > ? AND Name LIKE ?", 25, "John%")
                         .orderBy("Age", "Name")
                         .query();
 
-
-Query 'UPDATE'
+<code>Join</code> Operation
 -----------
+To join tables, the API provides:
 
+    Cursor cursor = db.get("Orders O")
+                         .join("Customers C", "C.Id = O.CustomerId")
+                         .select(10, "Name = ?", "John Doe");
+                         
+    // This code will produce SQL query:
+    //   SELECT * FROM Orders O 
+    //   INNER JOIN Customers C
+    //      ON C.Id = O.CustomerId
+    //   WHERE Name = 'John Doe'
+    //   LIMIT 10;
+    
+
+<code>Update</code> Operation
+-----------
 Update age to 21 by id
 
-    personTable.update("Age", 21, "Id = ?", 1).query();
+    personTable.update("Age", 21, "Id = ?", 1);
     
 Update using ContentValues.
 (i.e: Update with ContentValues whose name is John)
 
     ContentValues v = new ContentValues();
     ...
-    personTable.update(v, "Name = ?", "John").query();
+    personTable.update(v, "Name = ?", "John");
 
 
-Query 'INSERT'
+<code>Insert</code> Operation
 -----------
 Insert a person
 
-    personTable.insert("Name", "Age").values("Ricky", 29).query();
+    personTable.insert("Name", "Age").values("Ricky", 29);
 
 Insert a person using ContentValues
 
     ContentValues v = new ContentValues();
     ...
-    personTable.insert(v).query();
+    personTable.insert(v);
 
 
-Query 'DELETE'
+<code>Delete</code> Operation
 -----------
 Delete by id
 
-    int deleted = personTable.delete(1).query();
-
+    personTable.delete(1);
 
 Bulk-delete
 
-    int deleted = personTable.delete(1,2,11,34).query();
+    personTable.delete(1,2,11,34);
 
 Delete with condition
 (i.e: Delete whose name starts with 'John')
 
-    int deleted = personTable.delete("Name LIKE ?", "John%").query();
-
-
+    personTable.delete("Name LIKE ?", "John%");
+    
 Other Methods
 -----------
 
