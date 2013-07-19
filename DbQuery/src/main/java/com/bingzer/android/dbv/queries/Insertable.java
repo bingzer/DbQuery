@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance insert the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@ import com.bingzer.android.dbv.IQuery;
 public interface Insertable {
 
     /**
-     * InsertWith content values
+     * InsertWith content val
      * @param contents
      * @return
      */
@@ -45,6 +45,6 @@ public interface Insertable {
      * @param columns
      * @return
      */
-    IQuery.Insert insert(String... columns);
+    IQuery.InsertWith insert(String... columns);
 
 }

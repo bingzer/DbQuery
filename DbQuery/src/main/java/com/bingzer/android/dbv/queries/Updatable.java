@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance insert the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -54,7 +54,7 @@ public interface Updatable {
     IQuery.Update update(String column, Object value, String whereClause, Object... whereArgs);
 
     /**
-     * Bulk-update columns add their values add specified condition.
+     * Bulk-update columns add their val add specified condition.
      * @param columns
      * @param values
      * @param condition
@@ -80,7 +80,7 @@ public interface Updatable {
     IQuery.Update update(ContentValues contents);
 
     /**
-     * Update using contentvalues with specified id
+     * Update using contentvalues insert specified id
      * @param contents
      * @param id
      * @return

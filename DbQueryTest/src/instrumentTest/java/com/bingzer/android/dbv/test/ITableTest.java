@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance insert the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -65,8 +65,20 @@ public class ITableTest extends AndroidTestCase{
         c.close();
     }
 
-    public void testSelect_Condition(){
+    public void testSelect_Ids(){
+        int messiId = getCustomerId("Lionel Messi");
+        int crId = getCustomerId("Christiano Ronaldo");
+        Cursor c = table.select(messiId, crId).query();
+        while(c.moveToNext()){
+            assertTrue(
+                c.getString(c.getColumnIndex("Name")).equalsIgnoreCase("Lionel Messi") ||
+                c.getString(c.getColumnIndex("Name")).equalsIgnoreCase("Christiano Ronaldo")
+            );
+        }
+        c.close();
+    }
 
+    public void testSelect_WhereClause(){
         Cursor c =table.select("Name = ?", "Lionel Messi").columns("Name").query();
         c.moveToFirst();
 
@@ -82,6 +94,15 @@ public class ITableTest extends AndroidTestCase{
 
         c.close();
     }
+
+    public void testSelect_Top(){
+        Cursor c = db.get("Orders").select(2, "CustomerId = ?", getCustomerId("Christiano Ronaldo")).query();
+        c.moveToFirst();
+        assertTrue(c.getCount() == 2);
+        c.close();
+    }
+
+
 
 
     ///////////////////////////////////////////////
@@ -106,7 +127,12 @@ public class ITableTest extends AndroidTestCase{
         c = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId").select("C.Name LIKE ?", "%Messi%").query();
         assertTrue(c.getCount() > 0);
         c.close();
+    }
 
+    public void testJoin_Select(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId").select(3, "C.Name = ?", "Christiano Ronaldo").query();
+        assertTrue(cursor.getCount() == 3);
+        cursor.close();
     }
 
     ///////////////////////////////////////////////
@@ -116,7 +142,7 @@ public class ITableTest extends AndroidTestCase{
         Cursor c =  DbQuery.getDatabase("TestDb").get("Customers").select("Name = ?", name).columns("Id").query();
         try{
             if(c.moveToFirst()) return c.getInt(0);
-            assertFalse("No customer found with name " + name, false);
+            assertFalse("No customer found insert name " + name, false);
             return -1;
         }
         finally {
@@ -128,7 +154,7 @@ public class ITableTest extends AndroidTestCase{
         Cursor c = DbQuery.getDatabase("TestDb").get("Products").select("Name = ?", name).columns("Id").query();
         try{
             if(c.moveToFirst()) return c.getInt(0);
-            assertFalse("No product found with name " + name, false);
+            assertFalse("No product found insert name " + name, false);
             return -1;
         }
         finally {

@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance insert the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -56,9 +56,7 @@ class TestUsage {
                // db.get("table").select().columns()
         // output = "SELECT col1, col2 FROM table"
 
-        db.get("table").insert("col1", "col2").values(1, 2).query();
 
-        IQuery q = db.get("").insert("").values(1,1);
     }
 
 

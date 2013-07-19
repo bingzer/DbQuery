@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance insert the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -22,8 +22,6 @@ import android.database.Cursor;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.queries.Selectable;
-
-import java.util.regex.Pattern;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
@@ -71,6 +69,7 @@ class QueryImpl<T> implements IQuery<T> {
         protected CharSequence columnString;
         protected CharSequence selectString;
         protected CharSequence fromString;
+        protected CharSequence limitString;
 
         SelectImpl(String tableName){
             this(tableName, false);
@@ -85,11 +84,13 @@ class QueryImpl<T> implements IQuery<T> {
                 selectString = "SELECT DISTINCT ";
             else selectString = "SELECT ";
 
-            if(top > 0) selectString = "TOP " + top;
+            //if(top > 0) selectString = selectString + " TOP " + top;
 
             columnString = "*";
 
             fromString = "FROM " + tableName;
+
+            limitString = " LIMIT " + top;
         }
 
         /**
@@ -155,6 +156,10 @@ class QueryImpl<T> implements IQuery<T> {
             sql.append(fromString).append(" ");
             // where
             sql.append(super.builder);
+            // limit
+            if(limitString != null){
+                sql.append(limitString);
+            }
             // order by
             if(orderByString != null){
                 sql.append(orderByString);
@@ -169,18 +174,7 @@ class QueryImpl<T> implements IQuery<T> {
      * InsertImpl
      */
     static class InsertImpl implements IQuery.Insert {
-
-        IQuery<Integer> query;
-        String[] columnNames;
-
-        InsertImpl(IQuery<Integer> query){
-            this.query = query;
-        }
-
-        InsertImpl(IQueryableAppendable query, String... columnNames){
-            this.query = query;
-            this.columnNames = columnNames;
-        }
+        Integer value;
 
         /**
          * Build the sql and return a cursor
@@ -189,7 +183,18 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public Integer query() {
-            return query.query();
+            return value;
+        }
+    }
+
+    static class InsertWithImpl extends InsertImpl implements InsertWith {
+
+        IQuery<Integer> query;
+        String[] columnNames;
+
+        InsertWithImpl(IQueryableAppendable query, String... columnNames){
+            this.query = query;
+            this.columnNames = columnNames;
         }
 
         /**
@@ -198,22 +203,21 @@ class QueryImpl<T> implements IQuery<T> {
          * @return
          */
         @Override
-        public IQuery values(Object... values) {
+        public IQuery val(Object... values) {
             ContentValues contentValues = new ContentValues();
             for(int i = 0; i < values.length; i++){
                 // todo:
                 contentValues.put(columnNames[i], values[i].toString());
             }
 
-            ((IQueryableAppendable) query).onContentValuesSet(contentValues);
+            ((IQueryableAppendable) query).onContentValuesSet(this, contentValues);
 
             return this;
         }
 
-
         static interface IQueryableAppendable extends IQuery<Integer> {
 
-            void onContentValuesSet(ContentValues contentValues);
+            void onContentValuesSet(InsertWithImpl query, ContentValues contentValues);
 
         }
     }
@@ -223,12 +227,7 @@ class QueryImpl<T> implements IQuery<T> {
      * UpdateImpl
      */
     static class UpdateImpl implements IQuery.Update {
-
-        IQuery<Integer> query;
-
-        UpdateImpl(IQuery<Integer> query){
-            this.query = query;
-        }
+        Integer value;
 
         /**
          * Build the sql and return a cursor
@@ -237,18 +236,14 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public Integer query() {
-            return query.query();
+            return value;
         }
     }
 
 
     static class DeleteImpl implements IQuery.Delete {
 
-        IQuery<Integer> query;
-
-        DeleteImpl(IQuery<Integer> query){
-            this.query = query;
-        }
+        Integer value;
 
         /**
          * Build the sql and return a cursor
@@ -257,7 +252,7 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public Integer query() {
-            return query.query();
+            return value;
         }
     }
 
@@ -414,6 +409,10 @@ class QueryImpl<T> implements IQuery<T> {
             if(super.builder.length() > 0){
                 sql.append(super.builder);
             }
+            // limit
+            if(limitString != null){
+                sql.append(limitString);
+            }
             // order by
             if(orderByString != null){
                 sql.append(orderByString);
@@ -434,6 +433,7 @@ class QueryImpl<T> implements IQuery<T> {
             columnString = ((SelectImpl)select).columnString;
             fromString = ((SelectImpl)select).fromString;
             orderByString = ((SelectImpl)select).orderByString;
+            limitString = ((SelectImpl)select).limitString;
             // the whereClause part
             append(((SelectImpl) select).builder);
         }

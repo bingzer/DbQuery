@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance insert the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -255,18 +255,15 @@ class Table implements ITable {
     }
 
     /**
-     * InsertWith content values
+     * InsertWith content val
      *
      * @param contents
      * @return
      */
     @Override
     public IQuery.Insert insert(final ContentValues contents) {
-        IQuery.Insert query = new QueryImpl.InsertImpl(new IQuery<Integer>() {
-            @Override public Integer query() {
-                return (int) sqlDb.insertOrThrow(getName(), null, contents);
-            }
-        });
+        QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
+        query.value = (int) sqlDb.insertOrThrow(getName(), null, contents);
 
         return query;
     }
@@ -296,21 +293,24 @@ class Table implements ITable {
      * @return
      */
     @Override
-    public IQuery.Insert insert(String... columns) {
-        IQuery.Insert query = new QueryImpl.InsertImpl(new QueryImpl.InsertImpl.IQueryableAppendable() {
+    public IQuery.InsertWith insert(String... columns) {
+        QueryImpl.InsertWithImpl query = new QueryImpl.InsertWithImpl(new QueryImpl.InsertWithImpl.IQueryableAppendable() {
             private ContentValues contentValues;
+            private QueryImpl.InsertWithImpl query;
 
             @Override
-            public void onContentValuesSet(ContentValues contentValues) {
+            public void onContentValuesSet(QueryImpl.InsertWithImpl query, ContentValues contentValues) {
+                if(contentValues == null) {
+                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.Insert.val()");
+                }
+                this.query = query;
                 this.contentValues = contentValues;
+                this.query.value = (int) sqlDb.insertOrThrow(getName(), null, contentValues);
             }
 
             @Override
             public Integer query() {
-                if(contentValues == null) {
-                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.Insert.values()");
-                }
-                return (int) sqlDb.insertOrThrow(getName(), null, contentValues);
+                return this.query.value;
             }
         }, columns);
 
@@ -358,7 +358,7 @@ class Table implements ITable {
     }
 
     /**
-     * Bulk-update columns add their values add specified condition.
+     * Bulk-update columns add their val add specified condition.
      *
      * @param columns
      * @param values
@@ -371,7 +371,7 @@ class Table implements ITable {
     }
 
     /**
-     * Bulk-update columns add their values add specified condition.
+     * Bulk-update columns add their val add specified condition.
      *
      * @param columns
      * @param values
@@ -402,7 +402,7 @@ class Table implements ITable {
     }
 
     /**
-     * UpdateImpl using contentvalues with specified id
+     * UpdateImpl using contentvalues insert specified id
      *
      * @param contents
      * @param id
@@ -423,13 +423,9 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
-        IQuery.Update query = new QueryImpl.UpdateImpl(new IQuery<Integer>() {
-            @Override
-            public Integer query() {
-                String[] args = Util.toStringArray(whereArgs);
-                return sqlDb.update(getName(), contents, whereClause, args);
-            }
-        });
+        QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
+        String[] args = Util.toStringArray(whereArgs);
+        query.value = sqlDb.update(getName(), contents, whereClause, args);
 
         return query;
     }
@@ -512,13 +508,8 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Delete delete(final String whereClause, final Object... whereArgs) {
-        IQuery.Delete query = new QueryImpl.DeleteImpl(new IQuery<Integer>() {
-            @Override
-            public Integer query() {
-
-                return sqlDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs));
-            }
-        });
+        QueryImpl.DeleteImpl query = new QueryImpl.DeleteImpl();
+        query.value = sqlDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs));
 
         return query;
     }
