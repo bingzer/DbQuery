@@ -12,7 +12,7 @@ import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 /**
  * This test must be first test to run
- * Created by 11856 on 7/18/13.
+ * Created by Ricky Tobing on 7/18/13.
  */
 public class AASetup extends AndroidTestCase{
 

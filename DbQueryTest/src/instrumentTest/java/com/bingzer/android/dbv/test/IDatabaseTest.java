@@ -7,7 +7,7 @@ import com.bingzer.android.dbv.DbEngine;
 import com.bingzer.android.dbv.IDatabase;
 
 /**
- * Created by 11856 on 7/18/13.
+ * Created by Ricky Tobing on 7/18/13.
  */
 public class IDatabaseTest extends AndroidTestCase {
 
@@ -27,6 +27,11 @@ public class IDatabaseTest extends AndroidTestCase {
 
     public void testGetVersion(){
         assertTrue(db.getVersion() == 1);
+    }
+
+    public void testGetTables(){
+        assertTrue(db.getTables() != null);
+        assertTrue(db.getTables().size() >= 2);
     }
 
     public void testRaw(){
