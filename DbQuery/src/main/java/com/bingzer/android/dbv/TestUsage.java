@@ -55,6 +55,7 @@ class TestUsage {
 
         IQuery.Select s = db.get("").select();
 
+        db.get("").insert("Name").val(null);
 
 
 

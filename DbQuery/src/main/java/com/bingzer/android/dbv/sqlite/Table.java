@@ -309,8 +309,12 @@ class Table implements ITable {
     public IQuery.Insert insert(String[] columns, Object[] values) {
         ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            // TODO: fix data type
-            contentValues.put(columns[i], values[i].toString());
+            if(values[i] == null){
+                contentValues.putNull(columns[i]);
+            }
+            else{
+                contentValues.put(columns[i], values[i].toString());
+            }
         }
 
         return insert(contentValues);
@@ -413,8 +417,10 @@ class Table implements ITable {
     public IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs) {
         ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            // todo:
-            contentValues.put(columns[i], values[i].toString());
+            if(values[i] == null)
+                contentValues.putNull(columns[i]);
+            else
+                contentValues.put(columns[i], values[i].toString());
         }
 
         return update(contentValues, whereClause, Util.toStringArray((Object[])whereArgs));
@@ -550,8 +556,8 @@ class Table implements ITable {
      * @return
      */
     @Override
-    public boolean hasRow(String condition) {
-        return hasRow(condition, (Object)null);
+    public boolean has(String condition) {
+        return has(condition, (Object) null);
     }
 
     /**
@@ -561,8 +567,8 @@ class Table implements ITable {
      * @return
      */
     @Override
-    public boolean hasRow(int id) {
-        return hasRow(db.getConfig().getIdNamingConvention() + " = ?", id);
+    public boolean has(int id) {
+        return has(db.getConfig().getIdNamingConvention() + " = ?", id);
     }
 
     /**
@@ -573,7 +579,7 @@ class Table implements ITable {
      * @return
      */
     @Override
-    public boolean hasRow(String whereClause, Object... whereArgs) {
+    public boolean has(String whereClause, Object... whereArgs) {
         return count(whereClause, whereArgs) > 0;
     }
 

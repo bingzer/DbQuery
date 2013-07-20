@@ -36,9 +36,14 @@ public class Util {
 
 
     public static String prepareWhereClause(String whereArgs, Object... args){
-        // replace ? add args
-        for(int i = 0; i < args.length; i++){
-            whereArgs = whereArgs.replaceFirst("\\?", safeEscape(args[i]));
+        if(args == null && whereArgs.contains("?")){
+            whereArgs = whereArgs.replaceAll("\\?", "null");
+        }
+        else if(args != null){
+            // replace ? add args
+            for(int i = 0; i < args.length; i++){
+                whereArgs = whereArgs.replaceFirst("\\?", safeEscape(args[i]));
+            }
         }
 
         return whereArgs;

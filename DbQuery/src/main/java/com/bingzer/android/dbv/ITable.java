@@ -78,14 +78,14 @@ public interface ITable extends
      * @param condition
      * @return
      */
-    boolean hasRow(String condition);
+    boolean has(String condition);
 
     /**
      * has row add id
      * @param id
      * @return
      */
-    boolean hasRow(int id);
+    boolean has(int id);
 
     /**
      * Check to see if this table has row add the specified clause and condition
@@ -93,7 +93,7 @@ public interface ITable extends
      * @param whereArgs
      * @return
      */
-    boolean hasRow(String whereClause, Object... whereArgs);
+    boolean has(String whereClause, Object... whereArgs);
 
     /////////////////////////////////////////////////
     /////////////////////////////////////////////////

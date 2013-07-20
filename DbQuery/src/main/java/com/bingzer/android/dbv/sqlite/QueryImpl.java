@@ -208,8 +208,12 @@ class QueryImpl<T> implements IQuery<T> {
         public IQuery val(Object... values) {
             ContentValues contentValues = new ContentValues();
             for(int i = 0; i < values.length; i++){
-                // todo:
-                contentValues.put(columnNames[i], values[i].toString());
+                if(values[i] == null){
+                    contentValues.putNull(columnNames[i]);
+                }
+                else{
+                    contentValues.put(columnNames[i], values[i].toString());
+                }
             }
 
             ((IQueryableAppendable) query).onContentValuesSet(this, contentValues);
