@@ -23,24 +23,16 @@ import com.bingzer.android.dbv.IFunction;
  */
 public class FunctionImpl implements IFunction {
 
-    String columnName;
     String functionName;
     Object value;
     StringBuilder builder;
 
-    FunctionImpl(String tableName, String columnName){
-        builder = new StringBuilder();
+    FunctionImpl(String functionName, String tableName, String columnName){
+        this.functionName = functionName;
+        this.builder = new StringBuilder();
         builder.append("SELECT ")
-                .append(functionName).append("(").append(columnName).append(")")
+                .append(functionName).append("(").append(columnName).append(") AS FN ")
                 .append(" FROM ").append(tableName);
-    }
-
-    ////////////////////////////////////////////
-    ////////////////////////////////////////////
-
-    FunctionImpl append(Object any){
-        if(any != null) builder.append(any);
-        return this;
     }
 
     ////////////////////////////////////////////
@@ -54,7 +46,7 @@ public class FunctionImpl implements IFunction {
     @Override
     public int asInt() {
         try{
-            return Integer.parseInt(toString());
+            return Integer.parseInt(asString());
         }
         catch (NumberFormatException e){
             throw new IllegalArgumentException(e);
@@ -69,7 +61,7 @@ public class FunctionImpl implements IFunction {
     @Override
     public long asLong() {
         try{
-            return Integer.parseInt(toString());
+            return Integer.parseInt(asString());
         }
         catch (NumberFormatException e){
             throw new IllegalArgumentException(e);
@@ -84,7 +76,7 @@ public class FunctionImpl implements IFunction {
     @Override
     public float asFloat() {
         try{
-            return Integer.parseInt(toString());
+            return Integer.parseInt(asString());
         }
         catch (NumberFormatException e){
             throw new IllegalArgumentException(e);
@@ -99,7 +91,7 @@ public class FunctionImpl implements IFunction {
     @Override
     public double asDouble() {
         try{
-            return Integer.parseInt(toString());
+            return Integer.parseInt(asString());
         }
         catch (NumberFormatException e){
             throw new IllegalArgumentException(e);
@@ -138,22 +130,22 @@ public class FunctionImpl implements IFunction {
 
     public static class AverageImpl extends FunctionImpl implements Average {
         AverageImpl(String tableName, String columnName){
-            super(tableName, columnName);
+            super("AVG", tableName, columnName);
         }
     }
     public static class SumImpl extends FunctionImpl implements Sum {
         SumImpl(String tableName, String columnName){
-            super(tableName, columnName);
+            super("SUM", tableName, columnName);
         }
     }
     public static class MaxImpl extends FunctionImpl implements Max {
         MaxImpl(String tableName, String columnName){
-            super(tableName, columnName);
+            super("MAX", tableName, columnName);
         }
     }
     public static class MinImpl extends FunctionImpl implements Min {
         MinImpl(String tableName, String columnName){
-            super(tableName, columnName);
+            super("MIN", tableName, columnName);
         }
     }
 

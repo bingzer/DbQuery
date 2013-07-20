@@ -659,7 +659,9 @@ class Table implements ITable {
     public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
         IQuery<Cursor> query = new QueryImpl<Cursor>(){
             @Override public Cursor query(){
-                return sqlDb.rawQuery(sql, selectionArgs);
+                if(selectionArgs == null || selectionArgs.length == 1 || selectionArgs[0] == null)
+                    return sqlDb.rawQuery(sql, null);
+                else return sqlDb.rawQuery(sql, selectionArgs);
             }
         };
         return query;

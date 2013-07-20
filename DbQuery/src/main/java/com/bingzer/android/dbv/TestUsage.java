@@ -51,10 +51,10 @@ class TestUsage {
             }
         });
 
-        //db.get("").select(1,2,3);
+        //db.get("")
 
-               // db.get("table").select().columns()
-        // output = "SELECT col1, col2 FROM table"
+        IQuery.Select s = db.get("").select();
+
 
 
 

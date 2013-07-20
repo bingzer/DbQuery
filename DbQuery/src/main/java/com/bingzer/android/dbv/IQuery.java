@@ -92,4 +92,5 @@ public interface IQuery<T> {
     public static interface OuterJoin extends Joinable, Selectable, Select{
 
     }
+
 }

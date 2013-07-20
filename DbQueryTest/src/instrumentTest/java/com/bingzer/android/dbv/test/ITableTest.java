@@ -197,6 +197,99 @@ public class ITableTest extends AndroidTestCase{
         cursor.close();
     }
 
+
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+    // ------------------ Functions ----------------//
+
+    public void testAvg(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.avg("Price").asDouble();
+        assertEquals(average, (double) 2688); // this number may change
+
+        average = productTable.avg("Price").asFloat();
+        assertEquals(average, (float) 2688);
+
+        average = productTable.avg("Price").asInt();
+        assertEquals(average, 2688);
+
+        average = productTable.avg("Price").asLong();
+        assertEquals(average, (long) 2688);
+
+        average = productTable.avg("Price").value();
+        assertEquals(average, 2688);
+
+        average = productTable.avg("Price").asString();
+        assertEquals(average, "2688");
+    }
+
+    public void testSum(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.sum("Price").asDouble();
+        assertEquals(average, (double) 26881); // this number may change
+
+        average = productTable.sum("Price").asFloat();
+        assertEquals(average, (float) 26881);
+
+        average = productTable.sum("Price").asInt();
+        assertEquals(average, 26881);
+
+        average = productTable.sum("Price").asLong();
+        assertEquals(average, (long) 26881);
+
+        average = productTable.sum("Price").value();
+        assertEquals(average, 26881);
+
+        average = productTable.sum("Price").asString();
+        assertEquals(average, "26881");
+    }
+
+    public void testMax(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.max("Price").asDouble();
+        assertEquals(average, (double) 20000); // this number may change
+
+        average = productTable.max("Price").asFloat();
+        assertEquals(average, (float) 20000);
+
+        average = productTable.max("Price").asInt();
+        assertEquals(average, 20000);
+
+        average = productTable.max("Price").asLong();
+        assertEquals(average, (long) 20000);
+
+        average = productTable.max("Price").value();
+        assertEquals(average, 20000);
+
+        average = productTable.max("Price").asString();
+        assertEquals(average, "20000");
+    }
+
+    public void testMin(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.min("Price").asDouble();
+        assertEquals(average, (double) 1); // this number may change
+
+        average = productTable.min("Price").asFloat();
+        assertEquals(average, (float) 1);
+
+        average = productTable.min("Price").asInt();
+        assertEquals(average, 1);
+
+        average = productTable.min("Price").asLong();
+        assertEquals(average, (long) 1);
+
+        average = productTable.min("Price").value();
+        assertEquals(average, 1);
+
+        average = productTable.min("Price").asString();
+        assertEquals(average, "1");
+    }
+
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ Helper methods ----------------//
