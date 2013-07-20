@@ -73,13 +73,6 @@ public interface Updatable {
     IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs);
 
     /**
-     * Update using the contentvalues
-     * @param contents
-     * @return
-     */
-    IQuery.Update update(ContentValues contents);
-
-    /**
      * Update using contentvalues insert specified id
      * @param contents
      * @param id

@@ -421,17 +421,6 @@ class Table implements ITable {
     }
 
     /**
-     * UpdateImpl using the contentvalues
-     *
-     * @param contents
-     * @return
-     */
-    @Override
-    public IQuery.Update update(ContentValues contents) {
-        return update(contents, null);
-    }
-
-    /**
      * UpdateImpl using contentvalues insert specified id
      *
      * @param contents

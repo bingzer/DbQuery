@@ -16,6 +16,7 @@
 
 package com.bingzer.android.dbv.test;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
@@ -150,21 +151,55 @@ public class ITableTest extends AndroidTestCase{
 
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
-    // ------------------ Insert ----------------//
+    // ---------nsert And Delete ----------------//
 
-    public void testInsert(){
+    int dodolId = -1;
+    public void testInsert_Columns(){
+        dodolId = db.get("Products")
+                        .insert("Name", "Price")
+                        .val("Dodol", 22)
+                        .query();
+        assertTrue(dodolId > 0);
+        assertTrue(db.get("Products").delete("Name = ?", "Dodol").query() > 0);
     }
 
+    public void testInsert_ContentValues(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Name", "Dodol");
+        contentValues.put("Price", 22);
 
+        dodolId = db.get("Products").insert(contentValues).query();
+        assertTrue(dodolId > 0);
+        assertTrue(db.get("Products").delete("Name = ?", "Dodol").query() > 0);
+    }
+
+    public void testInsert_UsingArray(){
+        String[] columns = new String[]{"Name", "Price"};
+        Object[] values = new Object[]{"Dodol", 33};
+
+        dodolId = db.get("Products").insert(columns, values).query();
+        assertTrue(dodolId > 0);
+        assertTrue(db.get("Products").delete("Name = ?", "Dodol").query() > 0);
+    }
 
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ Update ----------------//
 
+    public void testUpdate_ContentValues_And_WithId(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Name", "John Doe");
+        contentValues.put("Address", "Whatever Street");
 
-    ///////////////////////////////////////////////
-    ///////////////////////////////////////////////
-    // ------------------ Delete ----------------//
+        int crId = db.get("Customers").selectId("Name = ?", "Christiano Ronaldo");
+        int updateId = db.get("Customers").update(contentValues, "Name = ?", "Christiano Ronaldo").query();
+        assertTrue(updateId > 0);
+
+        // reset value..
+        contentValues.put("Name", "Christiano Ronal");
+        contentValues.put("Address", "7 Real Madrid");
+        assertTrue(db.get("Customers").update(contentValues, crId).query() > 0);
+    }
 
 
     ///////////////////////////////////////////////
