@@ -201,6 +201,47 @@ public class ITableTest extends AndroidTestCase{
         assertTrue(db.get("Customers").update(contentValues, crId).query() > 0);
     }
 
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+    // ------------------ Null tests ----------------//
+    public void testNullValues_AllTests(){
+        // select id
+        assertTrue(db.get("Customers").selectId("Name is not null And Address is null") > 0);
+        assertTrue(db.get("Customers").selectId("Name LIKE ? AND Address is ?", "%player%", null) > 0);
+
+        // count
+        assertTrue(db.get("Customers").count("Name is not null And Address is null") > 0);
+        assertTrue(db.get("Customers").count("Name LIKE ? AND Address is ?", "%player%", null) > 0);
+        // has row
+        assertTrue(db.get("Customers").has("Name is not null And Address is null"));
+        assertTrue(db.get("Customers").has("Name like ? And Address is null", "%player%", null));
+
+        // select
+        testNullCursor(db.get("Customers").select("Address is null").query());
+        testNullCursor(db.get("Customers").select("Address is ?", null).query());
+        testNullCursor(db.get("Customers").select("Name LIKE ? AND Address is null", "%player%").query());
+        testNullCursor(db.get("Customers").select("Name LIKE ? AND Address is ?", "%player%", null).query());
+        // select distinct
+        testNullCursor(db.get("Customers").selectDistinct("Address is null").query());
+        testNullCursor(db.get("Customers").selectDistinct("Address is ?", null).query());
+        testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is null", "%player%").query());
+        testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is ?", "%player%", null).query());
+
+
+        int rowNullId = db.get("Customers").insert("Name", "Address").val("TestNull", null).query();
+        assertTrue(rowNullId > 0);
+        assertTrue(db.get("Customers").delete("Name = ? AND Address is ?", "TestNull", null).query() > 0);
+        assertFalse(db.get("Customers").has(rowNullId));
+
+    }
+
+    private void testNullCursor(Cursor cursor){
+        cursor.moveToFirst();
+        assertTrue(cursor != null);
+        assertTrue(cursor.getCount() == 1);
+        cursor.close();
+    }
+
 
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////

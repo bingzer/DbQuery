@@ -120,6 +120,7 @@ public class AASetup extends AndroidTestCase{
         insert.val("Mario Baloteli", "9 Ac Milan St.", "Milan", 1899, "Italy");
         insert.val("Kaka", "15 Ac Milan St.", "Milan", 1899, "Italy");
         insert.val("Andrea Pirlo", "21 Juventus St.", "Turin", 1899, "Italy");
+        insert.val("Null Player", null, null, 22111, "US");
 
 
         insert = db.get("Products").insert("Name", "Price");
