@@ -91,7 +91,7 @@ public class AASetup extends AndroidTestCase{
      */
     private void createDatabaseModeling(IDatabase.Modeling modeling){
         modeling.add("Customers")
-                .addColumnId("Id")
+                .addPrimaryKey("Id")
                 .add("Name", "TEXT", "not null")
                 .add("Address", "TEXT")
                 .add("City", "TEXT")
@@ -99,12 +99,12 @@ public class AASetup extends AndroidTestCase{
                 .add("Country", "TEXT");
 
         modeling.add("Products")
-                .addColumnId("Id")
+                .addPrimaryKey("Id")
                 .add("Name", "TEXT")
                 .add("Price", "REAL");
 
         modeling.add("Orders")
-                .addColumnId("Id")
+                .addPrimaryKey("Id")
                 .add("CustomerId", "INTEGER")
                 .add("ProductId", "INTEGER")
                 .add("Date", "TEXT");

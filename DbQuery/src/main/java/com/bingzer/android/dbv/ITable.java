@@ -124,11 +124,10 @@ public interface ITable extends
         Model add(String columnName, String dataType, String columnDefinition);
 
         /**
-         * Convenient way to adding an Id column
+         * Convenient way to adding primary key column
          * @param columnName
          * @return
          */
-        Model addColumnId(String columnName);
-
+        Model addPrimaryKey(String columnName);
     }
 }

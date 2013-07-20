@@ -90,7 +90,9 @@ class QueryImpl<T> implements IQuery<T> {
 
             fromString = "FROM " + tableName;
 
-            limitString = " LIMIT " + top;
+            if(top > 0){
+                limitString = " LIMIT " + top;
+            }
         }
 
         /**

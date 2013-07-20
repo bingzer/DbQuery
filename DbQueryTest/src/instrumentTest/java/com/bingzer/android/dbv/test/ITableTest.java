@@ -69,6 +69,7 @@ public class ITableTest extends AndroidTestCase{
         int messiId = getCustomerId("Lionel Messi");
         int crId = getCustomerId("Christiano Ronaldo");
         Cursor c = table.select(messiId, crId).query();
+        assertTrue(c.getCount() == 2);
         while(c.moveToNext()){
             assertTrue(
                 c.getString(c.getColumnIndex("Name")).equalsIgnoreCase("Lionel Messi") ||
@@ -96,13 +97,74 @@ public class ITableTest extends AndroidTestCase{
     }
 
     public void testSelect_Top(){
-        Cursor c = db.get("Orders").select(2, "CustomerId = ?", getCustomerId("Christiano Ronaldo")).query();
+        Cursor c = db.get("Orders")
+                .select(2, "CustomerId = ?", getCustomerId("Christiano Ronaldo")).query();
         c.moveToFirst();
         assertTrue(c.getCount() == 2);
         c.close();
     }
 
+    public void testSelect_Top_Condition(){
+        int top = 3;
+        int customerId = getCustomerId("Christiano Ronaldo");
+        Cursor c = db.get("Orders")
+                .select(3, "CustomerId = " + customerId).query();
+        c.moveToFirst();
+        assertTrue(c.getCount() == 3);
+        c.close();
+    }
 
+    public void testSelect_Top_WhereClause(){
+        int top = 2;
+        int customerId = getCustomerId("Christiano Ronaldo");
+        Cursor c = db.get("Orders")
+                .select(top, "CustomerId = ?", customerId).query();
+        c.moveToFirst();
+        assertTrue(c.getCount() == top);
+        c.close();
+    }
+
+    public void testSelectDistinct_Condition(){
+        int pirloId = getCustomerId("Andrea Pirlo");
+        int kakaId = getCustomerId("Kaka");
+        Cursor cursor = db.get("Orders")
+                .selectDistinct("CustomerId = " + kakaId + " OR CustomerId = " + pirloId)
+                .columns("CustomerId")
+                .query();
+        cursor.moveToFirst();
+        assertTrue(cursor.getCount() == 2);
+        cursor.close();
+    }
+
+    public void testSelectDistinct_WhereClause(){
+        int pirloId = getCustomerId("Andrea Pirlo");
+        int baloteliId = getCustomerId("Mario Baloteli");
+        Cursor cursor = db.get("Orders")
+                .selectDistinct("CustomerId IN (?,?)", pirloId, baloteliId)
+                .columns("CustomerId")
+                .query();
+        cursor.moveToFirst();
+        assertTrue(cursor.getCount() == 2);
+        cursor.close();
+    }
+
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+    // ------------------ Insert ----------------//
+
+    public void testInsert(){
+    }
+
+
+
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+    // ------------------ Update ----------------//
+
+
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+    // ------------------ Delete ----------------//
 
 
     ///////////////////////////////////////////////

@@ -347,7 +347,7 @@ public class Database implements IDatabase {
          * @return
          */
         @Override
-        public ITable.Model addColumnId(String columnName) {
+        public ITable.Model addPrimaryKey(String columnName) {
             return add(columnName, "INTEGER", "primary key autoincrement not null");
         }
 
