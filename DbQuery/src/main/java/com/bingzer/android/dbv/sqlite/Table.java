@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.IFunction;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.Util;
@@ -126,6 +127,35 @@ class Table implements ITable {
     @Override
     public IQuery.Select select(String condition) {
         return select(condition, (Object)null);
+    }
+
+    /**
+     * Returns id
+     *
+     * @param condition
+     * @return
+     */
+    @Override
+    public int selectId(String condition) {
+        return selectId(condition, null);
+    }
+
+    /**
+     * Returns id
+     *
+     * @param whereClause
+     * @param args
+     * @return
+     */
+    @Override
+    public int selectId(String whereClause, Object... args) {
+        int id = -1;
+        Cursor cursor = select(whereClause, args).columns(db.getConfig().getIdNamingConvention()).query();
+        if(cursor.moveToNext()){
+            id = cursor.getInt(0);
+        }
+        cursor.close();
+        return id;
     }
 
     /**
@@ -730,5 +760,73 @@ class Table implements ITable {
         if(getAlias() != null && getAlias().length() > 0)
             return getName() + " " + getAlias();
         return getName();
+    }
+
+    /**
+     * Returns average
+     *
+     * @param columnName
+     * @return
+     */
+    @Override
+    public IFunction.Average avg(String columnName) {
+        FunctionImpl.AverageImpl fn = new FunctionImpl.AverageImpl(toString(), columnName);
+        Cursor cursor = raw(fn.toString()).query();
+        if(cursor.moveToNext()){
+            fn.value = cursor.getInt(0);
+        }
+        cursor.close();
+        return fn;
+    }
+
+    /**
+     * Sum
+     *
+     * @param columnName
+     * @return
+     */
+    @Override
+    public IFunction.Sum sum(String columnName) {
+        FunctionImpl.SumImpl fn = new FunctionImpl.SumImpl(toString(), columnName);
+        Cursor cursor = raw(fn.toString()).query();
+        if(cursor.moveToNext()){
+            fn.value = cursor.getInt(0);
+        }
+        cursor.close();
+        return fn;
+    }
+
+    /**
+     * Max
+     *
+     * @param columnName
+     * @return
+     */
+    @Override
+    public IFunction.Max max(String columnName) {
+        FunctionImpl.MaxImpl fn = new FunctionImpl.MaxImpl(toString(), columnName);
+        Cursor cursor = raw(fn.toString()).query();
+        if(cursor.moveToNext()){
+            fn.value = cursor.getInt(0);
+        }
+        cursor.close();
+        return fn;
+    }
+
+    /**
+     * Min
+     *
+     * @param columnName
+     * @return
+     */
+    @Override
+    public IFunction.Min min(String columnName) {
+        FunctionImpl.MinImpl fn = new FunctionImpl.MinImpl(toString(), columnName);
+        Cursor cursor = raw(fn.toString()).query();
+        if(cursor.moveToNext()){
+            fn.value = cursor.getInt(0);
+        }
+        cursor.close();
+        return fn;
     }
 }

@@ -19,6 +19,8 @@ package com.bingzer.android.dbv;
 import com.bingzer.android.dbv.queries.Countable;
 import com.bingzer.android.dbv.queries.Deletable;
 import com.bingzer.android.dbv.queries.Droppable;
+import com.bingzer.android.dbv.queries.Function;
+import com.bingzer.android.dbv.queries.Identifiable;
 import com.bingzer.android.dbv.queries.Insertable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.RawQueryable;
@@ -34,7 +36,8 @@ import java.util.List;
 public interface ITable extends
         Selectable, Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,
-        RawQueryable, Countable, Droppable {
+        RawQueryable, Countable, Droppable,
+        Identifiable, Function {
 
     /**
      * Returns the name

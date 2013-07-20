@@ -201,26 +201,10 @@ public class ITableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     // ------------------ Helper methods ----------------//
     private int getCustomerId(String name){
-        Cursor c =  DbQuery.getDatabase("TestDb").get("Customers").select("Name = ?", name).columns("Id").query();
-        try{
-            if(c.moveToFirst()) return c.getInt(0);
-            assertFalse("No customer found insert name " + name, false);
-            return -1;
-        }
-        finally {
-            c.close();
-        }
+        return db.get("Customers").selectId("Name = ?", name);
     }
 
     private int getProductId(String name){
-        Cursor c = DbQuery.getDatabase("TestDb").get("Products").select("Name = ?", name).columns("Id").query();
-        try{
-            if(c.moveToFirst()) return c.getInt(0);
-            assertFalse("No product found insert name " + name, false);
-            return -1;
-        }
-        finally {
-            c.close();
-        }
+        return db.get("Products").selectId("Name = ?", name);
     }
 }
