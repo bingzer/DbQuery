@@ -18,6 +18,7 @@ package com.bingzer.android.dbv;
 
 import android.content.Context;
 
+import com.bingzer.android.dbv.sqlite.Database;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 /**
@@ -54,9 +55,6 @@ class TestUsage {
         //db.get("")
 
         IQuery.Select s = db.get("").select();
-
-        db.get("").insert("Name").val(null);
-
 
 
     }

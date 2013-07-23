@@ -189,7 +189,7 @@ public class Database implements IDatabase {
      * DbHelper
      * @return
      */
-    SQLiteOpenHelper getHelper(){
+    public SQLiteOpenHelper getSQLiteOpnHelper(){
         ensureDbHelperIsReady();
         return dbHelper;
     }
@@ -284,6 +284,29 @@ public class Database implements IDatabase {
     private void ensureDbHelperIsReady(){
         if(dbHelper == null)
             throw new IllegalArgumentException("You must call create() first");
+    }
+
+    /**
+     * Execute sql
+     *
+     * @param sql
+     */
+    @Override
+    public void execSql(String sql) {
+        ensureDbHelperIsReady();
+        dbHelper.getWritableDatabase().execSQL(sql);
+    }
+
+    /**
+     * Exec sql
+     *
+     * @param sql
+     * @param args
+     */
+    @Override
+    public void execSql(String sql, Object... args) {
+        ensureDbHelperIsReady();
+        dbHelper.getWritableDatabase().execSQL(sql, args);
     }
 
     //////////////////////////////////////////////////////////

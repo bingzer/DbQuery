@@ -50,7 +50,8 @@ class Table implements ITable {
         this.sqlDb = sqlDb;
         this.columns = new LinkedList<String>();
 
-        Cursor cursor = sqlDb.rawQuery("PRAGMA table_info(" + name + ")", null);
+        String pragmaSql = new StringBuilder("PRAGMA table_info(").append(name).append(")").toString();
+        Cursor cursor = sqlDb.rawQuery(pragmaSql, null);
         try{
             int nameIdx = cursor.getColumnIndexOrThrow("name");
             while (cursor.moveToNext()) {
@@ -178,7 +179,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select select(int id) {
-        return select(db.getConfig().getIdNamingConvention() + " = ?", id);
+        return select(generateParamId(id));
     }
 
     /**
@@ -334,9 +335,6 @@ class Table implements ITable {
 
             @Override
             public void onContentValuesSet(QueryImpl.InsertWithImpl query, ContentValues contentValues) {
-                if(contentValues == null) {
-                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.Insert.val()");
-                }
                 this.query = query;
                 this.contentValues = contentValues;
                 this.query.value = (int) sqlDb.insertOrThrow(getName(), null, contentValues);
@@ -344,6 +342,9 @@ class Table implements ITable {
 
             @Override
             public Integer query() {
+                if(contentValues == null)
+                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.InsertWith.val()");
+                // return
                 return this.query.value;
             }
         }, columns);
@@ -361,7 +362,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Update update(String column, Object value, int id) {
-        return update(column, value, db.getConfig().getIdNamingConvention() + " = ?", id);
+        return update(column, value, generateParamId(id));
     }
 
     /**
@@ -435,7 +436,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Update update(ContentValues contents, int id) {
-        return update(contents, db.getConfig().getIdNamingConvention() + " = ?", id);
+        return update(contents, generateParamId(id));
     }
 
     /**
@@ -463,7 +464,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Delete delete(final int id) {
-        return delete(db.getConfig().getIdNamingConvention() + " = ?", id);
+        return delete(generateParamId(id));
     }
 
     /**
@@ -568,7 +569,7 @@ class Table implements ITable {
      */
     @Override
     public boolean has(int id) {
-        return has(db.getConfig().getIdNamingConvention() + " = ?", id);
+        return has(generateParamId(id));
     }
 
     /**
@@ -712,7 +713,9 @@ class Table implements ITable {
      */
     @Override
     public IQuery.InnerJoin join(String tableName, String column1, String column2) {
-        return join(tableName, name + "." + column1 + " = " + tableName + "." + column2);
+        String onClause = new StringBuilder(name).append(".").append(column1).append("=")
+                                .append(tableName).append(".").append(column2).toString();
+        return join(tableName, onClause);
     }
 
     /**
@@ -744,7 +747,9 @@ class Table implements ITable {
      */
     @Override
     public IQuery.OuterJoin outerJoin(String tableName, String column1, String column2) {
-        return outerJoin(tableName, name + "." + column1 + " = " + tableName + "." + column2);
+        String onClause = new StringBuilder(name).append(".").append(column1).append("=")
+                .append(tableName).append(".").append(column2).toString();
+        return outerJoin(tableName, onClause);
     }
 
     /**
@@ -755,7 +760,7 @@ class Table implements ITable {
     @Override
     public String toString(){
         if(getAlias() != null && getAlias().length() > 0)
-            return getName() + " " + getAlias();
+            return new StringBuilder(getName()).append(" ").append(getAlias()).toString();
         return getName();
     }
 
@@ -825,5 +830,13 @@ class Table implements ITable {
         }
         cursor.close();
         return fn;
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
+
+    private String generateParamId(int id){
+        return new StringBuilder(db.getConfig().getIdNamingConvention()).append(" = ").append(id).toString();
     }
 }

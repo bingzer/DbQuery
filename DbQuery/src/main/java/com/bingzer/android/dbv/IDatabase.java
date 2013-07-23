@@ -17,6 +17,7 @@
 package com.bingzer.android.dbv;
 
 import com.bingzer.android.dbv.queries.RawQueryable;
+import com.bingzer.android.dbv.queries.SqlExecutable;
 
 import java.util.List;
 
@@ -25,8 +26,7 @@ import java.util.List;
  *
  * Created by Ricky Tobing on 7/16/13.
  */
-public interface IDatabase extends RawQueryable {
-
+public interface IDatabase extends RawQueryable, SqlExecutable {
 
     /**
      * Returns the name of this database
@@ -116,4 +116,5 @@ public interface IDatabase extends RawQueryable {
          */
         ITable.Model add(String tableName);
     }
+
 }

@@ -65,11 +65,11 @@ class QueryImpl<T> implements IQuery<T> {
      */
     static class SelectImpl extends QueryImpl<Cursor> implements IQuery.Select{
 
-        protected CharSequence orderByString;
-        protected CharSequence columnString;
-        protected CharSequence selectString;
-        protected CharSequence fromString;
-        protected CharSequence limitString;
+        protected StringBuilder selectString;
+        protected StringBuilder columnString;
+        protected StringBuilder fromString;
+        protected StringBuilder limitString;
+        protected StringBuilder orderByString;
 
         SelectImpl(String tableName){
             this(tableName, false);
@@ -80,18 +80,25 @@ class QueryImpl<T> implements IQuery<T> {
         }
 
         SelectImpl(String tableName, int top, boolean distinct){
+            selectString = new StringBuilder();
+            columnString = new StringBuilder();
+            fromString = new StringBuilder();
+            limitString = new StringBuilder();
+            orderByString = new StringBuilder();
+
+
             if(distinct)
-                selectString = "SELECT DISTINCT ";
-            else selectString = "SELECT ";
+                selectString.append("SELECT DISTINCT ");
+            else selectString.append("SELECT ");
 
             //if(top > 0) selectString = selectString + " TOP " + top;
 
-            columnString = "*";
+            columnString.append("*");
 
-            fromString = "FROM " + tableName;
+            fromString.append("FROM " + tableName);
 
             if(top > 0){
-                limitString = " LIMIT " + top;
+                limitString.append(" LIMIT " + top);
             }
         }
 
@@ -104,11 +111,12 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery<Cursor> columns(String... columns) {
+            columnString.delete(0, columnString.length());
             if(columns != null){
-                columnString = Util.join(",", columns);
+                columnString.append(Util.join(",", columns));
             }
             else{
-                columnString = "*";
+                columnString.append("*");
             }
 
             return this;
@@ -122,11 +130,9 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery<Cursor> orderBy(String... columns) {
+            orderByString.delete(0, columnString.length());
             if(columns != null){
-                orderByString = "ORDER BY " + Util.join(",", columns) + " ASC";
-            }
-            else{
-                orderByString = null;
+                orderByString.append("ORDER BY ").append(Util.join(",", columns)).append(" ASC");
             }
             return this;
         }
@@ -138,11 +144,9 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery<Cursor> orderByDesc(String... columns) {
+            orderByString.delete(0, columnString.length());
             if(columns != null){
-                orderByString = "ORDER BY " + Util.join(",", columns) + " DESC";
-            }
-            else{
-                orderByString = null;
+                orderByString.append("ORDER BY ").append(Util.join(",", columns)).append(" DESC");
             }
             return this;
         }
@@ -159,11 +163,11 @@ class QueryImpl<T> implements IQuery<T> {
             // where
             sql.append(super.builder);
             // limit
-            if(limitString != null){
+            if(limitString.length() > 0){
                 sql.append(limitString);
             }
             // order by
-            if(orderByString != null){
+            if(orderByString.length() > 0){
                 sql.append(orderByString);
             }
 
@@ -279,15 +283,17 @@ class QueryImpl<T> implements IQuery<T> {
     private static class Join extends SelectImpl implements Selectable {
 
         protected final Table table;
-        protected CharSequence joinBuilder;
+        protected StringBuilder joinBuilder;
 
         Join(Table table, String joinType, String tableNameToJoin, String onClause){
             super(table.toString());
             this.table = table;
+            this.joinBuilder = new StringBuilder();
+
             if(onClause.toLowerCase().startsWith("on "))
-                this.joinBuilder = " " + joinType + " " + tableNameToJoin + " " + onClause;
+                this.joinBuilder.append(" ").append(joinType).append(" ").append(tableNameToJoin).append(" ").append(onClause);
             else
-                this.joinBuilder = " " + joinType + " " + tableNameToJoin + " ON " + onClause;
+                this.joinBuilder.append(" ").append(joinType).append(" ").append(tableNameToJoin).append(" ON ").append(onClause);
         }
 
         /**
@@ -299,7 +305,6 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery.Select select(int top, String condition) {
-            clear();
             consume(table.select(top, condition));
             return this;
         }
@@ -312,7 +317,6 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery.Select select(String condition) {
-            clear();
             consume(table.select(condition));
             return this;
         }
@@ -325,7 +329,6 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery.Select select(int id) {
-            clear();
             consume(table.select(id));
             return this;
         }
@@ -338,7 +341,6 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery.Select select(int... ids) {
-            clear();
             consume(table.select(ids));
             return this;
         }
@@ -352,7 +354,6 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery.Select select(String whereClause, Object... args) {
-            clear();
             consume(table.select(whereClause, args));
             return this;
         }
@@ -366,7 +367,6 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery.Select select(int top, String whereClause, Object... args) {
-            clear();
             consume(table.select(top, whereClause, args));
             return this;
         }
@@ -379,7 +379,6 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery.Select selectDistinct(String condition) {
-            clear();
             consume(table.selectDistinct(condition));
             return this;
         }
@@ -393,7 +392,6 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public IQuery.Select selectDistinct(String whereClause, Object... args) {
-            clear();
             consume(table.selectDistinct(whereClause, args));
             return this;
         }
@@ -428,13 +426,13 @@ class QueryImpl<T> implements IQuery<T> {
         }
 
         /**
-         * Clear the StringBuilder
+         * Consume parent's select statement
+         * @param select
          */
-        private void clear(){
-            super.builder.delete(0, super.builder.length());
-        }
-
         private void consume(Select select){
+            // clear first..
+            super.builder.delete(0, super.builder.length());
+            // consume
             selectString = ((SelectImpl)select).selectString;
             columnString = ((SelectImpl)select).columnString;
             fromString = ((SelectImpl)select).fromString;
