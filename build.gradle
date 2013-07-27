@@ -7,7 +7,7 @@ String getVersionCode(){
     buildNumber = System.getenv()['BUILD_NUMBER']
     if(buildNumber == null)
         return "1"
-    return buildNumber
+    return String.valueOf(buildNumber)
 }
 
 String getVersionName() {
