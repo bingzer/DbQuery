@@ -25,3 +25,8 @@ android {
         targetSdkVersion 16
     }
 }
+
+group = "com.bingzer.android"
+version = getVersionName()
+android.defaultConfig.versionCode = getVersionCode()
+android.defaultConfig.versionName = getVersionName()
