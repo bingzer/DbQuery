@@ -3,11 +3,11 @@
 versionMajor = "0"
 versionMinor = "1"
 
-String getVersionCode(){
+int getVersionCode(){
     buildNumber = System.getenv()['BUILD_NUMBER']
     if(buildNumber == null)
-        return "1"
-    return String.valueOf(buildNumber)
+        return 0
+    return buildNumber.toInteger()
 }
 
 String getVersionName() {
