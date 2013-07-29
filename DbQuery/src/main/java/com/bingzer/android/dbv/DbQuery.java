@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance insert the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -22,7 +22,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Db Engine
+ * DbQuery provides access to {@link IDatabase}
+ *
+ * <pre>
+ *   <code>
+ *       IDatabase db = DbQuery.getDatabase("<database-name>");
+ *       ...
+ *   </code>
+ * </pre>
+ *
+ * @see IDatabase
  */
 public class DbQuery {
 

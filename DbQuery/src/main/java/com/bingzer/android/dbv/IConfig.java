@@ -17,6 +17,8 @@
 package com.bingzer.android.dbv;
 
 /**
+ * Defines a configuration interface.
+ *
  * Created by Ricky Tobing on 7/19/13.
  */
 public interface IConfig {

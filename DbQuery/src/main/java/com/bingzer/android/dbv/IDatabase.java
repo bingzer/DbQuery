@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance insert the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -22,7 +22,35 @@ import com.bingzer.android.dbv.queries.SqlExecutable;
 import java.util.List;
 
 /**
- * Represents the database
+ * Provides access to {@link ITable} to achive common <code>CRUD</code>
+ * tasks.
+ *
+ * To properly gain access to {@link IDatabase} object, you must
+ * call {@link #create(int, com.bingzer.android.dbv.IDatabase.Builder)} and
+ * provides the database modeling with your own term.
+ * <pre>
+ *     <code>
+ *         ...
+ *         IDatabase db = DbQuery.getDatabase("<database-name>");
+ *         db.create(dbVersion, new SQLiteBuilder() {
+ *             ...
+ *         }
+ *         ...
+ *     </code>
+ * </pre>
+ *
+ * {@link IDatabase} has one ore more tables. To gain access to {@link ITable},
+ * use this code snippet:
+ * <pre>
+ *     <code>
+ *         ...
+ *         ITable table = db.get("<table-name>");
+ *         ...
+ *     </code>
+ * </pre>
+ *
+ * @see ITable
+ * @see Modeling
  *
  * Created by Ricky Tobing on 7/16/13.
  */
