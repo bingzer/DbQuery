@@ -6,6 +6,8 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.5.+'
     }
 }
+
+apply plugin: 'maven'
 apply plugin: 'android-library'
 
 repositories {
@@ -25,3 +27,9 @@ android {
         targetSdkVersion 16
     }
 }
+
+archivesBaseName = 'DbQuery'
+group = "com.bingzer.android"
+version = getVersionName()
+android.defaultConfig.versionCode = getVersionCode()
+android.defaultConfig.versionName = getVersionName()
