@@ -3,8 +3,9 @@
 #################
 gradlew
 gradlew.bat
-.idea
-.gradle
+*.idea
+*.gradle
+*.iml
 gradle
 gen/
 
