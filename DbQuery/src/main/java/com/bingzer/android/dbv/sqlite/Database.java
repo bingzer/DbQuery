@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.bingzer.android.dbv.Config;
+import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IColumn;
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
@@ -45,6 +46,7 @@ public class Database implements IDatabase {
     private int version;
     private IConfig config;
     private SQLiteOpenHelper dbHelper;
+    private SQLiteDatabase sqLiteDb;
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
@@ -128,22 +130,19 @@ public class Database implements IDatabase {
     public void create(int version, Builder builder) {
         if(!(builder instanceof SQLiteBuilder)) throw new RuntimeException("Use SQLiteBuilder interface");
 
-        this.version = version;
-
-        // tell the builder to create using the meta data
-        builder.onCreate(dbModel);
-
         // assign builder
-        if(dbHelper == null){
-            dbHelper = createHelper((SQLiteBuilder) builder);
-            // -- get all tables..
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        if(dbHelper == null || this.version != version){
+            close();
+            // update version
+            this.version = version;
+            this.dbHelper = createHelper((SQLiteBuilder) builder);
+            this.sqLiteDb = dbHelper.getWritableDatabase();
+            Cursor cursor = raw("SELECT name FROM sqlite_master WHERE type='table'").query();
             try{
                 while(cursor.moveToNext()){
                     String tableName = cursor.getString(0);
 
-                    Table table = new Table(this, db, tableName);
+                    Table table = new Table(Database.this, sqLiteDb, tableName);
                     tables.add(table);
                 }
             }
@@ -158,9 +157,11 @@ public class Database implements IDatabase {
      */
     @Override
     public void close() {
-        if(dbHelper != null){
-            dbHelper.close();
-        }
+        if(dbHelper != null) dbHelper.close();
+        if(sqLiteDb != null) sqLiteDb.close();
+        // reset
+        sqLiteDb = null;
+        dbHelper = null;
     }
 
     /**
@@ -183,68 +184,6 @@ public class Database implements IDatabase {
     @Override
     public IConfig getConfig() {
         return config;
-    }
-
-    /**
-     * DbHelper
-     * @return
-     */
-    public SQLiteOpenHelper getSQLiteOpnHelper(){
-        ensureDbHelperIsReady();
-        return dbHelper;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * The db helper
-     *
-     * @author Ricky
-     */
-    private final SQLiteOpenHelper createHelper(final SQLiteBuilder builder){
-        return new SQLiteOpenHelper(builder.getContext(), getName(), null, getVersion()) {
-
-            @Override
-            public void onOpen(SQLiteDatabase db){
-                Log.i(TAG, "SQLiteOpenHelper.open()");
-
-                super.onOpen(db);
-            }
-
-            @Override
-            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-                Log.i(TAG, "Upgrading from " + oldVersion + " to " + newVersion);
-
-                switch (builder.getMigrationMode()){
-                    case DropIfExists:
-                        dropAllTables(db);
-                        onCreate(db);
-                        break;
-                    case ErrorIfExists:
-                        throw new UnsupportedOperationException("ErrorIfExists is not yet implemented. use MigrationMode.DropIfExists");
-                    case UpgradeIfExists:
-                        throw new UnsupportedOperationException("UpgradeIfExists is not yet implemented. use MigrationMode.DropIfExists");
-                }
-            }
-
-            @Override
-            public void onCreate(SQLiteDatabase db) {
-                Log.i(TAG, "Creating database for the first time");
-
-                for(TableModel model : dbModel.tableModles){
-                    db.execSQL(model.toString());
-                }
-            }
-
-
-            private void dropAllTables(SQLiteDatabase db){
-                //db.execSQL("delete from sqlite_master where type in ('table', 'index', 'trigger')");
-            }
-        };
     }
 
     /**
@@ -271,19 +210,11 @@ public class Database implements IDatabase {
         IQuery<Cursor> query = new IQuery<Cursor>() {
             @Override
             public Cursor query() {
-                return dbHelper.getWritableDatabase().rawQuery(sql, selectionArgs);
+                return sqLiteDb.rawQuery(sql, selectionArgs);
             }
         };
 
         return query;
-    }
-
-    //////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////
-
-    private void ensureDbHelperIsReady(){
-        if(dbHelper == null)
-            throw new IllegalArgumentException("You must call create() first");
     }
 
     /**
@@ -294,7 +225,7 @@ public class Database implements IDatabase {
     @Override
     public void execSql(String sql) {
         ensureDbHelperIsReady();
-        dbHelper.getWritableDatabase().execSQL(sql);
+        sqLiteDb.execSQL(sql);
     }
 
     /**
@@ -305,12 +236,123 @@ public class Database implements IDatabase {
      */
     @Override
     public void execSql(String sql, Object... args) {
+        if(args == null) execSql(sql);
+        else{
+            ensureDbHelperIsReady();
+            sqLiteDb.execSQL(sql, args);
+        }
+    }
+
+    /**
+     * DbHelper
+     * @return
+     */
+    public SQLiteOpenHelper getSQLiteOpnHelper(){
         ensureDbHelperIsReady();
-        dbHelper.getWritableDatabase().execSQL(sql, args);
+        return dbHelper;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * The db helper
+     *
+     * @author Ricky
+     */
+    final SQLiteOpenHelper createHelper(final SQLiteBuilder builder){
+        return new SQLiteOpenHelper(builder.getContext(), getName(), null, getVersion()) {
+
+            @Override
+            public void onOpen(SQLiteDatabase db){
+                Log.i(TAG, "SQLiteOpenHelper.open()");
+                super.onOpen(db);
+            }
+
+            @Override
+            public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion){
+                Log.i(TAG, "Downgrading from " + oldVersion + " to " + newVersion);
+                try{
+                    sqLiteDb = db;
+                    builder.onDowngrade(Database.this, oldVersion, newVersion);
+                    onCreate(db);
+                    sqLiteDb = null;
+                }
+                catch (Throwable e){
+                    builder.onError(e);
+                }
+            }
+
+            @Override
+            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                Log.i(TAG, "Upgrading from " + oldVersion + " to " + newVersion);
+                try {
+                    sqLiteDb = db;
+                    builder.onUpgrade(Database.this, oldVersion, newVersion);
+                    onCreate(db);
+                    sqLiteDb = null;
+                }
+                catch (Throwable e){
+                    builder.onError(e);
+                }
+            }
+
+            @Override
+            public void onCreate(SQLiteDatabase db) {
+                Log.i(TAG, "Creating database");
+
+                try{
+                    // create the model and execute it
+                    builder.onModelCreate(dbModel);
+                    // execute sql
+                    for(TableModel model : dbModel.tableModles){
+                        db.execSQL(model.toString());
+                    }
+                }
+                catch (Throwable e){
+                    builder.onError(e);
+                }
+            }
+
+        };
     }
 
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Database database = (Database) o;
+
+        if (!name.equals(database.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+
+    //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
+
+    boolean removeTable(ITable table){
+        return tables.remove(table);
+    }
+
+    void ensureDbHelperIsReady(){
+        if(dbHelper == null || sqLiteDb == null)
+            throw new IllegalArgumentException("You must call IDatabase.create() first");
+    }
+
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////

@@ -24,7 +24,6 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.MigrationMode;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 import java.text.SimpleDateFormat;
@@ -48,12 +47,7 @@ public class AASetup extends AndroidTestCase{
             }
 
             @Override
-            public MigrationMode getMigrationMode() {
-                return MigrationMode.DropIfExists;
-            }
-
-            @Override
-            public void onCreate(IDatabase.Modeling modeling) {
+            public void onModelCreate(IDatabase.Modeling modeling) {
                 createDatabaseModeling(modeling);
             }
         });

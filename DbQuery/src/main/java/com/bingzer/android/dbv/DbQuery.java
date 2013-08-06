@@ -50,5 +50,4 @@ public class DbQuery {
 
         return getDatabase(databaseName);
     }
-
 }

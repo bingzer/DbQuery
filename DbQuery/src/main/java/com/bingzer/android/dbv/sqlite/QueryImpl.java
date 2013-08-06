@@ -266,6 +266,21 @@ class QueryImpl<T> implements IQuery<T> {
         }
     }
 
+    static class DropImpl implements IQuery<Boolean>{
+        Boolean value;
+
+
+        /**
+         * Build the sql and return a cursor
+         *
+         * @return
+         */
+        @Override
+        public Boolean query() {
+            return value;
+        }
+    }
+
     static class InnerJoinImpl extends Join implements IQuery.InnerJoin {
         InnerJoinImpl(Table table, String tableNameToJoin, String onClause) {
             super(table, "INNER JOIN", tableNameToJoin, onClause);

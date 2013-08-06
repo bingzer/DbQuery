@@ -19,11 +19,6 @@ Database Creation
            return getApplicationContext();
         }
         
-        @Override 
-        public MigrationMode getMigrationMode() {
-           return MigrationMode.DropIfExists;
-        }
-        
         @Override
         public void onCreate(IDatabase.Modeling modeling) {
            // do the db modeling here..

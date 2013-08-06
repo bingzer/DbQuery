@@ -117,18 +117,33 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     public static interface Builder {
 
         /**
-         * Returns the mode.
-         * @return
+         * Called when upgrade from oldVersion to newVersion
+         * @param database the database
+         * @param oldVersion the old version
+         * @param newVersion the new version
          */
-        MigrationMode getMigrationMode();
+        void onUpgrade(IDatabase database, int oldVersion, int newVersion);
+
+        /**
+         * Called when downgrading from oldVersion to newVersion
+         * @param database the database
+         * @param oldVersion the old version
+         * @param newVersion the new version
+         */
+        void onDowngrade(IDatabase database, int oldVersion, int newVersion);
 
         /**
          * Called when database is about to create.
          * You should define all the table models here
-         * @param modeling
+         * @param modeling the modeling object
          */
-        void onCreate(Modeling modeling);
+        void onModelCreate(Modeling modeling);
 
+        /**
+         * Called when any error is encountered.
+         * @param error the error
+         */
+        void onError(Throwable error);
     }
 
 

@@ -39,12 +39,7 @@ class TestUsage {
             }
 
             @Override
-            public MigrationMode getMigrationMode() {
-                return null;
-            }
-
-            @Override
-            public void onCreate(IDatabase.Modeling modeling) {
+            public void onModelCreate(IDatabase.Modeling modeling) {
                 modeling.add("Table1")
                         .add("Column1", "INTEGER", "primary key autoincrement not null")
                         .add("Column2", "TEXT");
@@ -55,7 +50,6 @@ class TestUsage {
         //db.get("")
 
         IQuery.Select s = db.get("").select();
-
 
     }
 

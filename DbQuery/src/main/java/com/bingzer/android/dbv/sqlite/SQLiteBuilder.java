@@ -23,13 +23,41 @@ import com.bingzer.android.dbv.IDatabase;
 /**
  * Created by Ricky Tobing on 7/17/13.
  */
-public interface SQLiteBuilder extends IDatabase.Builder {
+public abstract class SQLiteBuilder implements IDatabase.Builder {
 
     /**
      * Returns the context
      *
      * @return
      */
-    Context getContext();
+    public abstract Context getContext();
 
+    /**
+     * Called when database is about to create.
+     * You should define all the table models here
+     *
+     * @param modeling
+     */
+    @Override
+    public abstract void onModelCreate(IDatabase.Modeling modeling);
+
+    /////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////
+
+    @Override
+    public void onUpgrade(IDatabase database, int oldVersion, int newVersion) {
+        // do nothing
+    }
+
+    @Override
+    public void onDowngrade(IDatabase database, int oldVersion, int newVersion) {
+        // do nothing
+    }
+
+    @Override
+    public void onError(Throwable error) {
+        // re throw
+        throw new Error(error);
+    }
 }

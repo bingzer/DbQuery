@@ -670,17 +670,16 @@ class Table implements ITable {
      */
     @Override
     public IQuery<Boolean> drop() {
-        IQuery<Boolean> query = new QueryImpl<Boolean>(){
-            @Override public Boolean query(){
-                try{
-                    sqlDb.rawQuery("DROP TABLE " + getName(), null);
-                    return true;
-                }
-                catch (Exception e){
-                    return false;
-                }
-            }
-        };
+        QueryImpl.DropImpl query = new QueryImpl.DropImpl();
+        try{
+            db.execSql("DROP TABLE " + getName(), null);
+            query.value = true;
+        }
+        catch (Exception e){
+            query.value = false;
+        }
+
+        if(query.value) ((Database)db).removeTable(this);
         return query;
     }
 
@@ -833,6 +832,25 @@ class Table implements ITable {
     }
 
     ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Table table = (Table) o;
+
+        if (!name.equals(table.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
     ////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////
 

@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 versionMajor = "0"
-versionMinor = "1"
+versionMinor = "5"
 
 int getVersionCode(){
     buildNumber = System.getenv()['BUILD_NUMBER']
