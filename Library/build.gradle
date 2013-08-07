@@ -34,3 +34,12 @@ group = "com.bingzer.android.dbv"
 version = getVersionName()
 android.defaultConfig.versionCode = getVersionCode()
 android.defaultConfig.versionName = getVersionName()
+
+
+pom {
+    project {
+        artifactId = archivesBaseName
+        groupId = group
+        version = version
+    }
+}.writeTo(project(':Library').buildDir.getAbsolutePath() + '/pom.xml')
