@@ -207,7 +207,7 @@ public class Database implements IDatabase {
      */
     @Override
     public IQuery<Cursor> raw(String sql) {
-        return raw(sql, null);
+        return raw(sql, (String[])null);
     }
 
     /**

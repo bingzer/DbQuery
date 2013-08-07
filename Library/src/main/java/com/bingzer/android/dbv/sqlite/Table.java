@@ -140,7 +140,7 @@ class Table implements ITable {
      */
     @Override
     public int selectId(String condition) {
-        return selectId(condition, null);
+        return selectId(condition, (Object)null);
     }
 
     /**
@@ -426,7 +426,7 @@ class Table implements ITable {
                 contentValues.put(columns[i], values[i].toString());
         }
 
-        return update(contentValues, whereClause, Util.toStringArray((Object[])whereArgs));
+        return update(contentValues, whereClause, (Object[]) Util.toStringArray(whereArgs));
     }
 
     /**
@@ -674,7 +674,7 @@ class Table implements ITable {
     public IQuery<Boolean> drop() {
         QueryImpl.DropImpl query = new QueryImpl.DropImpl();
         try{
-            db.execSql("DROP TABLE " + getName(), null);
+            db.execSql("DROP TABLE " + getName());
             query.value = true;
         }
         catch (Exception e){

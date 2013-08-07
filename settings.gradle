@@ -1,1 +1,1 @@
-include ':DbQuery', ':DbQueryTest'
+include ':Library', ':Test'
