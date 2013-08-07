@@ -218,12 +218,12 @@ public class ITableTest extends AndroidTestCase{
 
         // select
         testNullCursor(db.get("Customers").select("Address is null").query());
-        testNullCursor(db.get("Customers").select("Address is ?", null).query());
+        testNullCursor(db.get("Customers").select("Address is ?", (Object)null).query());
         testNullCursor(db.get("Customers").select("Name LIKE ? AND Address is null", "%player%").query());
         testNullCursor(db.get("Customers").select("Name LIKE ? AND Address is ?", "%player%", null).query());
         // select distinct
         testNullCursor(db.get("Customers").selectDistinct("Address is null").query());
-        testNullCursor(db.get("Customers").selectDistinct("Address is ?", null).query());
+        testNullCursor(db.get("Customers").selectDistinct("Address is ?", (Object)null).query());
         testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is null", "%player%").query());
         testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is ?", "%player%", null).query());
 
