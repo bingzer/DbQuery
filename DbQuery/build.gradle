@@ -29,7 +29,8 @@ android {
 }
 
 archivesBaseName = 'DbQuery'
-group = "com.bingzer.android"
+artifactId = 'dbquery'
+group = "com.bingzer.android.dbv"
 version = getVersionName()
 android.defaultConfig.versionCode = getVersionCode()
 android.defaultConfig.versionName = getVersionName()
