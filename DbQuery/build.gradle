@@ -28,7 +28,7 @@ android {
     }
 }
 
-archivesBaseName = 'DbQuery'
+archivesBaseName = 'dbquery'
 artifactId = 'dbquery'
 group = "com.bingzer.android.dbv"
 version = getVersionName()
