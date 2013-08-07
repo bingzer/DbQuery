@@ -1,0 +1,36 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.5.+'
+    }
+}
+
+apply plugin: 'maven'
+apply plugin: 'android-library'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:13.0.+'
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "17.0.0"
+
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion 16
+    }
+}
+
+archivesBaseName = 'dbquery'
+artifactId = 'dbquery'
+group = "com.bingzer.android.dbv"
+version = getVersionName()
+android.defaultConfig.versionCode = getVersionCode()
+android.defaultConfig.versionName = getVersionName()
