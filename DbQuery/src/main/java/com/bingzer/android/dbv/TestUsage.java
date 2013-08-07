@@ -18,7 +18,6 @@ package com.bingzer.android.dbv;
 
 import android.content.Context;
 
-import com.bingzer.android.dbv.sqlite.Database;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 /**
@@ -32,14 +31,14 @@ class TestUsage {
         int version = 0;
 
         IDatabase db = DbQuery.getDatabase("Test");
-        db.create(version, new SQLiteBuilder() {
+        db.open(version, new SQLiteBuilder() {
             @Override
             public Context getContext() {
                 return null;
             }
 
             @Override
-            public void onModelCreate(IDatabase.Modeling modeling) {
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
                 modeling.add("Table1")
                         .add("Column1", "INTEGER", "primary key autoincrement not null")
                         .add("Column2", "TEXT");

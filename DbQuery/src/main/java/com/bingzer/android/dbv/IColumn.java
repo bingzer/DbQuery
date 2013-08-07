@@ -24,7 +24,7 @@ package com.bingzer.android.dbv;
 public interface IColumn {
 
     /**
-     * Model to create a column
+     * Model to open a column
      */
     public static interface Model {
 

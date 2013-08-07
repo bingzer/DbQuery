@@ -15,15 +15,32 @@ public class AASetup extends AndroidTestCase {
 
     @Override
     public void setUp(){
+        getContext().deleteDatabase("MigrationDb");
+
         IDatabase db = DbQuery.getDatabase("MigrationDb");
-        db.create(1, new SQLiteBuilder() {
+        db.close();
+        db.open(1, new SQLiteBuilder() {
             @Override
             public Context getContext() {
                 return AASetup.this.getContext();
             }
 
             @Override
-            public void onModelCreate(IDatabase.Modeling modeling) {
+            public boolean onDowngrade(IDatabase database, int oldVersion, int newVersion) {
+                for(int i = 0; i < database.getTables().size(); i++)
+                    database.getTables().get(i).drop();
+                return true;
+            }
+
+            @Override
+            public boolean onUpgrade(IDatabase database, int oldVersion, int newVersion) {
+                for(int i = 0; i < database.getTables().size(); i++)
+                    database.getTables().get(i).drop();
+                return true;
+            }
+
+            @Override
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
                 modeling.add("Table1")
                         .addPrimaryKey("Id")
                         .add("Column2", "INTEGER")
@@ -35,29 +52,32 @@ public class AASetup extends AndroidTestCase {
         assertNotNull(db.get("Table1"));
         assertNull(db.get("Table2"));
 
-        db.close();
+        //db.close();
     }
 
     public void testUpgrade(){
         IDatabase db = DbQuery.getDatabase("MigrationDb");
-        db.create(2, new SQLiteBuilder() {
+        db.close();
+        db.open(2, new SQLiteBuilder() {
             @Override
             public Context getContext() {
                 return AASetup.this.getContext();
             }
 
             @Override
-            public void onUpgrade(IDatabase database, int oldVersion, int newVersion) {
+            public boolean onUpgrade(IDatabase database, int oldVersion, int newVersion) {
                 super.onUpgrade(database, oldVersion, newVersion);
 
                 ITable table = database.get("Table1");
                 table.drop();
 
                 assertNull(database.get("Table1"));
+
+                return true;
             }
 
             @Override
-            public void onModelCreate(IDatabase.Modeling modeling) {
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
                 modeling.add("Table2")
                         .addPrimaryKey("Id")
                         .add("Column2", "INTEGER")

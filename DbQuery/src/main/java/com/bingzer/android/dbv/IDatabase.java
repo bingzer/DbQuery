@@ -16,6 +16,7 @@
 
 package com.bingzer.android.dbv;
 
+import com.bingzer.android.dbv.queries.Droppable;
 import com.bingzer.android.dbv.queries.RawQueryable;
 import com.bingzer.android.dbv.queries.SqlExecutable;
 
@@ -26,13 +27,13 @@ import java.util.List;
  * tasks.
  *
  * To properly gain access to {@link IDatabase} object, you must
- * call {@link #create(int, com.bingzer.android.dbv.IDatabase.Builder)} and
+ * call {@link #open(int, com.bingzer.android.dbv.IDatabase.Builder)} and
  * provides the database modeling with your own term.
  * <pre>
  *     <code>
  *         ...
  *         IDatabase db = DbQuery.getDatabase("<database-name>");
- *         db.create(dbVersion, new SQLiteBuilder() {
+ *         db.open(dbVersion, new SQLiteBuilder() {
  *             ...
  *         }
  *         ...
@@ -76,17 +77,17 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
 
     /**
      * Returns the table
-     * @param tableName
-     * @return
+     * @param tableName the table
+     * @return null if table does not exists
      */
     ITable get(String tableName);
 
     /**
      * Create the database
-     * @param version
-     * @param builder
+     * @param version the version of the database
+     * @param builder the builder
      */
-    void create(int version, Builder builder);
+    void open(int version, Builder builder);
 
     /**
      * Close the database. Free any resources
@@ -118,26 +119,35 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
 
         /**
          * Called when upgrade from oldVersion to newVersion
+         *
          * @param database the database
          * @param oldVersion the old version
          * @param newVersion the new version
+         * @return If true is returned, the code will continue
+         *  on {@link #onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
          */
-        void onUpgrade(IDatabase database, int oldVersion, int newVersion);
+        boolean onUpgrade(IDatabase database, int oldVersion, int newVersion);
 
         /**
          * Called when downgrading from oldVersion to newVersion
+         *
          * @param database the database
          * @param oldVersion the old version
          * @param newVersion the new version
+         *
+         * @return If true is returned, the code will continue
+         *  on {@link #onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
          */
-        void onDowngrade(IDatabase database, int oldVersion, int newVersion);
+        boolean onDowngrade(IDatabase database, int oldVersion, int newVersion);
 
         /**
-         * Called when database is about to create.
+         * Called when database is about to be created for the first time.
          * You should define all the table models here
-         * @param modeling the modeling object
+         *
+         * @param database the instance of the database
+         * @param modeling the modeling object used to model the database
          */
-        void onModelCreate(Modeling modeling);
+        void onModelCreate(IDatabase database, Modeling modeling);
 
         /**
          * Called when any error is encountered.

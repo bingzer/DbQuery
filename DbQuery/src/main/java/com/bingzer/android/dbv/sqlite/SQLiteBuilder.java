@@ -28,31 +28,32 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
     /**
      * Returns the context
      *
-     * @return
+     * @return the context
      */
     public abstract Context getContext();
 
     /**
-     * Called when database is about to create.
+     * Called when database is about to open.
      * You should define all the table models here
      *
-     * @param modeling
+     * @param database the instance of the database
+     * @param modeling the modeling object used to model the database
      */
     @Override
-    public abstract void onModelCreate(IDatabase.Modeling modeling);
+    public abstract void onModelCreate(IDatabase database, IDatabase.Modeling modeling);
 
     /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////
 
     @Override
-    public void onUpgrade(IDatabase database, int oldVersion, int newVersion) {
-        // do nothing
+    public boolean onUpgrade(IDatabase database, int oldVersion, int newVersion) {
+        return false;
     }
 
     @Override
-    public void onDowngrade(IDatabase database, int oldVersion, int newVersion) {
-        // do nothing
+    public boolean onDowngrade(IDatabase database, int oldVersion, int newVersion) {
+        return false;
     }
 
     @Override

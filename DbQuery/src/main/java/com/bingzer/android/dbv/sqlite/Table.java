@@ -53,6 +53,8 @@ class Table implements ITable {
         String pragmaSql = new StringBuilder("PRAGMA table_info(").append(name).append(")").toString();
         Cursor cursor = sqlDb.rawQuery(pragmaSql, null);
         try{
+            // this will throw IllegalArgumentException if not found
+            // meaning that this table does not exist
             int nameIdx = cursor.getColumnIndexOrThrow("name");
             while (cursor.moveToNext()) {
                 columns.add(cursor.getString(nameIdx));

@@ -40,14 +40,14 @@ public class AASetup extends AndroidTestCase{
     @Override
     public void setUp(){
         db = DbQuery.getDatabase("TestDb");
-        db.create(1, new SQLiteBuilder() {
+        db.open(1, new SQLiteBuilder() {
             @Override
             public Context getContext() {
                 return AASetup.this.getContext();
             }
 
             @Override
-            public void onModelCreate(IDatabase.Modeling modeling) {
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
                 createDatabaseModeling(modeling);
             }
         });

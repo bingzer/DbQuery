@@ -12,7 +12,7 @@ Database Creation
     int dbVersion = 1;
     ...
     IDatabase db = DbQuery.getDatabase("MyDb");
-    db.create(dbVersion, new SQLiteBuilder() {
+    db.open(dbVersion, new SQLiteBuilder() {
     
         @Override 
         public Context getContext() {

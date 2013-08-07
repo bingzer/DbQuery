@@ -17,6 +17,7 @@
 package com.bingzer.android.dbv.sqlite;
 
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -117,7 +118,17 @@ public class Database implements IDatabase {
         }
 
         // not found
-        return null;
+        // okay maybe it's just been created..
+        try{
+            ITable table = new Table(this, sqLiteDb, tableName);
+            table.setAlias(alias);
+            tables.add(table);
+            return table;
+        }
+        catch (IllegalArgumentException e){
+            // okay not found anywhere
+            return null;
+        }
     }
 
     /**
@@ -127,7 +138,7 @@ public class Database implements IDatabase {
      * @param builder
      */
     @Override
-    public void create(int version, Builder builder) {
+    public void open(int version, Builder builder) {
         if(!(builder instanceof SQLiteBuilder)) throw new RuntimeException("Use SQLiteBuilder interface");
 
         // assign builder
@@ -139,6 +150,7 @@ public class Database implements IDatabase {
             this.sqLiteDb = dbHelper.getWritableDatabase();
             Cursor cursor = raw("SELECT name FROM sqlite_master WHERE type='table'").query();
             try{
+                tables.clear();
                 while(cursor.moveToNext()){
                     String tableName = cursor.getString(0);
 
@@ -162,6 +174,7 @@ public class Database implements IDatabase {
         // reset
         sqLiteDb = null;
         dbHelper = null;
+        dbModel.tableModles.clear();
     }
 
     /**
@@ -252,6 +265,26 @@ public class Database implements IDatabase {
         return dbHelper;
     }
 
+    //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Database database = (Database) o;
+
+        if (!name.equals(database.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,12 +310,15 @@ public class Database implements IDatabase {
                 Log.i(TAG, "Downgrading from " + oldVersion + " to " + newVersion);
                 try{
                     sqLiteDb = db;
-                    builder.onDowngrade(Database.this, oldVersion, newVersion);
-                    onCreate(db);
-                    sqLiteDb = null;
+                    // if returned true continue to onModelCreate
+                    if(builder.onDowngrade(Database.this, oldVersion, newVersion))
+                        onCreate(db);
                 }
                 catch (Throwable e){
                     builder.onError(e);
+                }
+                finally {
+                    sqLiteDb = null;
                 }
             }
 
@@ -291,12 +327,15 @@ public class Database implements IDatabase {
                 Log.i(TAG, "Upgrading from " + oldVersion + " to " + newVersion);
                 try {
                     sqLiteDb = db;
-                    builder.onUpgrade(Database.this, oldVersion, newVersion);
-                    onCreate(db);
-                    sqLiteDb = null;
+                    // if returned true continue to onModelCreate
+                    if(builder.onUpgrade(Database.this, oldVersion, newVersion))
+                        onCreate(db);
                 }
                 catch (Throwable e){
                     builder.onError(e);
+                }
+                finally {
+                    sqLiteDb = null;
                 }
             }
 
@@ -305,8 +344,9 @@ public class Database implements IDatabase {
                 Log.i(TAG, "Creating database");
 
                 try{
-                    // create the model and execute it
-                    builder.onModelCreate(dbModel);
+                    sqLiteDb = db;
+                    // open the model and execute it
+                    builder.onModelCreate(Database.this, dbModel);
                     // execute sql
                     for(TableModel model : dbModel.tableModles){
                         db.execSQL(model.toString());
@@ -315,42 +355,22 @@ public class Database implements IDatabase {
                 catch (Throwable e){
                     builder.onError(e);
                 }
+                finally {
+                    sqLiteDb = null;
+                }
             }
 
         };
     }
 
-    //////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Database database = (Database) o;
-
-        if (!name.equals(database.name)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-
-    //////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////
-
     boolean removeTable(ITable table){
-        return tables.remove(table);
+        boolean ret = tables.remove(table);
+        return ret;
     }
 
     void ensureDbHelperIsReady(){
         if(dbHelper == null || sqLiteDb == null)
-            throw new IllegalArgumentException("You must call IDatabase.create() first");
+            throw new IllegalArgumentException("You must call IDatabase.open() first");
     }
 
     //////////////////////////////////////////////////////////
