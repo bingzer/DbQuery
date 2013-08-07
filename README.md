@@ -20,7 +20,7 @@ Database Creation
         }
         
         @Override
-        public void onCreate(IDatabase.Modeling modeling) {
+        public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
            // do the db modeling here..
            
            // this will create table PersonTable with Id and Name column
