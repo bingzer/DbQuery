@@ -1,5 +1,6 @@
 package com.bingzer.android.dbv.sqlite;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 
@@ -17,7 +18,7 @@ public class EntityMapper extends HashMap<String, IEntity.Action> implements IEn
         put(column, action);
     }
 
-    public static void setAction(IEntity.Action action, Cursor cursor, int index){
+    static void setAction(IEntity.Action action, Cursor cursor, int index){
         if(action.getType() == String.class) action.set(cursor.getString(index));
         else if(action.getType() == Integer.class) action.set(cursor.getInt(index));
         else if(action.getType() == Boolean.class) action.set(cursor.getInt(index) == 1);
@@ -25,6 +26,22 @@ public class EntityMapper extends HashMap<String, IEntity.Action> implements IEn
         else if(action.getType() == Long.class) action.set(cursor.getLong(index));
         else if(action.getType() == Short.class) action.set(cursor.getShort(index));
         else if(action.getType() == Float.class) action.set(cursor.getFloat(index));
-        else throw new IllegalArgumentException("Unmapped : Cursor.getType() = " + cursor.getType(index));
+        // TODO: Fix the exception message
+        else throw new IllegalArgumentException("Unmapped");
+    }
+
+    static void setAction(IEntity.Action action, ContentValues contentValues, String key){
+        if(action.get() == null) contentValues.putNull(key);
+        else if(action.getType() == String.class) contentValues.put(key, (String)action.get());
+        else if(action.getType() == Integer.class) contentValues.put(key, (int) action.get());
+        else if(action.getType() == Boolean.class) contentValues.put(key, (boolean)action.get());
+        else if(action.getType() == Double.class) contentValues.put(key, (double)action.get());
+        else if(action.getType() == Long.class) contentValues.put(key, (long)action.get());
+        else if(action.getType() == Short.class) contentValues.put(key, (short)action.get());
+        else if(action.getType() == Byte[].class) contentValues.put(key, (byte[])action.get());
+        else if(action.getType() == byte.class) contentValues.put(key, (byte) action.get());
+        else if(action.getType() == Float.class) contentValues.put(key, (float)action.get());
+        // TODO: Fix the exception message
+        else throw new IllegalArgumentException("Unmapped");
     }
 }

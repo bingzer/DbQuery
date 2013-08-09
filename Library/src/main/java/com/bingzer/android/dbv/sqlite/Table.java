@@ -21,14 +21,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IFunction;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.Util;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
@@ -352,6 +355,31 @@ class Table implements ITable {
         }, columns);
 
         return query;
+    }
+
+    /**
+     * Insert an entity.
+     *
+     * @param entity entity
+     * @return an Insert object
+     */
+    @Override
+    public IQuery.Insert insert(IEntity entity) {
+        // build content values..
+        final EntityMapper mapper = new EntityMapper();
+        final ContentValues contentValues = new ContentValues();
+        entity.map(mapper);
+
+        Iterator<String> keys = mapper.keySet().iterator();
+        while(keys.hasNext()){
+            String key = keys.next();
+            IEntity.Action action = mapper.get(key);
+            if(action != null){
+                EntityMapper.setAction(action, contentValues, key);
+            }
+        }
+
+        insert(contentValues);
     }
 
     /**

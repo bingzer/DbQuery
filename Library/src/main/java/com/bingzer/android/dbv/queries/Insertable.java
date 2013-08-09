@@ -18,6 +18,7 @@ package com.bingzer.android.dbv.queries;
 
 import android.content.ContentValues;
 
+import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IQuery;
 
 /**
@@ -27,24 +28,30 @@ public interface Insertable {
 
     /**
      * InsertWith content val
-     * @param contents
-     * @return
+     * @param contents content values
+     * @return Insert object
      */
     IQuery.Insert insert(ContentValues contents);
 
     /**
      * InsertWith
-     * @param columns
-     * @param values
-     * @return
+     * @param columns column names
+     * @param values the values
+     * @return Insert object
      */
     IQuery.Insert insert(String[] columns, Object[] values);
 
     /**
      * InsertWith
-     * @param columns
-     * @return
+     * @param columns column names
+     * @return an InsertWith object
      */
     IQuery.InsertWith insert(String... columns);
 
+    /**
+     * Insert an entity.
+     * @param entity entity
+     * @return an Insert object
+     */
+    IQuery.Insert insert(IEntity entity);
 }

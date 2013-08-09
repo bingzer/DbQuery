@@ -55,6 +55,7 @@ class TestUsage {
 
         Person person = new Person();
         db.get("Person").select().query(person);
+        //db.get("Person").insert(person).query();
 
     }
 
