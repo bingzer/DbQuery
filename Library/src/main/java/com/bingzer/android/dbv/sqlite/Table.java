@@ -379,7 +379,7 @@ class Table implements ITable {
             }
         }
 
-        insert(contentValues);
+        return insert(contentValues);
     }
 
     /**
