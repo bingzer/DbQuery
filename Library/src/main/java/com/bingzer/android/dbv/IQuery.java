@@ -111,7 +111,7 @@ public interface IQuery<T> {
         void query(IEntity entity);
 
 
-        void query(List<? extends IEntity> entityList);
+        <E extends IEntity> void query(IEntityList<E> entityList);
 
     }
 

@@ -6,6 +6,7 @@ import android.test.AndroidTestCase;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
@@ -57,19 +58,6 @@ public class EntityTest extends AndroidTestCase {
     }
 
 
-    public void testPersonList(){
-        List<Person> personList = new LinkedList<Person>();
-        personList.add(new Person());
-        personList.add(new Person());
-
-        db.get("Person").select("Name = ? OR Name = ?", "Messi", "Ronaldo").query(personList);
-
-        for(Person person : personList){
-            assertTrue(person.getName().equals("Messi") || person.getName().equals("Ronaldo"));
-        }
-    }
-
-
     public void testInsertEntity(){
         Person person = new Person();
         person.setName("Andrea Pirlo");
@@ -96,6 +84,32 @@ public class EntityTest extends AndroidTestCase {
         assertTrue(p2.getAge() == 10000);
     }
 
+    public void testEntity_Collection(){
+
+        PersonList personList = new PersonList();
+        db.get("Person").select().query(personList);
+
+        assertTrue(personList.size() > 0);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
+
+    public static class PersonList extends LinkedList<Person> implements IEntityList<Person>{
+
+        @Override
+        public List<Person> getEntityList() {
+            return this;
+        }
+
+        @Override
+        public Person newEntity() {
+            return new Person();
+        }
+    }
 
     public static class Person implements IEntity {
         private int id;

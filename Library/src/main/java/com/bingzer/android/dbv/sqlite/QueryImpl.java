@@ -21,6 +21,7 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.queries.Selectable;
@@ -182,31 +183,42 @@ class QueryImpl<T> implements IQuery<T> {
             cursor.close();
         }
 
-        /**
-         * Select to an entityList
-         *
-         * @param entityList the target entity list
-         */
         @Override
-        public void query(java.util.List<? extends IEntity> entityList) {
+        @SuppressWarnings("unchecked")
+        public <E extends IEntity> void query(IEntityList<E> entityList) {
             final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(config);
 
-            for(IEntity entity : entityList){
-                cursor.moveToNext();
-                mapper.clear();
-                entity.map(mapper);
+            while(cursor.moveToNext()){
+                int columnIdIndex = cursor.getColumnIndex(config.getIdNamingConvention());
+                int id = cursor.getInt(columnIdIndex);
 
-                for(int ii = 0; ii < cursor.getColumnCount(); ii++){
-                    String columnName = cursor.getColumnName(ii);
-                    IEntity.Action action = mapper.get(columnName);
-                    if(action != null){
-                        EntityMapper.setAction(action, cursor, ii);
+                E entity = null;
+                for(IEntity e : entityList.getEntityList()){
+                    if(e.getId() == id){
+                        entity = (E)e;
+                        break;
                     }
                 }
-            }
+                if(entity == null){
+                    // creates new generic entity
+                    entity = entityList.newEntity();
+                    // add to the collection
+                    entityList.getEntityList().add(entity);
+                }
 
-            cursor.close();
+                // clear the mapper
+                mapper.clear();
+                // assign the mapper
+                entity.map(mapper);
+                for(int i = 0; i < cursor.getColumnCount(); i++){
+                    String columnName = cursor.getColumnName(i);
+                    IEntity.Action action = mapper.get(columnName);
+                    if(action != null){
+                        EntityMapper.setAction(action, cursor, i);
+                    }
+                }
+            }// end while
         }
 
         /**

@@ -20,8 +20,8 @@ import android.content.Context;
 
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
-import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This will be removed
@@ -57,6 +57,24 @@ class TestUsage {
         db.get("Person").select().query(person);
         //db.get("Person").insert(person).query();
 
+
+
+        PersonList list = new PersonList();
+        db.get("").select().query(list);
+
+    }
+
+    static class PersonList extends LinkedList<Person> implements IEntityList<Person> {
+
+        @Override
+        public List<Person> getEntityList() {
+            return this;
+        }
+
+        @Override
+        public Person newEntity() {
+            return new Person();
+        }
     }
 
 
