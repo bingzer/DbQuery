@@ -19,6 +19,7 @@ package com.bingzer.android.dbv.sqlite;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
@@ -29,13 +30,15 @@ import com.bingzer.android.dbv.queries.Selectable;
  */
 class QueryImpl<T> implements IQuery<T> {
 
+    IConfig config;
     StringBuilder builder;
 
-    QueryImpl(){
-        this(null);
+    QueryImpl(IConfig config){
+        this(config, null);
     }
 
-    QueryImpl(Object any){
+    QueryImpl(IConfig config, Object any){
+        this.config = config;
         builder = new StringBuilder();
         append(any);
     }
@@ -72,15 +75,17 @@ class QueryImpl<T> implements IQuery<T> {
         protected StringBuilder limitString;
         protected StringBuilder orderByString;
 
-        SelectImpl(String tableName){
-            this(tableName, false);
+        SelectImpl(IConfig config, String tableName){
+            this(config, tableName, false);
         }
 
-        SelectImpl(String tableName, boolean distinct){
-            this(tableName, -1, distinct);
+        SelectImpl(IConfig config, String tableName, boolean distinct){
+            this(config, tableName, -1, distinct);
         }
 
-        SelectImpl(String tableName, int top, boolean distinct){
+        SelectImpl(IConfig config, String tableName, int top, boolean distinct){
+            super(config);
+
             selectString = new StringBuilder();
             columnString = new StringBuilder();
             fromString = new StringBuilder();
@@ -160,7 +165,7 @@ class QueryImpl<T> implements IQuery<T> {
         @Override
         public void query(IEntity entity) {
             final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper();
+            final EntityMapper mapper = new EntityMapper(config);
 
             entity.map(mapper);
 
@@ -185,7 +190,7 @@ class QueryImpl<T> implements IQuery<T> {
         @Override
         public void query(java.util.List<? extends IEntity> entityList) {
             final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper();
+            final EntityMapper mapper = new EntityMapper(config);
 
             for(IEntity entity : entityList){
                 cursor.moveToNext();
@@ -335,14 +340,14 @@ class QueryImpl<T> implements IQuery<T> {
     }
 
     static class InnerJoinImpl extends Join implements IQuery.InnerJoin {
-        InnerJoinImpl(Table table, String tableNameToJoin, String onClause) {
-            super(table, "INNER JOIN", tableNameToJoin, onClause);
+        InnerJoinImpl(IConfig config, Table table, String tableNameToJoin, String onClause) {
+            super(config, table, "INNER JOIN", tableNameToJoin, onClause);
         }
     }
 
     static class OuterJoinImpl extends Join implements IQuery.OuterJoin {
-        OuterJoinImpl(Table table, String tableNameToJoin, String onClause) {
-            super(table, "OUTER JOIN", tableNameToJoin, onClause);
+        OuterJoinImpl(IConfig config, Table table, String tableNameToJoin, String onClause) {
+            super(config, table, "OUTER JOIN", tableNameToJoin, onClause);
         }
     }
 
@@ -353,8 +358,8 @@ class QueryImpl<T> implements IQuery<T> {
         protected final Table table;
         protected StringBuilder joinBuilder;
 
-        Join(Table table, String joinType, String tableNameToJoin, String onClause){
-            super(table.toString());
+        Join(IConfig config, Table table, String joinType, String tableNameToJoin, String onClause){
+            super(config, table.toString());
             this.table = table;
             this.joinBuilder = new StringBuilder();
 

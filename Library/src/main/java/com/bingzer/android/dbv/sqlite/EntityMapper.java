@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 
+import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 
 import java.util.HashMap;
@@ -11,7 +12,22 @@ import java.util.HashMap;
 /**
  * Created by Ricky Tobing on 8/9/13.
  */
-public class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
+class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
+    IConfig config;
+
+    EntityMapper(IConfig config){
+        this.config = config;
+    }
+
+    /**
+     * Maps id
+     *
+     * @param action
+     */
+    @Override
+    public void mapId(IEntity.Action<Integer> action) {
+        map(config.getIdNamingConvention(), action);
+    }
 
     @Override
     public void map(String column, IEntity.Action action) {

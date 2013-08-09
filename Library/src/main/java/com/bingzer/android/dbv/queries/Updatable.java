@@ -18,6 +18,7 @@ package com.bingzer.android.dbv.queries;
 
 import android.content.ContentValues;
 
+import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IQuery;
 
 /**
@@ -71,6 +72,13 @@ public interface Updatable {
      * @return
      */
     IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs);
+
+    /**
+     * Update using an {@link IEntity} object
+     * @param entity the entity to update
+     * @return
+     */
+    IQuery.Update update(IEntity entity);
 
     /**
      * Update using contentvalues insert specified id

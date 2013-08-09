@@ -37,6 +37,8 @@ public class EntityTest extends AndroidTestCase {
             }
         });
 
+        db.get("Person").deleteAll();
+
         IQuery.InsertWith insert = db.get("Person").insert("Name", "Age");
         insert.val("John", 23);
         insert.val("Ronaldo", 40);
@@ -79,8 +81,24 @@ public class EntityTest extends AndroidTestCase {
     }
 
 
+    public void testUpdateEntity(){
+        Person person = new Person();
+        person.setName("Messi");
+        person.setAge(10000);
+        person.id = db.get("Person").selectId("Name = ?", "Messi");
+
+        db.get("Person").update(person);
+
+        Person p2 = new Person();
+        db.get("Person").select("Name = ?", "Messi").query(p2);
+
+        assertTrue(p2.getName().equals("Messi"));
+        assertTrue(p2.getAge() == 10000);
+    }
+
 
     public static class Person implements IEntity {
+        private int id;
         private String name;
         private int age;
 
@@ -100,9 +118,19 @@ public class EntityTest extends AndroidTestCase {
             this.age = age;
         }
 
+        /**
+         * Returns the id
+         *
+         * @return the id
+         */
+        @Override
+        public int getId() {
+            return id;
+        }
+
         @Override
         public void map(Mapper mapper) {
-            mapper.map("Name", new Action<String>(String.class){
+            mapper.map("Name", new Action<String>(String.class) {
 
                 @Override
                 public void set(String value) {
@@ -125,6 +153,29 @@ public class EntityTest extends AndroidTestCase {
                 @Override
                 public Integer get() {
                     return getAge();
+                }
+            });
+
+            mapper.mapId(new Action<Integer>(Integer.class){
+
+                /**
+                 * Sets the value
+                 *
+                 * @param value the value to set
+                 */
+                @Override
+                public void set(Integer value) {
+                    id = value;
+                }
+
+                /**
+                 * Returns the value
+                 *
+                 * @return the value
+                 */
+                @Override
+                public Integer get() {
+                    return getId();
                 }
             });
 

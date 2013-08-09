@@ -62,9 +62,20 @@ class TestUsage {
 
     static class Person implements IEntity{
 
+        private int id;
         private String name;
         private int age;
 
+
+        /**
+         * Returns the id
+         *
+         * @return the id
+         */
+        @Override
+        public int getId() {
+            return id;
+        }
 
         @Override
         public void map(Mapper mapper) {
@@ -86,6 +97,17 @@ class TestUsage {
                 @Override
                 public Integer get() {
                     return age;
+                }
+            });
+            mapper.mapId(new Action<Integer>() {
+                @Override
+                public void set(Integer value) {
+                    id = value;
+                }
+
+                @Override
+                public Integer get() {
+                    return id;
                 }
             });
         }

@@ -29,6 +29,12 @@ import java.lang.reflect.ParameterizedType;
 public interface IEntity {
 
     /**
+     * Returns the id
+     * @return the id
+     */
+    int getId();
+
+    /**
      * Determines how to map column and the class variable.
      * @param mapper the mapper object
      */
@@ -50,6 +56,12 @@ public interface IEntity {
          * @param action the action used to set/get
          */
         void map(String column, Action action);
+
+        /**
+         * Maps id
+         * @param action
+         */
+        void mapId(Action<Integer> action);
     }
 
     /**
@@ -101,4 +113,6 @@ public interface IEntity {
         public abstract T get();
 
     }
+
+
 }

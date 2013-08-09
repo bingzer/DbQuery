@@ -236,7 +236,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select select(int top, String whereClause, Object... args) {
-        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(toString(), top, false){
+        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), toString(), top, false){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             };
@@ -273,7 +273,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select selectDistinct(String whereClause, Object... args) {
-        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(toString(), true){
+        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), toString(), true){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             };
@@ -366,13 +366,15 @@ class Table implements ITable {
     @Override
     public IQuery.Insert insert(IEntity entity) {
         // build content values..
-        final EntityMapper mapper = new EntityMapper();
+        final EntityMapper mapper = new EntityMapper(db.getConfig());
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
         Iterator<String> keys = mapper.keySet().iterator();
         while(keys.hasNext()){
             String key = keys.next();
+            if(key.equalsIgnoreCase(db.getConfig().getIdNamingConvention())) continue;
+
             IEntity.Action action = mapper.get(key);
             if(action != null){
                 EntityMapper.setAction(action, contentValues, key);
@@ -455,6 +457,32 @@ class Table implements ITable {
         }
 
         return update(contentValues, whereClause, (Object[]) Util.toStringArray(whereArgs));
+    }
+
+    /**
+     * Update using an {@link com.bingzer.android.dbv.IEntity} object
+     *
+     * @param entity the entity to update
+     * @return
+     */
+    @Override
+    public IQuery.Update update(IEntity entity) {
+        if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
+
+        final EntityMapper mapper = new EntityMapper(db.getConfig());
+        final ContentValues contentValues = new ContentValues();
+        entity.map(mapper);
+
+        Iterator<String> keys = mapper.keySet().iterator();
+        while(keys.hasNext()){
+            String key = keys.next();
+            IEntity.Action action = mapper.get(key);
+            if(action != null){
+                EntityMapper.setAction(action, contentValues, key);
+            }
+        }
+
+        return update(contentValues, entity.getId());
     }
 
     /**
@@ -683,7 +711,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
-        IQuery<Cursor> query = new QueryImpl<Cursor>(){
+        IQuery<Cursor> query = new QueryImpl<Cursor>(db.getConfig()){
             @Override public Cursor query(){
                 if(selectionArgs == null || selectionArgs.length == 1 || selectionArgs[0] == null)
                     return sqlDb.rawQuery(sql, null);
@@ -722,7 +750,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.InnerJoin join(String tableName, String onClause) {
-        IQuery.InnerJoin query = new QueryImpl.InnerJoinImpl(this, tableName, onClause){
+        IQuery.InnerJoin query = new QueryImpl.InnerJoinImpl(db.getConfig(), this, tableName, onClause){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             }
@@ -756,7 +784,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.OuterJoin outerJoin(String tableName, String onClause) {
-        IQuery.OuterJoin query = new QueryImpl.OuterJoinImpl(this, tableName, onClause){
+        IQuery.OuterJoin query = new QueryImpl.OuterJoinImpl(db.getConfig(), this, tableName, onClause){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             }
