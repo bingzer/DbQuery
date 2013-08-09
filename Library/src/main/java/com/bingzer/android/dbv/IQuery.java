@@ -22,6 +22,8 @@ import com.bingzer.android.dbv.queries.JoinSelectable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.Selectable;
 
+import java.util.List;
+
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
@@ -74,6 +76,21 @@ public interface IQuery<T> {
          * @return
          */
         IQuery<Cursor> orderByDesc(String... columns);
+
+        //////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////
+
+        /**
+         * Select to an entity
+         * @param entity the target entity
+         */
+        void query(IEntity entity);
+
+        /**
+         * Select to an entityList
+         * @param entityList the target entity list
+         */
+        void query(List<? extends IEntity> entityList);
     }
 
 

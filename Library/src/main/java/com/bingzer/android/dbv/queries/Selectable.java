@@ -16,6 +16,7 @@
 
 package com.bingzer.android.dbv.queries;
 
+import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IQuery;
 
 /**

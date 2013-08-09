@@ -20,6 +20,9 @@ import android.content.Context;
 
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 /**
  * This will be removed
  * Created by Ricky Tobing on 7/16/13.
@@ -48,9 +51,46 @@ class TestUsage {
 
         //db.get("")
 
-        IQuery.Select s = db.get("").select();
+
+
+        Person person = new Person();
+        db.get("Person").select(1).query(person);
 
     }
+
+
+    static class Person implements IEntity{
+
+        private String name;
+        private int age;
+
+
+        @Override
+        public void map(Mapper mapper) {
+            mapper.map("Name", new Action<String>(){
+                @Override public void set(String value) {
+                    name = value;
+                }
+
+                @Override public String get() {
+                    return name;
+                }
+            });
+            mapper.map("Age", new Action<Integer>(){
+
+                @Override public void set(Integer value) {
+                    age = value;
+                }
+
+                @Override
+                public Integer get() {
+                    return age;
+                }
+            });
+        }
+    }
+
+
 
 
 }

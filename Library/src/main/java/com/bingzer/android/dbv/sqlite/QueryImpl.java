@@ -19,9 +19,13 @@ package com.bingzer.android.dbv.sqlite;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.queries.Selectable;
+
+import java.util.List;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
@@ -150,6 +154,59 @@ class QueryImpl<T> implements IQuery<T> {
             }
             return this;
         }
+
+        /**
+         * Select to an entity
+         *
+         * @param entity the target entity
+         */
+        @Override
+        public void query(IEntity entity) {
+            final Cursor cursor = query();
+            final EntityMapper mapper = new EntityMapper();
+
+            entity.map(mapper);
+
+            if(cursor.moveToNext()){
+                for(int i = 0; i < cursor.getColumnCount(); i++){
+                    String columnName = cursor.getColumnName(i);
+                    IEntity.Action action = mapper.get(columnName);
+                    if(action != null){
+                        EntityMapper.setAction(action, cursor, i);
+                    }
+                }
+            }
+
+            cursor.close();
+        }
+
+        /**
+         * Select to an entityList
+         *
+         * @param entityList the target entity list
+         */
+        @Override
+        public void query(List<? extends IEntity> entityList) {
+            final Cursor cursor = query();
+            final EntityMapper mapper = new EntityMapper();
+
+            for(IEntity entity : entityList){
+                cursor.moveToNext();
+                mapper.clear();
+                entity.map(mapper);
+
+                for(int ii = 0; ii < cursor.getColumnCount(); ii++){
+                    String columnName = cursor.getColumnName(ii);
+                    IEntity.Action action = mapper.get(columnName);
+                    if(action != null){
+                        EntityMapper.setAction(action, cursor, ii);
+                    }
+                }
+            }
+
+            cursor.close();
+        }
+
 
         /**
          * To String
