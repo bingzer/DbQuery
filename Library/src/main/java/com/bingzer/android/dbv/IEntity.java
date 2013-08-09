@@ -19,27 +19,57 @@ package com.bingzer.android.dbv;
 import java.lang.reflect.ParameterizedType;
 
 /**
+ * Represents an entity. {@link IEntity} can be serialized.
+ *
  * Created by Ricky Tobing on 8/9/13.
+ *
+ * @see com.bingzer.android.dbv.IQuery.Select#query(IEntity)
+ * @see com.bingzer.android.dbv.ITable#insert(IEntity)
  */
 public interface IEntity {
 
+    /**
+     * Determines how to map column and the class variable.
+     * @param mapper the mapper object
+     */
     void map(Mapper mapper);
 
 
+    ////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    /**
+     * The Mapper object.
+     * This object is used to map column names and variable
+     */
     public static interface Mapper {
 
+        /**
+         *
+         * @param column the column name
+         * @param action the action used to set/get
+         */
         void map(String column, Action action);
     }
 
-
+    /**
+     * An action used to set/get variables
+     *
+     * @param <T>
+     */
     public static abstract class Action<T>{
 
         private Class<?> type;
 
+        @SuppressWarnings("Using Reflections")
         public Action(){
             this(null);
         }
 
+        /**
+         *
+         * @param type
+         */
         public Action(Class<?> type){
             if(type == null) {
                 // use reflection
@@ -58,8 +88,16 @@ public interface IEntity {
             return type;
         }
 
+        /**
+         * Sets the value
+         * @param value the value to set
+         */
         public abstract void set(T value);
 
+        /**
+         * Returns the value
+         * @return the value
+         */
         public abstract T get();
 
     }
