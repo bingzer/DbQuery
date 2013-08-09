@@ -20,12 +20,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
-import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.queries.Selectable;
-
-import java.util.List;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
@@ -67,7 +64,7 @@ class QueryImpl<T> implements IQuery<T> {
     /**
      * SelectImpl
      */
-    static class SelectImpl extends QueryImpl<Cursor> implements IQuery.Select{
+    static class SelectImpl extends QueryImpl<Cursor> implements IQuery.Select, Select.OrderBy{
 
         protected StringBuilder selectString;
         protected StringBuilder columnString;
@@ -114,7 +111,7 @@ class QueryImpl<T> implements IQuery<T> {
          * @return
          */
         @Override
-        public IQuery<Cursor> columns(String... columns) {
+        public Select columns(String... columns) {
             columnString.delete(0, columnString.length());
             if(columns != null){
                 columnString.append(Util.join(",", columns));
@@ -133,7 +130,7 @@ class QueryImpl<T> implements IQuery<T> {
          * @return
          */
         @Override
-        public IQuery<Cursor> orderBy(String... columns) {
+        public OrderBy orderBy(String... columns) {
             orderByString.delete(0, columnString.length());
             if(columns != null){
                 orderByString.append("ORDER BY ").append(Util.join(",", columns)).append(" ASC");
@@ -147,7 +144,7 @@ class QueryImpl<T> implements IQuery<T> {
          * @return
          */
         @Override
-        public IQuery<Cursor> orderByDesc(String... columns) {
+        public OrderBy orderByDesc(String... columns) {
             orderByString.delete(0, columnString.length());
             if(columns != null){
                 orderByString.append("ORDER BY ").append(Util.join(",", columns)).append(" DESC");
@@ -186,7 +183,7 @@ class QueryImpl<T> implements IQuery<T> {
          * @param entityList the target entity list
          */
         @Override
-        public void query(List<? extends IEntity> entityList) {
+        public void query(java.util.List<? extends IEntity> entityList) {
             final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper();
 
@@ -206,7 +203,6 @@ class QueryImpl<T> implements IQuery<T> {
 
             cursor.close();
         }
-
 
         /**
          * To String

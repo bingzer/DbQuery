@@ -35,6 +35,9 @@ public interface IQuery<T> {
      */
     T query();
 
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+
     /**
      * For insert
      */
@@ -53,7 +56,7 @@ public interface IQuery<T> {
     /**
      * For select statement
      */
-    public static interface Select extends IQuery<Cursor> {
+    public static interface Select extends IQuery<Cursor>, EntitySelect {
 
         /**
          * Specified the column to return.
@@ -61,36 +64,29 @@ public interface IQuery<T> {
          * @param columns
          * @return
          */
-        IQuery<Cursor> columns(String... columns);
+        Select columns(String... columns);
 
         /**
          * Ascending orders by columns
          * @param columns
          * @return
          */
-        IQuery<Cursor> orderBy(String... columns);
+        OrderBy orderBy(String... columns);
 
         /**
          * Descending order by columns
          * @param columns
          * @return
          */
-        IQuery<Cursor> orderByDesc(String... columns);
-
-        //////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////
+        OrderBy orderByDesc(String... columns);
 
         /**
-         * Select to an entity
-         * @param entity the target entity
+         * Order By
          */
-        void query(IEntity entity);
+        public static interface OrderBy extends IQuery<Cursor>, EntitySelect {
 
-        /**
-         * Select to an entityList
-         * @param entityList the target entity list
-         */
-        void query(List<? extends IEntity> entityList);
+        }
+
     }
 
 
@@ -107,6 +103,15 @@ public interface IQuery<T> {
     }
 
     public static interface OuterJoin extends Joinable, Selectable, Select{
+
+    }
+
+    public static interface EntitySelect {
+
+        void query(IEntity entity);
+
+
+        void query(List<? extends IEntity> entityList);
 
     }
 

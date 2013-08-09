@@ -24,6 +24,9 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.ITable;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by Ricky Tobing on 7/18/13.
  */
@@ -152,6 +155,36 @@ public class ITableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ---------nsert And Delete ----------------//
+    public void testOrderBy(){
+        List<Integer> list = new LinkedList<Integer>();
+        Cursor cursor = db.get("Orders").selectDistinct(null).columns("CustomerId").orderBy("CustomerId").query();
+        while(cursor.moveToNext()){
+            list.add(cursor.getInt(0));
+        }
+        cursor.close();
+
+        for(int i = 1; i < list.size(); i++){
+            assertTrue(list.get(i-1) < list.get(i));
+        }
+    }
+
+    public void testOrderDescendingBy(){
+        List<Integer> list = new LinkedList<Integer>();
+        Cursor cursor = db.get("Products").selectDistinct(null).columns("Price").orderByDesc("Price").query();
+        while(cursor.moveToNext()){
+            list.add(cursor.getInt(0));
+        }
+        cursor.close();
+
+        for(int i = 1; i < list.size(); i++){
+            assertTrue(list.get(i-1) > list.get(i));
+        }
+    }
+
+
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+    // ---------Insert And Delete ----------------//
 
     int dodolId = -1;
     public void testInsert_Columns(){
