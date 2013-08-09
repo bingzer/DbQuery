@@ -68,6 +68,17 @@ public class EntityTest extends AndroidTestCase {
     }
 
 
+    public void testInsertEntity(){
+        Person person = new Person();
+        person.setName("Andrea Pirlo");
+        person.setAge(100);
+
+        int pirloId = db.get("Person").insert(person).query();
+        assertTrue(pirloId > 0);
+        assertTrue(db.get("Person").count("Name = ?", "Andrea Pirlo") > 0);
+    }
+
+
 
     public static class Person implements IEntity {
         private String name;
