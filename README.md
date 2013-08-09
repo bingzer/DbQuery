@@ -70,7 +70,8 @@ To join tables, the API provides:
 
     Cursor cursor = db.get("Orders O")
                          .join("Customers C", "C.Id = O.CustomerId")
-                         .select(10, "Name = ?", "John Doe");
+                         .select(10, "Name = ?", "John Doe")
+                         .query();
                          
     // This code will produce SQL query:
     //   SELECT * FROM Orders O 
