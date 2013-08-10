@@ -47,6 +47,7 @@ class TestUsage {
                         .add("Column2", "TEXT");
 
             }
+
         });
 
         //db.get("")
@@ -61,6 +62,8 @@ class TestUsage {
 
         PersonList list = new PersonList();
         db.get("").select().query(list);
+
+
 
     }
 

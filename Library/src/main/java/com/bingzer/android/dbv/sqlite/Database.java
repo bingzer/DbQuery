@@ -160,6 +160,8 @@ public class Database implements IDatabase {
             }
             finally {
                 cursor.close();
+                // finally called on ready
+                builder.onReady(this);
             }
         }
     }

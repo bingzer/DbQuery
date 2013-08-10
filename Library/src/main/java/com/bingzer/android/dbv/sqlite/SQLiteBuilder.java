@@ -46,19 +46,52 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
     /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////
 
+
+    /**
+     * Called when upgrade from oldVersion to newVersion
+     *
+     * @param database   the database
+     * @param oldVersion the old version
+     * @param newVersion the new version
+     * @return If true is returned, the code will continue
+     * on {@link #onModelCreate(com.bingzer.android.dbv.IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
+     */
     @Override
     public boolean onUpgrade(IDatabase database, int oldVersion, int newVersion) {
         return false;
     }
 
+    /**
+     * Called when downgrading from oldVersion to newVersion
+     *
+     * @param database   the database
+     * @param oldVersion the old version
+     * @param newVersion the new version
+     * @return If true is returned, the code will continue
+     * on {@link #onModelCreate(com.bingzer.android.dbv.IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
+     */
     @Override
     public boolean onDowngrade(IDatabase database, int oldVersion, int newVersion) {
         return false;
     }
 
+    /**
+     * Called after everything gets called
+     *
+     * @param database the instance of the database
+     */
+    @Override
+    public void onReady(IDatabase database) {
+        // do nothing
+    }
+
+    /**
+     * Called when any error is encountered.
+     *
+     * @param error the error
+     */
     @Override
     public void onError(Throwable error) {
-        // re throw
         throw new Error(error);
     }
 }

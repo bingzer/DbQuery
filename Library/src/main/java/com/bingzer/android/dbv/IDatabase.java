@@ -150,6 +150,12 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
         void onModelCreate(IDatabase database, Modeling modeling);
 
         /**
+         * Called after everything gets called
+         * @param database the instance of the database
+         */
+        void onReady(IDatabase database);
+
+        /**
          * Called when any error is encountered.
          * @param error the error
          */
