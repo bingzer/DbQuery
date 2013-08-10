@@ -175,7 +175,7 @@ class QueryImpl<T> implements IQuery<T> {
                     String columnName = cursor.getColumnName(i);
                     IEntity.Action action = mapper.get(columnName);
                     if(action != null){
-                        EntityMapper.setAction(action, cursor, i);
+                        ContentUtil.mapActionToCursor(action, cursor, i);
                     }
                 }
             }
@@ -215,7 +215,7 @@ class QueryImpl<T> implements IQuery<T> {
                     String columnName = cursor.getColumnName(i);
                     IEntity.Action action = mapper.get(columnName);
                     if(action != null){
-                        EntityMapper.setAction(action, cursor, i);
+                        ContentUtil.mapActionToCursor(action, cursor, i);
                     }
                 }
             }// end while
@@ -281,13 +281,8 @@ class QueryImpl<T> implements IQuery<T> {
         @Override
         public IQuery val(Object... values) {
             ContentValues contentValues = new ContentValues();
-            for(int i = 0; i < values.length; i++){
-                if(values[i] == null){
-                    contentValues.putNull(columnNames[i]);
-                }
-                else{
-                    contentValues.put(columnNames[i], values[i].toString());
-                }
+            for(int i = 0; i < columnNames.length; i++){
+                ContentUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
             }
 
             ((IQueryableAppendable) query).onContentValuesSet(this, contentValues);
@@ -453,6 +448,18 @@ class QueryImpl<T> implements IQuery<T> {
         @Override
         public IQuery.Select select(int top, String whereClause, Object... args) {
             consume(table.select(top, whereClause, args));
+            return this;
+        }
+
+        /**
+         * Select distinct all.
+         * Equivalent of calling <code>selectDistinct(null)</code>
+         *
+         * @return
+         */
+        @Override
+        public Select selectDistinct() {
+            consume(table.selectDistinct(null));
             return this;
         }
 

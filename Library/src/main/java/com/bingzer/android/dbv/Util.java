@@ -16,6 +16,8 @@
 
 package com.bingzer.android.dbv;
 
+import android.database.DatabaseUtils;
+
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
@@ -57,13 +59,8 @@ public class Util {
         else{
             val = obj.toString();
 
-            if(obj instanceof  String){
-
-                if(val.startsWith("'") && val.endsWith("'")){
-                    val = val.substring(1, val.length());
-                }
-
-                val = "'" + ((String)obj).replaceAll("'", "''") + "'";
+            if(obj instanceof String){
+                val = sqlEscapeString(val);
             }
         }
 
@@ -88,4 +85,33 @@ public class Util {
         }
         return builder.toString();
     }
+
+    public static void appendEscapedSQLString(StringBuilder sb, String sqlString) {
+        sb.append('\'');
+        if (sqlString.indexOf('\'') != -1) {
+            int length = sqlString.length();
+            for (int i = 0; i < length; i++) {
+                char c = sqlString.charAt(i);
+                if (c == '\'') {
+                    sb.append('\'');
+                }
+                sb.append(c);
+            }
+        } else
+            sb.append(sqlString);
+        sb.append('\'');
+    }
+
+    /**
+     * SQL-escape a string.
+     */
+    public static String sqlEscapeString(String value) {
+        StringBuilder escaper = new StringBuilder();
+
+        appendEscapedSQLString(escaper, value);
+
+        return escaper.toString();
+    }
+
+
 }

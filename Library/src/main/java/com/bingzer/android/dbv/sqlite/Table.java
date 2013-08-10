@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
@@ -254,6 +253,17 @@ class Table implements ITable {
     }
 
     /**
+     * Select distinct all.
+     * Equivalent of calling <code>selectDistinct(null)</code>
+     *
+     * @return
+     */
+    @Override
+    public IQuery.Select selectDistinct() {
+        return selectDistinct(null);
+    }
+
+    /**
      * SelectImpl distinct
      *
      * @param condition
@@ -313,14 +323,9 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Insert insert(String[] columns, Object[] values) {
-        ContentValues contentValues = new ContentValues();
+        final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            if(values[i] == null){
-                contentValues.putNull(columns[i]);
-            }
-            else{
-                contentValues.put(columns[i], values[i].toString());
-            }
+            ContentUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
         }
 
         return insert(contentValues);
@@ -377,7 +382,7 @@ class Table implements ITable {
 
             IEntity.Action action = mapper.get(key);
             if(action != null){
-                EntityMapper.setAction(action, contentValues, key);
+                ContentUtil.mapContentValuesFromAction(contentValues, key, action);
             }
         }
 
@@ -448,12 +453,9 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs) {
-        ContentValues contentValues = new ContentValues();
+        final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            if(values[i] == null)
-                contentValues.putNull(columns[i]);
-            else
-                contentValues.put(columns[i], values[i].toString());
+            ContentUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
         }
 
         return update(contentValues, whereClause, (Object[]) Util.toStringArray(whereArgs));
@@ -478,7 +480,7 @@ class Table implements ITable {
             String key = keys.next();
             IEntity.Action action = mapper.get(key);
             if(action != null){
-                EntityMapper.setAction(action, contentValues, key);
+                ContentUtil.mapContentValuesFromAction(contentValues, key, action);
             }
         }
 

@@ -70,6 +70,13 @@ public interface Selectable {
     IQuery.Select select(int top, String whereClause, Object... args);
 
     /**
+     * Select distinct all.
+     * Equivalent of calling <code>selectDistinct(null)</code>
+     * @return
+     */
+    IQuery.Select selectDistinct();
+
+    /**
      * Select distinct
      * @param condition
      * @return
