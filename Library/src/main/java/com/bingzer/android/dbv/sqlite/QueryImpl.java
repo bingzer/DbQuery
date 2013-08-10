@@ -231,14 +231,14 @@ class QueryImpl<T> implements IQuery<T> {
             sql.append(columnString).append(" ");
             sql.append(fromString).append(" ");
             // where
-            sql.append(super.builder);
+            sql.append(" ").append(super.builder);
             // limit
             if(limitString.length() > 0){
-                sql.append(limitString);
+                sql.append(" ").append(limitString);
             }
             // order by
             if(orderByString.length() > 0){
-                sql.append(orderByString);
+                sql.append(" ").append(orderByString);
             }
 
             return sql.toString();

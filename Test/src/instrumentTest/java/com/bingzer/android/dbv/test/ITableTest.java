@@ -177,9 +177,35 @@ public class ITableTest extends AndroidTestCase{
         }
     }
 
+    public void testOrderBy_2(){
+        List<Integer> list = new LinkedList<Integer>();
+        Cursor cursor = db.get("Orders").selectDistinct("CustomerId not null").columns("CustomerId").orderBy("CustomerId").query();
+        while(cursor.moveToNext()){
+            list.add(cursor.getInt(0));
+        }
+        cursor.close();
+
+        for(int i = 1; i < list.size(); i++){
+            assertTrue(list.get(i-1) < list.get(i));
+        }
+    }
+
     public void testOrderDescendingBy(){
         List<Integer> list = new LinkedList<Integer>();
         Cursor cursor = db.get("Products").selectDistinct(null).columns("Price").orderByDesc("Price").query();
+        while(cursor.moveToNext()){
+            list.add(cursor.getInt(0));
+        }
+        cursor.close();
+
+        for(int i = 1; i < list.size(); i++){
+            assertTrue(list.get(i-1) > list.get(i));
+        }
+    }
+
+    public void testOrderDescendingBy_2(){
+        List<Integer> list = new LinkedList<Integer>();
+        Cursor cursor = db.get("Products").selectDistinct("Price is not ?", null).columns("Price").orderByDesc("Price").query();
         while(cursor.moveToNext()){
             list.add(cursor.getInt(0));
         }
