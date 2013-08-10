@@ -128,6 +128,15 @@ public class ITableTest extends AndroidTestCase{
         c.close();
     }
 
+    public void testSelectDistinct(){
+        Cursor cursor = db.get("Customers")
+                .selectDistinct()
+                .query();
+        cursor.moveToFirst();
+        assertTrue(cursor.getCount() >= 6);
+        cursor.close();
+    }
+
     public void testSelectDistinct_Condition(){
         int pirloId = getCustomerId("Andrea Pirlo");
         int kakaId = getCustomerId("Kaka");

@@ -34,16 +34,17 @@ public class EntityTest extends AndroidTestCase {
                 modeling.add("Person")
                         .addPrimaryKey("Id")
                         .add("Name", "String")
-                        .add("Age", "Integer");
+                        .add("Age", "Integer")
+                        .add("Address", "Blob");
             }
         });
 
         db.get("Person").deleteAll();
 
-        IQuery.InsertWith insert = db.get("Person").insert("Name", "Age");
-        insert.val("John", 23);
-        insert.val("Ronaldo", 40);
-        insert.val("Messi", 25);
+        IQuery.InsertWith insert = db.get("Person").insert("Name", "Age", "Address");
+        insert.val("John", 23, "Washington DC".getBytes());
+        insert.val("Ronaldo", 40, "Madrid".getBytes());
+        insert.val("Messi", 25, "Barcelona".getBytes());
 
     }
 
@@ -55,6 +56,7 @@ public class EntityTest extends AndroidTestCase {
         db.get("Person").select(messId).query(person);
         assertTrue(person.getName().equals("Messi"));
         assertTrue(person.getAge() == 25);
+        assertTrue(new String(person.getAddressBytes()).equalsIgnoreCase("Barcelona"));
     }
 
 
@@ -62,6 +64,7 @@ public class EntityTest extends AndroidTestCase {
         Person person = new Person();
         person.setName("Andrea Pirlo");
         person.setAge(100);
+        person.setAddressBytes("Turin".getBytes());
 
         int pirloId = db.get("Person").insert(person).query();
         assertTrue(pirloId > 0);
@@ -73,7 +76,8 @@ public class EntityTest extends AndroidTestCase {
         Person person = new Person();
         person.setName("Messi");
         person.setAge(10000);
-        person.id = db.get("Person").selectId("Name = ?", "Messi");
+        person.setId(db.get("Person").selectId("Name = ?", "Messi"));
+        person.setAddressBytes("Barcelona Updated".getBytes());
 
         db.get("Person").update(person);
 
@@ -82,6 +86,7 @@ public class EntityTest extends AndroidTestCase {
 
         assertTrue(p2.getName().equals("Messi"));
         assertTrue(p2.getAge() == 10000);
+        assertTrue(new String(p2.getAddressBytes()).equalsIgnoreCase("Barcelona Updated"));
     }
 
     public void testEntity_Collection(){
@@ -93,108 +98,6 @@ public class EntityTest extends AndroidTestCase {
     }
 
 
-    /////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////
 
-    public static class PersonList extends LinkedList<Person> implements IEntityList<Person>{
-
-        @Override
-        public List<Person> getEntityList() {
-            return this;
-        }
-
-        @Override
-        public Person newEntity() {
-            return new Person();
-        }
-    }
-
-    public static class Person implements IEntity {
-        private int id;
-        private String name;
-        private int age;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getAge() {
-            return age;
-        }
-
-        public void setAge(int age) {
-            this.age = age;
-        }
-
-        /**
-         * Returns the id
-         *
-         * @return the id
-         */
-        @Override
-        public int getId() {
-            return id;
-        }
-
-        @Override
-        public void map(Mapper mapper) {
-            mapper.map("Name", new Action<String>(String.class) {
-
-                @Override
-                public void set(String value) {
-                    setName(value);
-                }
-
-                @Override
-                public String get() {
-                    return getName();
-                }
-            });
-
-            mapper.map("Age", new Action<Integer>(Integer.class){
-
-                @Override
-                public void set(Integer value) {
-                    setAge(value);
-                }
-
-                @Override
-                public Integer get() {
-                    return getAge();
-                }
-            });
-
-            mapper.mapId(new Action<Integer>(Integer.class){
-
-                /**
-                 * Sets the value
-                 *
-                 * @param value the value to set
-                 */
-                @Override
-                public void set(Integer value) {
-                    id = value;
-                }
-
-                /**
-                 * Returns the value
-                 *
-                 * @return the value
-                 */
-                @Override
-                public Integer get() {
-                    return getId();
-                }
-            });
-
-        }
-
-    }
 }
 
