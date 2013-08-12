@@ -401,12 +401,13 @@ class Table implements ITable {
     @Override
     public <E extends IEntity> IQuery.Insert insert(final IEntityList<E> entityList) {
         final QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
+        query.value = 0;
 
         db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
                 for(IEntity entity : entityList.getEntityList()){
-                    insert(entity);
+                    insert(entity).query();
                     query.value++;
                 }
             }
@@ -526,13 +527,13 @@ class Table implements ITable {
     @Override
     public <E extends IEntity> IQuery.Update update(final IEntityList<E> entityList) {
         final QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
+        query.value = 0;
 
         db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
                 for(IEntity entity : entityList.getEntityList()){
-                    update(entity);
-                    query.value++;
+                    query.value += update(entity).query();
                 }
             }
         }).execute();
@@ -678,6 +679,9 @@ class Table implements ITable {
     @Override
     public <E extends IEntity> IQuery.Delete delete(IEntityList<E> entityList) {
         int[] ids = new int[entityList.getEntityList().size()];
+        for(int i = 0; i < ids.length; i++){
+            ids[i] = entityList.getEntityList().get(i).getId();
+        }
         return  delete(ids);
     }
 

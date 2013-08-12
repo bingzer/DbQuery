@@ -12,6 +12,16 @@ public class Person implements IEntity{
     private int age;
     private byte[] addressBytes;
 
+    public Person(){
+        this(null, -1, null);
+    }
+
+    public Person(String name, int age, byte[] addressBytes){
+        this.name = name;
+        this.age = age;
+        this.addressBytes = addressBytes;
+    }
+
     public String getName() {
         return name;
     }
