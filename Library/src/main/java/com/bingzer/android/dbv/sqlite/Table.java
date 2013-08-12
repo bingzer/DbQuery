@@ -235,7 +235,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select select(int top, String whereClause, Object... args) {
-        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), toString(), top, false){
+        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), this, top, false){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             };
@@ -283,7 +283,7 @@ class Table implements ITable {
      */
     @Override
     public IQuery.Select selectDistinct(String whereClause, Object... args) {
-        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), toString(), true){
+        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), this, true){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             };

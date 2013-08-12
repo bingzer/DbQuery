@@ -18,7 +18,9 @@ package com.bingzer.android.dbv.sqlite;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.IEntityList;
 
 /**
  * Created by Ricky on 8/9/13.
@@ -69,4 +71,53 @@ class ContentUtil {
             // TODO: Fix the exception message
         else throw new IllegalArgumentException("Unmapped");
     }
+
+
+    static void mapEntityFromCursor(EntityMapper mapper, IEntity entity, Cursor cursor){
+        entity.map(mapper);
+        if(cursor.moveToNext()){
+            for(int i = 0; i < cursor.getColumnCount(); i++){
+                String columnName = cursor.getColumnName(i);
+                IEntity.Action action = mapper.get(columnName);
+                if(action != null){
+                    ContentUtil.mapActionToCursor(action, cursor, i);
+                }
+            }
+        }
+    }
+
+    static <E extends IEntity> void mapEntityListFromCursor(EntityMapper mapper, IEntityList<E> entityList, Cursor cursor){
+        while(cursor.moveToNext()){
+            int columnIdIndex = cursor.getColumnIndex(mapper.config.getIdNamingConvention());
+            int id = cursor.getInt(columnIdIndex);
+
+            E entity = null;
+            for(IEntity e : entityList.getEntityList()){
+                if(e.getId() == id){
+                    entity = (E)e;
+                    break;
+                }
+            }
+            if(entity == null){
+                // creates new generic entity
+                entity = entityList.newEntity();
+                // add to the collection
+                entityList.getEntityList().add(entity);
+            }
+
+            // clear the mapper
+            mapper.clear();
+            // assign the mapper
+            entity.map(mapper);
+            for(int i = 0; i < cursor.getColumnCount(); i++){
+                String columnName = cursor.getColumnName(i);
+                IEntity.Action action = mapper.get(columnName);
+                if(action != null){
+                    ContentUtil.mapActionToCursor(action, cursor, i);
+                }
+            }
+        }// end while
+    }
+
+
 }

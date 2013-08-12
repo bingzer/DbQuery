@@ -29,7 +29,7 @@ import com.bingzer.android.dbv.queries.Selectable;
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
-class QueryImpl<T> implements IQuery<T> {
+abstract class QueryImpl<T> implements IQuery<T> {
 
     IConfig config;
     StringBuilder builder;
@@ -75,17 +75,20 @@ class QueryImpl<T> implements IQuery<T> {
         protected StringBuilder fromString;
         protected StringBuilder limitString;
         protected StringBuilder orderByString;
+        protected Table table;
 
-        SelectImpl(IConfig config, String tableName){
-            this(config, tableName, false);
+        SelectImpl(IConfig config, Table table){
+            this(config, table, false);
         }
 
-        SelectImpl(IConfig config, String tableName, boolean distinct){
-            this(config, tableName, -1, distinct);
+        SelectImpl(IConfig config, Table table, boolean distinct){
+            this(config, table, -1, distinct);
         }
 
-        SelectImpl(IConfig config, String tableName, int top, boolean distinct){
+        SelectImpl(IConfig config, Table table, int top, boolean distinct){
             super(config);
+
+            this.table = table;
 
             selectString = new StringBuilder();
             columnString = new StringBuilder();
@@ -93,16 +96,12 @@ class QueryImpl<T> implements IQuery<T> {
             limitString = new StringBuilder();
             orderByString = new StringBuilder();
 
-
             if(distinct)
                 selectString.append("SELECT DISTINCT ");
             else selectString.append("SELECT ");
 
-            //if(top > 0) selectString = selectString + " TOP " + top;
-
             columnString.append("*");
-
-            fromString.append("FROM " + tableName);
+            fromString.append("FROM " + table.toString());
 
             if(top > 0){
                 limitString.append(" LIMIT " + top);
@@ -168,17 +167,7 @@ class QueryImpl<T> implements IQuery<T> {
             final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(config);
 
-            entity.map(mapper);
-
-            if(cursor.moveToNext()){
-                for(int i = 0; i < cursor.getColumnCount(); i++){
-                    String columnName = cursor.getColumnName(i);
-                    IEntity.Action action = mapper.get(columnName);
-                    if(action != null){
-                        ContentUtil.mapActionToCursor(action, cursor, i);
-                    }
-                }
-            }
+            ContentUtil.mapEntityFromCursor(mapper, entity, cursor);
 
             cursor.close();
         }
@@ -189,36 +178,9 @@ class QueryImpl<T> implements IQuery<T> {
             final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(config);
 
-            while(cursor.moveToNext()){
-                int columnIdIndex = cursor.getColumnIndex(config.getIdNamingConvention());
-                int id = cursor.getInt(columnIdIndex);
+            ContentUtil.mapEntityListFromCursor(mapper, entityList, cursor);
 
-                E entity = null;
-                for(IEntity e : entityList.getEntityList()){
-                    if(e.getId() == id){
-                        entity = (E)e;
-                        break;
-                    }
-                }
-                if(entity == null){
-                    // creates new generic entity
-                    entity = entityList.newEntity();
-                    // add to the collection
-                    entityList.getEntityList().add(entity);
-                }
-
-                // clear the mapper
-                mapper.clear();
-                // assign the mapper
-                entity.map(mapper);
-                for(int i = 0; i < cursor.getColumnCount(); i++){
-                    String columnName = cursor.getColumnName(i);
-                    IEntity.Action action = mapper.get(columnName);
-                    if(action != null){
-                        ContentUtil.mapActionToCursor(action, cursor, i);
-                    }
-                }
-            }// end while
+            cursor.close();
         }
 
         /**
@@ -232,13 +194,13 @@ class QueryImpl<T> implements IQuery<T> {
             sql.append(fromString).append(" ");
             // where
             sql.append(" ").append(super.builder);
-            // limit
-            if(limitString.length() > 0){
-                sql.append(" ").append(limitString);
-            }
             // order by
             if(orderByString.length() > 0){
                 sql.append(" ").append(orderByString);
+            }
+            // limit
+            if(limitString.length() > 0){
+                sql.append(" ").append(limitString);
             }
 
             return sql.toString();
@@ -253,7 +215,7 @@ class QueryImpl<T> implements IQuery<T> {
          */
         @Override
         public Paging paging(int row) {
-            throw new UnsupportedOperationException("Not yet implemented");
+            return new PagingImpl(config, this, row);
         }
     }
 
@@ -378,7 +340,7 @@ class QueryImpl<T> implements IQuery<T> {
         protected StringBuilder joinBuilder;
 
         Join(IConfig config, Table table, String joinType, String tableNameToJoin, String onClause){
-            super(config, table.toString());
+            super(config, table);
             this.table = table;
             this.joinBuilder = new StringBuilder();
 
@@ -517,13 +479,13 @@ class QueryImpl<T> implements IQuery<T> {
             if(super.builder.length() > 0){
                 sql.append(super.builder);
             }
-            // limit
-            if(limitString != null){
-                sql.append(limitString);
-            }
             // order by
             if(orderByString != null){
                 sql.append(orderByString);
+            }
+            // limit
+            if(limitString != null){
+                sql.append(limitString);
             }
 
             return sql.toString();
@@ -544,6 +506,132 @@ class QueryImpl<T> implements IQuery<T> {
             limitString = ((SelectImpl)select).limitString;
             // the whereClause part
             append(((SelectImpl) select).builder);
+        }
+    }
+
+    static class PagingImpl extends QueryImpl<Cursor> implements Paging{
+
+        private final int rowLimit;
+        private final SelectImpl select;
+        private int pageNumber = 0;
+
+        PagingImpl(IConfig config, SelectImpl select, int rowLimit){
+            super(config);
+            this.select = select;
+            this.rowLimit = rowLimit;
+        }
+
+        /**
+         * Returns the number of row set in the beginning.
+         * This number is final
+         *
+         * @return the number of row
+         */
+        @Override
+        public int getRowLimit() {
+            return rowLimit;
+        }
+
+        /**
+         * Returns the current page number
+         *
+         * @return the current page number
+         */
+        @Override
+        public int getPageNumber() {
+            return pageNumber;
+        }
+
+        /**
+         * Returns query and up the page number by one.
+         * Page number is upped only when there's row in the cursor
+         * @return cursor
+         */
+        @Override
+        public Cursor query(){
+            Cursor cursor = null;
+            try{
+                cursor = select.table.raw(toString()).query();
+                return cursor;
+            }
+            finally {
+                if (cursor != null && cursor.getCount() > 0)
+                    pageNumber++;
+            }
+        }
+
+        /**
+         * Returns the cursor on the <code>pageNumber</code>.
+         * If pageNumber is under than zero it will throw an IllegalArgumentException.
+         * If pageNumber is not found, cursor will be null.
+         * If called, then {@link #getPageNumber()} will return pageNumber.
+         *
+         * @param pageNumber the number
+         * @return cursor
+         */
+        @Override
+        public Cursor query(int pageNumber) {
+            ensurePageNumberValid(pageNumber);
+            return query();
+        }
+
+        /**
+         * Query and store the result to an {@link com.bingzer.android.dbv.IEntity}
+         *
+         * @param entity the entity
+         */
+        @Override
+        public void query(IEntity entity) {
+            final Cursor cursor = query();
+            final EntityMapper mapper = new EntityMapper(config);
+
+            ContentUtil.mapEntityFromCursor(mapper, entity, cursor);
+
+            cursor.close();
+        }
+
+        /**
+         * Query and store the result to an {@link com.bingzer.android.dbv.IEntityList}
+         *
+         * @param entityList the entity list
+         * @param <E> extends IEntity
+         */
+        @Override
+        public <E extends IEntity> void query(IEntityList<E> entityList) {
+            final Cursor cursor = query();
+            final EntityMapper mapper = new EntityMapper(config);
+
+            ContentUtil.mapEntityListFromCursor(mapper, entityList, cursor);
+
+            cursor.close();
+        }
+
+        @Override
+        public String toString(){
+            StringBuilder sql = new StringBuilder();
+            sql.append(select.selectString).append(" ");
+            sql.append(select.columnString).append(" ");
+            sql.append(select.fromString).append(" ");
+            // where
+            sql.append(" ").append(select.builder);
+            // order by
+            if(select.orderByString.length() > 0){
+                sql.append(" ").append(select.orderByString);
+            }
+            // Pagination
+            sql.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
+
+            return sql.toString();
+        }
+
+        int getOffset(){
+            return pageNumber * rowLimit;
+        }
+
+        void ensurePageNumberValid(int pageNumber){
+            if(pageNumber < 0)
+                throw new IllegalArgumentException("PageNumber must be over 0");
+            this.pageNumber = pageNumber;
         }
     }
 }

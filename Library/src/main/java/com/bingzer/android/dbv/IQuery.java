@@ -18,12 +18,9 @@ package com.bingzer.android.dbv;
 
 import android.database.Cursor;
 
-import com.bingzer.android.dbv.queries.JoinSelectable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.queries.Selectable;
-
-import java.util.List;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
@@ -89,7 +86,7 @@ public interface IQuery<T> {
         /**
          * Order By
          */
-        public static interface OrderBy extends IQuery<Cursor>, EntitySelect {
+        public static interface OrderBy extends IQuery<Cursor>, EntitySelect, Pagination {
 
         }
 
@@ -133,7 +130,7 @@ public interface IQuery<T> {
     /**
      * Represents a paging and select statement
      */
-    public static interface Paging {
+    public static interface Paging extends IQuery<Cursor>, EntitySelect {
 
         /**
          * Returns the number of row set in the beginning.
@@ -147,24 +144,26 @@ public interface IQuery<T> {
          *
          * @return the current page number
          */
-        int getPage();
+        int getPageNumber();
 
         /**
-         * Cursor on the nex page
-         * @return cursor
+         * Returns the current cursor.
+         * This also append the pageNumber by one
+         *
+         * @return current cursor
          */
-        Cursor next();
+        Cursor query();
 
         /**
          * Returns the cursor on the <code>pageNumber</code>.
          * If pageNumber is under than zero it will throw an IllegalArgumentException.
          * If pageNumber is not found, cursor will be null.
-         * If called, then {@link #getPage()} will return pageNumber.
+         * If called, then {@link #getPageNumber()} will return pageNumber.
          *
          * @param pageNumber the number
          * @return cursor
          */
-        Cursor toPage(int pageNumber);
+        Cursor query(int pageNumber);
     }
 
     ////////////////////////////////////////////////////
