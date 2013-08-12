@@ -543,6 +543,17 @@ abstract class QueryImpl<T> implements IQuery<T> {
         }
 
         /**
+         * Sets the page number.
+         * If the pageNumber is under than zero it will throw an IllegalArgumentException.
+         *
+         * @param pageNumber the page number to set
+         */
+        @Override
+        public void setPageNumber(int pageNumber) {
+            ensurePageNumberValid(pageNumber);
+        }
+
+        /**
          * Returns query and up the page number by one.
          * Page number is upped only when there's row in the cursor
          * @return cursor

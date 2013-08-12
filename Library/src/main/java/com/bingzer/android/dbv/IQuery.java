@@ -140,11 +140,20 @@ public interface IQuery<T> {
         int getRowLimit();
 
         /**
-         * Returns the current page number
+         * Returns the current page number.
          *
          * @return the current page number
+         * @see #setPageNumber(int)
          */
         int getPageNumber();
+
+        /**
+         * Sets the page number.
+         * If the pageNumber is under than zero it will throw an IllegalArgumentException.
+         *
+         * @param pageNumber the page number to set
+         */
+        void setPageNumber(int pageNumber);
 
         /**
          * Returns the current cursor.
