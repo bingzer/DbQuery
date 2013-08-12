@@ -98,9 +98,20 @@ To join tables, the API provides:
 
 <code>Update</code> Operation
 -----------
-Update age to 21 by id
+Update age to 21 by specifying a condition
 
-    personTable.update("Age", 21, "Id = ?", 1);
+    personTable.update("Age", 21, "Name = ? AND Address = ?", "John Doe", "42 Wallaby Way, Sidney");
+    
+Update age to 21 by using <code>Id</code>
+
+    int johnId = ...
+    personTable.update("Age", 21, johnId);
+    
+Update age to 21 and Address to something else by specifying a condition
+
+    personTable.update(new String[]{"Age", "Address"},
+                       new Object[]{21, "Something Else"},
+                       "Name = ? AND Address = ?", "John Doe", "42 Wallaby Way, Sidney");
     
 Update using ContentValues.
 (i.e: Update with ContentValues whose name is John)
@@ -114,7 +125,11 @@ Update using ContentValues.
 -----------
 Insert a person
 
-    personTable.insert("Name", "Age").values("Ricky", 29);
+    personTable.insert("Name", "Age")
+               .values("John Doe", 29);
+    // or
+    personTable.insert(new String[]{"Name", "Age"},
+                       new Object[]{"John Doe", 29});
 
 Insert a person using ContentValues
 
@@ -125,15 +140,16 @@ Insert a person using ContentValues
 
 <code>Delete</code> Operation
 -----------
-Delete by id
+Delete by <code>id</code>
+    
+    int johnId = ...
+    personTable.delete(johnId);
 
-    personTable.delete(1);
-
-Bulk-delete
+Bulk-delete by multiple <code>id</code>s
 
     personTable.delete(1,2,11,34);
 
-Delete with condition
+Dulk-delete with condition
 (i.e: Delete whose name starts with 'John')
 
     personTable.delete("Name LIKE ?", "John%");
