@@ -149,7 +149,7 @@ Bulk-delete by multiple <code>id</code>s
 
     personTable.delete(1,2,11,34);
 
-Dulk-delete with condition
+Bulk-delete with condition
 (i.e: Delete whose name starts with 'John')
 
     personTable.delete("Name LIKE ?", "John%");
