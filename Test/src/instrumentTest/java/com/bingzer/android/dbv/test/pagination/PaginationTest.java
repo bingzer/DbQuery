@@ -18,7 +18,7 @@ public class PaginationTest extends AndroidTestCase {
 
     @Override
     public void setUp(){
-        db = DbQuery.getDatabase("EntityDb");
+        db = DbQuery.getDatabase("PaginationDb");
         db.open(1, new SQLiteBuilder() {
             @Override
             public Context getContext() {

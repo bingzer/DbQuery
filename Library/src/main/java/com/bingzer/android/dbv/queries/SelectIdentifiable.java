@@ -17,9 +17,15 @@
 package com.bingzer.android.dbv.queries;
 
 /**
+ * Select and returns Id.
+ * A table must follow {@link com.bingzer.android.dbv.IConfig#getIdNamingConvention()}
+ * to make this work
+ *
  * Created by Ricky Tobing on 7/20/13.
+ *
+ * @see com.bingzer.android.dbv.IConfig#getIdNamingConvention()
  */
-public interface Identifiable {
+public interface SelectIdentifiable {
 
     /**
      * Returns id

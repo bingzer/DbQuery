@@ -18,6 +18,7 @@ package com.bingzer.android.dbv;
 
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.queries.EntitySelectable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.queries.Selectable;
@@ -59,7 +60,7 @@ public interface IQuery<T> {
     /**
      * For select statement
      */
-    public static interface Select extends IQuery<Cursor>, EntitySelect, Pagination {
+    public static interface Select extends IQuery<Cursor>, EntitySelectable, Pagination {
 
         /**
          * Specified the column to return.
@@ -86,7 +87,7 @@ public interface IQuery<T> {
         /**
          * Order By
          */
-        public static interface OrderBy extends IQuery<Cursor>, EntitySelect, Pagination {
+        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable, Pagination {
 
         }
 
@@ -130,7 +131,7 @@ public interface IQuery<T> {
     /**
      * Represents a paging and select statement
      */
-    public static interface Paging extends IQuery<Cursor>, EntitySelect {
+    public static interface Paging extends IQuery<Cursor>, EntitySelectable {
 
         /**
          * Returns the number of row set in the beginning.
@@ -177,25 +178,5 @@ public interface IQuery<T> {
 
     ////////////////////////////////////////////////////
     ////////////////////////////////////////////////////
-
-    /**
-     * Extension for an IEntity
-     */
-    public static interface EntitySelect {
-
-        /**
-         * Query and store the result to an {@link IEntity}
-         * @param entity
-         */
-        void query(IEntity entity);
-
-        /**
-         * Query and store the result to an {@link IEntityList}
-         * @param entityList
-         * @param <E>
-         */
-        <E extends IEntity> void query(IEntityList<E> entityList);
-
-    }
 
 }

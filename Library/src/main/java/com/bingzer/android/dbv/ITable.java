@@ -20,10 +20,9 @@ import com.bingzer.android.dbv.queries.Countable;
 import com.bingzer.android.dbv.queries.Deletable;
 import com.bingzer.android.dbv.queries.Droppable;
 import com.bingzer.android.dbv.queries.Function;
-import com.bingzer.android.dbv.queries.Identifiable;
+import com.bingzer.android.dbv.queries.SelectIdentifiable;
 import com.bingzer.android.dbv.queries.Insertable;
 import com.bingzer.android.dbv.queries.Joinable;
-import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.queries.RawQueryable;
 import com.bingzer.android.dbv.queries.Selectable;
 import com.bingzer.android.dbv.queries.Updatable;
@@ -38,7 +37,7 @@ public interface ITable extends
         Selectable, Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,
         RawQueryable, Countable, Droppable,
-        Identifiable, Function {
+        SelectIdentifiable, Function {
 
     /**
      * Returns the name
