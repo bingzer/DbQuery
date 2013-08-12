@@ -45,11 +45,20 @@ Using <code>ITable</code>
 -----------
 Select and return all columns whose age is over 50 y/o
 
-    Cursor cursor = personTable.select("Age > ?", 50).query();
+    Cursor cursor = personTable.select("Age > ?", 50)
+                        .query();
+                        
+    // SELECT * FROM PersonTable
+    // WHERE Age > 50
 
 Select and return name whose age is over 50 y/o
 
-    Cursor cursor = personTable.select("Age > ?", 50).columns("Name").query();
+    Cursor cursor = personTable.select("Age > ?", 50)
+                        .columns("Name")
+                        .query();
+                        
+    // SELECT Name FROM PersonTable
+    // WHERE Age > 50
 
 Select all order by age
 
@@ -57,12 +66,19 @@ Select all order by age
                         .orderBy("Age")
                         .query();
     
+    // SELECT * FROM PersonTable
+    // ORDER BY Age ASC
+    
 Select with complex query. 
 (i.e: Return all person who's over 25 y/o and whose name starts with 'John')
 
     Cursor cursor = personTable.select("Age > ? AND Name LIKE ?", 25, "John%")
                         .orderBy("Age", "Name")
                         .query();
+    
+    // SELECT * FROM PersonTable
+    // WHERE Age > 25 AND Name LIKE 'John%'
+    // ORDER BY Age ASC, Name ASC
 
 <code>Join</code> Operation
 -----------
@@ -73,7 +89,6 @@ To join tables, the API provides:
                          .select(10, "Name = ?", "John Doe")
                          .query();
                          
-    // This code will produce SQL query:
     //   SELECT * FROM Orders O 
     //   INNER JOIN Customers C
     //      ON C.Id = O.CustomerId
