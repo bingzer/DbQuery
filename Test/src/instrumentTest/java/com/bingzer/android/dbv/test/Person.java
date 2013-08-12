@@ -7,7 +7,7 @@ import com.bingzer.android.dbv.IEntity;
  */
 public class Person implements IEntity{
 
-    private int id;
+    private int id = -1;
     private String name;
     private int age;
     private byte[] addressBytes;

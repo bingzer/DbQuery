@@ -67,16 +67,12 @@ class TestUsage {
 
 
         // -- transaction
-        IDatabase.Transaction transaction = db.begin(new IDatabase.Batch() {
+        db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
 
             }
-        });
-
-        if(transaction.execute()){
-            // success
-        }
+        }).commit();
     }
 
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {

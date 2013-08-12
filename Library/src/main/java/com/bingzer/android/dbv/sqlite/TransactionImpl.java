@@ -31,6 +31,8 @@ class TransactionImpl implements IDatabase.Transaction {
     TransactionImpl(Database database, IDatabase.Batch batch){
         this.database = database;
         this.batch = batch;
+        database.begin();
+        batch.exec(database);
     }
 
     /**
@@ -38,8 +40,6 @@ class TransactionImpl implements IDatabase.Transaction {
      */
     @Override
     public void commit() {
-        database.begin();
-        batch.exec(database);
         database.commit();
     }
 
