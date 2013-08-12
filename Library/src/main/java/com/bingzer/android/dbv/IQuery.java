@@ -20,6 +20,7 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.queries.JoinSelectable;
 import com.bingzer.android.dbv.queries.Joinable;
+import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.queries.Selectable;
 
 import java.util.List;
@@ -39,11 +40,16 @@ public interface IQuery<T> {
     //////////////////////////////////////////////////////
 
     /**
-     * For insert
+     * Represents an insert statement
+     *
+     * @see InsertWith
      */
     public static interface Insert extends IQuery<Integer> {
     }
 
+    /**
+     * Represents an insert "with" statement
+     */
     public static interface InsertWith extends IQuery<Integer> {
 
         /**
@@ -56,7 +62,7 @@ public interface IQuery<T> {
     /**
      * For select statement
      */
-    public static interface Select extends IQuery<Cursor>, EntitySelect {
+    public static interface Select extends IQuery<Cursor>, EntitySelect, Pagination {
 
         /**
          * Specified the column to return.
@@ -89,28 +95,97 @@ public interface IQuery<T> {
 
     }
 
-
+    /**
+     * Represents a delete statement
+     */
     public static interface Delete extends IQuery<Integer> {
 
     }
 
+    /**
+     * Represents an update statement
+     */
     public static interface Update extends IQuery<Integer> {
 
     }
 
+    /**
+     * Represents an inner join statement
+     *
+     * @see OuterJoin
+     */
     public static interface InnerJoin extends Joinable, Selectable, Select{
 
     }
 
+    /**
+     * Represents an outer join statement
+     *
+     * @see InnerJoin
+     */
     public static interface OuterJoin extends Joinable, Selectable, Select{
 
     }
 
+    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+
+    /**
+     * Represents a paging and select statement
+     */
+    public static interface Paging {
+
+        /**
+         * Returns the number of row set in the beginning.
+         * This number is final
+         * @return the number of row
+         */
+        int getRowLimit();
+
+        /**
+         * Returns the current page number
+         *
+         * @return the current page number
+         */
+        int getPage();
+
+        /**
+         * Cursor on the nex page
+         * @return cursor
+         */
+        Cursor next();
+
+        /**
+         * Returns the cursor on the <code>pageNumber</code>.
+         * If pageNumber is under than zero it will throw an IllegalArgumentException.
+         * If pageNumber is not found, cursor will be null.
+         * If called, then {@link #getPage()} will return pageNumber.
+         *
+         * @param pageNumber the number
+         * @return cursor
+         */
+        Cursor toPage(int pageNumber);
+    }
+
+    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+
+    /**
+     * Extension for an IEntity
+     */
     public static interface EntitySelect {
 
+        /**
+         * Query and store the result to an {@link IEntity}
+         * @param entity
+         */
         void query(IEntity entity);
 
-
+        /**
+         * Query and store the result to an {@link IEntityList}
+         * @param entityList
+         * @param <E>
+         */
         <E extends IEntity> void query(IEntityList<E> entityList);
 
     }

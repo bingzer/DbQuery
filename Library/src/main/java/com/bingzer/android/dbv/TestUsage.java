@@ -63,6 +63,7 @@ class TestUsage {
         PersonList list = new PersonList();
         db.get("").select().query(list);
 
+        IQuery.Paging paging = db.get("").select().paging(10);
 
 
     }

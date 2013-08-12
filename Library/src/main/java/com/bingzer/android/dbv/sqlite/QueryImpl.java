@@ -243,6 +243,18 @@ class QueryImpl<T> implements IQuery<T> {
 
             return sql.toString();
         }
+
+        /**
+         * Added paging to a query.
+         *
+         * @param row the row number
+         * @return paging
+         * @see com.bingzer.android.dbv.IQuery.Paging
+         */
+        @Override
+        public Paging paging(int row) {
+            throw new UnsupportedOperationException("Not yet implemented");
+        }
     }
 
 

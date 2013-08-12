@@ -23,6 +23,7 @@ import com.bingzer.android.dbv.queries.Function;
 import com.bingzer.android.dbv.queries.Identifiable;
 import com.bingzer.android.dbv.queries.Insertable;
 import com.bingzer.android.dbv.queries.Joinable;
+import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.queries.RawQueryable;
 import com.bingzer.android.dbv.queries.Selectable;
 import com.bingzer.android.dbv.queries.Updatable;
