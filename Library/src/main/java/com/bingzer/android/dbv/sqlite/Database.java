@@ -202,6 +202,21 @@ public class Database implements IDatabase {
     }
 
     /**
+     * Begin a transaction. From this point on,
+     * all the transaction should be set to
+     * <code>autoCommit = false</code>
+     *
+     * @param batch block batch to be executed
+     * @return transaction
+     * @see com.bingzer.android.dbv.IDatabase.Transaction
+     * @see com.bingzer.android.dbv.IDatabase.Batch
+     */
+    @Override
+    public Transaction begin(Batch batch) {
+        return new TransactionImpl(this, batch);
+    }
+
+    /**
      * Runs raw sql
      *
      * @param sql
@@ -373,6 +388,26 @@ public class Database implements IDatabase {
     void ensureDbHelperIsReady(){
         if(dbHelper == null || sqLiteDb == null)
             throw new IllegalArgumentException("You must call IDatabase.open() first");
+    }
+
+    void begin(){
+        ensureDbHelperIsReady();
+        sqLiteDb.beginTransaction();
+    }
+
+    void commit(){
+        ensureDbHelperIsReady();
+        sqLiteDb.setTransactionSuccessful();
+    }
+
+    void rollback(){
+        ensureDbHelperIsReady();
+        // absolutely don't do anything
+    }
+
+    void end(){
+        ensureDbHelperIsReady();
+        sqLiteDb.endTransaction();
     }
 
     //////////////////////////////////////////////////////////

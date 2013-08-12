@@ -94,9 +94,6 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      */
     void close();
 
-    ////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////
-
     /**
      * Sets the config
      * @param config
@@ -109,8 +106,20 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      */
     IConfig getConfig();
 
-    ////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////
+    /**
+     * Begin a transaction. From this point on,
+     * all the transaction should be set to
+     * <code>autoCommit = false</code>
+     * @param batch block batch to be executed
+     * @return transaction
+     *
+     * @see Transaction
+     * @see Batch
+     */
+    Transaction begin(Batch batch);
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Interface that 'builds' database
@@ -162,6 +171,9 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
         void onError(Throwable error);
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
 
     /**
      * Modeling that's used to query tables/column definition
@@ -174,6 +186,71 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
          * @return
          */
         ITable.Model add(String tableName);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Represents a transaction
+     */
+    public static interface Transaction {
+
+        /**
+         * Commit the transactions
+         */
+        void commit();
+
+        /**
+         * Rollback any transactions
+         */
+        void rollback();
+
+        /**
+         * Ends the transaction.
+         * From this point on, all transaction has been set to
+         * <code>autoCommit = true</code>
+         */
+        void end();
+
+        /**
+         * This method will do the following
+         * <code>
+         *     <pre>
+         *         try{
+         *             transaction.commit();
+         *             return true;
+         *         }
+         *         catch (Throwable any){
+         *             transaction.rollback();
+         *             return false;
+         *         }
+         *         finally{
+         *             transaction.end();
+         *         }
+         *     </pre>
+         * </code>
+         *
+         * @return true if the batch is successfully committed, false if otherwise
+         */
+        boolean execute();
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Represents a batch block.
+     *
+     */
+    public static interface Batch {
+
+        /**
+         * Execute lines of batch.
+         * @param database
+         */
+        void exec(IDatabase database);
     }
 
 }

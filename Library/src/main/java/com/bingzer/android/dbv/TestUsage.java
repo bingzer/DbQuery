@@ -66,6 +66,17 @@ class TestUsage {
         IQuery.Paging paging = db.get("").select().paging(10);
 
 
+        // -- transaction
+        IDatabase.Transaction transaction = db.begin(new IDatabase.Batch() {
+            @Override
+            public void exec(IDatabase database) {
+
+            }
+        });
+
+        if(transaction.execute()){
+            // success
+        }
     }
 
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {
