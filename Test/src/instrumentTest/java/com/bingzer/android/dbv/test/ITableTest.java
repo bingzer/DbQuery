@@ -53,11 +53,20 @@ public class ITableTest extends AndroidTestCase{
     public void testGetColumnCount() {
         assertTrue(table.getColumnCount() > 0);
         assertTrue(table.getColumnCount() == table.getColumns().size());
+        assertTrue(db.get("Customers C").count() > 0);
     }
 
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ SELECT ----------------//
+
+    public void testSelect_SimpleWithAlias(){
+        Cursor c = db.get("Customers c").select().query();
+        assertTrue(c != null);
+        c.moveToNext();
+        assertTrue(c.getCount() > 0);
+        c.close();
+    }
 
     public void testSelect_Id(){
         int messiId = getCustomerId("Lionel Messi");

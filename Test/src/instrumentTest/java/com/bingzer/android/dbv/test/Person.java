@@ -1,4 +1,4 @@
-package com.bingzer.android.dbv.test.entities;
+package com.bingzer.android.dbv.test;
 
 import com.bingzer.android.dbv.IEntity;
 

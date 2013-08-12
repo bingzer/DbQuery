@@ -5,13 +5,10 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IEntity;
-import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
-
-import java.util.LinkedList;
-import java.util.List;
+import com.bingzer.android.dbv.test.Person;
+import com.bingzer.android.dbv.test.PersonList;
 
 /**
  * Created by Ricky Tobing on 8/9/13.
