@@ -19,6 +19,7 @@ package com.bingzer.android.dbv.queries;
 import android.content.ContentValues;
 
 import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 
 /**
@@ -28,72 +29,87 @@ public interface Updatable {
 
     /**
      * Update a column add its id
-     * @param column
-     * @param value
-     * @param id
-     * @return
+     * @param column the column
+     * @param value value
+     * @param id the id
+     * @return Update object
      */
     IQuery.Update update(String column, Object value, int id);
 
     /**
      * Update a column add specified condition
-     * @param column
-     * @param value
-     * @param condition
-     * @return
+     * @param column column
+     * @param value value
+     * @param condition the condition
+     * @return Update object
      */
     IQuery.Update update(String column, Object value, String condition);
 
     /**
      * Update a column add specified condition
-     * @param column
-     * @param value
-     * @param whereClause
-     * @param whereArgs
-     * @return
+     * @param column column
+     * @param value value
+     * @param whereClause whereClause
+     * @param whereArgs arguments
+     * @return Update object
      */
     IQuery.Update update(String column, Object value, String whereClause, Object... whereArgs);
 
     /**
      * Bulk-update columns add their val add specified condition.
-     * @param columns
-     * @param values
-     * @param condition
-     * @return
+     * @param columns array of columns
+     * @param values array of values
+     * @param condition condition
+     * @return Update object
      */
     IQuery.Update update(String[] columns, Object[] values, String condition);
 
     /**
-     *
-     * @param columns
-     * @param values
-     * @param whereClause
-     * @param whereArgs
-     * @return
+     * Bulk-update
+     * @param columns array of columns
+     * @param values array of values
+     * @param whereClause whereClause
+     * @param whereArgs arguments
+     * @return Update object
      */
     IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs);
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Update using an {@link IEntity} object
      * @param entity the entity to update
-     * @return
+     * @return Update object
      */
     IQuery.Update update(IEntity entity);
 
     /**
-     * Update using contentvalues insert specified id
-     * @param contents
-     * @param id
-     * @return
+     * Bulk-update using {@link IEntityList} object
+     * @param entityList IEntityList object
+     * @param <E> extends IEntity
+     * @return Update object
+     */
+    <E extends IEntity> IQuery.Update update(IEntityList<E> entityList);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Update using {@link ContentValues} insert specified id
+     * @param contents the ContentValues
+     * @param id the id
+     * @return Update object
      */
     IQuery.Update update(ContentValues contents, int id);
 
     /**
-     * Update using the contentvalues
-     * @param contents
-     * @param whereClause
-     * @param whereArgs
-     * @return
+     * Update using the {@link ContentValues}
+     * @param contents the ContentValues
+     * @param whereClause whereClause
+     * @param whereArgs arguments
+     * @return Update object
      */
     IQuery.Update update(ContentValues contents, String whereClause, Object... whereArgs);
 }

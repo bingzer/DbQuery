@@ -16,6 +16,8 @@
 
 package com.bingzer.android.dbv.queries;
 
+import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 
 import java.util.Collection;
@@ -28,43 +30,71 @@ public interface Deletable {
 
     /**
      * Delete by id
-     * @param id
-     * @return
+     * @param id the id to delete
+     * @return Delete object
      */
     IQuery.Delete delete(int id);
 
     /**
      * Bulk-remove by multiple ids
-     * @param ids
-     * @return
+     * @param ids array of ids to delete
+     * @return Delete object
      */
     IQuery.Delete delete(int... ids);
 
     /**
      * Bulk-remove by multiple ids
-     * @param ids
-     * @return
+     * @param ids collection of ids to delete
+     * @return Delete object
      */
     IQuery.Delete delete(Collection<Integer> ids);
 
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+
     /**
      * Delete add specified condition
-     * @param condition
-     * @return
+     * @param condition the condition
+     * @return Delete object
      */
     IQuery.Delete delete(String condition);
 
     /**
      * Delete add sepcified where clause
-     * @param whereClause
-     * @param whereArgs
-     * @return
+     * @param whereClause where clause
+     * @param whereArgs arguments
+     * @return Delete object
      */
     IQuery.Delete delete(String whereClause, Object... whereArgs);
 
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Delete an entity.
+     * This is equivalent of calling
+     * <code>delete(entity.getId())</code>
+     * @param entity entity to delete
+     * @return Delete object
+     */
+    IQuery.Delete delete(IEntity entity);
+
+    /**
+     * Bulk-delete several entities.
+     * This is equivalent of calling
+     * <code>delete(list-of-ids)</code>
+     * @param entityList the entity list
+     * @param <E> extends IEntity
+     * @return Delete object
+     */
+    <E extends IEntity> IQuery.Delete delete(IEntityList<E> entityList);
+
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+
     /**
      * Empty the table
-     * @return
+     * @return Delete object
      */
     IQuery.Delete deleteAll();
 }

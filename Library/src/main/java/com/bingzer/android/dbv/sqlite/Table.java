@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IFunction;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
@@ -378,6 +379,7 @@ class Table implements ITable {
         Iterator<String> keys = mapper.keySet().iterator();
         while(keys.hasNext()){
             String key = keys.next();
+            // ignore if column = "Id"
             if(key.equalsIgnoreCase(db.getConfig().getIdNamingConvention())) continue;
 
             IEntity.Action action = mapper.get(key);
@@ -387,6 +389,30 @@ class Table implements ITable {
         }
 
         return insert(contentValues);
+    }
+
+    /**
+     * Bulk-insert an entity list
+     *
+     * @param entityList the entity list to insert
+     * @param <E>        extends IEntity
+     * @return an Insert object
+     */
+    @Override
+    public <E extends IEntity> IQuery.Insert insert(final IEntityList<E> entityList) {
+        final QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
+
+        db.begin(new IDatabase.Batch() {
+            @Override
+            public void exec(IDatabase database) {
+                for(IEntity entity : entityList.getEntityList()){
+                    insert(entity);
+                    query.value++;
+                }
+            }
+        }).execute();
+
+        return query;
     }
 
     /**
@@ -478,6 +504,9 @@ class Table implements ITable {
         Iterator<String> keys = mapper.keySet().iterator();
         while(keys.hasNext()){
             String key = keys.next();
+            // ignore if "Id"
+            if(key.equalsIgnoreCase(db.getConfig().getIdNamingConvention())) continue;
+
             IEntity.Action action = mapper.get(key);
             if(action != null){
                 ContentUtil.mapContentValuesFromAction(contentValues, key, action);
@@ -485,6 +514,30 @@ class Table implements ITable {
         }
 
         return update(contentValues, entity.getId());
+    }
+
+    /**
+     * Bulk-update using {@link com.bingzer.android.dbv.IEntityList} object
+     *
+     * @param entityList IEntityList object
+     * @param <E>        extends IEntity
+     * @return Update object
+     */
+    @Override
+    public <E extends IEntity> IQuery.Update update(final IEntityList<E> entityList) {
+        final QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
+
+        db.begin(new IDatabase.Batch() {
+            @Override
+            public void exec(IDatabase database) {
+                for(IEntity entity : entityList.getEntityList()){
+                    update(entity);
+                    query.value++;
+                }
+            }
+        }).execute();
+
+        return query;
     }
 
     /**
@@ -598,6 +651,34 @@ class Table implements ITable {
         query.value = sqlDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs));
 
         return query;
+    }
+
+    /**
+     * Delete an entity.
+     * This is equivalent of calling
+     * <code>delete(entity.getId())</code>
+     *
+     * @param entity entity to delete
+     * @return
+     */
+    @Override
+    public IQuery.Delete delete(IEntity entity) {
+        return delete(entity.getId());
+    }
+
+    /**
+     * Bulk-delete several entities.
+     * This is equivalent of calling
+     * <code>delete(list-of-ids)</code>
+     *
+     * @param entityList the entity list
+     * @param <E>        extends IEntity
+     * @return
+     */
+    @Override
+    public <E extends IEntity> IQuery.Delete delete(IEntityList<E> entityList) {
+        int[] ids = new int[entityList.getEntityList().size()];
+        return  delete(ids);
     }
 
     /**

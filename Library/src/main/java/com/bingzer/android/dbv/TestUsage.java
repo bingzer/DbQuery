@@ -61,7 +61,7 @@ class TestUsage {
 
 
         PersonList list = new PersonList();
-        db.get("").select().query(list);
+        db.get("").update(list);
 
         IQuery.Paging paging = db.get("").select().paging(10);
 
@@ -73,6 +73,7 @@ class TestUsage {
 
             }
         }).commit();
+
     }
 
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {
