@@ -26,7 +26,7 @@ Database Creation
            // this will create table PersonTable with Id and Name column
            modeling.add("PersonTable")           
                 // method-chaining : configure columns inside this PersonTable
-                .add("Id", "INTEGER", "primary key autoincrement not null")
+                .addPrimaryKey("Id")
                 .add("Name", "TEXT")
                 .add("Age", "INTEGER");
         }
