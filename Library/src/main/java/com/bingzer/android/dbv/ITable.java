@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance insert the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -30,9 +30,12 @@ import com.bingzer.android.dbv.queries.Updatable;
 import java.util.List;
 
 /**
- * Represents a table.
+ * Represents a table. <code>ITable</code> provides full access to achieve
+ * common <code>CRUD</code> tasks.
  *
- * Created by Ricky Tobing on 7/16/13.
+ * @version 1.0
+ * @see IDatabase
+ * @author Ricky Tobing
  */
 public interface ITable extends
         Selectable, Insertable, Deletable, Updatable,
@@ -41,7 +44,7 @@ public interface ITable extends
         SelectIdentifiable, Function {
 
     /**
-     * Returns the name
+     * Returns the name of this table
      * @return the name of the table
      */
     String getName();
@@ -135,7 +138,8 @@ public interface ITable extends
         Model addPrimaryKey(String columnName);
 
         /**
-         * Create index on the specified column name
+         * Create index on the specified column name. The index name will always be
+         * <code>[TABLE_NAME]_[COLUMN_NAME]_IDX</code>
          * @param columnName column name
          * @return this
          */

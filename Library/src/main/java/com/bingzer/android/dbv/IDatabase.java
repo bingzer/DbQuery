@@ -16,16 +16,15 @@
 
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.queries.Droppable;
 import com.bingzer.android.dbv.queries.RawQueryable;
 import com.bingzer.android.dbv.queries.SqlExecutable;
 
 import java.util.List;
 
 /**
- * Provides access to {@link ITable} to achive common <code>CRUD</code>
+ * Represents a database. Provides access to {@link ITable} to achieve common <code>CRUD</code>
  * tasks.
- *
+ * <p>
  * To properly gain access to {@link IDatabase} object, you must
  * call {@link #open(int, com.bingzer.android.dbv.IDatabase.Builder)} and
  * provides the database modeling with your own term.
@@ -39,7 +38,18 @@ import java.util.List;
  *         ...
  *     </code>
  * </pre>
- *
+ * </p>
+ * <p>
+ *     To upgrade or downgrade. The <code>Builder</code> should provide the following:
+ *     <pre>
+ *     <code>
+ *         public boolean onUpgrade(IDatabase db, int oldVersion, int newVersion);
+ *         public boolean onDowngrade(IDatabase db, int oldVersion, int newVersion);
+ *     </code>
+ *     </pre>
+ *     <code>newVersion</code> is the current <code>dbVersion</code>.
+ * </p>
+ * <p>
  * {@link IDatabase} has one ore more tables. To gain access to {@link ITable},
  * use this code snippet:
  * <pre>
@@ -49,68 +59,150 @@ import java.util.List;
  *         ...
  *     </code>
  * </pre>
+ * </p>
  *
+ * @version 1.0
  * @see ITable
  * @see Modeling
- *
- * Created by Ricky Tobing on 7/16/13.
+ * @see Builder
+ * @see com.bingzer.android.dbv.sqlite.SQLiteBuilder
+ * @author Ricky Tobing
  */
 public interface IDatabase extends RawQueryable, SqlExecutable {
 
     /**
      * Returns the name of this database
-     * @return
+     * @return the name of this database
      */
     String getName();
 
     /**
      * Returns the version of this database
-     * @return
+     * @return the current version of this database
      */
     int getVersion();
 
     /**
-     * Returns all tables in this database
-     * @return
+     * Returns all tables exists in this database.
+     * Note: you must first <code>open</code> the database
+     *
+     * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
+     * @return all tables exists in the database
      */
     List<ITable> getTables();
 
     /**
-     * Returns the table
+     * Returns the table by its <code>tableName</code>. If the table
+     * does not exists, this will returns null.
+     * Note: you must first <code>open</code> the database
+     *
+     * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @param tableName the table
      * @return null if table does not exists
      */
     ITable get(String tableName);
 
     /**
-     * Create the database
+     * Open the connection the database. This is one of the main method
+     * in order for you to fully access the database and use all API provides
+     * by the <code>DbQuery</code> library.
+     * <p>
+     *     You should only call this once in the entire of you application
+     *     lifecycle. After that, to access the database, other code in
+     *     your application can simply call {@link DbQuery#getDatabase(String)}
+     *     to get the same object as this one
+     * </p>
+     *
+     * @see #close()
      * @param version the version of the database
-     * @param builder the builder
+     * @param builder the builder (You should always use SQLiteBuilder as your builder)
      */
     void open(int version, Builder builder);
 
     /**
-     * Close the database. Free any resources
+     * Close the database. Free any resources.
+     * <p>
+     *     You should only call this when the whole application is terminated.
+     *     Most of the time you don't need to call this at all. After calling
+     *     this method you must call {@link #open(int, com.bingzer.android.dbv.IDatabase.Builder)}
+     * </p>
+     *
+     * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      */
     void close();
 
     /**
-     * Sets the config
-     * @param config
+     * Sets the initial configuration. The configuration object contains information
+     * such as the naming convention for Id, etc... Consult {@link IConfig} documentation
+     * for this.
+     *
+     * @see IConfig
+     * @param config the config to set.
      */
     void setConfig(IConfig config);
 
     /**
-     * Returns config
-     * @return
+     * Returns current configuration object.
+     *
+     * @see #setConfig(IConfig)
+     * @see IConfig
+     * @return IConfig
      */
     IConfig getConfig();
 
     /**
-     * Begin a transaction. From this point on,
-     * all the transaction should be set to
-     * <code>autoCommit = false</code>
-     * @param batch block batch to be executed
+     * Begin a transaction. The code inside the
+     * {@link Batch#exec(IDatabase)} will be executed when you call
+     * {@link com.bingzer.android.dbv.IDatabase.Transaction#commit()}.
+     * However, if you choose to do this route you must follow this code for safety.
+     * The proper way of calling {@link com.bingzer.android.dbv.IDatabase.Transaction#commit()}
+     * as follows:
+     * <code>
+     * <pre>
+     *         try{
+     *             // do intensive SQL here
+     *             ...
+     *             transaction.commit();
+     *         }
+     *         catch (Throwable any){
+     *             // rollback
+     *             transaction.rollback();
+     *         }
+     *         finally{
+     *             // must call this
+     *             transaction.end();
+     *         }
+     *     </pre>
+     * </code>
+     * <p>
+     * Another way of doing transaction to simply call
+     * {@link com.bingzer.android.dbv.IDatabase.Transaction#execute()} which
+     * will automatically do the following:
+     * <code>
+     * <pre>
+     *         try{
+     *             transaction.commit();
+     *             // success
+     *             return true;
+     *         }
+     *         catch (Throwable any){
+     *             transaction.rollback();
+     *             // false and rollback!
+     *             return false;
+     *         }
+     *         finally{
+     *             // end transaction
+     *             transaction.end();
+     *         }
+     *     </pre>
+     * </code>
+     * However, the setback of calling
+     * {@link com.bingzer.android.dbv.IDatabase.Transaction#execute()}
+     * will prevent you to <code>catch</code> the <code>Exception</code>
+     * that may occur during the batch processing
+     * </p>
+     *
+     * @param batch block of code to be executed
      * @return transaction
      *
      * @see Transaction
@@ -122,7 +214,11 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Interface that 'builds' database
+     * Interface that 'builds' database.
+     * This is the basic interface of a <code>Builder</code> object.
+     * This object is used in {@link IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
+     *
+     * @see IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)
      */
     public static interface Builder {
 
@@ -176,14 +272,40 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
 
 
     /**
-     * Modeling that's used to query tables/column definition
+     * Modeling that's used to query tables/column definition.
+     * This object is used inside the
+     * {@link Builder#onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
+     * to create the initial model of your database.
+     * Sample code:
+     * <pre>
+     *     <code>
+     *         ...
+     *         public void onModelCreate(IDatabase db, Modeling modeling){
+     *             modeling.add("Customers")
+     *                      .addPrimaryKey("Id")
+     *                      .add("Name", "TEXT", "not null")
+     *                      .add("Age", "INTEGER")
+     *                      .index("Id")
+     *                      .index("Name");
+     *             modeling.add("Orders")
+     *                      .addPrimaryKey("Id")
+     *                      .add("ProductsName", "TEXT", "not null")
+     *                      .add("CustomerId", "INTEGER", "not null")
+     *                      .index("ProductsName")
+     *                      .index("CustomerId");
+     *         }
+     *         ...
+     *     </code>
+     * </pre>
+     *
+     * @see Builder#onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)
      */
     public static interface Modeling {
 
         /**
          * Adds a table model
-         * @param tableName
-         * @return
+         * @param tableName the table name
+         * @return ITable.Model (Table's model object)
          */
         ITable.Model add(String tableName);
     }
@@ -192,17 +314,30 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Represents a transaction
+     * Represents a transaction.
+     * Transaction can be used for a synchronized call of multiple lines of batch code.
+     *
+     * @see IDatabase#begin(com.bingzer.android.dbv.IDatabase.Batch)
+     * @see Batch
      */
     public static interface Transaction {
 
         /**
-         * Commit the transactions
+         * Executes and try to commit the transactions.
+         * If some exception is thrown you should catch this.
+         *
+         * @see #execute()
          */
         void commit();
 
         /**
-         * Rollback any transactions
+         * Rollback any transactions. This is useful
+         * if any exception is thrown after calling {@link #commit()}.
+         * You should place this inside the <code>catch</code> block
+         * inside your <code>try-catch</code>
+         *
+         * @see #commit()
+         * @see #execute()
          */
         void rollback();
 
@@ -210,6 +345,9 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
          * Ends the transaction.
          * From this point on, all transaction has been set to
          * <code>autoCommit = true</code>
+         * If {@link #commit()} was called and successful then,
+         * the data has been submitted and stored in db. If rollback was called,
+         * then nothing is saved.
          */
         void end();
 
@@ -241,14 +379,17 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Represents a batch block.
+     * Represents a block of code. The code inside
+     * the {@link #exec(IDatabase)} will be called after calling,
+     * {@link com.bingzer.android.dbv.IDatabase.Transaction#commit()} or
+     * {@link com.bingzer.android.dbv.IDatabase.Transaction#execute()} only.
      *
      */
     public static interface Batch {
 
         /**
          * Execute lines of batch.
-         * @param database
+         * @param database the database that originates this call
          */
         void exec(IDatabase database);
     }

@@ -65,6 +65,12 @@ class TestUsage {
 
         IQuery.Paging paging = db.get("").select().paging(10);
 
+        db.begin(new IDatabase.Batch() {
+            @Override
+            public void exec(IDatabase database) {
+
+            }
+        });
 
         // -- transaction
         db.begin(new IDatabase.Batch() {
