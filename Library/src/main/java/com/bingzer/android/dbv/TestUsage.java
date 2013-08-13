@@ -80,6 +80,13 @@ class TestUsage {
             }
         }).commit();
 
+        db.begin(new IDatabase.Batch() {
+            @Override
+            public void exec(IDatabase database) {
+
+            }
+        }).execute();
+
     }
 
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {
