@@ -88,7 +88,7 @@ class ContentUtil {
 
     static <E extends IEntity> void mapEntityListFromCursor(EntityMapper mapper, IEntityList<E> entityList, Cursor cursor){
         while(cursor.moveToNext()){
-            int columnIdIndex = cursor.getColumnIndex(mapper.config.getIdNamingConvention());
+            int columnIdIndex = cursor.getColumnIndex(mapper.table.generateIdString());
             int id = cursor.getInt(columnIdIndex);
 
             E entity = null;

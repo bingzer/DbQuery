@@ -25,10 +25,10 @@ import java.util.HashMap;
  * Created by Ricky Tobing on 8/9/13.
  */
 class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
-    IConfig config;
+    final Table table;
 
-    EntityMapper(IConfig config){
-        this.config = config;
+    EntityMapper(Table table){
+        this.table = table;
     }
 
     /**
@@ -38,7 +38,7 @@ class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Ma
      */
     @Override
     public void mapId(IEntity.Action<Integer> action) {
-        map(config.getIdNamingConvention(), action);
+        map(table.generateIdString(), action);
     }
 
     @Override

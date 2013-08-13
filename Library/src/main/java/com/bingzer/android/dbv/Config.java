@@ -17,14 +17,22 @@
 package com.bingzer.android.dbv;
 
 /**
- * Default config
+ * Default configuration. By default the Id column will be named
+ * <code>Id</code>. Id with the following scheme is not yet supported:
+ * <ul>
+ *     <li>{TABLE_NAME}Id</li>
+ * </ul>
+ * That will be supported in the future
+ *
  * Created by Ricky Tobing on 7/19/13.
  */
 public class Config implements IConfig{
     protected String idNamingConvention;
+    protected boolean appendTableName;
 
     public Config(){
         idNamingConvention = "Id";
+        appendTableName = false;
     }
 
     /**
@@ -45,5 +53,28 @@ public class Config implements IConfig{
     @Override
     public String getIdNamingConvention() {
         return idNamingConvention;
+    }
+
+    /**
+     * Sets append table name as prefix in front of the "Id".
+     * The Id is defined by {@link #setIdNamingConvention(String)}.
+     * The default is <code>false</code>
+     *
+     * @param appendTableName true to append
+     */
+    @Override
+    public void setAppendTableNameForId(boolean appendTableName) {
+        this.appendTableName = appendTableName;
+    }
+
+    /**
+     * Returns true if DbQuery should always append the table name
+     * in front of the Id.
+     *
+     * @return true if DbQuery should append table name, else if otherwise
+     */
+    @Override
+    public boolean getAppendTableNameForId() {
+        return appendTableName;
     }
 }

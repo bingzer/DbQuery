@@ -165,7 +165,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public void query(IEntity entity) {
             final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(config);
+            final EntityMapper mapper = new EntityMapper(table);
 
             ContentUtil.mapEntityFromCursor(mapper, entity, cursor);
 
@@ -176,7 +176,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @SuppressWarnings("unchecked")
         public <E extends IEntity> void query(IEntityList<E> entityList) {
             final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(config);
+            final EntityMapper mapper = new EntityMapper(table);
 
             ContentUtil.mapEntityListFromCursor(mapper, entityList, cursor);
 
@@ -594,7 +594,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public void query(IEntity entity) {
             final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(config);
+            final EntityMapper mapper = new EntityMapper(select.table);
 
             ContentUtil.mapEntityFromCursor(mapper, entity, cursor);
 
@@ -610,7 +610,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public <E extends IEntity> void query(IEntityList<E> entityList) {
             final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(config);
+            final EntityMapper mapper = new EntityMapper(select.table);
 
             ContentUtil.mapEntityListFromCursor(mapper, entityList, cursor);
 

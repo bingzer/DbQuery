@@ -156,7 +156,7 @@ class Table implements ITable {
     @Override
     public int selectId(String whereClause, Object... args) {
         int id = -1;
-        Cursor cursor = select(whereClause, args).columns(db.getConfig().getIdNamingConvention()).query();
+        Cursor cursor = select(whereClause, args).columns(generateIdString()).query();
         if(cursor.moveToNext()){
             id = cursor.getInt(0);
         }
@@ -197,7 +197,7 @@ class Table implements ITable {
     public IQuery.Select select(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
-            whereClause.append(db.getConfig().getIdNamingConvention()).append(" ");
+            whereClause.append(generateIdString()).append(" ");
             whereClause.append(" IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
@@ -372,7 +372,7 @@ class Table implements ITable {
     @Override
     public IQuery.Insert insert(IEntity entity) {
         // build content values..
-        final EntityMapper mapper = new EntityMapper(db.getConfig());
+        final EntityMapper mapper = new EntityMapper(this);
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
@@ -380,7 +380,7 @@ class Table implements ITable {
         while(keys.hasNext()){
             String key = keys.next();
             // ignore if column = "Id"
-            if(key.equalsIgnoreCase(db.getConfig().getIdNamingConvention())) continue;
+            if(key.equalsIgnoreCase(generateIdString())) continue;
 
             IEntity.Action action = mapper.get(key);
             if(action != null){
@@ -498,7 +498,7 @@ class Table implements ITable {
     public IQuery.Update update(IEntity entity) {
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
 
-        final EntityMapper mapper = new EntityMapper(db.getConfig());
+        final EntityMapper mapper = new EntityMapper(this);
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
@@ -506,7 +506,7 @@ class Table implements ITable {
         while(keys.hasNext()){
             String key = keys.next();
             // ignore if "Id"
-            if(key.equalsIgnoreCase(db.getConfig().getIdNamingConvention())) continue;
+            if(key.equalsIgnoreCase(generateIdString())) continue;
 
             IEntity.Action action = mapper.get(key);
             if(action != null){
@@ -592,7 +592,7 @@ class Table implements ITable {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
 
-            whereClause.append(db.getConfig().getIdNamingConvention()).append(" ");
+            whereClause.append(generateIdString()).append(" ");
             whereClause.append("IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
@@ -1000,6 +1000,13 @@ class Table implements ITable {
     ////////////////////////////////////////////////////////////////////
 
     private String generateParamId(int id){
-        return new StringBuilder(db.getConfig().getIdNamingConvention()).append(" = ").append(id).toString();
+        return generateIdString() + " = " + id;
+    }
+
+    String generateIdString(){
+        if(db.getConfig().getAppendTableNameForId()){
+            return getName() + db.getConfig().getIdNamingConvention();
+        }
+        return db.getConfig().getIdNamingConvention();
     }
 }

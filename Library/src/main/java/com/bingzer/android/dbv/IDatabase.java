@@ -60,6 +60,13 @@ import java.util.List;
  *     </code>
  * </pre>
  * </p>
+ * <p>
+ *     <b>Warning:</b><br/>
+ *     <code>DbQuery</code> will <code>assume</code>
+ *     that every table will follow a naming convention for
+ *     their identifier scheme. By default, "Id" is assigned
+ *     automatically. For more information see {@link IConfig}
+ * </p>
  *
  * @version 1.0
  * @see ITable

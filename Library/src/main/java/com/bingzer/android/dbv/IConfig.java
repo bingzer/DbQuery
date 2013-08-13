@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance insert the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -18,6 +18,23 @@ package com.bingzer.android.dbv;
 
 /**
  * Defines a configuration interface.
+ * <p>
+ *     <b>Warning:</b><br/>
+ *     <code>DbQuery</code> will <code>assume</code>
+ *     that every table will follow a naming convention for
+ *     their identifier scheme. By default, "Id" is assigned
+ *     automatically. For more information see {@link IConfig}
+ * </p>
+ * <p>
+ *     For example, if you call:
+ *     <code>db.getConfig().setIdNamingConvention("IDX")</code>
+ *     <code>DbQuery</code> will expect <b>every table</b> to have "IDX"
+ *     as their "Id" column.
+ *     If there's a table or two that doesn't follow this convention,
+ *     some methods will not work. Especially, the one that uses "Id"
+ *     (i.e: {@link ITable#select(int)},{@link ITable#update(android.content.ContentValues, int)},
+ *     and many more
+ * </p>
  *
  * Created by Ricky Tobing on 7/19/13.
  */
@@ -25,7 +42,7 @@ public interface IConfig {
 
     /**
      * Sets naming convention for Id
-     * @param id
+     * @param id naming convention for Id.
      */
     void setIdNamingConvention(String id);
 
@@ -35,4 +52,18 @@ public interface IConfig {
      */
     String getIdNamingConvention();
 
+    /**
+     * Sets append table name as prefix in front of the "Id".
+     * The Id is defined by {@link #setIdNamingConvention(String)}.
+     * The default is <code>false</code>
+     * @param appendTableName true to append
+     */
+    void setAppendTableNameForId(boolean appendTableName);
+
+    /**
+     * Returns true if DbQuery should always append the table name
+     * in front of the Id.
+     * @return true if DbQuery should append table name, else if otherwise
+     */
+    boolean getAppendTableNameForId();
 }

@@ -32,6 +32,13 @@ import java.util.List;
 /**
  * Represents a table. <code>ITable</code> provides full access to achieve
  * common <code>CRUD</code> tasks.
+ * <p>
+ *     <b>Warning:</b><br/>
+ *     <code>DbQuery</code> will <code>assume</code>
+ *     that every table will follow a naming convention for
+ *     their identifier scheme. By default, "Id" is assigned
+ *     automatically. For more information see {@link IConfig}
+ * </p>
  *
  * @version 1.0
  * @see IDatabase

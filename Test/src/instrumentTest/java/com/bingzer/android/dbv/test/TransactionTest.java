@@ -46,10 +46,18 @@ public class TransactionTest extends AndroidTestCase {
                 assertTrue(p.getId() > 0);
                 assertTrue(p.getName().equals("NewPersonRollback"));
                 assertTrue(p.getAge() == 100);
+                throw new Error("Fake error so it will throw");
             }
         });
-        transaction.rollback();
-        transaction.end();
+        try{
+            transaction.commit();
+        }
+        catch (Throwable e){
+            transaction.rollback();
+        }
+        finally {
+            transaction.end();
+        }
 
         Person p = new Person();
         db.get("Person").select("Name = ?", "NewPersonRollback").query(p);
@@ -72,8 +80,15 @@ public class TransactionTest extends AndroidTestCase {
 
             }
         });
-        transaction.commit();
-        transaction.end();
+        try{
+            transaction.commit();
+        }
+        catch (Throwable e){
+            transaction.rollback();
+        }
+        finally {
+            transaction.end();
+        }
 
         Person p = new Person();
         db.get("Person").select("Name = ?", "NewPersonCommit").query(p);

@@ -22,21 +22,41 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * DbQuery provides access to {@link IDatabase}
- *
+ * DbQuery provides access to {@link IDatabase}. To use <code>DbQuery</code>,
+ * you must follow special conventions when it comes to "Id" as primary key
+ * in every table in your database.
+ * <p>
+ *     <b>Warning:</b><br/>
+ *     <code>DbQuery</code> will <code>assume</code>
+ *     that every table will follow a naming convention for
+ *     their identifier scheme. By default, "Id" is assigned
+ *     automatically. For more information see {@link IConfig}
+ * </p>
+ * <p>
+ * Sample Code:
  * <pre>
  *   <code>
  *       IDatabase db = DbQuery.getDatabase("<database-name>");
  *       ...
  *   </code>
  * </pre>
+ * </p>
  *
+ * @see IConfig
  * @see IDatabase
  */
 public class DbQuery {
 
     private static List<IDatabase> databaseList = new LinkedList<IDatabase>();
 
+    /**
+     * Returns the {@link IDatabase} object with the specified name.
+     * If <code>databaseName</code> is not found it will return
+     * <code>null</code>
+     *
+     * @param databaseName the database
+     * @return {@link IDatabase} object
+     */
     public static IDatabase getDatabase(String databaseName){
         for(IDatabase db : databaseList){
             if(db.getName().equalsIgnoreCase(databaseName)){
