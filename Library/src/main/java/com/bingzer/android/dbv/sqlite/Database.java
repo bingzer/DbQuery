@@ -17,13 +17,11 @@
 package com.bingzer.android.dbv.sqlite;
 
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.bingzer.android.dbv.Config;
-import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IColumn;
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
@@ -416,9 +414,9 @@ public class Database implements IDatabase {
     //////////////////////////////////////////////////////////
 
     static class TableModel implements ITable.Model {
-
         private final String tableName;
         private final List<ColumnModel> columnModels = new LinkedList<ColumnModel>();
+        private final List<String> columnIndexNames = new LinkedList<String>();
 
         TableModel(String tableName){
             this.tableName = tableName;
@@ -473,10 +471,24 @@ public class Database implements IDatabase {
             return add(columnName, "INTEGER", "primary key autoincrement not null");
         }
 
+        /**
+         * Create index on the specified column name
+         *
+         * @param columnName column name
+         * @return this
+         */
+        @Override
+        public ITable.Model index(String columnName) {
+            if(!columnIndexNames.contains(columnName))
+                columnIndexNames.add(columnName);
+            return this;
+        }
+
         @Override
         public String toString(){
             StringBuilder builder = new StringBuilder();
 
+            // -------------- create table
             builder.append("CREATE TABLE ").append(tableName).append("(");
             // ----- columns
             for (int i = 0; i < columnModels.size(); i++) {
@@ -486,7 +498,18 @@ public class Database implements IDatabase {
                 if (i < columnModels.size() - 1)
                     builder.append(",");
             }
-            builder.append(")");
+            builder.append(");");
+            // -------------- create indices if any
+            if(columnIndexNames.size() > 0){
+                builder.append("\n");
+                for(String columnIndexName : columnIndexNames){
+                    builder.append("\nCREATE INDEX ")
+                            .append(generateIndexName(columnIndexName))
+                            .append(" ON ")
+                            .append(getName()).append(" (").append(columnIndexName).append(") ");
+                    builder.append(";");
+                }
+            }
 
             return builder.toString();
         }
@@ -504,6 +527,10 @@ public class Database implements IDatabase {
             }
 
             return false;
+        }
+
+        private String generateIndexName(String columnName){
+            return new StringBuilder(getName()).append("_").append(columnName).append("_idx").toString();
         }
     }
 

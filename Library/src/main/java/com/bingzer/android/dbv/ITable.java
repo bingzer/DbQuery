@@ -30,9 +30,10 @@ import com.bingzer.android.dbv.queries.Updatable;
 import java.util.List;
 
 /**
+ * Represents a table.
+ *
  * Created by Ricky Tobing on 7/16/13.
  */
-
 public interface ITable extends
         Selectable, Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,
@@ -41,31 +42,31 @@ public interface ITable extends
 
     /**
      * Returns the name
-     * @return
+     * @return the name of the table
      */
     String getName();
 
     /**
      * Sets the current alias of this table
-     * @param alias
+     * @param alias sets the alias (maybe null)
      */
     void setAlias(String alias);
 
     /**
      * This table alias
-     * @return
+     * @return returns the alias (null if none)
      */
     String getAlias();
 
     /**
      * Returns the column name
-     * @return
+     * @return the list of columns
      */
     List<String> getColumns();
 
     /**
      * Returns the column count
-     * @return
+     * @return the column count
      */
     int getColumnCount();
 
@@ -74,24 +75,24 @@ public interface ITable extends
     /////////////////////////////////////////////////
 
     /**
-     * Check to see if this table has row add the spcified condition
-     * @param condition
-     * @return
+     * Check to see if this table has row add the specified condition
+     * @param condition any condition
+     * @return true if it returns any row false otherwise
      */
     boolean has(String condition);
 
     /**
      * has row add id
-     * @param id
-     * @return
+     * @param id id
+     * @return true if it returns any row false otherwise
      */
     boolean has(int id);
 
     /**
      * Check to see if this table has row add the specified clause and condition
-     * @param whereClause
-     * @param whereArgs
-     * @return
+     * @param whereClause whereClause
+     * @param whereArgs arguments
+     * @return true if it returns any row false otherwise
      */
     boolean has(String whereClause, Object... whereArgs);
 
@@ -105,32 +106,39 @@ public interface ITable extends
 
         /**
          * Returns the name of this table
-         * @return
+         * @return the name of this table
          */
         String getName();
 
         /**
          * Adds a column
-         * @param columnName
-         * @param dataType
-         * @return
+         * @param columnName the column name
+         * @param dataType data type (i.e: INTEGER, TEXT, BLOB, etc..)
+         * @return this
          */
         Model add(String columnName, String dataType);
 
         /**
-         * Adds a column
-         * @param columnName
-         * @param dataType
-         * @param columnDefinition
-         * @return
+         * Adds a column. See SQLite documentation for columnDefinition
+         * @param columnName the column name
+         * @param dataType data type (i.e: INTEGER, TEXT, BLOB, etc..)
+         * @param columnDefinition column definiation (i.e: nullable, primary key, autoincrement, etc...)
+         * @return this
          */
         Model add(String columnName, String dataType, String columnDefinition);
 
         /**
          * Convenient way to adding primary key column
-         * @param columnName
-         * @return
+         * @param columnName column name
+         * @return this
          */
         Model addPrimaryKey(String columnName);
+
+        /**
+         * Create index on the specified column name
+         * @param columnName column name
+         * @return this
+         */
+        Model index(String columnName);
     }
 }
