@@ -247,7 +247,9 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
 
         /**
          * Called when database is about to be created for the first time.
-         * You should define all the table models here
+         * <b>Note</b>: there's a delay between code execution when using {@link Modeling} object.
+         * The code will be executed when this <code>onModelCreate</code> is returned.
+         * You should define all the table models here.
          *
          * @param database the instance of the database
          * @param modeling the modeling object used to model the database
@@ -273,6 +275,8 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
 
     /**
      * Modeling that's used to query tables/column definition.
+     * Note that there's a delay between code execution when using {@link Modeling} object.
+     * The code will be executed when this <code>onModelCreate</code> is returned.
      * This object is used inside the
      * {@link Builder#onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
      * to create the initial model of your database.
