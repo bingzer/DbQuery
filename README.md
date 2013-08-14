@@ -6,10 +6,12 @@ DbQuery provides a new and simpler way to query data by minimizing the need to w
 
 Still a work in progress.
 
-See complete wiki and documentation here: 
+* See complete wiki and documentation here: 
 [https://github.com/bingzer/DbQuery/wiki](https://github.com/bingzer/DbQuery/wiki)
-Download latest binary here:
+* Download latest binary here:
 [https://github.com/bingzer/DbQuery/releases](https://github.com/bingzer/DbQuery/releases)
+* How to build:
+[https://github.com/bingzer/DbQuery/wiki/How-to-build](https://github.com/bingzer/DbQuery/wiki/How-to-build)
 
 Database Creation
 --------------
