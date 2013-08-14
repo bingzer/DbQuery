@@ -63,7 +63,6 @@ class TestUsage {
         PersonList list = new PersonList();
         db.get("").update(list);
 
-        IQuery.Paging paging = db.get("").select().paging(10);
 
         db.begin(new IDatabase.Batch() {
             @Override
@@ -86,7 +85,9 @@ class TestUsage {
 
             }
         }).execute();
+        db.get("Person").select().orderBy("Name").paging(10).query(list);
 
+        // --- join
     }
 
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {
@@ -122,7 +123,7 @@ class TestUsage {
 
         @Override
         public void map(Mapper mapper) {
-            mapper.map("Name", new Action<String>(){
+            mapper.map("Name", new Action<String>(String.class){
                 @Override public void set(String value) {
                     name = value;
                 }
@@ -131,7 +132,7 @@ class TestUsage {
                     return name;
                 }
             });
-            mapper.map("Age", new Action<Integer>(){
+            mapper.map("Age", new Action<Integer>(Integer.class){
 
                 @Override public void set(Integer value) {
                     age = value;
@@ -142,7 +143,7 @@ class TestUsage {
                     return age;
                 }
             });
-            mapper.mapId(new Action<Integer>() {
+            mapper.mapId(new Action<Integer>(Integer.class) {
                 @Override
                 public void set(Integer value) {
                     id = value;

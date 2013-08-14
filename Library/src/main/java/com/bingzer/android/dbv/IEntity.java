@@ -73,11 +73,6 @@ public interface IEntity {
 
         private Class<?> type;
 
-        @SuppressWarnings("Using Reflections")
-        public Action(){
-            this(null);
-        }
-
         /**
          *
          * @param type

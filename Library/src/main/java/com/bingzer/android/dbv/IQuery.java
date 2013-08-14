@@ -112,7 +112,8 @@ public interface IQuery<T> {
      *
      * @see OuterJoin
      */
-    public static interface InnerJoin extends Joinable, Selectable, Select{
+    public static interface InnerJoin extends
+            Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select{
 
     }
 
@@ -121,7 +122,8 @@ public interface IQuery<T> {
      *
      * @see InnerJoin
      */
-    public static interface OuterJoin extends Joinable, Selectable, Select{
+    public static interface OuterJoin extends
+            Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select{
 
     }
 

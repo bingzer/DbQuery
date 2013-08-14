@@ -334,7 +334,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
 
 
-    private static class Join extends SelectImpl implements Selectable {
+    private static class Join extends SelectImpl implements IQuery.InnerJoin, IQuery.OuterJoin, Selectable {
 
         protected final Table table;
         protected StringBuilder joinBuilder;
@@ -506,6 +506,64 @@ abstract class QueryImpl<T> implements IQuery<T> {
             limitString = ((SelectImpl)select).limitString;
             // the whereClause part
             append(((SelectImpl) select).builder);
+        }
+
+        /**
+         * Inner join a table
+         *
+         * @param tableName
+         * @param onClause
+         * @return
+         */
+        @Override
+        public InnerJoin join(String tableName, String onClause) {
+            if(onClause.toLowerCase().startsWith("on "))
+                this.joinBuilder.append(" ").append("INNER JOIN").append(" ").append(tableName).append(" ").append(onClause);
+            else
+                this.joinBuilder.append(" ").append("INNER JOIN").append(" ").append(tableName).append(" ON ").append(onClause);
+            return this;
+        }
+
+        /**
+         * Inner join a table
+         *
+         * @param tableName
+         * @param column1
+         * @param column2
+         * @return
+         */
+        @Override
+        public InnerJoin join(String tableName, String column1, String column2) {
+            return join(tableName, column1 + " = " + column2);
+        }
+
+        /**
+         * Joins a table
+         *
+         * @param tableName
+         * @param onClause
+         * @return
+         */
+        @Override
+        public OuterJoin outerJoin(String tableName, String onClause) {
+            if(onClause.toLowerCase().startsWith("on "))
+                this.joinBuilder.append(" ").append("OUTER JOIN").append(" ").append(tableName).append(" ").append(onClause);
+            else
+                this.joinBuilder.append(" ").append("OUTER JOIN").append(" ").append(tableName).append(" ON ").append(onClause);
+            return this;
+        }
+
+        /**
+         * Joins a table
+         *
+         * @param tableName
+         * @param column1
+         * @param column2
+         * @return
+         */
+        @Override
+        public OuterJoin outerJoin(String tableName, String column1, String column2) {
+            return outerJoin(tableName, column1 + " = " + column2);
         }
     }
 
