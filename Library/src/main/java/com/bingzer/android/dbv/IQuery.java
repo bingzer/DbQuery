@@ -71,18 +71,17 @@ public interface IQuery<T> {
         Select columns(String... columns);
 
         /**
-         * Ascending orders by columns
+         * Order by. To create multiple orderBy ASC or DESC or both,
+         * this is possible
+         * <code>
+         * <pre>
+         *   db.get("Table").select().orderBy("Id", "Name", "Price DESC");
+         * </pre>
+         * </code>
          * @param columns
          * @return
          */
         OrderBy orderBy(String... columns);
-
-        /**
-         * Descending order by columns
-         * @param columns
-         * @return
-         */
-        OrderBy orderByDesc(String... columns);
 
         /**
          * Order By

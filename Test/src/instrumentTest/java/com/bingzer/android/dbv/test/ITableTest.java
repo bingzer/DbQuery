@@ -201,7 +201,7 @@ public class ITableTest extends AndroidTestCase{
 
     public void testOrderDescendingBy(){
         List<Integer> list = new LinkedList<Integer>();
-        Cursor cursor = db.get("Products").selectDistinct(null).columns("Price").orderByDesc("Price").query();
+        Cursor cursor = db.get("Products").selectDistinct(null).columns("Price").orderBy("Price DESC").query();
         while(cursor.moveToNext()){
             list.add(cursor.getInt(0));
         }
@@ -214,7 +214,7 @@ public class ITableTest extends AndroidTestCase{
 
     public void testOrderDescendingBy_2(){
         List<Integer> list = new LinkedList<Integer>();
-        Cursor cursor = db.get("Products").selectDistinct("Price is not ?", (Object)null).columns("Price").orderByDesc("Price").query();
+        Cursor cursor = db.get("Products").selectDistinct("Price is not ?", (Object)null).columns("Price").orderBy("Price DESC").query();
         while(cursor.moveToNext()){
             list.add(cursor.getInt(0));
         }

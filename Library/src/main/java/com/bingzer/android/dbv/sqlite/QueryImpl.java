@@ -138,21 +138,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
         public OrderBy orderBy(String... columns) {
             orderByString.delete(0, columnString.length());
             if(columns != null){
-                orderByString.append("ORDER BY ").append(Util.join(",", columns)).append(" ASC");
-            }
-            return this;
-        }
-
-        /**
-         * Order by descending
-         * @param columns
-         * @return
-         */
-        @Override
-        public OrderBy orderByDesc(String... columns) {
-            orderByString.delete(0, columnString.length());
-            if(columns != null){
-                orderByString.append("ORDER BY ").append(Util.join(",", columns)).append(" DESC");
+                orderByString.append("ORDER BY ").append(Util.join(",", columns));
             }
             return this;
         }
