@@ -4,7 +4,9 @@ DbQuery
 DbQuery is a lightweight and flexible SQLite Query API for Android. See code for concept. 
 DbQuery provides a new and simpler way to query data by minimizing the need to write SQL string inside the code.
 
-Still a work in progress
+Still a work in progress.
+See complete wiki and documentation here: 
+[https://github.com/bingzer/DbQuery/wiki](https://github.com/bingzer/DbQuery/wiki)
 
 Database Creation
 --------------
