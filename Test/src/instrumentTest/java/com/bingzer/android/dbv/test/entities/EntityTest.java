@@ -64,7 +64,7 @@ public class EntityTest extends AndroidTestCase {
         person.setAddressBytes("Turin".getBytes());
 
         int pirloId = db.get("Person").insert(person).query();
-        assertTrue(pirloId > 0);
+        assertTrue(pirloId > person.getId());
         assertTrue(db.get("Person").count("Name = ?", "Andrea Pirlo") > 0);
     }
 

@@ -370,6 +370,7 @@ class Table implements ITable {
      * @return an Insert object
      */
     @Override
+    @SuppressWarnings("unchecked")
     public IQuery.Insert insert(IEntity entity) {
         // build content values..
         final EntityMapper mapper = new EntityMapper(this);
@@ -377,18 +378,28 @@ class Table implements ITable {
         entity.map(mapper);
 
         Iterator<String> keys = mapper.keySet().iterator();
+        String idString = generateIdString();
+        IEntity.Action<Integer> idSetter = null;
         while(keys.hasNext()){
             String key = keys.next();
-            // ignore if column = "Id"
-            if(key.equalsIgnoreCase(generateIdString())) continue;
-
             IEntity.Action action = mapper.get(key);
-            if(action != null){
+
+            // ignore if column = "Id"
+            if(key.equalsIgnoreCase(idString)) {
+                idSetter = action;
+            }
+            else if(action != null){
                 ContentUtil.mapContentValuesFromAction(contentValues, key, action);
             }
         }
 
-        return insert(contentValues);
+        IQuery.Insert insert = insert(contentValues);
+        // assign the newly inserted id
+        if(idSetter != null){
+            idSetter.set(insert.query());
+        }
+
+        return insert;
     }
 
     /**
