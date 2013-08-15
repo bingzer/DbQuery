@@ -31,8 +31,6 @@ import com.bingzer.android.dbv.queries.Selectable;
  */
 abstract class QueryImpl<T> implements IQuery<T> {
 
-    static final String SPACE = " ";
-
     IConfig config;
     StringBuilder builder;
 
@@ -142,18 +140,18 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public String toString(){
             StringBuilder sql = new StringBuilder();
-            sql.append(selectString).append(SPACE);
-            sql.append(columnString).append(SPACE);
-            sql.append(fromString).append(SPACE);
+            sql.append(selectString).append(Database.SPACE);
+            sql.append(columnString).append(Database.SPACE);
+            sql.append(fromString).append(Database.SPACE);
             // where
-            sql.append(SPACE).append(super.builder);
+            sql.append(Database.SPACE).append(super.builder);
             // order by
             if(orderByString.length() > 0){
-                sql.append(SPACE).append(orderByString);
+                sql.append(Database.SPACE).append(orderByString);
             }
             // limit
             if(limitString.length() > 0){
-                sql.append(SPACE).append(limitString);
+                sql.append(Database.SPACE).append(limitString);
             }
 
             return sql.toString();
@@ -297,9 +295,11 @@ abstract class QueryImpl<T> implements IQuery<T> {
             this.joinBuilder = new StringBuilder();
 
             if(onClause.toLowerCase().startsWith("on "))
-                this.joinBuilder.append(SPACE).append(joinType).append(SPACE).append(tableNameToJoin).append(SPACE).append(onClause);
+                this.joinBuilder.append(Database.SPACE).append(joinType).append(Database.SPACE)
+                        .append(tableNameToJoin).append(Database.SPACE).append(onClause);
             else
-                this.joinBuilder.append(SPACE).append(joinType).append(SPACE).append(tableNameToJoin).append(" ON ").append(onClause);
+                this.joinBuilder.append(Database.SPACE).append(joinType).append(Database.SPACE)
+                        .append(tableNameToJoin).append(" ON ").append(onClause);
         }
 
         @Override
@@ -359,12 +359,12 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public String toString(){
             StringBuilder sql = new StringBuilder();
-            sql.append(selectString).append(SPACE);
-            sql.append(columnString).append(SPACE);
+            sql.append(selectString).append(Database.SPACE);
+            sql.append(columnString).append(Database.SPACE);
             // from what table?
-            sql.append(fromString).append(SPACE);
+            sql.append(fromString).append(Database.SPACE);
             // join builder
-            sql.append(joinBuilder).append(SPACE);
+            sql.append(joinBuilder).append(Database.SPACE);
             // where
             if(super.builder.length() > 0){
                 sql.append(super.builder);
@@ -384,9 +384,11 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public InnerJoin join(String tableName, String onClause) {
             if(onClause.toLowerCase().startsWith("on "))
-                this.joinBuilder.append(SPACE).append("INNER JOIN").append(SPACE).append(tableName).append(SPACE).append(onClause);
+                this.joinBuilder.append(Database.SPACE).append("INNER JOIN").append(Database.SPACE)
+                        .append(tableName).append(Database.SPACE).append(onClause);
             else
-                this.joinBuilder.append(SPACE).append("INNER JOIN").append(SPACE).append(tableName).append(" ON ").append(onClause);
+                this.joinBuilder.append(Database.SPACE).append("INNER JOIN").append(Database.SPACE)
+                        .append(tableName).append(" ON ").append(onClause);
             return this;
         }
 
@@ -398,9 +400,11 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public OuterJoin outerJoin(String tableName, String onClause) {
             if(onClause.toLowerCase().startsWith("on "))
-                this.joinBuilder.append(SPACE).append("OUTER JOIN").append(SPACE).append(tableName).append(SPACE).append(onClause);
+                this.joinBuilder.append(Database.SPACE).append("OUTER JOIN").append(Database.SPACE)
+                        .append(tableName).append(Database.SPACE).append(onClause);
             else
-                this.joinBuilder.append(SPACE).append("OUTER JOIN").append(SPACE).append(tableName).append(" ON ").append(onClause);
+                this.joinBuilder.append(Database.SPACE).append("OUTER JOIN").append(Database.SPACE)
+                        .append(tableName).append(" ON ").append(onClause);
             return this;
         }
 
@@ -519,21 +523,21 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         String generateSql(boolean asRowCount){
             StringBuilder sql = new StringBuilder();
-            sql.append(select.selectString).append(SPACE);
+            sql.append(select.selectString).append(Database.SPACE);
 
             // columns
             if(asRowCount) sql.append(" COUNT(*) AS FN ");
-            else sql.append(select.columnString).append(SPACE);
+            else sql.append(select.columnString).append(Database.SPACE);
 
             // from
-            sql.append(select.fromString).append(SPACE);
+            sql.append(select.fromString).append(Database.SPACE);
 
             // where
-            sql.append(SPACE).append(select.builder);
+            sql.append(Database.SPACE).append(select.builder);
 
             // order by
             if(select.orderByString.length() > 0){
-                sql.append(SPACE).append(select.orderByString);
+                sql.append(Database.SPACE).append(select.orderByString);
             }
 
             // pagination only when it's not a row count

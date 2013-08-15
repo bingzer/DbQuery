@@ -33,9 +33,6 @@ class TransactionImpl implements IDatabase.Transaction {
         this.batch = batch;
     }
 
-    /**
-     * Commit the transactions
-     */
     @Override
     public void commit() {
         database.begin();
@@ -45,44 +42,16 @@ class TransactionImpl implements IDatabase.Transaction {
         database.commit();
     }
 
-    /**
-     * Rollback any transactions
-     */
     @Override
     public void rollback() {
         database.rollback();
     }
 
-    /**
-     * Ends the transaction.
-     * From this point on, all transaction has been set to
-     * <code>autoCommit = true</code>
-     */
     @Override
     public void end() {
         database.end();
     }
 
-    /**
-     * This method will do the following
-     * <code>
-     * <pre>
-     *         try{
-     *             transaction.commit();
-     *             return true;
-     *         }
-     *         catch (Throwable any){
-     *             transaction.rollback();
-     *             return false;
-     *         }
-     *         finally{
-     *             transaction.end();
-     *         }
-     *     </pre>
-     * </code>
-     *
-     * @return true if the batch is successfully committed, false if otherwise
-     */
     @Override
     public boolean execute() {
         try{

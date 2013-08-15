@@ -16,7 +16,6 @@
 
 package com.bingzer.android.dbv.sqlite;
 
-import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 
 import java.util.HashMap;
@@ -31,11 +30,6 @@ class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Ma
         this.table = table;
     }
 
-    /**
-     * Maps id
-     *
-     * @param action
-     */
     @Override
     public void mapId(IEntity.Action<Integer> action) {
         map(table.generateIdString(), action);

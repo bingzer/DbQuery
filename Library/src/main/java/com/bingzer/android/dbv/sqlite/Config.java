@@ -39,65 +39,31 @@ class Config implements IConfig {
         this.foreignKeySupport = false;
     }
 
-    /**
-     * Sets naming convention for Id
-     *
-     * @param id
-     */
     @Override
     public void setIdNamingConvention(String id) {
         idNamingConvention = id;
     }
 
-    /**
-     * Returns namving convention for id
-     *
-     * @return
-     */
     @Override
     public String getIdNamingConvention() {
         return idNamingConvention;
     }
 
-    /**
-     * Sets append table name as prefix in front of the "Id".
-     * The Id is defined by {@link #setIdNamingConvention(String)}.
-     * The default is <code>false</code>
-     *
-     * @param appendTableName true to append
-     */
     @Override
     public void setAppendTableNameForId(boolean appendTableName) {
         this.appendTableName = appendTableName;
     }
 
-    /**
-     * Returns true if DbQuery should always append the table name
-     * in front of the Id.
-     *
-     * @return true if DbQuery should append table name, else if otherwise
-     */
     @Override
     public boolean getAppendTableNameForId() {
         return appendTableName;
     }
 
-    /**
-     * Turn on/off foreign key support. By default foreign
-     * key should be off
-     *
-     * @param on true to turn on, false to turn off
-     */
     @Override
     public void setForeignKeySupport(boolean on) {
         this.foreignKeySupport = on;
     }
 
-    /**
-     * Returns on/off foreign key support
-     *
-     * @return true if turned one, false otherwise
-     */
     @Override
     public boolean getForeignKeySupport() {
         return foreignKeySupport;

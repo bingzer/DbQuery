@@ -21,14 +21,28 @@ import android.content.Context;
 import com.bingzer.android.dbv.IDatabase;
 
 /**
- * Created by Ricky Tobing on 7/17/13.
+ * <code>IDatabase.Builder</code> implementations.
+ * Always, always, always use this as your <code>IDatabase.Builder</code>
+ *
+ * @since 1.0
+ * @author Ricky Tobing
+ * @see IDatabase.Builder
  */
 public abstract class SQLiteBuilder implements IDatabase.Builder {
 
     /**
-     * Returns the context
-     *
-     * @return the context
+     * Returns the GOD-object <code>context</code>.
+     * You should return your <code>ApplicationContext</code> here
+     * <code>
+     * <pre>
+     * ...
+     * public Context getContext(){
+     *     return getApplicationContext();
+     * }
+     * ...
+     * </pre>
+     * </code>
+     * @return context
      */
     public abstract Context getContext();
 

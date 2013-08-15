@@ -38,6 +38,7 @@ class ContentUtil {
         else if(value instanceof Long) contentValues.put(key, (Long) value);
         else if(value instanceof Short) contentValues.put(key, (Short) value);
         else if(value instanceof String) contentValues.put(key, (String) value);
+
         // todo: fix exception message
         else throw new IllegalArgumentException("Unmapped");
     }
@@ -54,10 +55,12 @@ class ContentUtil {
         else if(action.getType() == byte[].class) contentValues.put(key, (byte[])action.get());
         else if(action.getType() == Byte.class) contentValues.put(key, (Byte) action.get());
         else if(action.getType() == Float.class) contentValues.put(key, (Float)action.get());
-            // TODO: Fix the exception message
+
+        // TODO: Fix the exception message
         else throw new IllegalArgumentException("Unmapped");
     }
 
+    @SuppressWarnings("unchecked")
     static void mapActionToCursor(IEntity.Action action, Cursor cursor, int index){
         if(action.getType() == String.class) action.set(cursor.getString(index));
         else if(action.getType() == Integer.class) action.set(cursor.getInt(index));
@@ -68,7 +71,7 @@ class ContentUtil {
         else if(action.getType() == Float.class) action.set(cursor.getFloat(index));
         else if(action.getType() == byte[].class) action.set(cursor.getBlob(index));
 
-            // TODO: Fix the exception message
+        // TODO: Fix the exception message
         else throw new IllegalArgumentException("Unmapped");
     }
 
@@ -86,6 +89,7 @@ class ContentUtil {
         }
     }
 
+    @SuppressWarnings("unchecked")
     static <E extends IEntity> void mapEntityListFromCursor(EntityMapper mapper, IEntityList<E> entityList, Cursor cursor){
         while(cursor.moveToNext()){
             int columnIdIndex = cursor.getColumnIndex(mapper.table.generateIdString());

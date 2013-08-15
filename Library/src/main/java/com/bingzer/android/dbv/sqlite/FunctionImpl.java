@@ -38,11 +38,6 @@ public class FunctionImpl implements IFunction {
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    /**
-     * Returns value as <code>int</code>
-     *
-     * @return
-     */
     @Override
     public int asInt() {
         try{
@@ -53,11 +48,6 @@ public class FunctionImpl implements IFunction {
         }
     }
 
-    /**
-     * Returns value as <code>long</code>
-     *
-     * @return
-     */
     @Override
     public long asLong() {
         try{
@@ -68,11 +58,6 @@ public class FunctionImpl implements IFunction {
         }
     }
 
-    /**
-     * Returns value as <code>float</code>
-     *
-     * @return
-     */
     @Override
     public float asFloat() {
         try{
@@ -83,11 +68,6 @@ public class FunctionImpl implements IFunction {
         }
     }
 
-    /**
-     * Returns value as <code>double</code>
-     *
-     * @return
-     */
     @Override
     public double asDouble() {
         try{
@@ -98,35 +78,23 @@ public class FunctionImpl implements IFunction {
         }
     }
 
-    /**
-     * Returns value as <code>string</code>
-     *
-     * @return
-     */
     @Override
     public String asString() {
         return value == null ? "null" : value.toString();
     }
 
-    /**
-     * Returns the value
-     *
-     * @return
-     */
     @Override
     public Object value() {
         return value;
     }
 
-    /**
-     * To string
-     * @return
-     */
     @Override
     public String toString(){
         return builder.toString();
     }
 
+    //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
 
     public static class AverageImpl extends FunctionImpl implements Average {
         AverageImpl(String tableName, String columnName){

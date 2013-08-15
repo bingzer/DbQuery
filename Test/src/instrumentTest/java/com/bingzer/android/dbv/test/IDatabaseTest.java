@@ -21,6 +21,7 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.sqlite.Database;
 
 /**
  * Created by Ricky Tobing on 7/18/13.
@@ -57,6 +58,18 @@ public class IDatabaseTest extends AndroidTestCase {
         assertTrue(cursor != null);
 
         cursor.close();
+    }
+
+    public void testGetSQLiteOpenHelper(){
+        try{
+            // should trow exception
+            // we haven't open the db
+            ((Database)db).getSQLiteOpenHelper();
+            assertTrue("Good", true);
+        }
+        catch (Exception e){
+            assertTrue("Bad", false);
+        }
     }
 
 }
