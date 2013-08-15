@@ -2,7 +2,7 @@
  * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance insert the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -31,6 +31,8 @@ import com.bingzer.android.dbv.queries.Selectable;
  */
 abstract class QueryImpl<T> implements IQuery<T> {
 
+    static final String SPACE = " ";
+
     IConfig config;
     StringBuilder builder;
 
@@ -52,30 +54,23 @@ abstract class QueryImpl<T> implements IQuery<T> {
         return this;
     }
 
-    ////////////////////////////////////////////
-    ////////////////////////////////////////////
-
-    /**
-     * Build the sql and return a cursor
-     *
-     * @return
-     */
     @Override
-    public T query() {
-        return null;
-    }
+    public abstract T query();
 
-    /**
-     * SelectImpl
-     */
-    static class SelectImpl extends QueryImpl<Cursor> implements IQuery.Select, Select.OrderBy{
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
 
-        protected StringBuilder selectString;
-        protected StringBuilder columnString;
-        protected StringBuilder fromString;
-        protected StringBuilder limitString;
-        protected StringBuilder orderByString;
-        protected Table table;
+
+    static abstract class SelectImpl extends QueryImpl<Cursor> implements IQuery.Select, Select.OrderBy, GroupBy, Having{
+
+        final Table table;
+        StringBuilder selectString;
+        StringBuilder columnString;
+        StringBuilder fromString;
+        StringBuilder limitString;
+        StringBuilder orderByString;
+        StringBuilder groupByString;
+        StringBuilder havingString;
 
         SelectImpl(IConfig config, Table table){
             this(config, table, false);
@@ -89,24 +84,18 @@ abstract class QueryImpl<T> implements IQuery<T> {
             super(config);
 
             this.table = table;
-
-            selectString = new StringBuilder("SELECT ");
-            columnString = new StringBuilder("* ");
-            fromString = new StringBuilder("FROM ").append(table);
-            limitString = new StringBuilder();
-            orderByString = new StringBuilder();
+            this.selectString = new StringBuilder("SELECT ");
+            this.columnString = new StringBuilder("* ");
+            this.fromString = new StringBuilder("FROM ").append(table);
+            this.limitString = new StringBuilder();
+            this.orderByString = new StringBuilder();
+            this.groupByString = new StringBuilder();
+            this.havingString = new StringBuilder();
 
             if(distinct) selectString.append("DISTINCT ");
-            if(top > 0) limitString.append(" LIMIT " + top);
+            if(top > 0) limitString.append(" LIMIT ").append(top);
         }
 
-        /**
-         * Specified the column to return.
-         * default or null will produce SELECT * FROM
-         *
-         * @param columns
-         * @return
-         */
         @Override
         public Select columns(String... columns) {
             columnString.delete(0, columnString.length());
@@ -120,26 +109,15 @@ abstract class QueryImpl<T> implements IQuery<T> {
             return this;
         }
 
-        /**
-         * Orders by
-         *
-         * @param columns
-         * @return
-         */
         @Override
         public OrderBy orderBy(String... columns) {
-            orderByString.delete(0, columnString.length());
+            orderByString.delete(0, orderByString.length());
             if(columns != null){
                 orderByString.append("ORDER BY ").append(Util.join(",", columns));
             }
             return this;
         }
 
-        /**
-         * Select to an entity
-         *
-         * @param entity the target entity
-         */
         @Override
         public void query(IEntity entity) {
             final Cursor cursor = query();
@@ -161,106 +139,105 @@ abstract class QueryImpl<T> implements IQuery<T> {
             cursor.close();
         }
 
-        /**
-         * To String
-         * @return
-         */
+        @Override
         public String toString(){
             StringBuilder sql = new StringBuilder();
-            sql.append(selectString).append(" ");
-            sql.append(columnString).append(" ");
-            sql.append(fromString).append(" ");
+            sql.append(selectString).append(SPACE);
+            sql.append(columnString).append(SPACE);
+            sql.append(fromString).append(SPACE);
             // where
-            sql.append(" ").append(super.builder);
+            sql.append(SPACE).append(super.builder);
             // order by
             if(orderByString.length() > 0){
-                sql.append(" ").append(orderByString);
+                sql.append(SPACE).append(orderByString);
             }
             // limit
             if(limitString.length() > 0){
-                sql.append(" ").append(limitString);
+                sql.append(SPACE).append(limitString);
             }
 
             return sql.toString();
         }
 
-        /**
-         * Added paging to a query.
-         *
-         * @param row the row number
-         * @return paging
-         * @see com.bingzer.android.dbv.IQuery.Paging
-         */
         @Override
         public Paging paging(int row) {
             return new PagingImpl(config, this, row);
         }
+
+        @Override
+        public GroupBy groupBy(String... columns) {
+            groupByString.delete(0, groupByString.length());
+            if(columns != null){
+                groupByString.append("GROUP BY ").append(Util.join(",", columns));
+            }
+
+            return this;
+        }
+
+        @Override
+        public Having having(String condition) {
+            return having(condition, (Object) null);
+        }
+
+        @Override
+        public Having having(String clause, Object... args) {
+            havingString.delete(0, havingString.length());
+            havingString.append("HAVING ").append(Util.bindArgs(clause, args));
+
+            return this;
+        }
     }
 
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
 
-    /**
-     * InsertImpl
-     */
     static class InsertImpl implements IQuery.Insert {
         Integer value;
 
-        /**
-         * Build the sql and return a cursor
-         *
-         * @return
-         */
         @Override
         public Integer query() {
             return value;
         }
     }
 
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
+
     static class InsertWithImpl extends InsertImpl implements InsertWith {
 
         IQuery<Integer> query;
         String[] columnNames;
 
-        InsertWithImpl(IQueryableAppendable query, String... columnNames){
+        InsertWithImpl(ContentSet query, String... columnNames){
             this.query = query;
             this.columnNames = columnNames;
         }
 
-        /**
-         * Values
-         *
-         * @return
-         */
         @Override
-        public IQuery val(Object... values) {
+        public IQuery<Integer> val(Object... values) {
             ContentValues contentValues = new ContentValues();
             for(int i = 0; i < columnNames.length; i++){
                 ContentUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
             }
 
-            ((IQueryableAppendable) query).onContentValuesSet(this, contentValues);
+            ((ContentSet) query).onContentValuesSet(this, contentValues);
 
             return this;
         }
 
-        static interface IQueryableAppendable extends IQuery<Integer> {
+        static interface ContentSet extends IQuery<Integer> {
 
             void onContentValuesSet(InsertWithImpl query, ContentValues contentValues);
 
         }
     }
 
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
 
-    /**
-     * UpdateImpl
-     */
     static class UpdateImpl implements IQuery.Update {
         Integer value;
 
-        /**
-         * Build the sql and return a cursor
-         *
-         * @return
-         */
         @Override
         public Integer query() {
             return value;
@@ -272,47 +249,44 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         Integer value;
 
-        /**
-         * Build the sql and return a cursor
-         *
-         * @return
-         */
         @Override
         public Integer query() {
             return value;
         }
     }
 
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
+
     static class DropImpl implements IQuery<Boolean>{
         Boolean value;
 
 
-        /**
-         * Build the sql and return a cursor
-         *
-         * @return
-         */
         @Override
         public Boolean query() {
             return value;
         }
     }
 
-    static class InnerJoinImpl extends Join implements IQuery.InnerJoin {
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
+
+    static abstract class InnerJoinImpl extends Join implements IQuery.InnerJoin {
         InnerJoinImpl(IConfig config, Table table, String tableNameToJoin, String onClause) {
             super(config, table, "INNER JOIN", tableNameToJoin, onClause);
         }
     }
 
-    static class OuterJoinImpl extends Join implements IQuery.OuterJoin {
+    static abstract class OuterJoinImpl extends Join implements IQuery.OuterJoin {
         OuterJoinImpl(IConfig config, Table table, String tableNameToJoin, String onClause) {
             super(config, table, "OUTER JOIN", tableNameToJoin, onClause);
         }
     }
 
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
 
-
-    private static class Join extends SelectImpl implements IQuery.InnerJoin, IQuery.OuterJoin, Selectable {
+    private static abstract class Join extends SelectImpl implements IQuery.InnerJoin, IQuery.OuterJoin, Selectable {
 
         protected final Table table;
         protected StringBuilder joinBuilder;
@@ -323,136 +297,74 @@ abstract class QueryImpl<T> implements IQuery<T> {
             this.joinBuilder = new StringBuilder();
 
             if(onClause.toLowerCase().startsWith("on "))
-                this.joinBuilder.append(" ").append(joinType).append(" ").append(tableNameToJoin).append(" ").append(onClause);
+                this.joinBuilder.append(SPACE).append(joinType).append(SPACE).append(tableNameToJoin).append(SPACE).append(onClause);
             else
-                this.joinBuilder.append(" ").append(joinType).append(" ").append(tableNameToJoin).append(" ON ").append(onClause);
+                this.joinBuilder.append(SPACE).append(joinType).append(SPACE).append(tableNameToJoin).append(" ON ").append(onClause);
         }
 
-        /**
-         * SelectImpl top (x) add the specified condition
-         *
-         * @param top
-         * @param condition
-         * @return
-         */
         @Override
         public IQuery.Select select(int top, String condition) {
             consume(table.select(top, condition));
             return this;
         }
 
-        /**
-         * SelectImpl some condition
-         *
-         * @param condition
-         * @return
-         */
         @Override
         public IQuery.Select select(String condition) {
             consume(table.select(condition));
             return this;
         }
 
-        /**
-         * SelectImpl add id
-         *
-         * @param id
-         * @return
-         */
         @Override
         public IQuery.Select select(int id) {
             consume(table.select(id));
             return this;
         }
 
-        /**
-         * SelectImpl multiple ids
-         *
-         * @param ids
-         * @return
-         */
         @Override
         public IQuery.Select select(int... ids) {
             consume(table.select(ids));
             return this;
         }
 
-        /**
-         * SelectImpl add whereClause
-         *
-         * @param whereClause
-         * @param args
-         * @return
-         */
         @Override
         public IQuery.Select select(String whereClause, Object... args) {
             consume(table.select(whereClause, args));
             return this;
         }
 
-        /**
-         * SelectImpl
-         *
-         * @param whereClause
-         * @param args
-         * @return
-         */
         @Override
         public IQuery.Select select(int top, String whereClause, Object... args) {
             consume(table.select(top, whereClause, args));
             return this;
         }
 
-        /**
-         * Select distinct all.
-         * Equivalent of calling <code>selectDistinct(null)</code>
-         *
-         * @return
-         */
         @Override
         public Select selectDistinct() {
             consume(table.selectDistinct(null));
             return this;
         }
 
-        /**
-         * SelectImpl distinct
-         *
-         * @param condition
-         * @return
-         */
         @Override
         public IQuery.Select selectDistinct(String condition) {
             consume(table.selectDistinct(condition));
             return this;
         }
 
-        /**
-         * SelectImpl distinct add condition
-         *
-         * @param whereClause
-         * @param args
-         * @return
-         */
         @Override
         public IQuery.Select selectDistinct(String whereClause, Object... args) {
             consume(table.selectDistinct(whereClause, args));
             return this;
         }
 
-        /**
-         *
-         * @return
-         */
         @Override
         public String toString(){
             StringBuilder sql = new StringBuilder();
-            sql.append(selectString).append(" ");
-            sql.append(columnString).append(" ");
+            sql.append(selectString).append(SPACE);
+            sql.append(columnString).append(SPACE);
             // from what table?
-            sql.append(fromString).append(" ");
+            sql.append(fromString).append(SPACE);
             // join builder
-            sql.append(joinBuilder).append(" ");
+            sql.append(joinBuilder).append(SPACE);
             // where
             if(super.builder.length() > 0){
                 sql.append(super.builder);
@@ -469,10 +381,34 @@ abstract class QueryImpl<T> implements IQuery<T> {
             return sql.toString();
         }
 
-        /**
-         * Consume parent's select statement
-         * @param select
-         */
+        @Override
+        public InnerJoin join(String tableName, String onClause) {
+            if(onClause.toLowerCase().startsWith("on "))
+                this.joinBuilder.append(SPACE).append("INNER JOIN").append(SPACE).append(tableName).append(SPACE).append(onClause);
+            else
+                this.joinBuilder.append(SPACE).append("INNER JOIN").append(SPACE).append(tableName).append(" ON ").append(onClause);
+            return this;
+        }
+
+        @Override
+        public InnerJoin join(String tableName, String column1, String column2) {
+            return join(tableName, column1 + " = " + column2);
+        }
+
+        @Override
+        public OuterJoin outerJoin(String tableName, String onClause) {
+            if(onClause.toLowerCase().startsWith("on "))
+                this.joinBuilder.append(SPACE).append("OUTER JOIN").append(SPACE).append(tableName).append(SPACE).append(onClause);
+            else
+                this.joinBuilder.append(SPACE).append("OUTER JOIN").append(SPACE).append(tableName).append(" ON ").append(onClause);
+            return this;
+        }
+
+        @Override
+        public OuterJoin outerJoin(String tableName, String column1, String column2) {
+            return outerJoin(tableName, column1 + " = " + column2);
+        }
+
         private void consume(Select select){
             // clear first..
             super.builder.delete(0, super.builder.length());
@@ -485,65 +421,10 @@ abstract class QueryImpl<T> implements IQuery<T> {
             // the whereClause part
             append(((SelectImpl) select).builder);
         }
-
-        /**
-         * Inner join a table
-         *
-         * @param tableName
-         * @param onClause
-         * @return
-         */
-        @Override
-        public InnerJoin join(String tableName, String onClause) {
-            if(onClause.toLowerCase().startsWith("on "))
-                this.joinBuilder.append(" ").append("INNER JOIN").append(" ").append(tableName).append(" ").append(onClause);
-            else
-                this.joinBuilder.append(" ").append("INNER JOIN").append(" ").append(tableName).append(" ON ").append(onClause);
-            return this;
-        }
-
-        /**
-         * Inner join a table
-         *
-         * @param tableName
-         * @param column1
-         * @param column2
-         * @return
-         */
-        @Override
-        public InnerJoin join(String tableName, String column1, String column2) {
-            return join(tableName, column1 + " = " + column2);
-        }
-
-        /**
-         * Joins a table
-         *
-         * @param tableName
-         * @param onClause
-         * @return
-         */
-        @Override
-        public OuterJoin outerJoin(String tableName, String onClause) {
-            if(onClause.toLowerCase().startsWith("on "))
-                this.joinBuilder.append(" ").append("OUTER JOIN").append(" ").append(tableName).append(" ").append(onClause);
-            else
-                this.joinBuilder.append(" ").append("OUTER JOIN").append(" ").append(tableName).append(" ON ").append(onClause);
-            return this;
-        }
-
-        /**
-         * Joins a table
-         *
-         * @param tableName
-         * @param column1
-         * @param column2
-         * @return
-         */
-        @Override
-        public OuterJoin outerJoin(String tableName, String column1, String column2) {
-            return outerJoin(tableName, column1 + " = " + column2);
-        }
     }
+
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
 
     static class PagingImpl extends QueryImpl<Cursor> implements Paging{
 
@@ -557,46 +438,21 @@ abstract class QueryImpl<T> implements IQuery<T> {
             this.rowLimit = rowLimit;
         }
 
-        /**
-         * Returns the number of row set in the beginning.
-         * This number is final
-         *
-         * @return the number of row
-         */
         @Override
         public int getRowLimit() {
             return rowLimit;
         }
 
-        /**
-         * Returns the current page number
-         *
-         * @return the current page number
-         */
         @Override
         public int getPageNumber() {
             return pageNumber;
         }
 
-        /**
-         * Sets the page number.
-         * If the pageNumber is under than zero it will throw an IllegalArgumentException.
-         *
-         * @param pageNumber the page number to set
-         */
         @Override
         public void setPageNumber(int pageNumber) {
             ensurePageNumberValid(pageNumber);
         }
 
-        /**
-         * Returns the number of page available.
-         * This method will run SQL <code>"SELECT COUNT(*)"</code> query
-         * once called. This is very expensive call, but it's useful
-         * if you want to know ahead of time how many pages are available
-         *
-         * @return the number of pages available with the given query
-         */
         @Override
         public int getTotalPage() {
             float row = -1;
@@ -614,14 +470,9 @@ abstract class QueryImpl<T> implements IQuery<T> {
             }
 
             // calculate total page
-            return  (int) Math.ceil(row / (float)rowLimit);
+            return  (int) Math.ceil(row / (float) rowLimit);
         }
 
-        /**
-         * Returns query and up the page number by one.
-         * Page number is upped only when there's row in the cursor
-         * @return cursor
-         */
         @Override
         public Cursor query(){
             Cursor cursor = null;
@@ -635,26 +486,12 @@ abstract class QueryImpl<T> implements IQuery<T> {
             }
         }
 
-        /**
-         * Returns the cursor on the <code>pageNumber</code>.
-         * If pageNumber is under than zero it will throw an IllegalArgumentException.
-         * If pageNumber is not found, cursor will be null.
-         * If called, then {@link #getPageNumber()} will return pageNumber.
-         *
-         * @param pageNumber the number
-         * @return cursor
-         */
         @Override
         public Cursor query(int pageNumber) {
             ensurePageNumberValid(pageNumber);
             return query();
         }
 
-        /**
-         * Query and store the result to an {@link com.bingzer.android.dbv.IEntity}
-         *
-         * @param entity the entity
-         */
         @Override
         public void query(IEntity entity) {
             final Cursor cursor = query();
@@ -665,12 +502,6 @@ abstract class QueryImpl<T> implements IQuery<T> {
             cursor.close();
         }
 
-        /**
-         * Query and store the result to an {@link com.bingzer.android.dbv.IEntityList}
-         *
-         * @param entityList the entity list
-         * @param <E> extends IEntity
-         */
         @Override
         public <E extends IEntity> void query(IEntityList<E> entityList) {
             final Cursor cursor = query();
@@ -688,21 +519,21 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         String generateSql(boolean asRowCount){
             StringBuilder sql = new StringBuilder();
-            sql.append(select.selectString).append(" ");
+            sql.append(select.selectString).append(SPACE);
 
             // columns
             if(asRowCount) sql.append(" COUNT(*) AS FN ");
-            else sql.append(select.columnString).append(" ");
+            else sql.append(select.columnString).append(SPACE);
 
             // from
-            sql.append(select.fromString).append(" ");
+            sql.append(select.fromString).append(SPACE);
 
             // where
-            sql.append(" ").append(select.builder);
+            sql.append(SPACE).append(select.builder);
 
             // order by
             if(select.orderByString.length() > 0){
-                sql.append(" ").append(select.orderByString);
+                sql.append(SPACE).append(select.orderByString);
             }
 
             // pagination only when it's not a row count

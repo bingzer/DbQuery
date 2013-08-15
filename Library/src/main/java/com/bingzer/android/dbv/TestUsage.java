@@ -87,7 +87,9 @@ class TestUsage {
         }).execute();
         db.get("Person").select().orderBy("Name").paging(10).query(list);
 
-        // --- join
+        // --- groupable
+        db.get("").select().groupBy("","").having("","").query();
+        db.get("").select().groupBy("").query();
     }
 
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {

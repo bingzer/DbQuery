@@ -19,6 +19,7 @@ package com.bingzer.android.dbv;
 import android.database.Cursor;
 
 import com.bingzer.android.dbv.queries.EntitySelectable;
+import com.bingzer.android.dbv.queries.Groupable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.queries.Selectable;
@@ -57,10 +58,30 @@ public interface IQuery<T> {
         IQuery<Integer> val(Object... values);
     }
 
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+
+    /**
+     * Represents a delete statement
+     */
+    public static interface Delete extends IQuery<Integer> {
+
+    }
+
+    /**
+     * Represents an update statement
+     */
+    public static interface Update extends IQuery<Integer> {
+
+    }
+
+    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+
     /**
      * For select statement
      */
-    public static interface Select extends IQuery<Cursor>, EntitySelectable, Pagination {
+    public static interface Select extends IQuery<Cursor>, EntitySelectable, Pagination, Groupable {
 
         /**
          * Specified the column to return.
@@ -92,19 +113,8 @@ public interface IQuery<T> {
 
     }
 
-    /**
-     * Represents a delete statement
-     */
-    public static interface Delete extends IQuery<Integer> {
-
-    }
-
-    /**
-     * Represents an update statement
-     */
-    public static interface Update extends IQuery<Integer> {
-
-    }
+    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
 
     /**
      * Represents an inner join statement
@@ -123,6 +133,21 @@ public interface IQuery<T> {
      */
     public static interface OuterJoin extends
             Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select{
+
+    }
+
+    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+
+    public static interface GroupBy extends IQuery<Cursor>, EntitySelectable{
+
+        Having having(String condition);
+
+        Having having(String clause, Object... args);
+
+    }
+
+    public static interface Having extends IQuery<Cursor>, EntitySelectable {
 
     }
 

@@ -53,7 +53,7 @@ class Table implements ITable {
         this.sqlDb = sqlDb;
         this.columns = new LinkedList<String>();
 
-        String pragmaSql = new StringBuilder("PRAGMA table_info(").append(name).append(")").toString();
+        String pragmaSql = Util.bindArgs("PRAGMA table_info(?)", name);
         Cursor cursor = sqlDb.rawQuery(pragmaSql, null);
         try{
             // this will throw IllegalArgumentException if not found
@@ -71,51 +71,26 @@ class Table implements ITable {
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    /**
-     * Returns the name
-     *
-     * @return
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the current alias of this table
-     *
-     * @param alias
-     */
     @Override
     public void setAlias(String alias) {
         this.alias = alias;
     }
 
-    /**
-     * This table alias
-     *
-     * @return
-     */
     @Override
     public String getAlias() {
         return alias;
     }
 
-    /**
-     * Returns the column name
-     *
-     * @return
-     */
     @Override
     public List<String> getColumns() {
         return columns;
     }
 
-    /**
-     * Returns the column count
-     *
-     * @return
-     */
     @Override
     public int getColumnCount() {
         if(columns != null){
@@ -124,35 +99,16 @@ class Table implements ITable {
         return  0;
     }
 
-    /**
-     * SelectImpl some condition
-     *
-     * @param condition
-     * @return
-     */
     @Override
     public IQuery.Select select(String condition) {
         return select(condition, (Object)null);
     }
 
-    /**
-     * Returns id
-     *
-     * @param condition
-     * @return
-     */
     @Override
     public int selectId(String condition) {
         return selectId(condition, (Object)null);
     }
 
-    /**
-     * Returns id
-     *
-     * @param whereClause
-     * @param args
-     * @return
-     */
     @Override
     public int selectId(String whereClause, Object... args) {
         int id = -1;
@@ -164,35 +120,16 @@ class Table implements ITable {
         return id;
     }
 
-    /**
-     * SelectImpl top (x) add the specified condition
-     *
-     * @param top
-     * @param condition
-     * @return
-     */
     @Override
     public IQuery.Select select(int top, String condition) {
         return select(top, condition, (Object)null);
     }
 
-    /**
-     * SelectImpl add id
-     *
-     * @param id
-     * @return
-     */
     @Override
     public IQuery.Select select(int id) {
         return select(generateParamId(id));
     }
 
-    /**
-     * SelectImpl multiple ids
-     *
-     * @param ids
-     * @return
-     */
     @Override
     public IQuery.Select select(int... ids) {
         if(ids != null && ids.length > 0){
@@ -215,31 +152,17 @@ class Table implements ITable {
         }
     }
 
-    /**
-     * SelectImpl add whereClause
-     *
-     * @param whereClause
-     * @param args
-     * @return
-     */
     @Override
     public IQuery.Select select(String whereClause, Object... args) {
         return select(-1, whereClause, args);
     }
 
-    /**
-     * SelectImpl
-     *
-     * @param whereClause
-     * @param args
-     * @return
-     */
     @Override
     public IQuery.Select select(int top, String whereClause, Object... args) {
         QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), this, top, false){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
-            };
+            }
         };
 
         if(whereClause != null){
@@ -253,41 +176,22 @@ class Table implements ITable {
         return query;
     }
 
-    /**
-     * Select distinct all.
-     * Equivalent of calling <code>selectDistinct(null)</code>
-     *
-     * @return
-     */
     @Override
     public IQuery.Select selectDistinct() {
         return selectDistinct(null);
     }
 
-    /**
-     * SelectImpl distinct
-     *
-     * @param condition
-     * @return
-     */
     @Override
     public IQuery.Select selectDistinct(String condition) {
         return selectDistinct(condition, (Object)null);
     }
 
-    /**
-     * SelectImpl distinct add condition
-     *
-     * @param whereClause
-     * @param args
-     * @return
-     */
     @Override
     public IQuery.Select selectDistinct(String whereClause, Object... args) {
         QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), this, true){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
-            };
+            }
         };
 
         if(whereClause != null){
@@ -301,12 +205,6 @@ class Table implements ITable {
         return query;
     }
 
-    /**
-     * InsertWith content val
-     *
-     * @param contents
-     * @return
-     */
     @Override
     public IQuery.Insert insert(final ContentValues contents) {
         QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
@@ -315,13 +213,6 @@ class Table implements ITable {
         return query;
     }
 
-    /**
-     * InsertWith
-     *
-     * @param columns
-     * @param values
-     * @return
-     */
     @Override
     public IQuery.Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
@@ -332,15 +223,9 @@ class Table implements ITable {
         return insert(contentValues);
     }
 
-    /**
-     * InsertWith
-     *
-     * @param columns
-     * @return
-     */
     @Override
     public IQuery.InsertWith insert(String... columns) {
-        QueryImpl.InsertWithImpl query = new QueryImpl.InsertWithImpl(new QueryImpl.InsertWithImpl.IQueryableAppendable() {
+        return new QueryImpl.InsertWithImpl(new QueryImpl.InsertWithImpl.ContentSet() {
             private ContentValues contentValues;
             private QueryImpl.InsertWithImpl query;
 
@@ -359,16 +244,8 @@ class Table implements ITable {
                 return this.query.value;
             }
         }, columns);
-
-        return query;
     }
 
-    /**
-     * Insert an entity.
-     *
-     * @param entity entity
-     * @return an Insert object
-     */
     @Override
     @SuppressWarnings("unchecked")
     public IQuery.Insert insert(IEntity entity) {
@@ -402,13 +279,6 @@ class Table implements ITable {
         return insert;
     }
 
-    /**
-     * Bulk-insert an entity list
-     *
-     * @param entityList the entity list to insert
-     * @param <E>        extends IEntity
-     * @return an Insert object
-     */
     @Override
     public <E extends IEntity> IQuery.Insert insert(final IEntityList<E> entityList) {
         final QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
@@ -427,68 +297,26 @@ class Table implements ITable {
         return query;
     }
 
-    /**
-     * UpdateImpl a column add its id
-     *
-     * @param column
-     * @param value
-     * @param id
-     * @return
-     */
     @Override
     public IQuery.Update update(String column, Object value, int id) {
         return update(column, value, generateParamId(id));
     }
 
-    /**
-     * UpdateImpl a column add specified condition
-     *
-     * @param column
-     * @param value
-     * @param condition
-     * @return
-     */
     @Override
     public IQuery.Update update(String column, Object value, String condition) {
         return update(new String[]{column}, new Object[]{value}, condition);
     }
 
-    /**
-     * UpdateImpl a column add specified condition
-     *
-     * @param column
-     * @param value
-     * @param whereClause
-     * @param whereArgs
-     * @return
-     */
     @Override
     public IQuery.Update update(String column, Object value, String whereClause, Object... whereArgs) {
         return update(new String[]{column}, new Object[]{value}, whereClause, whereArgs);
     }
 
-    /**
-     * Bulk-update columns add their val add specified condition.
-     *
-     * @param columns
-     * @param values
-     * @param condition
-     * @return
-     */
     @Override
     public IQuery.Update update(String[] columns, Object[] values, String condition) {
         return update(columns, values, condition, (Object)null);
     }
 
-    /**
-     * Bulk-update columns add their val add specified condition.
-     *
-     * @param columns
-     * @param values
-     * @param whereClause
-     * @param whereArgs
-     * @return
-     */
     @Override
     public IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs) {
         final ContentValues contentValues = new ContentValues();
@@ -499,12 +327,6 @@ class Table implements ITable {
         return update(contentValues, whereClause, (Object[]) Util.toStringArray(whereArgs));
     }
 
-    /**
-     * Update using an {@link com.bingzer.android.dbv.IEntity} object
-     *
-     * @param entity the entity to update
-     * @return
-     */
     @Override
     public IQuery.Update update(IEntity entity) {
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
@@ -513,14 +335,12 @@ class Table implements ITable {
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
-        Iterator<String> keys = mapper.keySet().iterator();
-        while(keys.hasNext()){
-            String key = keys.next();
+        for (String key : mapper.keySet()) {
             // ignore if "Id"
-            if(key.equalsIgnoreCase(generateIdString())) continue;
+            if (key.equalsIgnoreCase(generateIdString())) continue;
 
             IEntity.Action action = mapper.get(key);
-            if(action != null){
+            if (action != null) {
                 ContentUtil.mapContentValuesFromAction(contentValues, key, action);
             }
         }
@@ -528,13 +348,6 @@ class Table implements ITable {
         return update(contentValues, entity.getId());
     }
 
-    /**
-     * Bulk-update using {@link com.bingzer.android.dbv.IEntityList} object
-     *
-     * @param entityList IEntityList object
-     * @param <E>        extends IEntity
-     * @return Update object
-     */
     @Override
     public <E extends IEntity> IQuery.Update update(final IEntityList<E> entityList) {
         final QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
@@ -552,26 +365,11 @@ class Table implements ITable {
         return query;
     }
 
-    /**
-     * UpdateImpl using contentvalues insert specified id
-     *
-     * @param contents
-     * @param id
-     * @return
-     */
     @Override
     public IQuery.Update update(ContentValues contents, int id) {
         return update(contents, generateParamId(id));
     }
 
-    /**
-     * UpdateImpl using the contentvalues
-     *
-     * @param contents
-     * @param whereClause
-     * @param whereArgs
-     * @return
-     */
     @Override
     public IQuery.Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
         QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
@@ -581,23 +379,11 @@ class Table implements ITable {
         return query;
     }
 
-    /**
-     * DeleteImpl by id
-     *
-     * @param id
-     * @return
-     */
     @Override
     public IQuery.Delete delete(final int id) {
         return delete(generateParamId(id));
     }
 
-    /**
-     * Bulk-remove by multiple ids
-     *
-     * @param ids
-     * @return
-     */
     @Override
     public IQuery.Delete delete(int... ids) {
         if(ids != null && ids.length > 0){
@@ -621,42 +407,22 @@ class Table implements ITable {
         }
     }
 
-    /**
-     * Bulk-remove by multiple ids
-     *
-     * @param ids
-     * @return
-     */
     @Override
     public IQuery.Delete delete(Collection<Integer> ids) {
         int[] idz = new int[ids.size()];
         int counter = 0;
-        java.util.Iterator<Integer> iterator = ids.iterator();
-        while (iterator.hasNext()){
-            idz[counter++] = iterator.next();
+        for (Integer id : ids) {
+            idz[counter++] = id;
         }
 
         return delete(idz);
     }
 
-    /**
-     * DeleteImpl add specified condition
-     *
-     * @param condition
-     * @return
-     */
     @Override
     public IQuery.Delete delete(final String condition) {
         return delete(condition, (Object)null);
     }
 
-    /**
-     * DeleteImpl add sepcified where clause
-     *
-     * @param whereClause
-     * @param whereArgs
-     * @return
-     */
     @Override
     public IQuery.Delete delete(final String whereClause, final Object... whereArgs) {
         QueryImpl.DeleteImpl query = new QueryImpl.DeleteImpl();
@@ -665,28 +431,11 @@ class Table implements ITable {
         return query;
     }
 
-    /**
-     * Delete an entity.
-     * This is equivalent of calling
-     * <code>delete(entity.getId())</code>
-     *
-     * @param entity entity to delete
-     * @return
-     */
     @Override
     public IQuery.Delete delete(IEntity entity) {
         return delete(entity.getId());
     }
 
-    /**
-     * Bulk-delete several entities.
-     * This is equivalent of calling
-     * <code>delete(list-of-ids)</code>
-     *
-     * @param entityList the entity list
-     * @param <E>        extends IEntity
-     * @return
-     */
     @Override
     public <E extends IEntity> IQuery.Delete delete(IEntityList<E> entityList) {
         int[] ids = new int[entityList.getEntityList().size()];
@@ -696,53 +445,28 @@ class Table implements ITable {
         return  delete(ids);
     }
 
-    /**
-     * Empty the table
-     *
-     * @return
-     */
     @Override
     public IQuery.Delete deleteAll() {
         return delete("1=1");
     }
 
-    /**
-     * Check to see if this table has row add the spcified condition
-     *
-     * @param condition
-     * @return
-     */
     @Override
     public boolean has(String condition) {
         return has(condition, (Object) null);
     }
 
-    /**
-     * has row add id
-     *
-     * @param id
-     * @return
-     */
     @Override
     public boolean has(int id) {
         return has(generateParamId(id));
     }
 
-    /**
-     * Check to see if this table has row add the specified clause and condition
-     *
-     * @param whereClause
-     * @param whereArgs
-     * @return
-     */
     @Override
     public boolean has(String whereClause, Object... whereArgs) {
-        String sql = new StringBuilder("SELECT 1 FROM ").append(getName())
-                            .append(" WHERE ").append(Util.bindArgs(whereClause, whereArgs))
-                            .toString();
+        StringBuilder sql = new StringBuilder("SELECT 1 FROM ").append(getName())
+                            .append(" WHERE ").append(Util.bindArgs(whereClause, whereArgs));
         Cursor cursor = null;
         try{
-            cursor = raw(sql).query();
+            cursor = raw(sql.toString()).query();
             if(cursor.moveToFirst()) return true;
         }
         finally {
@@ -753,24 +477,11 @@ class Table implements ITable {
         return false;
     }
 
-    /**
-     * Returns the count of the specified condition
-     *
-     * @param condition
-     * @return
-     */
     @Override
     public int count(String condition) {
         return count(condition, (Object)null);
     }
 
-    /**
-     * Returns the count of row from the whereClause
-     *
-     * @param whereClause
-     * @param whereArgs
-     * @return
-     */
     @Override
     public int count(String whereClause, Object... whereArgs) {
         int count = 0;
@@ -793,50 +504,27 @@ class Table implements ITable {
         return count;
     }
 
-    /**
-     * Returns the total row available in this table
-     *
-     * @return
-     */
     @Override
     public int count() {
         return count(null);
     }
 
-    /**
-     * Build raw sql
-     *
-     * @param sql
-     * @return
-     */
     @Override
     public IQuery<Cursor> raw(final String sql) {
         return raw(sql, (String)null);
     }
 
-    /**
-     * Build raw sql
-     *
-     * @param sql
-     * @return
-     */
     @Override
     public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
-        IQuery<Cursor> query = new QueryImpl<Cursor>(db.getConfig()){
+        return new QueryImpl<Cursor>(db.getConfig()){
             @Override public Cursor query(){
                 if(selectionArgs == null || selectionArgs.length == 1 || selectionArgs[0] == null)
                     return sqlDb.rawQuery(sql, null);
                 else return sqlDb.rawQuery(sql, selectionArgs);
             }
         };
-        return query;
     }
 
-    /**
-     * Drop sql
-     *
-     * @return
-     */
     @Override
     public IQuery<Boolean> drop() {
         QueryImpl.DropImpl query = new QueryImpl.DropImpl();
@@ -852,92 +540,41 @@ class Table implements ITable {
         return query;
     }
 
-    /**
-     * Joins a table
-     *
-     * @param tableName
-     * @param onClause
-     * @return
-     */
     @Override
     public IQuery.InnerJoin join(String tableName, String onClause) {
-        IQuery.InnerJoin query = new QueryImpl.InnerJoinImpl(db.getConfig(), this, tableName, onClause){
+        return new QueryImpl.InnerJoinImpl(db.getConfig(), this, tableName, onClause){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             }
         };
-
-        // returns
-        return query;
     }
 
-    /**
-     * Joins a table
-     *
-     * @param tableName
-     * @param column1
-     * @param column2
-     * @return
-     */
     @Override
     public IQuery.InnerJoin join(String tableName, String column1, String column2) {
-        String onClause = new StringBuilder(name).append(".").append(column1).append("=")
-                                .append(tableName).append(".").append(column2).toString();
-        return join(tableName, onClause);
+        return join(tableName, name + "." + column1 + "=" + tableName + "." + column2);
     }
 
-    /**
-     * Joins a table
-     *
-     * @param tableName
-     * @param onClause
-     * @return
-     */
     @Override
     public IQuery.OuterJoin outerJoin(String tableName, String onClause) {
-        IQuery.OuterJoin query = new QueryImpl.OuterJoinImpl(db.getConfig(), this, tableName, onClause){
+        return new QueryImpl.OuterJoinImpl(db.getConfig(), this, tableName, onClause){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             }
         };
-
-        // returns
-        return query;
     }
 
-    /**
-     * Joins a table
-     *
-     * @param tableName
-     * @param column1
-     * @param column2
-     * @return
-     */
     @Override
     public IQuery.OuterJoin outerJoin(String tableName, String column1, String column2) {
-        String onClause = new StringBuilder(name).append(".").append(column1).append("=")
-                .append(tableName).append(".").append(column2).toString();
-        return outerJoin(tableName, onClause);
+        return outerJoin(tableName, name + "." + column1 + "=" + tableName + "." + column2);
     }
 
-    /**
-     * To String.
-     * If
-     * @return
-     */
     @Override
     public String toString(){
         if(getAlias() != null && getAlias().length() > 0)
-            return new StringBuilder(getName()).append(" ").append(getAlias()).toString();
+            return getName() + " " + getAlias();
         return getName();
     }
 
-    /**
-     * Returns average
-     *
-     * @param columnName
-     * @return
-     */
     @Override
     public IFunction.Average avg(String columnName) {
         FunctionImpl.AverageImpl fn = new FunctionImpl.AverageImpl(toString(), columnName);
@@ -949,12 +586,6 @@ class Table implements ITable {
         return fn;
     }
 
-    /**
-     * Sum
-     *
-     * @param columnName
-     * @return
-     */
     @Override
     public IFunction.Sum sum(String columnName) {
         FunctionImpl.SumImpl fn = new FunctionImpl.SumImpl(toString(), columnName);
@@ -966,12 +597,6 @@ class Table implements ITable {
         return fn;
     }
 
-    /**
-     * Max
-     *
-     * @param columnName
-     * @return
-     */
     @Override
     public IFunction.Max max(String columnName) {
         FunctionImpl.MaxImpl fn = new FunctionImpl.MaxImpl(toString(), columnName);
@@ -983,12 +608,6 @@ class Table implements ITable {
         return fn;
     }
 
-    /**
-     * Min
-     *
-     * @param columnName
-     * @return
-     */
     @Override
     public IFunction.Min min(String columnName) {
         FunctionImpl.MinImpl fn = new FunctionImpl.MinImpl(toString(), columnName);
@@ -1010,9 +629,7 @@ class Table implements ITable {
 
         Table table = (Table) o;
 
-        if (!name.equals(table.name)) return false;
-
-        return true;
+        return name.equals(table.name);
     }
 
     @Override

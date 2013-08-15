@@ -37,6 +37,7 @@ import java.util.List;
 public class Database implements IDatabase {
 
     static final String TAG = "DBV.SQLite.Database";
+    static final String SPACE = " ";
 
     private final String name;
     private final DbModel dbModel = new DbModel();
@@ -61,55 +62,33 @@ public class Database implements IDatabase {
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
 
-    /**
-     * Returns the name of this database
-     *
-     * @return
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Returns the version of this database
-     *
-     * @return
-     */
     @Override
     public int getVersion() {
         return version;
     }
 
-    /**
-     * Returns all tables in this database
-     *
-     * @return
-     */
     @Override
     public List<ITable> getTables() {
         return tables;
     }
 
-    /**
-     * Returns the table
-     *
-     * @param tableName
-     * @return
-     */
     @Override
     public ITable get(String tableName) {
         String alias = null;
-        if(tableName.contains(" ")){
+        if(tableName.contains(SPACE)){
             // split and get alias..
-            int index = tableName.indexOf(" ");
+            int index = tableName.indexOf(SPACE);
             alias = tableName.substring(index).trim();
             tableName = tableName.substring(0, index).trim();
         }
 
-        for(int i = 0; i < tables.size(); i++){
-            if(tables.get(i).getName().equalsIgnoreCase(tableName)){
-                ITable table = tables.get(i);
+        for (ITable table : tables) {
+            if (table.getName().equalsIgnoreCase(tableName)) {
                 table.setAlias(alias);
                 return table;
             }
@@ -129,12 +108,6 @@ public class Database implements IDatabase {
         }
     }
 
-    /**
-     * Create the database
-     *
-     * @param version
-     * @param builder
-     */
     @Override
     public void open(int version, Builder builder) {
         if(!(builder instanceof SQLiteBuilder)) throw new RuntimeException("Use SQLiteBuilder interface");
@@ -166,9 +139,6 @@ public class Database implements IDatabase {
         }
     }
 
-    /**
-     * Close the database. Free any resources
-     */
     @Override
     public void close() {
         if(dbHelper != null) dbHelper.close();
@@ -179,79 +149,38 @@ public class Database implements IDatabase {
         dbModel.tableModles.clear();
     }
 
-    /**
-     * Returns config
-     *
-     * @return
-     */
     @Override
     public IConfig getConfig() {
         return config;
     }
 
-    /**
-     * Begin a transaction. From this point on,
-     * all the transaction should be set to
-     * <code>autoCommit = false</code>
-     *
-     * @param batch block batch to be executed
-     * @return transaction
-     * @see com.bingzer.android.dbv.IDatabase.Transaction
-     * @see com.bingzer.android.dbv.IDatabase.Batch
-     */
     @Override
     public Transaction begin(Batch batch) {
         return new TransactionImpl(this, batch);
     }
 
-    /**
-     * Runs raw sql
-     *
-     * @param sql
-     * @return
-     */
     @Override
     public IQuery<Cursor> raw(String sql) {
         return raw(sql, (String[])null);
     }
 
-    /**
-     * Runs raw sql
-     *
-     * @param sql
-     * @param selectionArgs
-     * @return
-     */
     @Override
     public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
         ensureDbHelperIsReady();
-        IQuery<Cursor> query = new IQuery<Cursor>() {
+        return new IQuery<Cursor>() {
             @Override
             public Cursor query() {
                 return sqLiteDb.rawQuery(sql, selectionArgs);
             }
         };
-
-        return query;
     }
 
-    /**
-     * Execute sql
-     *
-     * @param sql
-     */
     @Override
     public void execSql(String sql) {
         ensureDbHelperIsReady();
         sqLiteDb.execSQL(sql);
     }
 
-    /**
-     * Exec sql
-     *
-     * @param sql
-     * @param args
-     */
     @Override
     public void execSql(String sql, Object... args) {
         if(args == null) execSql(sql);
@@ -261,10 +190,6 @@ public class Database implements IDatabase {
         }
     }
 
-    /**
-     * DbHelper
-     * @return
-     */
     public SQLiteOpenHelper getSQLiteOpnHelper(){
         ensureDbHelperIsReady();
         return dbHelper;
@@ -296,11 +221,6 @@ public class Database implements IDatabase {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * The db helper
-     *
-     * @author Ricky
-     */
     final SQLiteOpenHelper createHelper(final SQLiteBuilder builder){
         return new SQLiteOpenHelper(builder.getContext(), getName(), null, getVersion()) {
 
@@ -369,8 +289,7 @@ public class Database implements IDatabase {
     }
 
     boolean removeTable(ITable table){
-        boolean ret = tables.remove(table);
-        return ret;
+        return tables.remove(table);
     }
 
     void ensureDbHelperIsReady(){
@@ -404,8 +323,6 @@ public class Database implements IDatabase {
 
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////
 
     static class TableModel implements ITable.Model {
         private final String tableName;
@@ -417,36 +334,16 @@ public class Database implements IDatabase {
             this.tableName = tableName;
         }
 
-        /**
-         * Returns the name of this table
-         *
-         * @return
-         */
         @Override
         public String getName() {
             return tableName;
         }
 
-        /**
-         * Adds a column
-         *
-         * @param columnName
-         * @param dataType
-         * @return
-         */
         @Override
         public ITable.Model add(String columnName, String dataType) {
             return add(columnName, dataType, null);
         }
 
-        /**
-         * Adds a column
-         *
-         * @param columnName
-         * @param dataType
-         * @param columnDefinition
-         * @return
-         */
         @Override
         public ITable.Model add(String columnName, String dataType, String columnDefinition) {
             ColumnModel model = new ColumnModel(columnName, dataType, columnDefinition);
@@ -455,23 +352,11 @@ public class Database implements IDatabase {
             return this;
         }
 
-        /**
-         * Convenient way to adding an Id column
-         *
-         * @param columnName
-         * @return
-         */
         @Override
         public ITable.Model addPrimaryKey(String columnName) {
             return add(columnName, "INTEGER", "primary key autoincrement not null");
         }
 
-        /**
-         * Create index on the specified column name
-         *
-         * @param columnName column name
-         * @return this
-         */
         @Override
         public ITable.Model index(String columnName) {
             if(!columnIndexNames.contains(columnName))
@@ -479,22 +364,9 @@ public class Database implements IDatabase {
             return this;
         }
 
-        /**
-         * Foreign key. Create a foreign key references from a column from this current table
-         * to another column on another table. Note that when you call this method,
-         * the referenced table and column needs to exists.
-         *
-         * @param columnName   the referencing column name (from this table)
-         * @param targetTable  the referenced table
-         * @param targetColumn the referenced column name (from the referenced table)
-         */
         @Override
         public ITable.Model foreignKey(String columnName, String targetTable, String targetColumn) {
-            String sql = new StringBuilder()
-                    .append("FOREIGN KEY (").append(columnName).append(") ")
-                    .append("REFERENCES ").append(targetTable).append("(").append(targetColumn).append(")")
-                    .toString();
-
+            String sql = "FOREIGN KEY (" + columnName + ") " + "REFERENCES " + targetTable + "(" + targetColumn + ")";
             if(!foreignKeyModelList.contains(sql)){
                 foreignKeyModelList.add(sql);
             }
@@ -559,7 +431,7 @@ public class Database implements IDatabase {
         }
 
         private String generateIndexName(String columnName){
-            return new StringBuilder(getName()).append("_").append(columnName).append("_idx").toString();
+            return getName() + "_" + columnName + "_idx";
         }
     }
 
@@ -589,31 +461,16 @@ public class Database implements IDatabase {
             return builder.toString();
         }
 
-        /**
-         * Returns the name of this column
-         *
-         * @return
-         */
         @Override
         public String getName() {
             return name;
         }
 
-        /**
-         * Returns the data type
-         *
-         * @return
-         */
         @Override
         public String getDataType() {
             return dataType;
         }
 
-        /**
-         * Returns the definition if any
-         *
-         * @return
-         */
         @Override
         public String getDefinition() {
             return definition;
@@ -622,16 +479,11 @@ public class Database implements IDatabase {
 
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
+
     static class DbModel implements Modeling {
 
         final List<Database.TableModel> tableModles = new LinkedList<Database.TableModel>();
 
-        /**
-         * Adds a table model
-         *
-         * @param tableName
-         * @return
-         */
         @Override
         public ITable.Model add(String tableName) {
             Database.TableModel model = new Database.TableModel(tableName);
