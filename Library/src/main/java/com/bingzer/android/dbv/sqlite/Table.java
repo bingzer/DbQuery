@@ -737,7 +737,20 @@ class Table implements ITable {
      */
     @Override
     public boolean has(String whereClause, Object... whereArgs) {
-        return count(whereClause, whereArgs) > 0;
+        String sql = new StringBuilder("SELECT 1 FROM ").append(getName())
+                            .append(" WHERE ").append(Util.prepareWhereClause(whereClause, whereArgs))
+                            .toString();
+        Cursor cursor = null;
+        try{
+            cursor = raw(sql).query();
+            if(cursor.moveToFirst()) return true;
+        }
+        finally {
+            if(cursor != null) cursor.close();
+        }
+
+        // nope!
+        return false;
     }
 
     /**

@@ -151,5 +151,16 @@ public interface ITable extends
          * @return this
          */
         Model index(String columnName);
+
+        /**
+         * Foreign key. Create a foreign key references from a column from this current table
+         * to another column on another table. Note that when you call this method,
+         * the referenced table and column needs to exists.
+         *
+         * @param columnName the referencing column name (from this table)
+         * @param targetTable the referenced table
+         * @param targetColumn the referenced column name (from the referenced table)
+         */
+        Model foreignKey(String columnName, String targetTable, String targetColumn);
     }
 }

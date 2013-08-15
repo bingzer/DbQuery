@@ -417,6 +417,7 @@ public class Database implements IDatabase {
         private final String tableName;
         private final List<ColumnModel> columnModels = new LinkedList<ColumnModel>();
         private final List<String> columnIndexNames = new LinkedList<String>();
+        private final List<String> foreignKeyModel = new LinkedList<String>();
 
         TableModel(String tableName){
             this.tableName = tableName;
@@ -481,6 +482,29 @@ public class Database implements IDatabase {
         public ITable.Model index(String columnName) {
             if(!columnIndexNames.contains(columnName))
                 columnIndexNames.add(columnName);
+            return this;
+        }
+
+        /**
+         * Foreign key. Create a foreign key references from a column from this current table
+         * to another column on another table. Note that when you call this method,
+         * the referenced table and column needs to exists.
+         *
+         * @param columnName   the referencing column name (from this table)
+         * @param targetTable  the referenced table
+         * @param targetColumn the referenced column name (from the referenced table)
+         */
+        @Override
+        public ITable.Model foreignKey(String columnName, String targetTable, String targetColumn) {
+            String sql = new StringBuilder()
+                    .append("FOREIGN KEY (").append(columnName).append(") ")
+                    .append("REFERENCES ").append(targetTable).append("(").append(targetColumn).append(")")
+                    .toString();
+
+            if(!foreignKeyModel.contains(sql)){
+                foreignKeyModel.add(sql);
+            }
+
             return this;
         }
 

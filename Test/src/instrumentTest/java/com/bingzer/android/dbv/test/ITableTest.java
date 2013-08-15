@@ -61,17 +61,26 @@ public class ITableTest extends AndroidTestCase{
     public void testHas_Id(){
         int id = getCustomerId("Lionel Messi");
         assertTrue(db.get("Customers").has(id));
+
+        assertFalse(db.get("Customers").has(-1));
+        assertFalse(db.get("Customers").has(-89));
     }
 
     public void testHas_Condition(){
         assertTrue(db.get("Customers").has("Name LIKE '%Messi'"));
         assertTrue(db.get("Customers").has("Name LIKE '%Pirlo'"));
+
+        assertFalse(db.get("Customers").has("Name LIKE '%YoMama'"));
+        assertFalse(db.get("Customers").has("Name IS NULL"));
     }
 
     public void testHas_WhereClause(){
         assertTrue(db.get("Customers").has("Name LIKE ?", "%Messi"));
         assertTrue(db.get("Customers").has("Name LIKE ?", "%Ronaldo"));
         assertTrue(db.get("Orders").has("CustomerId = ?", db.get("Customers").selectId("Name LIKE ?", "%Messi")));
+
+        assertFalse(db.get("Orders").has("CustomerId IS NULL"));
+        assertFalse(db.get("Customers").has("Name = ?", "Sanatan"));
     }
 
     ///////////////////////////////////////////////
