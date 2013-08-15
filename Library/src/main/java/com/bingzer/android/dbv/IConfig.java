@@ -18,6 +18,18 @@ package com.bingzer.android.dbv;
 
 /**
  * Defines a configuration interface.
+ * Note that you should always configure your database before opening it.
+ * <p>
+ * <code><pre>
+ * ...
+ * IDatabase db = ...
+ * // configure first
+ * db.getConfig().setForeignKeySupport(true/false);
+ * db.getConfig().setIdNamingConvention(..);
+ * // open
+ * db.open(1, new SQLiteBuilder());
+ * </pre></code>
+ * </p>
  * <p>
  *     <b>Warning:</b><br/>
  *     <code>DbQuery</code> will <code>assume</code>
