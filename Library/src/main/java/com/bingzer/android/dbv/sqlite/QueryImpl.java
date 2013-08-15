@@ -90,22 +90,14 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
             this.table = table;
 
-            selectString = new StringBuilder();
-            columnString = new StringBuilder();
-            fromString = new StringBuilder();
+            selectString = new StringBuilder("SELECT ");
+            columnString = new StringBuilder("* ");
+            fromString = new StringBuilder("FROM ").append(table);
             limitString = new StringBuilder();
             orderByString = new StringBuilder();
 
-            if(distinct)
-                selectString.append("SELECT DISTINCT ");
-            else selectString.append("SELECT ");
-
-            columnString.append("*");
-            fromString.append("FROM " + table.toString());
-
-            if(top > 0){
-                limitString.append(" LIMIT " + top);
-            }
+            if(distinct) selectString.append("DISTINCT ");
+            if(top > 0) limitString.append(" LIMIT " + top);
         }
 
         /**
@@ -598,6 +590,34 @@ abstract class QueryImpl<T> implements IQuery<T> {
         }
 
         /**
+         * Returns the number of page available.
+         * This method will run SQL <code>"SELECT COUNT(*)"</code> query
+         * once called. This is very expensive call, but it's useful
+         * if you want to know ahead of time how many pages are available
+         *
+         * @return the number of pages available with the given query
+         */
+        @Override
+        public int getTotalPage() {
+            float row = -1;
+
+            String sql = generateSql(true);
+            Cursor cursor = null;
+            try{
+                cursor = select.table.raw(sql).query();
+                if(cursor.moveToFirst()){
+                    row = cursor.getInt(0);
+                }
+            }
+            finally {
+                if(cursor != null) cursor.close();
+            }
+
+            // calculate total page
+            return  (int) Math.ceil(row / (float)rowLimit);
+        }
+
+        /**
          * Returns query and up the page number by one.
          * Page number is upped only when there's row in the cursor
          * @return cursor
@@ -663,18 +683,32 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public String toString(){
+            return generateSql(false);
+        }
+
+        String generateSql(boolean asRowCount){
             StringBuilder sql = new StringBuilder();
             sql.append(select.selectString).append(" ");
-            sql.append(select.columnString).append(" ");
+
+            // columns
+            if(asRowCount) sql.append(" COUNT(*) AS FN ");
+            else sql.append(select.columnString).append(" ");
+
+            // from
             sql.append(select.fromString).append(" ");
+
             // where
             sql.append(" ").append(select.builder);
+
             // order by
             if(select.orderByString.length() > 0){
                 sql.append(" ").append(select.orderByString);
             }
-            // Pagination
-            sql.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
+
+            // pagination only when it's not a row count
+            if(!asRowCount){
+                sql.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
+            }
 
             return sql.toString();
         }

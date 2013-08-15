@@ -158,6 +158,15 @@ public interface IQuery<T> {
         void setPageNumber(int pageNumber);
 
         /**
+         * Returns the number of page available.
+         * This method will run SQL <code>"SELECT COUNT(*)"</code> query
+         * once called. This is very expensive call, but it's useful
+         * if you want to know ahead of time how many pages are available
+         * @return the number of pages available with the given query
+         */
+        int getTotalPage();
+
+        /**
          * Returns the current cursor.
          * This also append the pageNumber by one
          *
