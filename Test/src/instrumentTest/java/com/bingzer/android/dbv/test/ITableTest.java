@@ -57,6 +57,24 @@ public class ITableTest extends AndroidTestCase{
     }
 
     ///////////////////////////////////////////////
+    // ----------------- HAS() ------------------//
+    public void testHas_Id(){
+        int id = getCustomerId("Lionel Messi");
+        assertTrue(db.get("Customers").has(id));
+    }
+
+    public void testHas_Condition(){
+        assertTrue(db.get("Customers").has("Name LIKE '%Messi'"));
+        assertTrue(db.get("Customers").has("Name LIKE '%Pirlo'"));
+    }
+
+    public void testHas_WhereClause(){
+        assertTrue(db.get("Customers").has("Name LIKE ?", "%Messi"));
+        assertTrue(db.get("Customers").has("Name LIKE ?", "%Ronaldo"));
+        assertTrue(db.get("Orders").has("CustomerId = ?", db.get("Customers").selectId("Name LIKE ?", "%Messi")));
+    }
+
+    ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ SELECT ----------------//
 
@@ -172,7 +190,7 @@ public class ITableTest extends AndroidTestCase{
 
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
-    // ---------nsert And Delete ----------------//
+    // ---------Insert And Delete ----------------//
     public void testOrderBy(){
         List<Integer> list = new LinkedList<Integer>();
         Cursor cursor = db.get("Orders").selectDistinct(null).columns("CustomerId").orderBy("CustomerId").query();
