@@ -152,4 +152,64 @@ Teddy       20000.0     Janitor
         assertTrue(cursor.getFloat(1) == 45000f);
         assertTrue(cursor.getString(2).equals("Guard"));
     }
+
+
+    public void testSelectGroupBy_WithJoin_Paging(){
+        IQuery.Paging paging = db.get("company c")
+                .join("employee e", "e.name = c.name")
+                .select()
+                .columns("e.name", "sum(c.salary)", "e.position")
+                .orderBy("e.name")
+                .groupBy("e.name")
+                .paging(2);
+        assertTrue(paging.getPageNumber() == 0);
+        /*
+        Should produce
+NAME        SUM(SALARY) position
+----------  ----------- ----------  -----------
+Allen       15000.0     Manager
+David       85000.0     Manager
+James       10000.0     CEO
+Kim         45000.0     Guard
+Mark        65000.0     Watch
+Paul        20000.0     Guard
+Teddy       20000.0     Janitor
+
+         */
+
+
+        //////////////////////////////
+        // page #1
+        Cursor cursor = paging.query();
+        assertTrue(paging.getPageNumber() == 1);
+        assertTrue(paging.getRowLimit() == cursor.getCount());
+
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Allen"));
+        assertTrue(cursor.getFloat(1) == 15000f);
+        assertTrue(cursor.getString(2).equals("Manager"));
+
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("David"));
+        assertTrue(cursor.getFloat(1) == 85000f);
+        assertTrue(cursor.getString(2).equals("Manager"));
+
+        //////////////////////////////
+        // page #2
+        cursor = paging.query();
+        assertTrue(paging.getPageNumber() == 2);
+        assertTrue(paging.getRowLimit() == cursor.getCount());
+
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("James"));
+        assertTrue(cursor.getFloat(1) == 10000f);
+        assertTrue(cursor.getString(2).equals("CEO"));
+
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Kim"));
+        assertTrue(cursor.getFloat(1) == 45000f);
+        assertTrue(cursor.getString(2).equals("Guard"));
+
+        assertTrue(paging.getTotalPage() == 4);
+    }
 }

@@ -139,15 +139,38 @@ public interface IQuery<T> {
     ////////////////////////////////////////////////////
     ////////////////////////////////////////////////////
 
-    public static interface GroupBy extends IQuery<Cursor>, EntitySelectable {
+    /**
+     * Represents a group by statement
+     *
+     * @see Having
+     */
+    public static interface GroupBy extends IQuery<Cursor>, EntitySelectable, Pagination {
 
+        /**
+         * Adds a <code>HAVING</code> statement
+         * with the specified condition
+         * @param condition the condition to set
+         * @return Having object
+         */
         Having having(String condition);
 
+        /**
+         * Adds a <code>HAVING</code> statement
+         * with the specified condition
+         * @param clause clause
+         * @param args args
+         * @return Having object
+         */
         Having having(String clause, Object... args);
 
     }
 
-    public static interface Having extends IQuery<Cursor>, EntitySelectable {
+    /**
+     * Represents <code>HAVING</code>
+     *
+     * @see GroupBy
+     */
+    public static interface Having extends IQuery<Cursor>, EntitySelectable, Pagination {
 
     }
 
