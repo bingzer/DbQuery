@@ -36,7 +36,7 @@ public class PaginationTest extends AndroidTestCase {
             public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
                 modeling.add("Jobs")
                         .addPrimaryKey("Id")
-                        .add("Name", "string");
+                        .add("Position", "string");
 
                 modeling.add("Person")
                         .addPrimaryKey("Id")
@@ -51,7 +51,7 @@ public class PaginationTest extends AndroidTestCase {
         db.get("Person").delete();
         db.get("Jobs").delete();
 
-        IQuery.InsertWith insert = db.get("Jobs").insert("Name");
+        IQuery.InsertWith insert = db.get("Jobs").insert("Position");
         managerId = insert.val("Manager").query();
         janitorId = insert.val("Janitor").query();
         guardId = insert.val("Guard").query();
@@ -111,9 +111,10 @@ public class PaginationTest extends AndroidTestCase {
 
     public void testPaginationWithJoin(){
         IQuery.Paging paging = db.get("Person P")
-                .join("Jobs J", "P.JobId = J.Id")
+                .join("Jobs J", "J.Id = P.JobId")
                 .select()
-                .orderBy("Id")
+                .columns("P.*", "J.Position")
+                .orderBy("P.Id")
                 .paging(2);
         assertTrue(paging.getRowLimit() == 2);
 

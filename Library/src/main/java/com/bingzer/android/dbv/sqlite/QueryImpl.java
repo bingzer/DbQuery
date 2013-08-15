@@ -534,13 +534,19 @@ abstract class QueryImpl<T> implements IQuery<T> {
             else sql.append(select.columnString).append(Database.SPACE);
             // from
             sql.append(select.fromString).append(Database.SPACE);
+            // join builder
+            if(select instanceof Join){
+                sql.append(((Join)select).joinBuilder).append(Database.SPACE);
+            }
 
             // where
             if(select.builder.length() > 0) sql.append(Database.SPACE).append(select.builder);
 
-            // group by + having
-            if(select.havingString.length() > 0) sql.append(Database.SPACE).append(select.havingString);
-            if(select.groupByString.length() > 0) sql.append(Database.SPACE).append(select.havingString);
+            // group by + having (Only when not to count)
+            if(!asRowCount){
+                if(select.havingString.length() > 0) sql.append(Database.SPACE).append(select.havingString);
+                if(select.groupByString.length() > 0) sql.append(Database.SPACE).append(select.groupByString);
+            }
 
             // order by
             if(select.orderByString.length() > 0) sql.append(Database.SPACE).append(select.orderByString);

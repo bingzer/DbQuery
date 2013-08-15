@@ -182,7 +182,6 @@ Teddy       20000.0     Janitor
         // page #1
         Cursor cursor = paging.query();
         assertTrue(paging.getPageNumber() == 1);
-        assertTrue(paging.getRowLimit() == cursor.getCount());
 
         cursor.moveToNext();
         assertTrue(cursor.getString(0).equals("Allen"));

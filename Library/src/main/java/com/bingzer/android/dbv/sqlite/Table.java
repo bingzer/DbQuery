@@ -447,7 +447,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.Delete deleteAll() {
-        return delete("1=1");
+        return delete("1 = 1");
     }
 
     @Override
