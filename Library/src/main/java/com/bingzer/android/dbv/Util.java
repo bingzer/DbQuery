@@ -16,12 +16,12 @@
 
 package com.bingzer.android.dbv;
 
-import android.database.DatabaseUtils;
-
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
 public class Util {
+
+    private static final String QUESTION_MARK = "\\?";
 
     public static String[] toStringArray(Object... args){
         if(args == null || args.length == 0) return null;
@@ -31,7 +31,7 @@ public class Util {
             if(args[i] != null) array[i] = args[i].toString();
         }
 
-        if(array != null && array[0] == null) return null;
+        if(array[0] == null) return null;
 
         return array;
     }
@@ -39,12 +39,12 @@ public class Util {
 
     public static String bindArgs(String clause, Object... args){
         if(args == null && clause.contains("?")){
-            clause = clause.replaceAll("\\?", "null");
+            clause = clause.replaceAll(QUESTION_MARK, "null");
         }
         else if(args != null){
             // replace ? add args
-            for(int i = 0; i < args.length; i++){
-                clause = clause.replaceFirst("\\?", safeEscape(args[i]));
+            for (Object arg : args) {
+                clause = clause.replaceFirst(QUESTION_MARK, safeEscape(arg));
             }
         }
 
@@ -59,9 +59,8 @@ public class Util {
         else{
             val = obj.toString();
 
-            if(obj instanceof String){
-                val = sqlEscapeString(val);
-            }
+            if(obj instanceof String) val = sqlEscapeString(val);
+            else if(obj instanceof Character) val = sqlEscapeString(val);
         }
 
         return val;
@@ -70,9 +69,9 @@ public class Util {
     /**
      * Joins string
      *
-     * @param separator
-     * @param strings
-     * @return
+     * @param separator separator to use
+     * @param strings strings to join
+     * @return joined string
      */
     public static String join(String separator, String... strings) {
         StringBuilder builder = new StringBuilder();
@@ -80,7 +79,7 @@ public class Util {
             for (int i = 0; i < strings.length; i++) {
                 builder.append(strings[i]);
                 // append the separator if it's not the last one
-                if (i != strings.length - 1) builder.append(",");
+                if (i != strings.length - 1) builder.append(separator);
             }
         }
         return builder.toString();
@@ -106,11 +105,11 @@ public class Util {
      * SQL-escape a string.
      */
     public static String sqlEscapeString(String value) {
-        StringBuilder escaper = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-        appendEscapedSQLString(escaper, value);
+        appendEscapedSQLString(builder, value);
 
-        return escaper.toString();
+        return builder.toString();
     }
 
 
