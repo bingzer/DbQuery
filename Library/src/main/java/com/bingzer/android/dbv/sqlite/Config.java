@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv;
+package com.bingzer.android.dbv.sqlite;
+
+import com.bingzer.android.dbv.IConfig;
 
 /**
  * Default configuration. By default the Id column will be named
@@ -26,13 +28,15 @@ package com.bingzer.android.dbv;
  *
  * Created by Ricky Tobing on 7/19/13.
  */
-public class Config implements IConfig{
-    protected String idNamingConvention;
-    protected boolean appendTableName;
+class Config implements IConfig {
+    String idNamingConvention;
+    boolean appendTableName;
+    boolean foreignKeySupport;
 
-    public Config(){
-        idNamingConvention = "Id";
-        appendTableName = false;
+    Config(){
+        this.idNamingConvention = "Id";
+        this.appendTableName = false;
+        this.foreignKeySupport = false;
     }
 
     /**
@@ -77,4 +81,26 @@ public class Config implements IConfig{
     public boolean getAppendTableNameForId() {
         return appendTableName;
     }
+
+    /**
+     * Turn on/off foreign key support. By default foreign
+     * key should be off
+     *
+     * @param on true to turn on, false to turn off
+     */
+    @Override
+    public void setForeignKeySupport(boolean on) {
+        this.foreignKeySupport = on;
+    }
+
+    /**
+     * Returns on/off foreign key support
+     *
+     * @return true if turned one, false otherwise
+     */
+    @Override
+    public boolean getForeignKeySupport() {
+        return foreignKeySupport;
+    }
+
 }

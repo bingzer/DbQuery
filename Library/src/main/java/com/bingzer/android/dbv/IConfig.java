@@ -66,4 +66,17 @@ public interface IConfig {
      * @return true if DbQuery should append table name, else if otherwise
      */
     boolean getAppendTableNameForId();
+
+    /**
+     * Turn on/off foreign key support. By default foreign
+     * key should be off
+     * @param on true to turn on, false to turn off
+     */
+    void setForeignKeySupport(boolean on);
+
+    /**
+     * Returns on/off foreign key support
+     * @return true if turned one, false otherwise
+     */
+    boolean getForeignKeySupport();
 }

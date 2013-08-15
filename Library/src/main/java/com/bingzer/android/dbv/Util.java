@@ -37,18 +37,18 @@ public class Util {
     }
 
 
-    public static String prepareWhereClause(String whereArgs, Object... args){
-        if(args == null && whereArgs.contains("?")){
-            whereArgs = whereArgs.replaceAll("\\?", "null");
+    public static String bindArgs(String clause, Object... args){
+        if(args == null && clause.contains("?")){
+            clause = clause.replaceAll("\\?", "null");
         }
         else if(args != null){
             // replace ? add args
             for(int i = 0; i < args.length; i++){
-                whereArgs = whereArgs.replaceFirst("\\?", safeEscape(args[i]));
+                clause = clause.replaceFirst("\\?", safeEscape(args[i]));
             }
         }
 
-        return whereArgs;
+        return clause;
     }
 
     public static String safeEscape(Object obj){

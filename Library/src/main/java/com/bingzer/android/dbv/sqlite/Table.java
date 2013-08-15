@@ -247,7 +247,7 @@ class Table implements ITable {
             if(!whereClause.toLowerCase().startsWith("where"))
                 query.append(" WHERE ");
             // safely prepare the where part
-            query.append(Util.prepareWhereClause(whereClause, args));
+            query.append(Util.bindArgs(whereClause, args));
         }
 
         return query;
@@ -295,7 +295,7 @@ class Table implements ITable {
             if(!whereClause.toLowerCase().startsWith("where"))
                 query.append(" WHERE ");
             // safely prepare the where part
-            query.append(Util.prepareWhereClause(whereClause, args));
+            query.append(Util.bindArgs(whereClause, args));
         }
 
         return query;
@@ -738,7 +738,7 @@ class Table implements ITable {
     @Override
     public boolean has(String whereClause, Object... whereArgs) {
         String sql = new StringBuilder("SELECT 1 FROM ").append(getName())
-                            .append(" WHERE ").append(Util.prepareWhereClause(whereClause, whereArgs))
+                            .append(" WHERE ").append(Util.bindArgs(whereClause, whereArgs))
                             .toString();
         Cursor cursor = null;
         try{
@@ -778,7 +778,7 @@ class Table implements ITable {
         StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM " + toString());
         if(whereClause != null){
             builder.append(" WHERE ");
-            builder.append(Util.prepareWhereClause(whereClause, whereArgs));
+            builder.append(Util.bindArgs(whereClause, whereArgs));
         }
 
         Cursor cursor = sqlDb.rawQuery(builder.toString(), null);

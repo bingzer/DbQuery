@@ -21,12 +21,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.bingzer.android.dbv.Config;
 import com.bingzer.android.dbv.IColumn;
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
+import com.bingzer.android.dbv.Util;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,9 +41,9 @@ public class Database implements IDatabase {
     private final String name;
     private final DbModel dbModel = new DbModel();
     private final List<ITable> tables = new LinkedList<ITable>();
+    private final IConfig config;
 
     private int version;
-    private IConfig config;
     private SQLiteOpenHelper dbHelper;
     private SQLiteDatabase sqLiteDb;
 
@@ -160,6 +160,8 @@ public class Database implements IDatabase {
                 cursor.close();
                 // finally called on ready
                 builder.onReady(this);
+                // check for foreign key support
+                setForeignKeySupport(config.getForeignKeySupport());
             }
         }
     }
@@ -175,18 +177,6 @@ public class Database implements IDatabase {
         sqLiteDb = null;
         dbHelper = null;
         dbModel.tableModles.clear();
-    }
-
-    /**
-     * Sets the config
-     *
-     * @param config
-     */
-    @Override
-    public void setConfig(IConfig config) {
-        if(config == null)
-            throw new IllegalArgumentException("Config cannot be null");
-        this.config = config;
     }
 
     /**
@@ -267,7 +257,7 @@ public class Database implements IDatabase {
         if(args == null) execSql(sql);
         else{
             ensureDbHelperIsReady();
-            sqLiteDb.execSQL(sql, args);
+            sqLiteDb.execSQL(Util.bindArgs(sql, args));
         }
     }
 
@@ -408,6 +398,10 @@ public class Database implements IDatabase {
         sqLiteDb.endTransaction();
     }
 
+    void setForeignKeySupport(boolean on){
+        execSql("PRAGMA FOREIGN_KEYS = ?", on ? "ON" : "OFF");
+    }
+
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
@@ -417,7 +411,7 @@ public class Database implements IDatabase {
         private final String tableName;
         private final List<ColumnModel> columnModels = new LinkedList<ColumnModel>();
         private final List<String> columnIndexNames = new LinkedList<String>();
-        private final List<String> foreignKeyModel = new LinkedList<String>();
+        private final List<String> foreignKeyModelList = new LinkedList<String>();
 
         TableModel(String tableName){
             this.tableName = tableName;
@@ -501,8 +495,8 @@ public class Database implements IDatabase {
                     .append("REFERENCES ").append(targetTable).append("(").append(targetColumn).append(")")
                     .toString();
 
-            if(!foreignKeyModel.contains(sql)){
-                foreignKeyModel.add(sql);
+            if(!foreignKeyModelList.contains(sql)){
+                foreignKeyModelList.add(sql);
             }
 
             return this;
@@ -521,6 +515,17 @@ public class Database implements IDatabase {
 
                 if (i < columnModels.size() - 1)
                     builder.append(",");
+            }
+            // ----- foreign keys..
+            if(foreignKeyModelList.size() > 0){
+                builder.append(",");  // add comma
+                for(int i = 0; i < foreignKeyModelList.size(); i++){
+                    String foreignKeyString = foreignKeyModelList.get(i);
+                    builder.append(foreignKeyString);
+
+                    if(i < foreignKeyModelList.size() - 1)
+                        builder.append(",");
+                }
             }
             builder.append(");");
             // -------------- create indices if any

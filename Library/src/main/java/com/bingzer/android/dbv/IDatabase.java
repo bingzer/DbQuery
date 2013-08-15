@@ -135,19 +135,8 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     void close();
 
     /**
-     * Sets the initial configuration. The configuration object contains information
-     * such as the naming convention for Id, etc... Consult {@link IConfig} documentation
-     * for this.
-     *
-     * @see IConfig
-     * @param config the config to set.
-     */
-    void setConfig(IConfig config);
-
-    /**
      * Returns current configuration object.
      *
-     * @see #setConfig(IConfig)
      * @see IConfig
      * @return IConfig
      */
