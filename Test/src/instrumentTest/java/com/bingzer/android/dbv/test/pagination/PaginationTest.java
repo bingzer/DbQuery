@@ -54,7 +54,7 @@ public class PaginationTest extends AndroidTestCase {
 
         PersonList personList = new PersonList();
 
-        // #0
+        // #1
         paging.query(personList);
         assertTrue(personList.size() == 2);
         assertTrue(personList.get(0).getName().equalsIgnoreCase("John"));
@@ -82,5 +82,25 @@ public class PaginationTest extends AndroidTestCase {
         paging.query(personList);
         paging.query();
         paging.query(5);
+    }
+
+    public void testGetTotalPage(){
+        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        assertTrue(paging.getRowLimit() == 2);
+        assertTrue(paging.getTotalPage() == 3);
+    }
+
+    public void testGetTotalPage_2(){
+        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        assertTrue(paging.getRowLimit() == 2);
+        assertTrue(paging.getTotalPage() == 3);
+
+        // insert one so now row count should be 7
+        db.get("Person").insert("Name", "Age", "Address").val("S", 22, "Bytes".getBytes());
+
+        // recheck
+        paging = db.get("Person").select().orderBy("Id").paging(2);
+        assertTrue(paging.getRowLimit() == 2);
+        assertTrue(paging.getTotalPage() == 4);
     }
 }
