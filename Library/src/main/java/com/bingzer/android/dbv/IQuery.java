@@ -107,7 +107,7 @@ public interface IQuery<T> {
         /**
          * Order By
          */
-        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable, Pagination {
+        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable, Pagination, Groupable {
 
         }
 
@@ -139,7 +139,7 @@ public interface IQuery<T> {
     ////////////////////////////////////////////////////
     ////////////////////////////////////////////////////
 
-    public static interface GroupBy extends IQuery<Cursor>, EntitySelectable{
+    public static interface GroupBy extends IQuery<Cursor>, EntitySelectable {
 
         Having having(String condition);
 

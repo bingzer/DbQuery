@@ -140,19 +140,21 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public String toString(){
             StringBuilder sql = new StringBuilder();
-            sql.append(selectString).append(Database.SPACE);
+            sql.append(selectString);
             sql.append(columnString).append(Database.SPACE);
             sql.append(fromString).append(Database.SPACE);
             // where
-            sql.append(Database.SPACE).append(super.builder);
+            if(super.builder.length() > 0)sql.append(Database.SPACE).append(super.builder);
+
+            // group by + having
+            if(havingString.length() > 0) sql.append(Database.SPACE).append(havingString);
+            if(groupByString.length() > 0) sql.append(Database.SPACE).append(groupByString);
+
             // order by
-            if(orderByString.length() > 0){
-                sql.append(Database.SPACE).append(orderByString);
-            }
+            if(orderByString.length() > 0) sql.append(Database.SPACE).append(orderByString);
+
             // limit
-            if(limitString.length() > 0){
-                sql.append(Database.SPACE).append(limitString);
-            }
+            if(limitString.length() > 0) sql.append(Database.SPACE).append(limitString);
 
             return sql.toString();
         }
@@ -359,24 +361,23 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public String toString(){
             StringBuilder sql = new StringBuilder();
-            sql.append(selectString).append(Database.SPACE);
+            sql.append(selectString);
             sql.append(columnString).append(Database.SPACE);
-            // from what table?
             sql.append(fromString).append(Database.SPACE);
             // join builder
             sql.append(joinBuilder).append(Database.SPACE);
             // where
-            if(super.builder.length() > 0){
-                sql.append(super.builder);
-            }
+            if(super.builder.length() > 0) sql.append(super.builder);
+
+            // group by + having
+            if(havingString.length() > 0) sql.append(Database.SPACE).append(havingString);
+            if(groupByString.length() > 0) sql.append(Database.SPACE).append(groupByString);
+
             // order by
-            if(orderByString != null){
-                sql.append(orderByString);
-            }
+            if(orderByString.length() > 0) sql.append(Database.SPACE).append(orderByString);
+
             // limit
-            if(limitString != null){
-                sql.append(limitString);
-            }
+            if(limitString.length() > 0) sql.append(Database.SPACE).append(limitString);
 
             return sql.toString();
         }
@@ -422,6 +423,8 @@ abstract class QueryImpl<T> implements IQuery<T> {
             fromString = ((SelectImpl)select).fromString;
             orderByString = ((SelectImpl)select).orderByString;
             limitString = ((SelectImpl)select).limitString;
+            groupByString = ((SelectImpl)select).groupByString;
+            havingString = ((SelectImpl)select).havingString;
             // the whereClause part
             append(((SelectImpl) select).builder);
         }
@@ -523,22 +526,24 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         String generateSql(boolean asRowCount){
             StringBuilder sql = new StringBuilder();
+
             sql.append(select.selectString).append(Database.SPACE);
 
             // columns
             if(asRowCount) sql.append(" COUNT(*) AS FN ");
             else sql.append(select.columnString).append(Database.SPACE);
-
             // from
             sql.append(select.fromString).append(Database.SPACE);
 
             // where
-            sql.append(Database.SPACE).append(select.builder);
+            if(select.builder.length() > 0) sql.append(Database.SPACE).append(select.builder);
+
+            // group by + having
+            if(select.havingString.length() > 0) sql.append(Database.SPACE).append(select.havingString);
+            if(select.groupByString.length() > 0) sql.append(Database.SPACE).append(select.havingString);
 
             // order by
-            if(select.orderByString.length() > 0){
-                sql.append(Database.SPACE).append(select.orderByString);
-            }
+            if(select.orderByString.length() > 0) sql.append(Database.SPACE).append(select.orderByString);
 
             // pagination only when it's not a row count
             if(!asRowCount){
