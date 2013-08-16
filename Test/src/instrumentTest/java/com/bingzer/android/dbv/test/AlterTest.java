@@ -62,4 +62,15 @@ public class AlterTest extends AndroidTestCase {
 
         assertTrue(db.get("Person").getColumns().contains("Address"));
     }
+
+    public void testRemoveColumn(){
+        try{
+            // should throw exception
+            db.get("Person").alter().removeColumn("Name");
+            assertTrue(false);
+        }
+        catch (Exception e){
+            assertTrue(true);
+        }
+    }
 }
