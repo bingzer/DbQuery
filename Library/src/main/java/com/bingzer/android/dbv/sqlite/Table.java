@@ -605,6 +605,8 @@ class Table implements ITable {
             @Override
             public Alter rename(String newName) {
                 db.execSql("ALTER TABLE " + getName() + " RENAME TO " + newName);
+                // quickly change our name
+                name = newName;
                 return this;
             }
 
@@ -615,7 +617,7 @@ class Table implements ITable {
 
             @Override
             public Alter addColumn(String columnName, String dataType, String columnDefinition) {
-                Database.ColumnModel model = new Database.ColumnModel(name, dataType, columnDefinition);
+                Database.ColumnModel model = new Database.ColumnModel(columnName, dataType, columnDefinition);
                 db.execSql("ALTER TABLE " + getName() + " ADD COLUMN " + model);
                 // requery columns
                 queryColumns();
