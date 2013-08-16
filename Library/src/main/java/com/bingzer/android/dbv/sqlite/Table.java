@@ -106,7 +106,7 @@ class Table implements ITable {
 
     @Override
     public int selectId(String condition) {
-        return selectId(condition, (Object)null);
+        return selectId(condition, (Object) null);
     }
 
     @Override
@@ -511,7 +511,7 @@ class Table implements ITable {
 
     @Override
     public IQuery<Cursor> raw(final String sql) {
-        return raw(sql, (String)null);
+        return raw(sql, (String) null);
     }
 
     @Override
@@ -569,13 +569,6 @@ class Table implements ITable {
     }
 
     @Override
-    public String toString(){
-        if(getAlias() != null && getAlias().length() > 0)
-            return getName() + " " + getAlias();
-        return getName();
-    }
-
-    @Override
     public IFunction.Average avg(String columnName) {
         FunctionImpl.AverageImpl fn = new FunctionImpl.AverageImpl(toString(), columnName);
         Cursor cursor = raw(fn.toString()).query();
@@ -617,6 +610,36 @@ class Table implements ITable {
         }
         cursor.close();
         return fn;
+    }
+
+    @Override
+    public Alter alter() {
+        return new Alter(){
+            @Override
+            public Alter rename(String newName) {
+                db.execSql("ALTER TABLE " + getName() + " RENAME TO " + newName);
+                return this;
+            }
+
+            @Override
+            public Alter addColumn(String columnName, String dataType) {
+                return addColumn(columnName, dataType, null);
+            }
+
+            @Override
+            public Alter addColumn(String columnName, String dataType, String columnDefinition) {
+                Database.ColumnModel model = new Database.ColumnModel(name, dataType, columnDefinition);
+                db.execSql("ALTER TABLE " + getName() + " ADD COLUMN " + model);
+                return this;
+            }
+        };
+    }
+
+    @Override
+    public String toString(){
+        if(getAlias() != null && getAlias().length() > 0)
+            return getName() + " " + getAlias();
+        return getName();
     }
 
     ////////////////////////////////////////////////////////////////////
