@@ -110,6 +110,11 @@ public class Database implements IDatabase {
 
     @Override
     public void open(int version, Builder builder) {
+        open(version, null, builder);
+    }
+
+    @Override
+    public void open(int version, String dbPath, Builder builder) {
         if(!(builder instanceof SQLiteBuilder)) throw new RuntimeException("Use SQLiteBuilder interface");
 
         // assign builder
@@ -117,7 +122,7 @@ public class Database implements IDatabase {
             close();
             // update version
             this.version = version;
-            this.dbHelper = createHelper((SQLiteBuilder) builder);
+            this.dbHelper = createHelper(dbPath, (SQLiteBuilder) builder);
             this.sqLiteDb = dbHelper.getWritableDatabase();
             Cursor cursor = raw("SELECT name FROM sqlite_master WHERE type='table'").query();
             try{
@@ -224,75 +229,9 @@ public class Database implements IDatabase {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    final SQLiteOpenHelper createHelper(final SQLiteBuilder builder){
-        return new SQLiteOpenHelper(builder.getContext(), getName(), null, getVersion()) {
-
-            @Override
-            public void onOpen(SQLiteDatabase db){
-                Log.i(TAG, "SQLiteOpenHelper.open()");
-                super.onOpen(db);
-            }
-
-            @Override
-            public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion){
-                Log.i(TAG, "Downgrading from " + oldVersion + " to " + newVersion);
-                try{
-                    sqLiteDb = db;
-                    // if returned true continue to onModelCreate
-                    if(builder.onDowngrade(Database.this, oldVersion, newVersion))
-                        onCreate(db);
-                }
-                catch (Throwable e){
-                    builder.onError(e);
-                }
-                finally {
-                    sqLiteDb = null;
-                }
-            }
-
-            @Override
-            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-                Log.i(TAG, "Upgrading from " + oldVersion + " to " + newVersion);
-                try {
-                    sqLiteDb = db;
-                    // if returned true continue to onModelCreate
-                    if(builder.onUpgrade(Database.this, oldVersion, newVersion))
-                        onCreate(db);
-                }
-                catch (Throwable e){
-                    builder.onError(e);
-                }
-                finally {
-                    sqLiteDb = null;
-                }
-            }
-
-            @Override
-            public void onCreate(SQLiteDatabase db) {
-                Log.i(TAG, "Creating database");
-
-                try{
-                    sqLiteDb = db;
-                    // open the model and execute it
-                    builder.onModelCreate(Database.this, dbModel);
-                    // execute sql
-                    for(TableModel model : dbModel.tableModles){
-                        db.execSQL(model.toString());
-                    }
-                }
-                catch (Throwable e){
-                    builder.onError(e);
-                }
-                finally {
-                    sqLiteDb = null;
-                }
-            }
-
-        };
+    final SQLiteOpenHelper createHelper(final String dbPath, final SQLiteBuilder builder){
+        return new DbOpenHelper(this, dbPath, builder);
     }
 
     boolean removeTable(ITable table){
@@ -576,5 +515,101 @@ public class Database implements IDatabase {
 
             return false;
         }
+    }
+
+    //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
+
+    static class DbOpenHelper extends SQLiteOpenHelper {
+        SQLiteBuilder builder;
+        Database database;
+        String dbPath;
+        SQLiteDatabase preloadedSqliteDb;
+
+        DbOpenHelper(Database database, String dbPath, SQLiteBuilder builder){
+            super(builder.getContext(), database.getName(), null, database.getVersion());
+            this.database = database;
+            this.dbPath = dbPath;
+            this.builder = builder;
+
+            if(dbPath != null){
+                preloadedSqliteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+                onOpen(preloadedSqliteDb);
+                // check version..
+                // upgrade
+                if(preloadedSqliteDb.getVersion() < database.getVersion())
+                    onUpgrade(preloadedSqliteDb, preloadedSqliteDb.getVersion(), database.getVersion());
+                else onDowngrade(preloadedSqliteDb, preloadedSqliteDb.getVersion(), database.getVersion());
+            }
+        }
+
+        @Override
+        public SQLiteDatabase getWritableDatabase() {
+            if(dbPath != null)
+                return preloadedSqliteDb;
+            return super.getWritableDatabase();
+        }
+
+        @Override
+        public void onOpen(SQLiteDatabase db){
+            Log.i(TAG, "SQLiteOpenHelper.open()");
+            super.onOpen(db);
+        }
+
+        @Override
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion){
+            Log.i(TAG, "Downgrading from " + oldVersion + " to " + newVersion);
+            try{
+                database.sqLiteDb = db;
+                // if returned true continue to onModelCreate
+                if(builder.onDowngrade(database, oldVersion, newVersion))
+                    onCreate(db);
+            }
+            catch (Throwable e){
+                builder.onError(e);
+            }
+            finally {
+                database.sqLiteDb = null;
+            }
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            Log.i(TAG, "Upgrading from " + oldVersion + " to " + newVersion);
+            try {
+                database.sqLiteDb = db;
+                // if returned true continue to onModelCreate
+                if(builder.onUpgrade(database, oldVersion, newVersion))
+                    onCreate(db);
+            }
+            catch (Throwable e){
+                builder.onError(e);
+            }
+            finally {
+                database.sqLiteDb = null;
+            }
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            Log.i(TAG, "Creating database");
+
+            try{
+                database.sqLiteDb = db;
+                // open the model and execute it
+                builder.onModelCreate(database, database.dbModel);
+                // execute sql
+                for(TableModel model : database.dbModel.tableModles){
+                    db.execSQL(model.toString());
+                }
+            }
+            catch (Throwable e){
+                builder.onError(e);
+            }
+            finally {
+                database.sqLiteDb = null;
+            }
+        }
+
     }
 }

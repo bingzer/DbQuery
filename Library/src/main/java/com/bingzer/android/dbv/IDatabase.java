@@ -123,6 +123,16 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     void open(int version, Builder builder);
 
     /**
+     * Open the connection the database using pre-loaded database.
+     * Most of the time, you probably have a .db file in "assets" folder,
+     * use this method to open that .db file
+     * @param version the version of the database
+     * @param dbPath the path where the .db file is
+     * @param builder the builder (You should always use SQLiteBuilder as your builder)
+     */
+    void open(int version, String dbPath, Builder builder);
+
+    /**
      * Close the database. Free any resources.
      * <p>
      *     You should only call this when the whole application is terminated.
