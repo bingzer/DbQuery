@@ -209,7 +209,13 @@ public interface IQuery<T> {
          * Returns the number of page available.
          * This method will run SQL <code>"SELECT COUNT(*)"</code> query
          * once called. This is very expensive call, but it's useful
-         * if you want to know ahead of time how many pages are available
+         * if you want to know ahead of time how many pages are available.
+         * <p>
+         * <b>Warning:</b>
+         * This method will throw an <code>UnsupportedException</code>,
+         * when using <code>Paging</code> with <code>OrderBy</code>
+         * or <code>Having</code>.
+         * </p>
          * @return the number of pages available with the given query
          */
         int getTotalPage();

@@ -209,6 +209,195 @@ Teddy       20000.0     Janitor
         assertTrue(cursor.getFloat(1) == 45000f);
         assertTrue(cursor.getString(2).equals("Guard"));
 
-        assertTrue(paging.getTotalPage() == 4);
+
+        try{
+            paging.getTotalPage();
+            // not expected
+            assertTrue(false);
+        }
+        catch (Exception e){
+            // as expected
+            assertTrue(true);
+        }
+
+        cursor.close();
+    }
+
+    public void testHaving_Simple(){
+        /*
+        Should produce
+NAME        SUM(SALARY) position
+----------  ----------- ----------  -----------
+Allen       15000.0     Manager
+David       85000.0     Manager
+James       10000.0     CEO
+Kim         45000.0     Guard
+Mark        65000.0     Watch
+Paul        20000.0     Guard
+Teddy       20000.0     Janitor
+
+         */
+        Cursor cursor = db.get("company")
+                .select()
+                .columns("name", "sum(salary)")
+                .orderBy("name")
+                .groupBy("name")
+                .having("sum(salary) > ?", 30000)
+                .query();
+
+        assertTrue(cursor.getCount() == 3);  // 3 people with salary over 30000
+
+        // # 1
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("David"));
+        assertTrue(cursor.getFloat(1) == 85000f);
+        // # 2
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Kim"));
+        assertTrue(cursor.getFloat(1) == 45000);
+        // # 3
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Mark"));
+        assertTrue(cursor.getFloat(1) == 65000f);
+
+        cursor.close();
+    }
+
+    public void testHaving_SimpleJoin(){
+        /*
+        Should produce
+NAME        SUM(SALARY) position
+----------  ----------- ----------  -----------
+Allen       15000.0     Manager
+David       85000.0     Manager
+James       10000.0     CEO
+Kim         45000.0     Guard
+Mark        65000.0     Watch
+Paul        20000.0     Guard
+Teddy       20000.0     Janitor
+
+         */
+        Cursor cursor = db.get("company c")
+                .join("employee e", "e.name = c.name")
+                .select()
+                .columns("e.name", "sum(c.salary)", "e.position")
+                .orderBy("e.name")
+                .groupBy("c.name")
+                .having("sum(c.salary) > ? AND e.position <> ?", 30000, "Guard")  // we take off "KIM
+                .query();
+
+        assertTrue(cursor.getCount() == 2);  // 2 people with salary over 30000 and not guard
+
+        // # 1
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("David"));
+        assertTrue(cursor.getFloat(1) == 85000f);
+        // # 2
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Mark"));
+        assertTrue(cursor.getFloat(1) == 65000f);
+
+        cursor.close();
+    }
+
+
+    public void testHaving_SimpleJoin2(){
+        /*
+        Should produce
+NAME        SUM(SALARY) position
+----------  ----------- ----------  -----------
+Allen       15000.0     Manager
+David       85000.0     Manager
+James       10000.0     CEO
+Kim         45000.0     Guard
+Mark        65000.0     Watch
+Paul        20000.0     Guard
+Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
+         */
+        db.get("Company").insert("name", "salary").val("Teddy", 20000);
+        assertTrue(db.get("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
+
+        Cursor cursor = db.get("company c")
+                .join("employee e", "e.name = c.name")
+                .select()
+                .columns("e.name", "sum(c.salary)", "e.position")
+                .orderBy("e.name")
+                .groupBy("c.name")
+                .having("sum(c.salary) > ? AND e.position <> ?", 30000, "Guard")  // we take off "KIM
+                .query();
+
+        assertTrue(cursor.getCount() == 3);  // 3 people with salary over 30000 and not guard + Teddy
+
+        // # 1
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("David"));
+        assertTrue(cursor.getFloat(1) == 85000f);
+        // # 2
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Mark"));
+        assertTrue(cursor.getFloat(1) == 65000f);
+        // # 2
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Teddy"));
+        assertTrue(cursor.getFloat(1) == 40000f);  // 20k + 20k
+
+        cursor.close();
+    }
+
+    public void testHaving_SimpleJoin_Paging(){
+        /*
+        Should produce
+NAME        SUM(SALARY) position
+----------  ----------- ----------  -----------
+Allen       15000.0     Manager
+David       85000.0     Manager
+James       10000.0     CEO
+Kim         45000.0     Guard
+Mark        65000.0     Watch
+Paul        20000.0     Guard
+Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
+         */
+        db.get("Company").insert("name", "salary").val("Teddy", 20000);
+        assertTrue(db.get("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
+
+        IQuery.Paging paging = db.get("company c")
+                .join("employee e", "e.name = c.name")
+                .select()
+                .columns("e.name", "sum(c.salary)", "e.position")
+                .orderBy("e.name")
+                .groupBy("c.name")
+                .having("sum(c.salary) > ? AND e.position <> ?", 30000, "Guard")  // we take off "KIM
+                .paging(2);
+
+        try{
+            paging.getTotalPage();
+            // not expected
+            assertTrue(false);
+        }
+        catch (Exception e){
+            // as expected
+            assertTrue(true);
+        }
+
+        // # PAGE 1
+        Cursor cursor = paging.query();
+        assertTrue(paging.getRowLimit() == cursor.getCount());
+        // # 1
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("David"));
+        assertTrue(cursor.getFloat(1) == 85000f);
+        // # 2
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Mark"));
+        assertTrue(cursor.getFloat(1) == 65000f);
+
+
+        // # PAGE 2
+        cursor = paging.query();
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Teddy"));
+        assertTrue(cursor.getFloat(1) == 40000f);  // 20k + 20k
+
+        cursor.close();
     }
 }

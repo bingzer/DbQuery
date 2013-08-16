@@ -147,8 +147,8 @@ abstract class QueryImpl<T> implements IQuery<T> {
             if(super.builder.length() > 0)sql.append(Database.SPACE).append(super.builder);
 
             // group by + having
-            if(havingString.length() > 0) sql.append(Database.SPACE).append(havingString);
             if(groupByString.length() > 0) sql.append(Database.SPACE).append(groupByString);
+            if(havingString.length() > 0) sql.append(Database.SPACE).append(havingString);
 
             // order by
             if(orderByString.length() > 0) sql.append(Database.SPACE).append(orderByString);
@@ -370,8 +370,8 @@ abstract class QueryImpl<T> implements IQuery<T> {
             if(super.builder.length() > 0) sql.append(super.builder);
 
             // group by + having
-            if(havingString.length() > 0) sql.append(Database.SPACE).append(havingString);
             if(groupByString.length() > 0) sql.append(Database.SPACE).append(groupByString);
+            if(havingString.length() > 0) sql.append(Database.SPACE).append(havingString);
 
             // order by
             if(orderByString.length() > 0) sql.append(Database.SPACE).append(orderByString);
@@ -462,6 +462,11 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public int getTotalPage() {
+            // we can't count row when orderBy or having is included
+            // TODO: there's gotta be a way to do this
+            if(select.groupByString.length() > 0 || select.havingString.length() > 0)
+                throw new UnsupportedOperationException("Cannot count row when querying using 'GroupBy' or 'Having'");
+
             float row = -1;
 
             String sql = generateSql(true);
@@ -543,10 +548,8 @@ abstract class QueryImpl<T> implements IQuery<T> {
             if(select.builder.length() > 0) sql.append(Database.SPACE).append(select.builder);
 
             // group by + having (Only when not to count)
-            if(!asRowCount){
-                if(select.havingString.length() > 0) sql.append(Database.SPACE).append(select.havingString);
-                if(select.groupByString.length() > 0) sql.append(Database.SPACE).append(select.groupByString);
-            }
+            if(select.groupByString.length() > 0) sql.append(Database.SPACE).append(select.groupByString);
+            if(select.havingString.length() > 0) sql.append(Database.SPACE).append(select.havingString);
 
             // order by
             if(select.orderByString.length() > 0) sql.append(Database.SPACE).append(select.orderByString);
