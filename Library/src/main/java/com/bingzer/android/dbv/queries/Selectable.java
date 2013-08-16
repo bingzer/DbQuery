@@ -16,7 +16,6 @@
 
 package com.bingzer.android.dbv.queries;
 
-import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IQuery;
 
 /**
@@ -26,68 +25,70 @@ public interface Selectable {
 
     /**
      * Select top (x) add the specified condition
-     * @param top
-     * @param condition
-     * @return
+     * @param top number to return
+     * @param condition the condition
+     * @return {@link IQuery.Select}
      */
     IQuery.Select select(int top, String condition);
 
     /**
      * Select some condition
-     * @param condition
-     * @return
+     * @param condition the condition
+     * @return {@link IQuery.Select}
      */
     IQuery.Select select(String condition);
 
     /**
-     * Select add id
-     * @param id
-     * @return
+     * Select add id. Id column must be defined in the naming convention
+     * specified in {@link com.bingzer.android.dbv.IConfig}
+     * @param id id to search
+     * @see com.bingzer.android.dbv.IConfig#setIdNamingConvention(String)
+     * @return {@link IQuery.Select}
      */
     IQuery.Select select(int id);
 
     /**
      * Select multiple ids
-     * @param ids
-     * @return
+     * @param ids array id
+     * @return {@link IQuery.Select}
      */
     IQuery.Select select(int... ids);
 
     /**
-     * Select add whereClause
-     * @param whereClause
-     * @param args
-     * @return
+     * Select along with whereClause
+     * @param whereClause 'where' clause
+     * @param args arguments
+     * @return {@link IQuery.Select}
      */
     IQuery.Select select(String whereClause, Object... args);
 
     /**
      * Select
-     * @param whereClause
-     * @param args
-     * @return
+     * @param whereClause 'where' clause
+     * @param args arguments
+     * @return {@link IQuery.Select}
      */
     IQuery.Select select(int top, String whereClause, Object... args);
 
     /**
      * Select distinct all.
      * Equivalent of calling <code>selectDistinct(null)</code>
-     * @return
+     * @return {@link IQuery.Select}
      */
     IQuery.Select selectDistinct();
 
     /**
      * Select distinct
-     * @param condition
-     * @return
+     * @param condition the condition
+     * @return {@link IQuery.Select}
      */
     IQuery.Select selectDistinct(String condition);
 
     /**
      * Select distinct add condition
-     * @param whereClause
-     * @param args
-     * @return
+     * @param whereClause 'where' clause
+     * @param args arguments
+     * @return {@link IQuery.Select}
      */
     IQuery.Select selectDistinct(String whereClause, Object... args);
 

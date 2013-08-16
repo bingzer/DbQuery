@@ -23,14 +23,14 @@ public interface SqlExecutable {
 
     /**
      * Execute sql
-     * @param sql
+     * @param sql sql to execute
      */
     void execSql(String sql);
 
     /**
-     * Exec sql
-     * @param sql
-     * @param args
+     * Execute sql
+     * @param sql sql
+     * @param args arguments
      */
     void execSql(String sql, Object... args);
 }

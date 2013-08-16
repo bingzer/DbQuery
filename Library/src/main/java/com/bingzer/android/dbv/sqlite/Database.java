@@ -165,12 +165,12 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
+    public IQuery<Cursor> raw(final String sql, final Object... args) {
         ensureDbHelperIsReady();
         return new IQuery<Cursor>() {
             @Override
             public Cursor query() {
-                return sqLiteDb.rawQuery(sql, selectionArgs);
+                return sqLiteDb.rawQuery(sql, Util.toStringArray(args));
             }
         };
     }

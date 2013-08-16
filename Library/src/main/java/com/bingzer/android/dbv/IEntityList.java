@@ -23,8 +23,16 @@ import java.util.List;
  */
 public interface IEntityList<T extends IEntity> {
 
+    /**
+     * Returns the list
+     * @return list
+     */
     public List<T> getEntityList();
 
+    /**
+     * Creates a new entity
+     * @return T
+     */
     public T newEntity();
 
 }

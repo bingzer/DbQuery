@@ -30,19 +30,19 @@ public interface IColumn {
 
         /**
          * Returns the name of this column
-         * @return
+         * @return the name of this columns
          */
         String getName();
 
         /**
          * Returns the data type
-         * @return
+         * @return data type
          */
         String getDataType();
 
         /**
          * Returns the definition if any
-         * @return
+         * @return column definition
          */
         String getDefinition();
     }

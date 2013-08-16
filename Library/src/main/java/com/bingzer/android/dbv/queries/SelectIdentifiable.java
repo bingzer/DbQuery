@@ -28,17 +28,17 @@ package com.bingzer.android.dbv.queries;
 public interface SelectIdentifiable {
 
     /**
-     * Returns id
-     * @param condition
-     * @return
+     * Returns id with specified condition
+     * @param condition the condition
+     * @return the id that matches the <code>condition</code>
      */
     int selectId(String condition);
 
     /**
-     * Returns id
-     * @param whereClause
-     * @param args
-     * @return
+     * Returns id with specified condition
+     * @param whereClause 'where' clause
+     * @param args arguments
+     * @return the id that matches the condition
      */
     int selectId(String whereClause, Object... args);
 

@@ -31,7 +31,7 @@ public interface IQuery<T> {
 
     /**
      * Build the sql and return a cursor
-     * @return
+     * @return T
      */
     T query();
 
@@ -52,8 +52,8 @@ public interface IQuery<T> {
     public static interface InsertWith extends IQuery<Integer> {
 
         /**
-         * Values
-         * @return
+         * Values to set
+         * @return {@link IQuery}
          */
         IQuery<Integer> val(Object... values);
     }
@@ -86,8 +86,8 @@ public interface IQuery<T> {
         /**
          * Specified the column to return.
          * default or null will produce SELECT * FROM
-         * @param columns
-         * @return
+         * @param columns column names
+         * @return {@link Select}
          */
         Select columns(String... columns);
 
@@ -99,8 +99,8 @@ public interface IQuery<T> {
          *   db.get("Table").select().orderBy("Id", "Name", "Price DESC");
          * </pre>
          * </code>
-         * @param columns
-         * @return
+         * @param columns column names
+         * @return {@link Select}
          */
         OrderBy orderBy(String... columns);
 

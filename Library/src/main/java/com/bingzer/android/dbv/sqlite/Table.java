@@ -515,12 +515,12 @@ class Table implements ITable {
     }
 
     @Override
-    public IQuery<Cursor> raw(final String sql, final String... selectionArgs) {
+    public IQuery<Cursor> raw(final String sql, final Object... args) {
         return new QueryImpl<Cursor>(db.getConfig()){
             @Override public Cursor query(){
-                if(selectionArgs == null || selectionArgs.length == 1 || selectionArgs[0] == null)
+                if(args == null || args.length == 1 || args[0] == null)
                     return sqlDb.rawQuery(sql, null);
-                else return sqlDb.rawQuery(sql, selectionArgs);
+                else return sqlDb.rawQuery(sql, Util.toStringArray(args));
             }
         };
     }

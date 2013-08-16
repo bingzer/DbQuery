@@ -23,37 +23,37 @@ public interface IFunction {
 
     /**
      * Returns value as <code>int</code>
-     * @return
+     * @return value as <code>int</code>
      */
     int asInt();
 
     /**
      * Returns value as <code>long</code>
-     * @return
+     * @return value as <code>long</code>
      */
     long asLong();
 
     /**
      * Returns value as <code>float</code>
-     * @return
+     * @return value as <code>float</code>
      */
     float asFloat();
 
     /**
      * Returns value as <code>double</code>
-     * @return
+     * @return value as <code>double</code>
      */
     double asDouble();
 
     /**
-     * Returns value as <code>string</code>
-     * @return
+     * Returns value as <code>String</code>
+     * @return value as <code>String</code>
      */
     String asString();
 
     /**
-     * Returns the value
-     * @return
+     * Returns the 'raw' value
+     * @return raw value
      */
     Object value();
 

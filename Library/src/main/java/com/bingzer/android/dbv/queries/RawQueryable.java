@@ -26,17 +26,17 @@ import com.bingzer.android.dbv.IQuery;
 public interface RawQueryable {
 
     /**
-     * Runs raw sql
-     * @param sql
-     * @return
+     * Runs raw sql. Call <code>query()</code> to get the cursor.
+     * @param sql sql string to raw
+     * @return {@link IQuery}
      */
     IQuery<Cursor> raw(String sql);
 
     /**
-     * Runs raw sql
-     * @param sql
-     * @param selectionArgs
-     * @return
+     * Runs raw sql. Call <code>query()</code> to get the cursor.
+     * @param sql sql string to raw
+     * @param args arguments
+     * @return {@link IQuery}
      */
-    IQuery<Cursor> raw(String sql, String... selectionArgs);
+    IQuery<Cursor> raw(String sql, Object... args);
 }
