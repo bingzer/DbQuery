@@ -25,7 +25,7 @@ public interface Droppable {
 
     /**
      * Drop
-     * @return
+     * @return true if success, false if otherwise.
      */
     IQuery<Boolean> drop();
 

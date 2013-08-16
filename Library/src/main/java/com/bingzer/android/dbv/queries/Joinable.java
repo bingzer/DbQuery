@@ -24,44 +24,47 @@ import com.bingzer.android.dbv.IQuery;
 public interface Joinable {
 
     /**
-     * Inner joinable
+     * Inner-Join
      */
-    public static interface Inner {
+    public static interface Inner extends Joinable{
 
         /**
          * Inner join a table
-         * @param tableName
-         * @param onClause
-         * @return
+         * @param tableName table name to join
+         * @param onClause the on clause
+         * @return {@link com.bingzer.android.dbv.IQuery.InnerJoin}
          */
         IQuery.InnerJoin join(String tableName, String onClause);
 
         /**
          * Inner join a table
-         * @param tableName
-         * @param column1
-         * @param column2
-         * @return
+         * @param tableName table name to join
+         * @param column1 first column
+         * @param column2 second column
+         * @return {@link com.bingzer.android.dbv.IQuery.InnerJoin}
          */
         IQuery.InnerJoin join(String tableName, String column1, String column2);
     }
 
-    public static interface Outer {
+    /**
+     * Outer-Join
+     */
+    public static interface Outer extends Joinable{
 
         /**
-         * Joins a table
-         * @param tableName
-         * @param onClause
-         * @return
+         * Outer join a table
+         * @param tableName table name to join
+         * @param onClause the on clause
+         * @return {@link com.bingzer.android.dbv.IQuery.OuterJoin}
          */
         IQuery.OuterJoin outerJoin(String tableName, String onClause);
 
         /**
-         * Joins a table
-         * @param tableName
-         * @param column1
-         * @param column2
-         * @return
+         * Inner join a table
+         * @param tableName table name to join
+         * @param column1 first column
+         * @param column2 second column
+         * @return {@link com.bingzer.android.dbv.IQuery.OuterJoin}
          */
         IQuery.OuterJoin outerJoin(String tableName, String column1, String column2);
     }

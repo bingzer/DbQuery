@@ -28,14 +28,16 @@ public interface EntitySelectable {
 
     /**
      * Query and store the result to an {@link com.bingzer.android.dbv.IEntity}
-     * @param entity
+     * @see IEntity
+     * @param entity the IEntity object
      */
     void query(IEntity entity);
 
     /**
      * Query and store the result to an {@link com.bingzer.android.dbv.IEntityList}
-     * @param entityList
-     * @param <E>
+     * @see IEntityList
+     * @param entityList the IEntityList object
+     * @param <E> IEntity
      */
     <E extends IEntity> void query(IEntityList<E> entityList);
 

@@ -24,30 +24,31 @@ import com.bingzer.android.dbv.IFunction;
 public interface Function {
 
     /**
-     * Returns average
-     * @param columnName
-     * @return
+     * Returns average for the specified <code>columnName</code>
+     * @param columnName column name
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
      */
     IFunction.Average avg(String columnName);
 
     /**
-     * Sum
-     * @param columnName
-     * @return
+     * Returns the total for the specified <code>columnName</code>
+     * @param columnName column name
+     * @return {@link com.bingzer.android.dbv.IFunction.Sum}
      */
     IFunction.Sum sum(String columnName);
 
     /**
-     * Max
-     * @param columnName
-     * @return
+     * Returns the maximum value for the specified <code>columnName</code>
+     * @param columnName column name
+     * @return {@link com.bingzer.android.dbv.IFunction.Max}
      */
     IFunction.Max max(String columnName);
 
+
     /**
-     * Min
-     * @param columnName
-     * @return
+     * Returns the minimum value for the specified <code>columnName</code>
+     * @param columnName column name
+     * @return {@link com.bingzer.android.dbv.IFunction.Min}
      */
     IFunction.Min min(String columnName);
 }

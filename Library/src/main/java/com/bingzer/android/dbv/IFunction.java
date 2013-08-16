@@ -58,20 +58,29 @@ public interface IFunction {
     Object value();
 
     /**
-     * Average
+     * Represents <code>AVG</code>
      */
     public static interface Average extends IFunction{
 
     }
 
+    /**
+     * Represents <code>SUM</code>
+     */
     public static interface Sum extends IFunction {
 
     }
 
+    /**
+     * Represents <code>MAX</code>
+     */
     public static interface Max extends IFunction {
 
     }
 
+    /**
+     * Represents <code>MIN</code>
+     */
     public static interface Min extends IFunction {
 
     }

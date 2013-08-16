@@ -23,22 +23,23 @@ public interface Countable {
 
     /**
      * Returns the count of the specified condition
-     * @param condition
-     * @return
+     * @param condition the condition
+     * @return the count
      */
     int count(String condition);
 
     /**
      * Returns the count of row from the whereClause
-     * @param whereClause
-     * @param whereArgs
-     * @return
+     * (condition)
+     * @param whereClause whereClause
+     * @param whereArgs arguments
+     * @return the count
      */
     int count(String whereClause, Object... whereArgs);
 
     /**
      * Returns the total row available in this table
-     * @return
+     * @return the count of all rows
      */
     int count();
 
