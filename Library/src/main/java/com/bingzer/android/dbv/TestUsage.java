@@ -57,6 +57,8 @@ class TestUsage {
         db.get("Person").select().query(person);
         //db.get("Person").insert(person).query();
 
+        IQuery.Select select = db.get("Person").select();
+
 
 
         PersonList list = new PersonList();

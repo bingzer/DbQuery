@@ -23,6 +23,7 @@ import com.bingzer.android.dbv.queries.Groupable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.queries.Selectable;
+import com.bingzer.android.dbv.queries.Unionable;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
@@ -81,7 +82,8 @@ public interface IQuery<T> {
     /**
      * For select statement
      */
-    public static interface Select extends IQuery<Cursor>, EntitySelectable, Pagination, Groupable {
+    public static interface Select
+            extends IQuery<Cursor>, EntitySelectable, Pagination, Groupable /*,Unionable*/ {
 
         /**
          * Specified the column to return.
@@ -133,6 +135,16 @@ public interface IQuery<T> {
      */
     public static interface OuterJoin extends
             Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select{
+
+    }
+
+    ////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////
+
+    /**
+     * Represents a union
+     */
+    public static interface Union extends IQuery<Cursor>, EntitySelectable{
 
     }
 
