@@ -32,7 +32,7 @@ public class EntityTest extends AndroidTestCase {
                         .addPrimaryKey("Id")
                         .add("Name", "String")
                         .add("Age", "Integer")
-                        .add("Address", "Blob");
+                        .addBlob("Address");
             }
         });
 

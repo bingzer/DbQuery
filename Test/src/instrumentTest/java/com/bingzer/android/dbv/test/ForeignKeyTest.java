@@ -36,7 +36,7 @@ public class ForeignKeyTest extends AndroidTestCase {
                 modeling.add("Products")
                         .addPrimaryKey("Id")
                         .add("Name", "text")
-                        .add("Price", "INTEGER")
+                        .addNumeric("Price")
                         .index("Name");
 
                 modeling.add("Orders")
@@ -46,7 +46,7 @@ public class ForeignKeyTest extends AndroidTestCase {
                         .add("ProductId", "Integer")
                         .index("CustomerId")
                         .index("ProductId")
-                        .foreignKey("CustomerId", "Customers", "Id")
+                        .foreignKey("CustomerId", "Customers.Id")
                         .foreignKey("ProductId", "Products", "Id");
             }
 

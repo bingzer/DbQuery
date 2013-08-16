@@ -16,6 +16,7 @@
 
 package com.bingzer.android.dbv;
 
+import com.bingzer.android.dbv.queries.Alterable;
 import com.bingzer.android.dbv.queries.Countable;
 import com.bingzer.android.dbv.queries.Deletable;
 import com.bingzer.android.dbv.queries.Droppable;
@@ -48,7 +49,8 @@ public interface ITable extends
         Selectable, Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,
         RawQueryable, Countable, Droppable,
-        SelectIdentifiable, Function {
+        SelectIdentifiable, Function,
+        Alterable{
 
     /**
      * Returns the name of this table
@@ -138,21 +140,23 @@ public interface ITable extends
         Model add(String columnName, String dataType, String columnDefinition);
 
         /**
-         * Convenient way to adding primary key column.
-         * Primary key always have
-         * <code>primary key autoincrement</code> column definition
-         * @param columnName column name
-         * @return this
-         */
-        Model addPrimaryKey(String columnName);
-
-        /**
          * Create index on the specified column name. The index name will always be
          * <code>[TABLE_NAME]_[COLUMN_NAME]_IDX</code>
          * @param columnName column name
          * @return this
          */
         Model index(String columnName);
+
+        /**
+         * Foreign key. Create a foreign key references from a column from this current table
+         * to another column on another table. Note that when you call this method,
+         * the referenced table and column needs to exists.
+         * <code>targetColumn</code> must be defined as <code>[TableName].[ColumnName]</code>
+         *
+         * @param columnName the referencing column name (from this table)
+         * @param targetColumn the referenced column name (from the referenced table)
+         */
+        Model foreignKey(String columnName, String targetColumn);
 
         /**
          * Foreign key. Create a foreign key references from a column from this current table
@@ -167,6 +171,15 @@ public interface ITable extends
 
         //////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Convenient way to adding primary key column.
+         * Primary key always have
+         * <code>primary key autoincrement</code> column definition
+         * @param columnName column name
+         * @return this
+         */
+        Model addPrimaryKey(String columnName);
 
         /**
          * Convenient method to calling
@@ -252,5 +265,41 @@ public interface ITable extends
          * @return this
          */
         Model addBlob(String columnName, String columnDefinition);
+    }
+
+    /////////////////////////////////////////////////
+    /////////////////////////////////////////////////
+
+    /**
+     * Handles all alteration (renaming table, add columns, etc...)
+     */
+    public static interface Alter {
+
+        /**
+         * Rename current table to the <code>newName</code>
+         * @param newName new name of this table
+         * @return this
+         */
+        Alter rename(String newName);
+
+        /**
+         * Adds a new column to this table.
+         * @param columnName new column name
+         * @param dataType data type
+         * @return this
+         */
+        Alter addColumn(String columnName, String dataType);
+
+        /**
+         * Adds a new column to this table.
+         * @param columnName new column name
+         * @param dataType data type
+         * @param columnDefinition column definition
+         * @return this
+         */
+        Alter addColumn(String columnName, String dataType, String columnDefinition);
+
+        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////
     }
 }
