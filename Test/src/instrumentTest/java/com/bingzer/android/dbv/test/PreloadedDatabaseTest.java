@@ -16,12 +16,13 @@ import java.io.IOException;
  */
 public class PreloadedDatabaseTest extends AndroidTestCase {
     IDatabase db;
+    File dbFile;
 
     @Override
     public void setUp(){
         // http://chinookdatabase.codeplex.com/wikipage?title=Chinook_Schema&referringTitle=Home
         // chinook sample db
-        File dbFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Chinook.sqlite");
+        dbFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Chinook.sqlite");
 
         if(!dbFile.exists()){
             try{
@@ -49,5 +50,11 @@ public class PreloadedDatabaseTest extends AndroidTestCase {
     public void testDatabaseContent(){
         assertTrue(db.getTables().size() > 0);
         assertTrue(db.getVersion() == 1);
+    }
+
+    @Override
+    public void tearDown(){
+        db.close();
+        assertTrue("Cannot delete file", dbFile.delete());
     }
 }
