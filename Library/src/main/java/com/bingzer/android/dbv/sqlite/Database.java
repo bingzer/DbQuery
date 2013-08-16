@@ -214,9 +214,7 @@ public class Database implements IDatabase {
 
         Database database = (Database) o;
 
-        if (!name.equals(database.name)) return false;
-
-        return true;
+        return name.equals(database.name);
     }
 
     @Override
@@ -363,7 +361,7 @@ public class Database implements IDatabase {
 
         @Override
         public ITable.Model addPrimaryKey(String columnName) {
-            return add(columnName, "INTEGER", "primary key autoincrement not null");
+            return addInteger(columnName, "primary key autoincrement not null");
         }
 
         @Override
@@ -381,6 +379,59 @@ public class Database implements IDatabase {
             }
 
             return this;
+        }
+
+        //////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////
+
+        @Override
+        public ITable.Model addText(String columnName) {
+            return addText(columnName, null);
+        }
+
+        @Override
+        public ITable.Model addText(String columnName, String columnDefinition) {
+            return add(columnName, "TEXT", columnDefinition);
+        }
+
+        @Override
+        public ITable.Model addInteger(String columnName) {
+            return addInteger(columnName, null);
+        }
+
+        @Override
+        public ITable.Model addInteger(String columnName, String columnDefinition) {
+            return add(columnName, "INTEGER", columnDefinition);
+        }
+
+        @Override
+        public ITable.Model addReal(String columnName) {
+            return addReal(columnName, null);
+        }
+
+        @Override
+        public ITable.Model addReal(String columnName, String columnDefinition) {
+            return add(columnName, "REAL", columnDefinition);
+        }
+
+        @Override
+        public ITable.Model addNumeric(String columnName) {
+            return addNumeric(columnName, null);
+        }
+
+        @Override
+        public ITable.Model addNumeric(String columnName, String columnDefinition) {
+            return add(columnName, "NUMERIC", columnDefinition);
+        }
+
+        @Override
+        public ITable.Model addBlob(String columnName) {
+            return addBlob(columnName, null);
+        }
+
+        @Override
+        public ITable.Model addBlob(String columnName, String columnDefinition) {
+            return add(columnName, "BLOB", columnDefinition);
         }
 
         @Override

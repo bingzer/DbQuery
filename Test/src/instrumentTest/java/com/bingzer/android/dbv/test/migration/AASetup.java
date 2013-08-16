@@ -43,8 +43,8 @@ public class AASetup extends AndroidTestCase {
             public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
                 modeling.add("Table1")
                         .addPrimaryKey("Id")
-                        .add("Column2", "INTEGER")
-                        .add("Column3", "INTEGER");
+                        .addInteger("Column2")
+                        .addInteger("Column3");
             }
         });
 

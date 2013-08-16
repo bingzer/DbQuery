@@ -138,7 +138,9 @@ public interface ITable extends
         Model add(String columnName, String dataType, String columnDefinition);
 
         /**
-         * Convenient way to adding primary key column
+         * Convenient way to adding primary key column.
+         * Primary key always have
+         * <code>primary key autoincrement</code> column definition
          * @param columnName column name
          * @return this
          */
@@ -162,5 +164,93 @@ public interface ITable extends
          * @param targetColumn the referenced column name (from the referenced table)
          */
         Model foreignKey(String columnName, String targetTable, String targetColumn);
+
+        //////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "TEXT")</code>
+         * @param columnName the column name
+         * @return this
+         */
+        Model addText(String columnName);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "TEXT", columnDefinition)</code>
+         * @param columnName the column name
+         * @param columnDefinition column definition
+         * @return this
+         */
+        Model addText(String columnName, String columnDefinition);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "INTEGER")</code>
+         * @param columnName the column name
+         * @return this
+         */
+        Model addInteger(String columnName);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "INTEGER", columnDefinition)</code>
+         * @param columnName the column name
+         * @param columnDefinition column definition
+         * @return this
+         */
+        Model addInteger(String columnName, String columnDefinition);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "REAL")</code>
+         * @param columnName the column name
+         * @return this
+         */
+        Model addReal(String columnName);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "REAL", columnDefinition)</code>
+         * @param columnName the column name
+         * @param columnDefinition column definition
+         * @return this
+         */
+        Model addReal(String columnName, String columnDefinition);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "NUMERIC")</code>
+         * @param columnName the column name
+         * @return this
+         */
+        Model addNumeric(String columnName);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "NUMERIC", columnDefinition)</code>
+         * @param columnName the column name
+         * @param columnDefinition column definition
+         * @return this
+         */
+        Model addNumeric(String columnName, String columnDefinition);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "BLOB")</code>
+         * @param columnName the column name
+         * @return this
+         */
+        Model addBlob(String columnName);
+
+        /**
+         * Convenient method to calling
+         * <code>add(columnName, "BLOB", columnDefinition)</code>
+         * @param columnName the column name
+         * @param columnDefinition column definition
+         * @return this
+         */
+        Model addBlob(String columnName, String columnDefinition);
     }
 }
