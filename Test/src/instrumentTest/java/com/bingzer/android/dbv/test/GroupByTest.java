@@ -263,6 +263,46 @@ Teddy       20000.0     Janitor
         cursor.close();
     }
 
+    public void testHaving_Simple2(){
+        /*
+        Should produce
+NAME        SUM(SALARY) position
+----------  ----------- ----------  -----------
+Allen       15000.0     Manager
+David       85000.0     Manager
+James       10000.0     CEO
+Kim         45000.0     Guard
+Mark        65000.0     Watch
+Paul        20000.0     Guard
+Teddy       20000.0     Janitor
+
+         */
+        Cursor cursor = db.get("company")
+                .select()
+                .columns("name", "sum(salary)")
+                .orderBy("name")
+                .groupBy("name")
+                .having("sum(salary) > 30000")
+                .query();
+
+        assertTrue(cursor.getCount() == 3);  // 3 people with salary over 30000
+
+        // # 1
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("David"));
+        assertTrue(cursor.getFloat(1) == 85000f);
+        // # 2
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Kim"));
+        assertTrue(cursor.getFloat(1) == 45000);
+        // # 3
+        cursor.moveToNext();
+        assertTrue(cursor.getString(0).equals("Mark"));
+        assertTrue(cursor.getFloat(1) == 65000f);
+
+        cursor.close();
+    }
+
     public void testHaving_SimpleJoin(){
         /*
         Should produce

@@ -1,6 +1,7 @@
 package com.bingzer.android.dbv.test;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
@@ -32,10 +33,12 @@ public class CreateIndexTest extends AndroidTestCase {
                         .add("Name", "String")
                         .add("Age", "Integer")
                         .add("Address", "Blob")
-                        .index("Id");
+                        .index("Id")
+                        .index("Name");
             }
         });
 
         db.get("Person").deleteAll();
     }
+
 }

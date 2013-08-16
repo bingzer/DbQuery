@@ -41,9 +41,12 @@ import java.util.List;
  *   </code>
  * </pre>
  * </p>
+ * Complete documentation and Wiki:
+ * <a href="http://github.com/bingzer/DbQuery/wiki">http://github.com/bingzer/DbQuery/wiki</a>
  *
  * @see IConfig
  * @see IDatabase
+ * @author Ricky Tobing
  */
 public class DbQuery {
 

@@ -32,11 +32,13 @@ class Config implements IConfig {
     String idNamingConvention;
     boolean appendTableName;
     boolean foreignKeySupport;
+    boolean debug;
 
     Config(){
         this.idNamingConvention = "Id";
         this.appendTableName = false;
         this.foreignKeySupport = false;
+        this.debug = false;
     }
 
     @Override
@@ -67,6 +69,16 @@ class Config implements IConfig {
     @Override
     public boolean getForeignKeySupport() {
         return foreignKeySupport;
+    }
+
+    @Override
+    public void setDebug(boolean on) {
+        this.debug = on;
+    }
+
+    @Override
+    public boolean getDebug() {
+        return debug;
     }
 
 }

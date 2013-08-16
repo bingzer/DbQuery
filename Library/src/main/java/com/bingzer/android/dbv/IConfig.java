@@ -91,4 +91,16 @@ public interface IConfig {
      * @return true if turned one, false otherwise
      */
     boolean getForeignKeySupport();
+
+    /**
+     * Turn on/off debug.
+     * @param on true to turn on. false to turn off
+     */
+    void setDebug(boolean on);
+
+    /**
+     * Returns true if it's in debug mode
+     * @return true if it's in debug mode, false if otherwise
+     */
+    boolean getDebug();
 }

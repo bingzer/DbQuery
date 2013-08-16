@@ -45,6 +45,7 @@ public class ITableTest extends AndroidTestCase{
     }
 
     public void testGetColumns(){
+        assertTrue(table.getColumns().size() > 0);
         for(String s : table.getColumns()){
             assertTrue(s != null);
         }
