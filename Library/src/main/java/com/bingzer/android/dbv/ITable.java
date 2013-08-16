@@ -299,6 +299,15 @@ public interface ITable extends
          */
         Alter addColumn(String columnName, String dataType, String columnDefinition);
 
+        /**
+         * Removes a column (Not supported).
+         * Will throw {@link UnsupportedOperationException}
+         * <b>SQLite does not support this method</b>.
+         * @param columnName columnName to remove
+         * @return this
+         */
+        Alter removeColumn(String columnName);
+
         ////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////
     }

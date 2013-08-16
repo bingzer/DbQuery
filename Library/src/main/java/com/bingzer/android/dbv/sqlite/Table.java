@@ -619,9 +619,14 @@ class Table implements ITable {
             public Alter addColumn(String columnName, String dataType, String columnDefinition) {
                 Database.ColumnModel model = new Database.ColumnModel(columnName, dataType, columnDefinition);
                 db.execSql("ALTER TABLE " + getName() + " ADD COLUMN " + model);
-                // requery columns
+                // re-query columns
                 queryColumns();
                 return this;
+            }
+
+            @Override
+            public Alter removeColumn(String columnName) {
+                throw new UnsupportedOperationException("SQLite does not support removing columns");
             }
         };
     }
