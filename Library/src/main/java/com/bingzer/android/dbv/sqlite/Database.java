@@ -533,13 +533,18 @@ public class Database implements IDatabase {
             this.builder = builder;
 
             if(dbPath != null){
-                preloadedSqliteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-                onOpen(preloadedSqliteDb);
-                // check version..
-                // upgrade
-                if(preloadedSqliteDb.getVersion() < database.getVersion())
-                    onUpgrade(preloadedSqliteDb, preloadedSqliteDb.getVersion(), database.getVersion());
-                else onDowngrade(preloadedSqliteDb, preloadedSqliteDb.getVersion(), database.getVersion());
+                try{
+                    preloadedSqliteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+                    onOpen(preloadedSqliteDb);
+                    // check version..
+                    // upgrade
+                    if(preloadedSqliteDb.getVersion() < database.getVersion())
+                        onUpgrade(preloadedSqliteDb, preloadedSqliteDb.getVersion(), database.getVersion());
+                    else onDowngrade(preloadedSqliteDb, preloadedSqliteDb.getVersion(), database.getVersion());
+                }
+                catch (Exception e){
+                    builder.onError(e);
+                }
             }
         }
 
