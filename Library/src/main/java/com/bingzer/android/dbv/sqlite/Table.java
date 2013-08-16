@@ -52,20 +52,7 @@ class Table implements ITable {
         this.db = db;
         this.sqlDb = sqlDb;
         this.columns = new LinkedList<String>();
-
-        String pragmaSql = Util.bindArgs("PRAGMA table_info(?)", name);
-        Cursor cursor = sqlDb.rawQuery(pragmaSql, null);
-        try{
-            // this will throw IllegalArgumentException if not found
-            // meaning that this table does not exist
-            int nameIdx = cursor.getColumnIndexOrThrow("name");
-            while (cursor.moveToNext()) {
-                columns.add(cursor.getString(nameIdx));
-            }
-        }
-        finally {
-            cursor.close();
-        }
+        queryColumns();
     }
 
     ////////////////////////////////////////////
@@ -630,6 +617,8 @@ class Table implements ITable {
             public Alter addColumn(String columnName, String dataType, String columnDefinition) {
                 Database.ColumnModel model = new Database.ColumnModel(name, dataType, columnDefinition);
                 db.execSql("ALTER TABLE " + getName() + " ADD COLUMN " + model);
+                // requery columns
+                queryColumns();
                 return this;
             }
         };
@@ -663,7 +652,7 @@ class Table implements ITable {
     ////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////
 
-    private String generateParamId(int id){
+    String generateParamId(int id){
         return generateIdString() + " = " + id;
     }
 
@@ -672,5 +661,22 @@ class Table implements ITable {
             return getName() + db.getConfig().getIdNamingConvention();
         }
         return db.getConfig().getIdNamingConvention();
+    }
+
+    void queryColumns(){
+        columns.clear();
+        String pragmaSql = Util.bindArgs("PRAGMA table_info(?)", name);
+        Cursor cursor = sqlDb.rawQuery(pragmaSql, null);
+        try{
+            // this will throw IllegalArgumentException if not found
+            // meaning that this table does not exist
+            int nameIdx = cursor.getColumnIndexOrThrow("name");
+            while (cursor.moveToNext()) {
+                columns.add(cursor.getString(nameIdx));
+            }
+        }
+        finally {
+            cursor.close();
+        }
     }
 }
