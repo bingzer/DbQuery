@@ -72,4 +72,4 @@ before_install:
   
   # Let's try to build...
 install: gradle build
-script: gradle check
+#script: gradle check
