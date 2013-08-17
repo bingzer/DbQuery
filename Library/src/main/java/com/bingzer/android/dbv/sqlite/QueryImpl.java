@@ -435,6 +435,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
     static abstract class UnionImpl extends SelectImpl implements Union {
         Select firstSelect;
+        Select secondSelect;
         boolean unionAll;
 
         UnionImpl(Select firstSelect, Table table){
@@ -448,12 +449,72 @@ abstract class QueryImpl<T> implements IQuery<T> {
         }
 
         @Override
+        public Select columns(String... columns) {
+            secondSelect.columns(columns);
+            return this;
+        }
+
+        @Override
+        public Select select(int top, String condition) {
+            secondSelect = table.select(top, condition);
+            return this;
+        }
+
+        @Override
+        public Select select(String condition) {
+            secondSelect = table.select(condition);
+            return this;
+        }
+
+        @Override
+        public Select select(int id) {
+            secondSelect = table.select(id);
+            return this;
+        }
+
+        @Override
+        public Select select(int... ids) {
+            secondSelect = table.select(ids);
+            return this;
+        }
+
+        @Override
+        public Select select(String whereClause, Object... args) {
+            secondSelect = table.select(whereClause, args);
+            return this;
+        }
+
+        @Override
+        public Select select(int top, String whereClause, Object... args) {
+            secondSelect = table.select(top, whereClause, args);
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct() {
+            secondSelect = table.selectDistinct();
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct(String condition) {
+            secondSelect = table.selectDistinct(condition);
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct(String whereClause, Object... args) {
+            secondSelect = table.selectDistinct(whereClause, args);
+            return this;
+        }
+
+        @Override
         public String toString() {
 
             final StringBuilder sql = new StringBuilder();
             sql.append(firstSelect);
             sql.append(" UNION ").append(unionAll ? " ALL " : "");
-            sql.append(super.toString());
+            sql.append(secondSelect);
 
             return sql.toString();
         }

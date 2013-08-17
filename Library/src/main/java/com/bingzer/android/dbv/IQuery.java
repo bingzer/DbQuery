@@ -180,7 +180,7 @@ public interface IQuery<T> {
      *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
      * </p>
      */
-    public static interface Union extends IQuery<Cursor>, EntitySelectable{
+    public static interface Union extends IQuery<Cursor>, EntitySelectable, Selectable{
 
     }
 
