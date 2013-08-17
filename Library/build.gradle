@@ -53,7 +53,7 @@ task generateJavadoc(type: Javadoc) {
 }
 
 task zipJavadoc << {
-    String targetZip = "$project.buildDir/$project.name-$project.version-javadoc.zip"
+    String targetZip = "$project.buildDir/$archivesBaseName-$project.version-javadoc.zip"
     ant.zip(destfile: targetZip) {
         fileset(dir: new File(project.buildDir, "javadoc")) {
             include(name: '*.*')
