@@ -6,6 +6,7 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 /**
@@ -14,10 +15,10 @@ import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 public class CreateIndexTest extends AndroidTestCase {
 
     IDatabase db;
+    ITable.Model tableModel;
+
     @Override
     public void setUp(){
-
-        getContext().deleteDatabase("CreateIndexDb");
 
         db = DbQuery.getDatabase("CreateIndexDb");
         db.open(1, new SQLiteBuilder() {
@@ -28,17 +29,38 @@ public class CreateIndexTest extends AndroidTestCase {
 
             @Override
             public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
-                modeling.add("Person")
+                tableModel = modeling.add("Person")
                         .addPrimaryKey("Id")
                         .add("Name", "String")
                         .add("Age", "Integer")
                         .add("Address", "Blob")
-                        .index("Id")
-                        .index("Name");
+                        .index("Id", "Name");
+
             }
         });
 
         db.get("Person").deleteAll();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        db.close();
+        getContext().deleteDatabase("CreateIndexDb");
+    }
+
+    public void testTableModel_ShouldContainIndex_OnId(){
+        assertTrue(tableModel != null);
+        assertTrue(tableModel.toString().toLowerCase().contains("person_id_idx"));
+    }
+
+    public void testTableModel_ShouldContainIndex_OnName(){
+        assertTrue(tableModel != null);
+        assertTrue(tableModel.toString().toLowerCase().contains("person_name_idx"));
+    }
+
+    public void testTableModel_ShouldContainIndex_OnAddress(){
+        assertTrue(tableModel != null);
+        assertTrue(!tableModel.toString().toLowerCase().contains("person_address_idx"));
     }
 
 }

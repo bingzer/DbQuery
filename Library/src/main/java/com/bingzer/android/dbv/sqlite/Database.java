@@ -304,9 +304,13 @@ public class Database implements IDatabase {
         }
 
         @Override
-        public ITable.Model index(String columnName) {
-            if(!columnIndexNames.contains(columnName))
-                columnIndexNames.add(columnName);
+        public ITable.Model index(String... columnNames) {
+            if(columnNames != null){
+                for(String columnName : columnNames){
+                    if(!columnIndexNames.contains(columnName))
+                        columnIndexNames.add(columnName);
+                }
+            }
             return this;
         }
 

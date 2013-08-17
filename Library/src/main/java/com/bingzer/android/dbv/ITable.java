@@ -147,10 +147,20 @@ public interface ITable extends
         /**
          * Create index on the specified column name. The index name will always be
          * <code>[TABLE_NAME]_[COLUMN_NAME]_IDX</code>
-         * @param columnName column name
+         * <code>
+         * <pre>
+         *     Model.add("Person")
+         *          .addPrimaryKey("Id")         // Column Id
+         *          .addText("Name", "not null") // Column Name
+         *          .addInteger("Age")           // Column Age
+         *          .addText("Address")          // Column Address
+         *          .index("Name", "Age")        // Index of Column Name and Age
+         * </pre>
+         * </code>
+         * @param columnNames array of column names in this table to index
          * @return this
          */
-        Model index(String columnName);
+        Model index(String... columnNames);
 
         /**
          * Foreign key. Create a foreign key references from a column from this current table

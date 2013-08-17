@@ -59,8 +59,6 @@ class TestUsage {
 
         IQuery.Select select = db.get("Person").select();
 
-        db.get("").select();
-
 
         PersonList list = new PersonList();
         db.get("").update(list);
