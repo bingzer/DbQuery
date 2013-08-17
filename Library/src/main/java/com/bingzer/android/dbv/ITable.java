@@ -163,6 +163,12 @@ public interface ITable extends
         Model index(String... columnNames);
 
         /**
+         * Flags to append "IF NOT EXISTS" before create
+         * @return this
+         */
+        Model ifNotExists();
+
+        /**
          * Foreign key. Create a foreign key references from a column from this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.

@@ -274,6 +274,7 @@ public class Database implements IDatabase {
         private final List<ColumnModel> columnModels = new LinkedList<ColumnModel>();
         private final List<String> columnIndexNames = new LinkedList<String>();
         private final List<String> foreignKeyModelList = new LinkedList<String>();
+        private boolean ifNotExists;
 
         TableModel(String tableName){
             this.tableName = tableName;
@@ -310,6 +311,12 @@ public class Database implements IDatabase {
                         columnIndexNames.add(columnName);
                 }
             }
+            return this;
+        }
+
+        @Override
+        public ITable.Model ifNotExists() {
+            ifNotExists = true;
             return this;
         }
 
@@ -391,7 +398,8 @@ public class Database implements IDatabase {
             StringBuilder builder = new StringBuilder();
 
             // -------------- create table
-            builder.append("CREATE TABLE ").append(tableName).append("(");
+            builder.append("CREATE TABLE").append(ifNotExists ? " IF NOT EXISTS " : Database.SPACE);
+            builder.append(tableName).append("(");
             // ----- columns
             for (int i = 0; i < columnModels.size(); i++) {
                 ColumnModel col = columnModels.get(i);

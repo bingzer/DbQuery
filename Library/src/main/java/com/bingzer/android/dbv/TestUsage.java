@@ -44,7 +44,8 @@ class TestUsage {
             public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
                 modeling.add("Table1")
                         .add("Column1", "INTEGER", "primary key autoincrement not null")
-                        .add("Column2", "TEXT");
+                        .add("Column2", "TEXT")
+                        .ifNotExists();
 
             }
 
