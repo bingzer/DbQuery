@@ -25,6 +25,10 @@ import java.util.List;
  * Represents a database. Provides access to {@link ITable} to achieve common <code>CRUD</code>
  * tasks.
  * <p>
+ *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+ * </p>
+ * <p>
  * To properly gain access to {@link IDatabase} object, you must
  * call {@link #open(int, com.bingzer.android.dbv.IDatabase.Builder)} and
  * provides the database modeling with your own term.

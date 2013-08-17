@@ -21,7 +21,7 @@ import com.bingzer.android.dbv.IFunction;
 /**
  * Created by Ricky Tobing on 7/20/13.
  */
-public class FunctionImpl implements IFunction {
+class FunctionImpl implements IFunction {
 
     String functionName;
     Object value;
@@ -96,22 +96,22 @@ public class FunctionImpl implements IFunction {
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
 
-    public static class AverageImpl extends FunctionImpl implements Average {
+    static class AverageImpl extends FunctionImpl implements Average {
         AverageImpl(String tableName, String columnName){
             super("AVG", tableName, columnName);
         }
     }
-    public static class SumImpl extends FunctionImpl implements Sum {
+    static class SumImpl extends FunctionImpl implements Sum {
         SumImpl(String tableName, String columnName){
             super("SUM", tableName, columnName);
         }
     }
-    public static class MaxImpl extends FunctionImpl implements Max {
+    static class MaxImpl extends FunctionImpl implements Max {
         MaxImpl(String tableName, String columnName){
             super("MAX", tableName, columnName);
         }
     }
-    public static class MinImpl extends FunctionImpl implements Min {
+    static class MinImpl extends FunctionImpl implements Min {
         MinImpl(String tableName, String columnName){
             super("MIN", tableName, columnName);
         }

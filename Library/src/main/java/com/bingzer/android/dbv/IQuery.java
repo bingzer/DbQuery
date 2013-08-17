@@ -26,6 +26,10 @@ import com.bingzer.android.dbv.queries.Selectable;
 import com.bingzer.android.dbv.queries.Unionable;
 
 /**
+ * <p>
+ *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+ * </p>
  * Created by Ricky Tobing on 7/16/13.
  */
 public interface IQuery<T> {
@@ -41,6 +45,10 @@ public interface IQuery<T> {
 
     /**
      * Represents an insert statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      *
      * @see InsertWith
      */
@@ -49,6 +57,10 @@ public interface IQuery<T> {
 
     /**
      * Represents an insert "with" statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      */
     public static interface InsertWith extends IQuery<Integer> {
 
@@ -64,6 +76,10 @@ public interface IQuery<T> {
 
     /**
      * Represents a delete statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      */
     public static interface Delete extends IQuery<Integer> {
 
@@ -71,6 +87,10 @@ public interface IQuery<T> {
 
     /**
      * Represents an update statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      */
     public static interface Update extends IQuery<Integer> {
 
@@ -81,6 +101,10 @@ public interface IQuery<T> {
 
     /**
      * For select statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      */
     public static interface Select
             extends IQuery<Cursor>, EntitySelectable, Pagination, Groupable /*,Unionable*/ {
@@ -120,6 +144,10 @@ public interface IQuery<T> {
 
     /**
      * Represents an inner join statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      *
      * @see OuterJoin
      */
@@ -130,6 +158,10 @@ public interface IQuery<T> {
 
     /**
      * Represents an outer join statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      *
      * @see InnerJoin
      */
@@ -143,6 +175,10 @@ public interface IQuery<T> {
 
     /**
      * Represents a union
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      */
     public static interface Union extends IQuery<Cursor>, EntitySelectable{
 
@@ -153,6 +189,10 @@ public interface IQuery<T> {
 
     /**
      * Represents a group by statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      *
      * @see Having
      */
@@ -179,6 +219,10 @@ public interface IQuery<T> {
 
     /**
      * Represents <code>HAVING</code>
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      *
      * @see GroupBy
      */
@@ -191,6 +235,10 @@ public interface IQuery<T> {
 
     /**
      * Represents a paging and select statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
      */
     public static interface Paging extends IQuery<Cursor>, EntitySelectable {
 

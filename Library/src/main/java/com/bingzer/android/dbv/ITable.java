@@ -34,6 +34,10 @@ import java.util.List;
  * Represents a table. <code>ITable</code> provides full access to achieve
  * common <code>CRUD</code> tasks.
  * <p>
+ *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+ * </p>
+ * <p>
  *     <b>Warning:</b><br/>
  *     <code>DbQuery</code> will <code>assume</code>
  *     that every table will follow a naming convention for
