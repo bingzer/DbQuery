@@ -433,6 +433,35 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
+    static abstract class UnionImpl extends SelectImpl implements Union {
+        Select firstSelect;
+        boolean unionAll;
+
+        UnionImpl(Select firstSelect, Table table){
+            this(firstSelect, table, false);
+        }
+
+        UnionImpl(Select firstSelect, Table table, boolean unionAll){
+            super(table.getConfig(), table);
+            this.unionAll = unionAll;
+            this.firstSelect = firstSelect;
+        }
+
+        @Override
+        public String toString() {
+
+            final StringBuilder sql = new StringBuilder();
+            sql.append(firstSelect);
+            sql.append(" UNION ").append(unionAll ? " ALL " : "");
+            sql.append(super.toString());
+
+            return sql.toString();
+        }
+    }
+
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
+
     static class PagingImpl extends QueryImpl<Cursor> implements Paging{
 
         private final int rowLimit;

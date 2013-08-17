@@ -26,6 +26,7 @@ import com.bingzer.android.dbv.queries.Insertable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.RawQueryable;
 import com.bingzer.android.dbv.queries.Selectable;
+import com.bingzer.android.dbv.queries.Unionable;
 import com.bingzer.android.dbv.queries.Updatable;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public interface ITable extends
         Joinable.Inner, Joinable.Outer,
         RawQueryable, Countable, Droppable,
         SelectIdentifiable, Function,
-        Alterable{
+        Alterable, Unionable{
 
     /**
      * Returns the name of this table

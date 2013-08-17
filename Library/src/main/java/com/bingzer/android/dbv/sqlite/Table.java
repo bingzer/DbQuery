@@ -20,6 +20,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
@@ -656,8 +657,32 @@ class Table implements ITable {
         return name.hashCode();
     }
 
+    @Override
+    public IQuery.Union union(IQuery.Select select) {
+        return new QueryImpl.UnionImpl(select, this) {
+            @Override
+            public Cursor query() {
+                return raw(toString()).query();
+            }
+        };
+    }
+
+    @Override
+    public IQuery.Union unionAll(IQuery.Select select) {
+        return new QueryImpl.UnionImpl(select, this, true) {
+            @Override
+            public Cursor query() {
+                return raw(toString()).query();
+            }
+        };
+    }
+
     ////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////
+
+    IConfig getConfig(){
+        return db.getConfig();
+    }
 
     String generateParamId(int id){
         return generateIdString() + " = " + id;
