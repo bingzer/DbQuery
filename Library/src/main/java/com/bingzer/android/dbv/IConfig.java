@@ -59,8 +59,8 @@ public interface IConfig {
     void setIdNamingConvention(String id);
 
     /**
-     * Returns namving convention for id
-     * @return
+     * Returns naming convention for id
+     * @return the naming convention
      */
     String getIdNamingConvention();
 
