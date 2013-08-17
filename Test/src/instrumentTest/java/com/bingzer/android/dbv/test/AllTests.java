@@ -30,6 +30,6 @@ public class AllTests extends TestSuite {
 
     public static Test suite() {
         //return new TestSuiteBuilder(AllTests.class).includeAllPackagesUnderHere().build();
-        return new TestSuiteBuilder(com.bingzer.android.dbv.test.migration.AASetup.class).build();
+        return new TestSuiteBuilder(MigrationTest.class).build();
     }
 }

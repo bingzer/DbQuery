@@ -17,43 +17,100 @@
 package com.bingzer.android.dbv.test;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
+import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
 
 /**
  * Created by Ricky Tobing on 7/18/13.
  */
-public class ITableTest extends AndroidTestCase{
+public class TableTest extends AndroidTestCase{
 
-    ITable table;
+    static boolean populated = false;
     IDatabase db;
+    ITable customerTable;
 
+    @Override
     public void setUp(){
         db = DbQuery.getDatabase("TestDb");
-        table = db.get("Customers");
+        db.open(1, new SQLiteBuilder() {
+            @Override
+            public Context getContext() {
+                return TableTest.this.getContext();
+            }
+
+            @Override
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
+                createDatabaseModeling(modeling);
+            }
+        });
+
+        if(!populated){
+            db.get("Customers").delete();
+            db.get("Products").delete();
+            db.get("Orders").delete();
+            populateData();
+            populated = true;
+        }
+
+        customerTable = db.get("Customers");
     }
 
+
+    public void testTableNull(){
+        assertTrue(db.get("Customers") != null);
+        assertTrue(db.get("Products") != null);
+        assertTrue(db.get("Orders") != null);
+    }
+
+    public void testTableAliases(){
+        ITable table = db.get("Customers C");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("C"));
+
+        table = db.get("Products P");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("P"));
+
+        table = db.get("Orders O");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("O"));
+    }
+
+    public void testGetCustomerId(){
+        assertTrue(getCustomerId("Andrea Pirlo") > 0);
+        assertTrue(getCustomerId("Christiano Ronaldo") > 0);
+        assertTrue(getCustomerId("Kaka") > 0);
+
+        assertTrue(getCustomerId("Kiki") < 0);
+        assertTrue(getCustomerId("Glass") < 0);
+    }
     public void testGetName() throws Exception {
-        assertTrue(table.getName().equalsIgnoreCase("Customers"));
+        assertTrue(customerTable.getName().equalsIgnoreCase("Customers"));
     }
 
     public void testGetColumns(){
-        assertTrue(table.getColumns().size() > 0);
-        for(String s : table.getColumns()){
+        assertTrue(customerTable.getColumns().size() > 0);
+        for(String s : customerTable.getColumns()){
             assertTrue(s != null);
         }
     }
 
     public void testGetColumnCount() {
-        assertTrue(table.getColumnCount() > 0);
-        assertTrue(table.getColumnCount() == table.getColumns().size());
+        assertTrue(customerTable.getColumnCount() > 0);
+        assertTrue(customerTable.getColumnCount() == customerTable.getColumns().size());
         assertTrue(db.get("Customers C").count() > 0);
     }
 
@@ -99,7 +156,7 @@ public class ITableTest extends AndroidTestCase{
     public void testSelect_Id(){
         int messiId = getCustomerId("Lionel Messi");
 
-        Cursor c = table.select(messiId).query();
+        Cursor c = customerTable.select(messiId).query();
         c.moveToFirst();
         assertTrue(c != null);
         assertTrue(c.getString(c.getColumnIndex("Name")) != null);  // name never null
@@ -109,25 +166,25 @@ public class ITableTest extends AndroidTestCase{
     public void testSelect_Ids(){
         int messiId = getCustomerId("Lionel Messi");
         int crId = getCustomerId("Christiano Ronaldo");
-        Cursor c = table.select(messiId, crId).query();
+        Cursor c = customerTable.select(messiId, crId).query();
         assertTrue(c.getCount() == 2);
         while(c.moveToNext()){
             assertTrue(
-                c.getString(c.getColumnIndex("Name")).equalsIgnoreCase("Lionel Messi") ||
-                c.getString(c.getColumnIndex("Name")).equalsIgnoreCase("Christiano Ronaldo")
+                    c.getString(c.getColumnIndex("Name")).equalsIgnoreCase("Lionel Messi") ||
+                            c.getString(c.getColumnIndex("Name")).equalsIgnoreCase("Christiano Ronaldo")
             );
         }
         c.close();
     }
 
     public void testSelect_WhereClause(){
-        Cursor c =table.select("Name = ?", "Lionel Messi").columns("Name").query();
+        Cursor c = customerTable.select("Name = ?", "Lionel Messi").columns("Name").query();
         c.moveToFirst();
 
         assertTrue(c != null);
         assertTrue(c.getString(0).equals("Lionel Messi"));
 
-        c = table.select("Name = ? AND Country = ?", "Mario Baloteli", "Italy").columns("Name", "Country").query();
+        c = customerTable.select("Name = ? AND Country = ?", "Mario Baloteli", "Italy").columns("Name", "Country").query();
         c.moveToFirst();
 
         assertTrue(c != null);
@@ -261,9 +318,9 @@ public class ITableTest extends AndroidTestCase{
     int dodolId = -1;
     public void testInsert_Columns(){
         dodolId = db.get("Products")
-                        .insert("Name", "Price")
-                        .val("Dodol", 22)
-                        .query();
+                .insert("Name", "Price")
+                .val("Dodol", 22)
+                .query();
         assertTrue(dodolId > 0);
         assertTrue(db.get("Products").delete("Name = ?", "Dodol").query() > 0);
     }
@@ -491,6 +548,93 @@ public class ITableTest extends AndroidTestCase{
         assertEquals(average, "1");
     }
 
+
+    /////////////////////////////////////////////////////////////////////
+
+    /**
+     * Do modeling here
+     * @param modeling
+     */
+    private void createDatabaseModeling(IDatabase.Modeling modeling){
+        modeling.add("Customers")
+                .addPrimaryKey("Id")
+                .addText("Name", "not null")
+                .addText("Address")
+                .addText("City")
+                .addText("PostalCode")
+                .addText("Country");
+
+        modeling.add("Products")
+                .addPrimaryKey("Id")
+                .addText("Name")
+                .addReal("Price");
+
+        modeling.add("Orders")
+                .addPrimaryKey("Id")
+                .addInteger("CustomerId")
+                .addInteger("ProductId")
+                .add("Date", "TEXT");
+    }
+
+
+    private void populateData(){
+        IQuery.InsertWith insert = db.get("Customers").insert("Name", "Address", "City", "PostalCode", "Country");
+
+        insert.val("Wayne Rooney", "10 Manchester United", "Manchester", 9812, "UK");
+        insert.val("Lionel Messi", "10 Barcelona st.", "Barcelona", 70, "Spain");
+        insert.val("Christiano Ronaldo", "7 Real Madrid", "Madrid", 5689, "Spain");
+        insert.val("Mario Baloteli", "9 Ac Milan St.", "Milan", 1899, "Italy");
+        insert.val("Kaka", "15 Ac Milan St.", "Milan", 1899, "Italy");
+        insert.val("Andrea Pirlo", "21 Juventus St.", "Turin", 1899, "Italy");
+        insert.val("Null Player", null, null, 22111, "US");
+
+
+        insert = db.get("Products").insert("Name", "Price");
+        insert.val("Car", 20000);
+        insert.val("Motorcycle", 5000);
+        insert.val("Computer", 1000);
+        insert.val("Monitor", 500);
+        insert.val("Keyboard and Mouse", 10);
+        insert.val("Cellphone", 200);
+        insert.val("Sunglasses", 50);
+        insert.val("Desk", 100);
+        insert.val("Lamp", 20);
+        insert.val("Candy", 1);
+
+        insert = db.get("Orders").insert("CustomerId", "ProductId", "Date");
+        insert.val(getCustomerId("Wayne Rooney"), getProductId("Computer"), getRandomDate());
+        insert.val(getCustomerId("Wayne Rooney"), getProductId("Monitor"), getRandomDate());
+        insert.val(getCustomerId("Wayne Rooney"), getProductId("Cellphone"), getRandomDate());
+        insert.val(getCustomerId("Wayne Rooney"), getProductId("Desk"), getRandomDate());
+        insert.val(getCustomerId("Lionel Messi"), getProductId("Car"), getRandomDate());
+        insert.val(getCustomerId("Lionel Messi"), getProductId("Desk"), getRandomDate());
+        insert.val(getCustomerId("Lionel Messi"), getProductId("Computer"), getRandomDate());
+        insert.val(getCustomerId("Lionel Messi"), getProductId("Lamp"), getRandomDate());
+        insert.val(getCustomerId("Christiano Ronaldo"), getProductId("Candy"), getRandomDate());
+        insert.val(getCustomerId("Christiano Ronaldo"), getProductId("Lamp"), getRandomDate());
+        insert.val(getCustomerId("Christiano Ronaldo"), getProductId("Sunglasses"), getRandomDate());
+        insert.val(getCustomerId("Christiano Ronaldo"), getProductId("Candy"), getRandomDate());
+        insert.val(getCustomerId("Christiano Ronaldo"), getProductId("Keyboard and Mouse"), getRandomDate());
+        insert.val(getCustomerId("Christiano Ronaldo"), getProductId("Sunglasses"), getRandomDate());
+        insert.val(getCustomerId("Mario Baloteli"), getProductId("Candy"), getRandomDate());
+        insert.val(getCustomerId("Mario Baloteli"), getProductId("Monitor"), getRandomDate());
+        insert.val(getCustomerId("Mario Baloteli"), getProductId("Computer"), getRandomDate());
+        insert.val(getCustomerId("Mario Baloteli"), getProductId("Sunglasses"), getRandomDate());
+        insert.val(getCustomerId("Mario Baloteli"), getProductId("Car"), getRandomDate());
+        insert.val(getCustomerId("Kaka"), getProductId("Car"), getRandomDate());
+        insert.val(getCustomerId("Kaka"), getProductId("Computer"), getRandomDate());
+        insert.val(getCustomerId("Kaka"), getProductId("Cellphone"), getRandomDate());
+        insert.val(getCustomerId("Kaka"), getProductId("Sunglasses"), getRandomDate());
+        insert.val(getCustomerId("Kaka"), getProductId("Car"), getRandomDate());
+        insert.val(getCustomerId("Andrea Pirlo"), getProductId("Car"), getRandomDate());
+        insert.val(getCustomerId("Andrea Pirlo"), getProductId("Computer"), getRandomDate());
+        insert.val(getCustomerId("Andrea Pirlo"), getProductId("Cellphone"), getRandomDate());
+        insert.val(getCustomerId("Andrea Pirlo"), getProductId("Sunglasses"), getRandomDate());
+        insert.val(getCustomerId("Andrea Pirlo"), getProductId("Computer"), getRandomDate());
+
+
+    }
+
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ Helper methods ----------------//
@@ -500,5 +644,13 @@ public class ITableTest extends AndroidTestCase{
 
     private int getProductId(String name){
         return db.get("Products").selectId("Name = ?", name);
+    }
+
+    private String getRandomDate(){
+        long now = Helper.now();
+        now += Helper.getRandom(-1000, 0);
+
+        Date date = new Date(now);
+        return new SimpleDateFormat("MM/DD/yyyy").format(date);
     }
 }

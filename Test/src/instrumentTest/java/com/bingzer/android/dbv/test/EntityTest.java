@@ -1,4 +1,4 @@
-package com.bingzer.android.dbv.test.entities;
+package com.bingzer.android.dbv.test;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
@@ -7,8 +7,6 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
-import com.bingzer.android.dbv.test.Person;
-import com.bingzer.android.dbv.test.PersonList;
 
 /**
  * Created by Ricky Tobing on 8/9/13.

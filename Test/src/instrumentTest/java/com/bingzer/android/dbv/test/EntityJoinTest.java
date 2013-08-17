@@ -1,4 +1,4 @@
-package com.bingzer.android.dbv.test.entities;
+package com.bingzer.android.dbv.test;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
@@ -105,9 +105,9 @@ public class EntityJoinTest extends AndroidTestCase {
     static class Order implements IEntity {
         int id = -1;
         int quantity;
-        // from product table
+        // from product customerTable
         String productName;
-        // from customer table
+        // from customer customerTable
         String customerName;
 
         /////////////////////////////

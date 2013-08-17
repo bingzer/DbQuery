@@ -1,4 +1,4 @@
-package com.bingzer.android.dbv.test.pagination;
+package com.bingzer.android.dbv.test;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
@@ -9,7 +9,6 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
-import com.bingzer.android.dbv.test.Person;
 
 import java.util.LinkedList;
 import java.util.List;

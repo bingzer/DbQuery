@@ -1,4 +1,4 @@
-package com.bingzer.android.dbv.test.migration;
+package com.bingzer.android.dbv.test;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
@@ -11,7 +11,7 @@ import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 /**
  * Created by Ricky on 8/5/13.
  */
-public class AASetup extends AndroidTestCase {
+public class MigrationTest extends AndroidTestCase {
 
     @Override
     public void setUp(){
@@ -22,7 +22,7 @@ public class AASetup extends AndroidTestCase {
         db.open(1, new SQLiteBuilder() {
             @Override
             public Context getContext() {
-                return AASetup.this.getContext();
+                return MigrationTest.this.getContext();
             }
 
             @Override
@@ -61,7 +61,7 @@ public class AASetup extends AndroidTestCase {
         db.open(2, new SQLiteBuilder() {
             @Override
             public Context getContext() {
-                return AASetup.this.getContext();
+                return MigrationTest.this.getContext();
             }
 
             @Override

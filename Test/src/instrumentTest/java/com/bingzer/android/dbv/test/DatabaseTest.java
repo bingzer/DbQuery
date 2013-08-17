@@ -16,22 +16,41 @@
 
 package com.bingzer.android.dbv.test;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.sqlite.Database;
+import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 /**
  * Created by Ricky Tobing on 7/18/13.
  */
-public class IDatabaseTest extends AndroidTestCase {
+public class DatabaseTest extends AndroidTestCase {
 
     IDatabase db;
 
     public void setUp(){
-        db = DbQuery.getDatabase("TestDb");
+        db = DbQuery.getDatabase("DatabaseTestDb");
+        db.open(1, new SQLiteBuilder() {
+            @Override
+            public Context getContext() {
+                return DatabaseTest.this.getContext();
+            }
+
+            @Override
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
+                modeling.add("Customers")
+                        .addPrimaryKey("Id")
+                        .addText("Name", "not null")
+                        .addText("Address")
+                        .addText("City")
+                        .addText("PostalCode")
+                        .addText("Country");
+            }
+        });
     }
 
     ////////////////////
@@ -39,7 +58,7 @@ public class IDatabaseTest extends AndroidTestCase {
     ////////////////////
 
     public void testGetName(){
-        assertTrue(db.getName().equalsIgnoreCase("TestDb"));
+        assertTrue(db.getName().equalsIgnoreCase("DatabaseTestDb"));
     }
 
     public void testGetVersion(){
@@ -58,6 +77,17 @@ public class IDatabaseTest extends AndroidTestCase {
         assertTrue(cursor != null);
 
         cursor.close();
+    }
+
+    public void testExecSql(){
+        String sql = "SELECT 1 FROM Customers";
+        try{
+            db.execSql(sql);
+            assertTrue("Good", true);
+        }
+        catch (Exception e){
+            assertTrue("Bad", false);
+        }
     }
 
     public void testGetSQLiteOpenHelper(){
