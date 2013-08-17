@@ -21,7 +21,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.bingzer.android.dbv.IColumn;
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IQuery;
@@ -450,7 +449,7 @@ public class Database implements IDatabase {
 
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
-    static class ColumnModel implements IColumn.Model{
+    static class ColumnModel {
         private String name;
         private String definition;
         private String dataType;
@@ -472,21 +471,6 @@ public class Database implements IDatabase {
             }
 
             return builder.toString();
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public String getDataType() {
-            return dataType;
-        }
-
-        @Override
-        public String getDefinition() {
-            return definition;
         }
     }
 
