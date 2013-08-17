@@ -44,7 +44,7 @@ public class Database implements IDatabase {
     private final IConfig config;
 
     private int version;
-    private SQLiteOpenHelper dbHelper;
+    private DbOpenHelper dbHelper;
     private SQLiteDatabase sqLiteDb;
 
     ////////////////////////////////////////////////
@@ -121,8 +121,8 @@ public class Database implements IDatabase {
             close();
             // update version
             this.version = version;
-            this.dbHelper = createHelper(dbPath, (SQLiteBuilder) builder);
-            this.sqLiteDb = dbHelper.getWritableDatabase();
+            this.dbHelper = new DbOpenHelper(this, dbPath, (SQLiteBuilder) builder);
+            this.sqLiteDb = dbHelper.getSQLiteDatabase();
             Cursor cursor = raw("SELECT name FROM sqlite_master WHERE type='table'").query();
             try{
                 tables.clear();
@@ -228,10 +228,6 @@ public class Database implements IDatabase {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    final SQLiteOpenHelper createHelper(final String dbPath, final SQLiteBuilder builder){
-        return new DbOpenHelper(this, dbPath, builder);
-    }
 
     boolean removeTable(ITable table){
         return tables.remove(table);
@@ -520,7 +516,7 @@ public class Database implements IDatabase {
         SQLiteBuilder builder;
         Database database;
         String dbPath;
-        SQLiteDatabase preloadedSqliteDb;
+        SQLiteDatabase preloadedSQLiteDb;
 
         DbOpenHelper(Database database, String dbPath, SQLiteBuilder builder){
             super(builder.getContext(), database.getName(), null, database.getVersion());
@@ -530,13 +526,15 @@ public class Database implements IDatabase {
 
             if(dbPath != null){
                 try{
-                    preloadedSqliteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-                    onOpen(preloadedSqliteDb);
+                    if(database.getConfig().isReadOnly()) preloadedSQLiteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+                    else preloadedSQLiteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+
+                    onOpen(preloadedSQLiteDb);
                     // check version..
                     // upgrade
-                    if(preloadedSqliteDb.getVersion() < database.getVersion())
-                        onUpgrade(preloadedSqliteDb, preloadedSqliteDb.getVersion(), database.getVersion());
-                    else onDowngrade(preloadedSqliteDb, preloadedSqliteDb.getVersion(), database.getVersion());
+                    if(preloadedSQLiteDb.getVersion() < database.getVersion())
+                        onUpgrade(preloadedSQLiteDb, preloadedSQLiteDb.getVersion(), database.getVersion());
+                    else onDowngrade(preloadedSQLiteDb, preloadedSQLiteDb.getVersion(), database.getVersion());
                 }
                 catch (Exception e){
                     builder.onError(e);
@@ -544,11 +542,14 @@ public class Database implements IDatabase {
             }
         }
 
-        @Override
-        public SQLiteDatabase getWritableDatabase() {
-            if(dbPath != null)
-                return preloadedSqliteDb;
-            return super.getWritableDatabase();
+        SQLiteDatabase getSQLiteDatabase() {
+            // if using pre-loaded db
+            if(dbPath != null) return preloadedSQLiteDb;
+
+            // otherwise check weather it's readonly or not
+            if(database.getConfig().isReadOnly()) return getReadableDatabase();
+            // finally returns the readwrite database
+            return getWritableDatabase();
         }
 
         @Override

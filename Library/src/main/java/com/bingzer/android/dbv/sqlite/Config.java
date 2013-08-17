@@ -33,12 +33,14 @@ class Config implements IConfig {
     boolean appendTableName;
     boolean foreignKeySupport;
     boolean debug;
+    boolean readOnly;
 
     Config(){
         this.idNamingConvention = "Id";
         this.appendTableName = false;
         this.foreignKeySupport = false;
         this.debug = false;
+        this.readOnly = false;
     }
 
     @Override
@@ -62,6 +64,16 @@ class Config implements IConfig {
     }
 
     @Override
+    public void setDebug(boolean on) {
+        this.debug = on;
+    }
+
+    @Override
+    public boolean getDebug() {
+        return debug;
+    }
+
+    @Override
     public void setForeignKeySupport(boolean on) {
         this.foreignKeySupport = on;
     }
@@ -72,13 +84,13 @@ class Config implements IConfig {
     }
 
     @Override
-    public void setDebug(boolean on) {
-        this.debug = on;
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     @Override
-    public boolean getDebug() {
-        return debug;
+    public boolean isReadOnly() {
+        return readOnly;
     }
 
 }

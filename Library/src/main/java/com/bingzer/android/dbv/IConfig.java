@@ -80,8 +80,26 @@ public interface IConfig {
     boolean getAppendTableNameForId();
 
     /**
+     * Turn on/off debug.
+     * @param on true to turn on. false to turn off
+     */
+    void setDebug(boolean on);
+
+    /**
+     * Returns true if it's in debug mode
+     * @return true if it's in debug mode, false if otherwise
+     */
+    boolean getDebug();
+
+    ////////////////////////////////////////////////////////////////////////
+    /////////////////////////// Pre-open configs ///////////////////////////
+    //////////// This needs to be called before open() /////////////////////
+
+    /**
      * Turn on/off foreign key support. By default foreign
-     * key should be off
+     * key should be off.
+     * <b>Warning</b>
+     * This should be called before opening {@link IDatabase}
      * @param on true to turn on, false to turn off
      */
     void setForeignKeySupport(boolean on);
@@ -93,14 +111,16 @@ public interface IConfig {
     boolean getForeignKeySupport();
 
     /**
-     * Turn on/off debug.
-     * @param on true to turn on. false to turn off
+     * Set this database to be a read-only database.
+     * <b>Warning</b>
+     * This should be called before opening {@link IDatabase}
+     * @param readOnly true to make the database readonly, false otherwise
      */
-    void setDebug(boolean on);
+    void setReadOnly(boolean readOnly);
 
     /**
-     * Returns true if it's in debug mode
-     * @return true if it's in debug mode, false if otherwise
+     * Trus if this database is a read-only database
+     * @return true if read-only, false otherwise
      */
-    boolean getDebug();
+    boolean isReadOnly();
 }

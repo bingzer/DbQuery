@@ -2,8 +2,8 @@
 
 apply plugin: 'maven'
 
-versionMajor = "0"
-versionMinor = "9"
+versionMajor = "1"
+versionMinor = "0"
 
 int getVersionCode(){
     buildNumber = System.getenv()['BUILD_NUMBER']
