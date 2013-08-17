@@ -51,4 +51,14 @@ public class ConfigTest extends AndroidTestCase {
         db.getConfig().setDebug(false);
         assertTrue(!db.getConfig().getDebug());
     }
+
+    public void testReadOnly(){
+        // default
+        assertFalse(db.getConfig().isReadOnly());
+
+        db.getConfig().setReadOnly(true);
+        assertTrue(db.getConfig().isReadOnly());
+        db.getConfig().setReadOnly(false);
+        assertTrue(!db.getConfig().isReadOnly());
+    }
 }
