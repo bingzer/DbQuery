@@ -353,28 +353,48 @@ public class ITableTest extends AndroidTestCase{
     // ------------------ JOIN ----------------//
 
     public void testJoin(){
-        Cursor c = db.get("Orders").join("Customers", "Customers.Id = Orders.CustomerId").query();
+        Cursor c = db.get("Orders").join("Customers", "Customers.Id = Orders.CustomerId")
+                .query();
         assertTrue(c.getCount() > 0);
         c.close();
 
-        c = db.get("Orders").join("Customers", "Customers.Id = Orders.CustomerId").select("Customers.Name LIKE ?", "%Messi%").query();
+        c = db.get("Orders").join("Customers", "Customers.Id = Orders.CustomerId")
+                .select("Customers.Name LIKE ?", "%Messi%").query();
         assertTrue(c.getCount() > 0);
         c.close();
     }
 
     public void testJoin_WithAlias(){
-        Cursor c = db.get("Orders O").join("Customers", "Customers.Id = O.CustomerId").select("Customers.Name LIKE ?", "%Messi%").query();
+        Cursor c = db.get("Orders O").join("Customers", "Customers.Id = O.CustomerId")
+                .select("Customers.Name LIKE ?", "%Messi%").query();
         assertTrue(c.getCount() > 0);
         c.close();
 
-        c = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId").select("C.Name LIKE ?", "%Messi%").query();
+        c = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .select("C.Name LIKE ?", "%Messi%").query();
         assertTrue(c.getCount() > 0);
         c.close();
     }
 
     public void testJoin_Select(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId").select(3, "C.Name = ?", "Christiano Ronaldo").query();
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .select(3, "C.Name = ?", "Christiano Ronaldo").query();
         assertTrue(cursor.getCount() == 3);
+        cursor.close();
+    }
+
+    public void testJoin_SelectWithColumns(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .select(3, "C.Name = ?", "Christiano Ronaldo")
+                .columns("C.Name", "O.Date")
+                .query();
+        assertTrue(cursor.getCount() == 3);
+
+        // iterate throught
+        while(cursor.moveToNext()){
+            assertTrue(cursor.getString(0).equalsIgnoreCase("Christiano Ronaldo"));
+        }
+
         cursor.close();
     }
 

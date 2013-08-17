@@ -79,6 +79,15 @@ public class AASetup extends AndroidTestCase{
         assertTrue(table.getAlias().equals("O"));
     }
 
+    public void testGetCustomerId(){
+        assertTrue(getCustomerId("Andrea Pirlo") > 0);
+        assertTrue(getCustomerId("Christiano Ronaldo") > 0);
+        assertTrue(getCustomerId("Kaka") > 0);
+
+        assertTrue(getCustomerId("Kiki") < 0);
+        assertTrue(getCustomerId("Glass") < 0);
+    }
+
     /**
      * Do modeling here
      * @param modeling
