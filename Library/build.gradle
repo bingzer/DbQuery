@@ -43,3 +43,21 @@ pom {
         version = version
     }
 }.writeTo(project(':Library').buildDir.getAbsolutePath() + '/pom.xml')
+
+//////////////////// java doc
+
+task generateJavadoc(type: Javadoc) {
+    source = android.sourceSets.main.allJava
+    destinationDir = new File(project.buildDir, "javadoc")
+    failOnError = true
+}
+
+task zipJavadoc << {
+    String targetZip = "$project.buildDir/$project.name-$project.version-javadoc.zip"
+    ant.zip(destfile: targetZip) {
+        fileset(dir: new File(project.buildDir, "javadoc")) {
+            include(name: '*.*')
+            include(name: '**/**')
+        }
+    }
+}
