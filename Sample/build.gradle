@@ -33,3 +33,10 @@ group = "com.bingzer.android.dbv"
 version = getVersionName()
 android.defaultConfig.versionCode = getVersionCode()
 android.defaultConfig.versionName = getVersionName()
+
+// rename apk
+android.applicationVariants.each { variant ->
+    def apk = variant.outputFile
+    def name = apk.getName().replace('.apk', '-' + getVersionName() + '.apk');
+    variant.outputFile = new File(apk.parentFile, name);
+}
