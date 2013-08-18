@@ -102,4 +102,16 @@ public class DatabaseTest extends AndroidTestCase {
         }
     }
 
+    public void testGetSQLiteDatabase(){
+        try{
+            // should trow exception
+            // we haven't open the db
+            ((Database)db).getSQLiteDatabase();
+            assertTrue("Good", true);
+        }
+        catch (Exception e){
+            assertTrue("Bad", false);
+        }
+    }
+
 }
