@@ -72,12 +72,14 @@ public class PerformanceTest extends AndroidTestCase{
         rawDbQuery = System.nanoTime() - rawDbQuery;
 
         long diff = rawDbQuery - rawNano;
-
         System.out.println("Raw nano     : " + rawNano);
         System.out.println("Db Query nano: " + rawDbQuery);
         System.out.println("Differences  : " + diff);
         System.out.println();
-        checkNano(diff);
+
+        if(rawDbQuery > rawNano){
+            checkNano(diff);
+        }
     }
 
     public void testPerformance_SelectJoinAll(){
@@ -98,12 +100,14 @@ public class PerformanceTest extends AndroidTestCase{
         rawDbQuery = System.nanoTime() - rawDbQuery;
 
         long diff = rawDbQuery - rawNano;
-
         System.out.println("Raw nano     : " + rawNano);
         System.out.println("Db Query nano: " + rawDbQuery);
         System.out.println("Differences  : " + diff);
         System.out.println();
-        checkNano(diff);
+
+        if(rawDbQuery > rawNano){
+            checkNano(diff);
+        }
     }
 
     // TODO: More tests
@@ -122,6 +126,6 @@ public class PerformanceTest extends AndroidTestCase{
     }
 
     private void checkNano(long nano){
-        assertTrue("Slow performance", (Math.abs(nano)*1E+6) > 10);
+        assertTrue("Slow performance", (Math.abs(nano)*1E+6) > 100);
     }
 }
