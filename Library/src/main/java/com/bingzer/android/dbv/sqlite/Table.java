@@ -147,21 +147,11 @@ class Table implements ITable {
 
     @Override
     public IQuery.Select select(int top, String whereClause, Object... args) {
-        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), this, top, false){
+        return new QueryImpl.SelectImpl(db.getConfig(), this, top, false){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             }
-        };
-
-        if(whereClause != null){
-            // append where if necessary
-            if(!whereClause.toLowerCase().startsWith("where"))
-                query.append(" WHERE ");
-            // safely prepare the where part
-            query.append(Util.bindArgs(whereClause, args));
-        }
-
-        return query;
+        }.where(whereClause, args);
     }
 
     @Override
@@ -176,21 +166,11 @@ class Table implements ITable {
 
     @Override
     public IQuery.Select selectDistinct(String whereClause, Object... args) {
-        QueryImpl.SelectImpl query = new QueryImpl.SelectImpl(db.getConfig(), this, true){
+        return new QueryImpl.SelectImpl(db.getConfig(), this, true){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             }
-        };
-
-        if(whereClause != null){
-            // append where if necessary
-            if(!whereClause.toLowerCase().startsWith("where"))
-                query.append(" WHERE ");
-            // safely prepare the where part
-            query.append(Util.bindArgs(whereClause, args));
-        }
-
-        return query;
+        }.where(whereClause, args);
     }
 
     @Override

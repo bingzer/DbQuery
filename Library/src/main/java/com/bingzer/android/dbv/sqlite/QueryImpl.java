@@ -32,25 +32,13 @@ import com.bingzer.android.dbv.queries.Selectable;
 abstract class QueryImpl<T> implements IQuery<T> {
 
     IConfig config;
-    StringBuilder builder;
 
     QueryImpl(IConfig config){
-        this(config, null);
-    }
-
-    QueryImpl(IConfig config, Object any){
         this.config = config;
-        builder = new StringBuilder();
-        append(any);
     }
 
     ////////////////////////////////////////////
     ////////////////////////////////////////////
-
-    QueryImpl append(Object any){
-        if(any != null) builder.append(any);
-        return this;
-    }
 
     @Override
     public abstract T query();
@@ -69,6 +57,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
         StringBuilder orderByString;
         StringBuilder groupByString;
         StringBuilder havingString;
+        StringBuilder whereString;
 
         SelectImpl(IConfig config, Table table){
             this(config, table, false);
@@ -89,16 +78,28 @@ abstract class QueryImpl<T> implements IQuery<T> {
             this.orderByString = new StringBuilder();
             this.groupByString = new StringBuilder();
             this.havingString = new StringBuilder();
+            this.whereString = new StringBuilder();
 
             if(distinct) selectString.append("DISTINCT ");
             if(top > 0) limitString.append(" LIMIT ").append(top);
+        }
+
+        SelectImpl where(String whereClause, Object... args){
+            if(whereClause != null){
+                // append where if necessary
+                if(!whereClause.toLowerCase().startsWith("where"))
+                    whereString.append(" WHERE ");
+                // safely prepare the where part
+                whereString.append(Util.bindArgs(whereClause, args));
+            }
+            return this;
         }
 
         @Override
         public Select columns(String... columns) {
             columnString.delete(0, columnString.length());
             if(columns != null){
-                columnString.append(Util.join(",", columns));
+                columnString.append(Util.join(", ", columns));
             }
             else{
                 columnString.append("*");
@@ -144,7 +145,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             sql.append(columnString).append(Database.SPACE);
             sql.append(fromString).append(Database.SPACE);
             // where
-            if(super.builder.length() > 0)sql.append(Database.SPACE).append(super.builder);
+            if(whereString.length() > 0)sql.append(Database.SPACE).append(whereString);
 
             // group by + having
             if(groupByString.length() > 0) sql.append(Database.SPACE).append(groupByString);
@@ -367,7 +368,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             // join builder
             sql.append(joinBuilder).append(Database.SPACE);
             // where
-            if(super.builder.length() > 0) sql.append(super.builder);
+            if(whereString.length() > 0) sql.append(whereString);
 
             // group by + having
             if(groupByString.length() > 0) sql.append(Database.SPACE).append(groupByString);
@@ -415,8 +416,6 @@ abstract class QueryImpl<T> implements IQuery<T> {
         }
 
         private void consume(Select select){
-            // clear first..
-            super.builder.delete(0, super.builder.length());
             // consume
             selectString = ((SelectImpl)select).selectString;
             columnString = ((SelectImpl)select).columnString;
@@ -425,8 +424,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             limitString = ((SelectImpl)select).limitString;
             groupByString = ((SelectImpl)select).groupByString;
             havingString = ((SelectImpl)select).havingString;
-            // the whereClause part
-            append(((SelectImpl) select).builder);
+            whereString = ((SelectImpl)select).whereString;
         }
     }
 
@@ -635,7 +633,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             }
 
             // where
-            if(select.builder.length() > 0) sql.append(Database.SPACE).append(select.builder);
+            if(select.whereString.length() > 0) sql.append(Database.SPACE).append(select.whereString);
 
             // group by + having (Only when not to count)
             if(select.groupByString.length() > 0) sql.append(Database.SPACE).append(select.groupByString);
