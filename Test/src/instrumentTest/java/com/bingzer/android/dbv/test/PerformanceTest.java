@@ -80,6 +80,7 @@ public class PerformanceTest extends AndroidTestCase{
         if(rawDbQuery > rawNano){
             checkNano(diff);
         }
+        assertTrue(true);
     }
 
     public void testPerformance_SelectJoinAll(){
@@ -108,6 +109,7 @@ public class PerformanceTest extends AndroidTestCase{
         if(rawDbQuery > rawNano){
             checkNano(diff);
         }
+        assertTrue(true);
     }
 
     // TODO: More tests
