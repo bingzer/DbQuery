@@ -23,7 +23,6 @@ import com.bingzer.android.dbv.queries.Groupable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.queries.Selectable;
-import com.bingzer.android.dbv.queries.Unionable;
 
 /**
  * <p>
