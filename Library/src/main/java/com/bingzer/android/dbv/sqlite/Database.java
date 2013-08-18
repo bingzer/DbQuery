@@ -208,6 +208,20 @@ public class Database implements IDatabase {
         return dbHelper;
     }
 
+    /**
+     * Convenient method to get SQLiteDatabase object
+     * {@link IDatabase} must be opened first by calling
+     * {@link IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
+     *
+     * @see SQLiteDatabase
+     * @see IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)
+     * @return SQLiteDatabase object
+     */
+    public SQLiteDatabase getSQLiteDatabase(){
+        ensureDbHelperIsReady();
+        return sqLiteDb;
+    }
+
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
 
