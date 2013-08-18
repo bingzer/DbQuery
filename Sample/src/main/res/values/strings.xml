@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DbQuery-Sample</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="action_start">Start Test</string>
+    <string name="action_all">Show All</string>
+    <string name="action_album_only">With Albums</string>
+
+</resources>
