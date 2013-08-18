@@ -41,6 +41,13 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        populate(false);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -49,9 +56,9 @@ public class MainActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_all)
-            return populate(true);
-        if(item.getItemId() == R.id.action_album_only)
             return populate(false);
+        if(item.getItemId() == R.id.action_album_only)
+            return populate(true);
         return false;
     }
 
@@ -60,15 +67,18 @@ public class MainActivity extends Activity {
         IDatabase db = DbQuery.getDatabase("Chinook");
         Cursor cursor;
 
-        if(filtered)
+        if(!filtered)
             cursor = db.get("Artist")
                     .select()
                     .columns("*", "rowid as _id")
+                    .orderBy("Name")
                     .query();
-        else cursor = db.get("Artist A")
+        else
+            cursor = db.get("Artist A")
                 .join("Album B", "A.ArtistId = B.ArtistId")
                 .select("B.Title is not null")
-                .columns("Name", "A.ArtistId as _id")
+                .columns("A.Name", "A.ArtistId as _id")
+                .groupBy("A.Name")
                 .query();
 
         SimpleCursorAdapter adapter =
