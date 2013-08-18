@@ -23,14 +23,11 @@ import com.bingzer.android.dbv.IFunction;
  */
 class FunctionImpl implements IFunction {
 
-    String functionName;
     Object value;
     StringBuilder builder;
 
     FunctionImpl(String functionName, String tableName, String columnName){
-        this.functionName = functionName;
-        this.builder = new StringBuilder();
-        builder.append("SELECT ")
+        builder = new StringBuilder("SELECT ")
                 .append(functionName).append("(").append(columnName).append(") AS FN ")
                 .append(" FROM ").append(tableName);
     }
