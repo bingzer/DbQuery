@@ -279,6 +279,8 @@ public class Database implements IDatabase {
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     boolean removeTable(ITable table){
+        if(table instanceof IView)
+            return views.remove(table);
         return tables.remove(table);
     }
 

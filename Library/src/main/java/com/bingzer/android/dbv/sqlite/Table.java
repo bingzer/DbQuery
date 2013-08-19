@@ -39,11 +39,13 @@ import java.util.List;
  */
 class Table implements ITable {
 
-    private String name;
-    private String alias;
-    private List<String> columns;
-    private IDatabase db;
-    private SQLiteDatabase sqlDb;
+    IDatabase db;
+    String alias;
+    String name;
+
+    final List<String> columns;
+    final SQLiteDatabase sqlDb;
+
 
     ////////////////////////////////////////////
     ////////////////////////////////////////////
@@ -501,7 +503,7 @@ class Table implements ITable {
     public IQuery<Cursor> raw(final String sql, final Object... args) {
         return new QueryImpl<Cursor>(db.getConfig()){
             @Override public Cursor query(){
-                if(args == null || args.length == 1 || args[0] == null)
+                if(args == null || args.length == 0)
                     return sqlDb.rawQuery(sql, null);
                 else return sqlDb.rawQuery(sql, Util.toStringArray(args));
             }

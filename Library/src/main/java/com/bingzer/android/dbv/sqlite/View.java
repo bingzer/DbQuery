@@ -17,6 +17,7 @@ package com.bingzer.android.dbv.sqlite;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.IView;
 
 /**
@@ -24,11 +25,23 @@ import com.bingzer.android.dbv.IView;
  */
 public class View extends Table implements IView {
 
-    ////////////////////////////////////////////
-    ////////////////////////////////////////////
-
     View (Database db, SQLiteDatabase sqlDb, String name){
         super(db, sqlDb, name);
+    }
+
+    @Override
+    public IQuery<Boolean> drop() {
+        QueryImpl.DropImpl query = new QueryImpl.DropImpl();
+        try{
+            db.execSql("DROP VIEW " + getName());
+            query.value = true;
+        }
+        catch (Exception e){
+            query.value = false;
+        }
+
+        if(query.value) ((Database)db).removeTable(this);
+        return query;
     }
 
 }
