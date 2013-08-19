@@ -177,6 +177,20 @@ public class TableTest extends AndroidTestCase{
         c.close();
     }
 
+    public void testSelect_all(){
+        Cursor c = customerTable.select().query();
+        assertTrue(c.getCount() == 7);
+        if(c.moveToNext()) assertEquals(c.getString(1), "Wayne Rooney");
+        if(c.moveToNext()) assertEquals(c.getString(1), "Lionel Messi");
+        if(c.moveToNext()) assertEquals(c.getString(1), "Christiano Ronaldo");
+        if(c.moveToNext()) assertEquals(c.getString(1), "Mario Baloteli");
+        if(c.moveToNext()) assertEquals(c.getString(1), "Kaka");
+        if(c.moveToNext()) assertEquals(c.getString(1), "Andrea Pirlo");
+        if(c.moveToNext()) assertEquals(c.getString(1), "Null Player");
+
+        c.close();
+    }
+
     public void testSelect_Condition(){
         Cursor c = customerTable.select("Name = 'Lionel Messi'").columns("Name").query();
         c.moveToFirst();
@@ -589,6 +603,35 @@ public class TableTest extends AndroidTestCase{
         if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Christiano Ronaldo");
         if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Mario Baloteli");
         if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Kaka");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Andrea Pirlo");
+        cursor.close();
+    }
+
+    public void testJoin_SelectDistinct_Condition(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .selectDistinct("Name <> 'Kaka'")
+                .columns("C.Name AS CustomerName")
+                .orderBy("O.Id")
+                .query();
+        assertTrue(cursor.getCount() == 5);
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Wayne Rooney");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Lionel Messi");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Christiano Ronaldo");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Mario Baloteli");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Andrea Pirlo");
+        cursor.close();
+    }
+
+    public void testJoin_SelectDistinct_WhereClause(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .selectDistinct("Name NOT IN (?,?)", "Wayne Rooney", "Kaka")
+                .columns("C.Name AS CustomerName")
+                .orderBy("O.Id")
+                .query();
+        assertTrue(cursor.getCount() == 4);
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Lionel Messi");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Christiano Ronaldo");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Mario Baloteli");
         if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Andrea Pirlo");
         cursor.close();
     }
