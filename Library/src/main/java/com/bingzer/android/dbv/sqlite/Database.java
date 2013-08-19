@@ -135,10 +135,10 @@ public class Database implements IDatabase {
             }
             finally {
                 cursor.close();
-                // finally called on ready
-                builder.onReady(this);
                 // check for foreign key support
                 setForeignKeySupport(config.getForeignKeySupport());
+                // finally called on ready
+                builder.onReady(this);
             }
         }
     }

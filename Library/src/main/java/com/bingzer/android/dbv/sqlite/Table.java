@@ -614,9 +614,9 @@ class Table implements ITable {
 
     @Override
     public String toString(){
-        if(getAlias() != null && getAlias().length() > 0)
-            return getName() + " " + getAlias();
-        return getName();
+        if(alias != null && alias.length() > 0)
+            return name + " " + alias;
+        return name;
     }
 
     ////////////////////////////////////////////////////////////////////
