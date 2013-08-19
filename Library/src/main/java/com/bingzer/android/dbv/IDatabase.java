@@ -99,15 +99,28 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     List<ITable> getTables();
 
     /**
-     * Returns the table by its <code>tableName</code>. If the table
+     * Returns table by its <code>tableName</code>. If the table
      * does not exists, this will returns null.
      * Note: you must first <code>open</code> the database
      *
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
+     * @see #getView(String)
      * @param tableName the table
      * @return null if table does not exists
      */
     ITable get(String tableName);
+
+    /**
+     * Returns view by its <code>viewName</code>.
+     * If the view does not exists, this will returns null.
+     * Note: you must first <code>open</code> the database
+     *
+     * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
+     * @see #get(String)
+     * @param viewName the view name
+     * @return null if view does nto exists
+     */
+    IView getView(String viewName);
 
     /**
      * Open the connection the database. This is one of the main method
@@ -308,6 +321,14 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
          * @return ITable.Model (Table's model object)
          */
         ITable.Model add(String tableName);
+
+        /**
+         * Adds a view model
+         * @param viewName the view name
+         * @return IView.Model (View's model object)
+         */
+        IView.Model addView(String viewName);
+
     }
 
     ///////////////////////////////////////////////////////////////////////////

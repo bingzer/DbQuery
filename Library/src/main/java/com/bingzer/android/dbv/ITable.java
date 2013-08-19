@@ -26,6 +26,7 @@ import com.bingzer.android.dbv.queries.Insertable;
 import com.bingzer.android.dbv.queries.Joinable;
 import com.bingzer.android.dbv.queries.RawQueryable;
 import com.bingzer.android.dbv.queries.Selectable;
+import com.bingzer.android.dbv.queries.Tangible;
 import com.bingzer.android.dbv.queries.Unionable;
 import com.bingzer.android.dbv.queries.Updatable;
 
@@ -51,11 +52,12 @@ import java.util.List;
  * @author Ricky Tobing
  */
 public interface ITable extends
-        Selectable, Insertable, Deletable, Updatable,
+        Selectable, SelectIdentifiable,
+        Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,
-        RawQueryable, Countable, Droppable,
-        SelectIdentifiable, Function,
-        Alterable, Unionable{
+        RawQueryable, Countable, Tangible,
+        Droppable, Function,
+        Alterable, Unionable {
 
     /**
      * Returns the name of this table
@@ -87,34 +89,8 @@ public interface ITable extends
      */
     int getColumnCount();
 
-    /////////////////////////////////////////////////
-    /////////////////////////////////////////////////
-    /////////////////////////////////////////////////
-
-    /**
-     * Check to see if this table has row add the specified condition
-     * @param condition any condition
-     * @return true if it returns any row false otherwise
-     */
-    boolean has(String condition);
-
-    /**
-     * has row add id
-     * @param id id
-     * @return true if it returns any row false otherwise
-     */
-    boolean has(int id);
-
-    /**
-     * Check to see if this table has row add the specified clause and condition
-     * @param whereClause whereClause
-     * @param whereArgs arguments
-     * @return true if it returns any row false otherwise
-     */
-    boolean has(String whereClause, Object... whereArgs);
-
-    /////////////////////////////////////////////////
-    /////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * The model of this table

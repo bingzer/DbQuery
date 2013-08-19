@@ -25,6 +25,7 @@ import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
+import com.bingzer.android.dbv.IView;
 import com.bingzer.android.dbv.Util;
 
 import java.util.LinkedList;
@@ -41,6 +42,7 @@ public class Database implements IDatabase {
     private final String name;
     private final DbModel dbModel = new DbModel();
     private final List<ITable> tables = new LinkedList<ITable>();
+    private final List<IView> views = new LinkedList<IView>();
     private final IConfig config;
 
     private int version;
@@ -108,6 +110,37 @@ public class Database implements IDatabase {
     }
 
     @Override
+    public IView getView(String viewName) {
+        String alias = null;
+        if(viewName.contains(SPACE)){
+            // split and get alias..
+            int index = viewName.indexOf(SPACE);
+            alias = viewName.substring(index).trim();
+            viewName = viewName.substring(0, index).trim();
+        }
+
+        for (IView view : views) {
+            if (view.getName().equalsIgnoreCase(viewName)) {
+                view.setAlias(alias);
+                return view;
+            }
+        }
+
+        // not found
+        // okay maybe it's just been created..
+        try{
+            IView view = new View(this, sqLiteDb, viewName);
+            view.setAlias(alias);
+            views.add(view);
+            return view;
+        }
+        catch (IllegalArgumentException e){
+            // okay not found anywhere
+            return null;
+        }
+    }
+
+    @Override
     public void open(int version, Builder builder) {
         open(version, null, builder);
     }
@@ -150,7 +183,9 @@ public class Database implements IDatabase {
         // reset
         sqLiteDb = null;
         dbHelper = null;
-        dbModel.tableModles.clear();
+        // clear models
+        dbModel.tableModels.clear();
+        dbModel.viewModels.clear();
     }
 
     @Override
@@ -276,8 +311,9 @@ public class Database implements IDatabase {
         execSql("PRAGMA FOREIGN_KEYS = ?", on ? "ON" : "OFF");
     }
 
-    //////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     static class TableModel implements ITable.Model {
         private final String tableName;
@@ -350,7 +386,6 @@ public class Database implements IDatabase {
             return this;
         }
 
-        //////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
         @Override
@@ -467,6 +502,58 @@ public class Database implements IDatabase {
 
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
+
+    static class ViewModel implements IView.Model, IView.Statement {
+
+        private final String name;
+        private final StringBuilder selectBuilder;
+        private boolean ifNotExists = false;
+
+        ViewModel(String viewName){
+            this.name = viewName;
+            this.selectBuilder = new StringBuilder();
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public IView.Statement as(String selectSql) {
+            selectBuilder.append(selectSql);
+            return this;
+        }
+
+        @Override
+        public IView.Model ifNotExists() {
+            ifNotExists = true;
+            return this;
+        }
+
+        @Override
+        public IView.Statement append(String sql) {
+            selectBuilder.append(SPACE).append(sql);
+            return this;
+        }
+
+        @Override
+        public String toString(){
+            StringBuilder builder = new StringBuilder();
+
+            // -------------- create table
+            builder.append("CREATE VIEW").append(ifNotExists ? " IF NOT EXISTS " : Database.SPACE);
+            builder.append(name);
+            // ----- select statement
+            builder.append(" AS ").append(selectBuilder);
+
+            return builder.toString();
+        }
+    }
+
+    //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////
+
     static class ColumnModel {
         private String name;
         private String definition;
@@ -497,25 +584,41 @@ public class Database implements IDatabase {
 
     static class DbModel implements Modeling {
 
-        final List<Database.TableModel> tableModles = new LinkedList<Database.TableModel>();
+        final List<Database.TableModel> tableModels = new LinkedList<Database.TableModel>();
+        final List<Database.ViewModel> viewModels = new LinkedList<Database.ViewModel>();
 
         @Override
         public ITable.Model add(String tableName) {
-            Database.TableModel model = new Database.TableModel(tableName);
+            TableModel model = new TableModel(tableName);
 
-            addModel(model);
+            if(!containsModel(model)){
+                tableModels.add(model);
+            }
             return model;
         }
 
-        private void addModel(Database.TableModel model){
-            if(!containsModel(model)){
-                tableModles.add(model);
+        @Override
+        public IView.Model addView(String viewName) {
+            ViewModel model = new ViewModel(viewName);
+
+            if(!containsViewModel(model)){
+                viewModels.add(model);
             }
+            return model;
         }
 
-        private boolean containsModel(Database.TableModel tableModel){
-            for(Database.TableModel model : tableModles){
+        private boolean containsModel(TableModel tableModel){
+            for(TableModel model : tableModels){
                 if(model.tableName.equalsIgnoreCase(tableModel.tableName))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private boolean containsViewModel(ViewModel viewModel){
+            for(ViewModel model : viewModels){
+                if(model.name.equalsIgnoreCase(viewModel.name))
                     return true;
             }
 
@@ -607,22 +710,34 @@ public class Database implements IDatabase {
         }
 
         @Override
-        public void onCreate(SQLiteDatabase db) {
+        public void onCreate(final SQLiteDatabase sqlDb) {
             Log.i(TAG, "Creating database");
 
+            final Transaction transaction = database.begin(new Batch() {
+                @Override
+                public void exec(IDatabase d) {
+                    // execute sql ** TABLES
+                    for(TableModel model : database.dbModel.tableModels)
+                        sqlDb.execSQL(model.toString());
+                    // execute sql ** VIEWS
+                    for(ViewModel model : database.dbModel.viewModels)
+                        sqlDb.execSQL(model.toString());
+                }
+            });
+
             try{
-                database.sqLiteDb = db;
+                database.sqLiteDb = sqlDb;
                 // open the model and execute it
                 builder.onModelCreate(database, database.dbModel);
-                // execute sql
-                for(TableModel model : database.dbModel.tableModles){
-                    db.execSQL(model.toString());
-                }
+                // exec transaction
+                transaction.commit();
             }
             catch (Throwable e){
+                transaction.rollback();
                 builder.onError(e);
             }
             finally {
+                transaction.end();
                 database.sqLiteDb = null;
             }
         }

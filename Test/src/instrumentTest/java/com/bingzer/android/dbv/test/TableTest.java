@@ -177,6 +177,23 @@ public class TableTest extends AndroidTestCase{
         c.close();
     }
 
+    public void testSelect_Condition(){
+        Cursor c = customerTable.select("Name = 'Lionel Messi'").columns("Name").query();
+        c.moveToFirst();
+
+        assertTrue(c != null);
+        assertTrue(c.getString(0).equals("Lionel Messi"));
+
+        c = customerTable.select("Name = 'Mario Baloteli' AND Country = 'Italy'").columns("Name", "Country").query();
+        c.moveToFirst();
+
+        assertTrue(c != null);
+        assertTrue(c.getString(0).equals("Mario Baloteli"));
+        assertTrue(c.getString(1).equals("Italy"));
+
+        c.close();
+    }
+
     public void testSelect_WhereClause(){
         Cursor c = customerTable.select("Name = ?", "Lionel Messi").columns("Name").query();
         c.moveToFirst();
@@ -252,6 +269,55 @@ public class TableTest extends AndroidTestCase{
                 .query();
         cursor.moveToFirst();
         assertTrue(cursor.getCount() == 2);
+        cursor.close();
+    }
+
+    public void testSelectDistinct_Top(){
+        Cursor cursor = db.get("Customers")
+                .selectDistinct(2)
+                .query();
+        cursor.moveToFirst();
+        assertTrue(cursor.getCount() == 2);
+        cursor.close();
+    }
+
+    public void testSelectDistinct_TopCondition(){
+        int pirloId = getCustomerId("Andrea Pirlo");
+        int kakaId = getCustomerId("Kaka");
+        Cursor cursor = db.get("Orders")
+                .selectDistinct(1, "CustomerId = " + kakaId + " OR CustomerId = " + pirloId)
+                .columns("CustomerId")
+                .query();
+        cursor.moveToFirst();
+        assertTrue(cursor.getCount() == 1);
+        cursor.close();
+
+        cursor = db.get("Orders")
+                .selectDistinct(3, "CustomerId not null")
+                .columns("CustomerId")
+                .query();
+        cursor.moveToFirst();
+        assertTrue(cursor.getCount() == 3);
+        cursor.close();
+    }
+
+    public void testSelectDistinct_TopWhereClause(){
+        int pirloId = getCustomerId("Andrea Pirlo");
+        int baloteliId = getCustomerId("Mario Baloteli");
+        Cursor cursor = db.get("Orders")
+                .selectDistinct(1, "CustomerId IN (?,?)", pirloId, baloteliId)
+                .columns("CustomerId")
+                .query();
+        cursor.moveToFirst();
+        assertTrue(cursor.getCount() == 1);
+        cursor.close();
+
+        cursor = db.get("Orders")
+                .selectDistinct(3, "CustomerId <> ?", -1)
+                .columns("CustomerId")
+                .query();
+        cursor.moveToFirst();
+        assertTrue(cursor.getCount() == 3);
         cursor.close();
     }
 

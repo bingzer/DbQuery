@@ -39,7 +39,7 @@ public interface Selectable {
     IQuery.Select select(String condition);
 
     /**
-     * Select add id. Id column must be defined in the naming convention
+     * Select id. Id column must be defined in the naming convention
      * specified in {@link com.bingzer.android.dbv.IConfig}
      * @param id id to search
      * @see com.bingzer.android.dbv.IConfig#setIdNamingConvention(String)
@@ -91,5 +91,29 @@ public interface Selectable {
      * @return {@link IQuery.Select}
      */
     IQuery.Select selectDistinct(String whereClause, Object... args);
+
+    /**
+     * Select distinct with limit (top)
+     * @param top the limit to return
+     * @return {@link IQuery.Select}
+     */
+    IQuery.Select selectDistinct(int top);
+
+    /**
+     * Select distinct with limit (top) with the specified condition
+     * @param top the limit to return
+     * @param condition the condition
+     * @return {@link IQuery.Select}
+     */
+    IQuery.Select selectDistinct(int top, String condition);
+
+    /**
+     * Select distinct with limit (top) with the specified condition
+     * @param top the limit to return
+     * @param whereClause the where clause
+     * @param args arguments
+     * @return {@link IQuery.Select}
+     */
+    IQuery.Select selectDistinct(int top, String whereClause, Object... args);
 
 }

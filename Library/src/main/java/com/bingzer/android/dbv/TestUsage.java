@@ -47,6 +47,11 @@ class TestUsage {
                         .add("Column2", "TEXT")
                         .ifNotExists();
 
+                modeling.addView("")
+                        .as("SELECT * FROM table1 ")
+                        .append("WHERE X SF")
+                        .append("")
+                        .ifNotExists();
             }
 
         });

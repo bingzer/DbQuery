@@ -166,7 +166,22 @@ class Table implements ITable {
 
     @Override
     public IQuery.Select selectDistinct(String whereClause, Object... args) {
-        return new QueryImpl.SelectImpl(db.getConfig(), this, true){
+        return selectDistinct(-1, whereClause, args);
+    }
+
+    @Override
+    public IQuery.Select selectDistinct(int top) {
+        return selectDistinct(top, null);
+    }
+
+    @Override
+    public IQuery.Select selectDistinct(int top, String condition) {
+        return selectDistinct(top, condition, (Object)null);
+    }
+
+    @Override
+    public IQuery.Select selectDistinct(int top, String whereClause, Object... args) {
+        return new QueryImpl.SelectImpl(db.getConfig(), this, top, true){
             @Override public Cursor query(){
                 return sqlDb.rawQuery(toString(), null);
             }

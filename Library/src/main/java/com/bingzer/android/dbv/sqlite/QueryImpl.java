@@ -249,7 +249,6 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
 
     static class DeleteImpl implements IQuery.Delete {
-
         Integer value;
 
         @Override
@@ -263,7 +262,6 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
     static class DropImpl implements IQuery<Boolean>{
         Boolean value;
-
 
         @Override
         public Boolean query() {
@@ -328,6 +326,24 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public IQuery.Select select(int... ids) {
             consume(table.select(ids));
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct(int top) {
+            consume(table.select(top));
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct(int top, String condition) {
+            consume(table.select(top, condition));
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct(int top, String whereClause, Object... args) {
+            consume(table.select(top, whereClause, args));
             return this;
         }
 
@@ -503,6 +519,24 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public Select selectDistinct(String whereClause, Object... args) {
             secondSelect = table.selectDistinct(whereClause, args);
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct(int top) {
+            secondSelect = table.selectDistinct(top);
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct(int top, String condition) {
+            secondSelect = table.selectDistinct(top, condition);
+            return this;
+        }
+
+        @Override
+        public Select selectDistinct(int top, String whereClause, Object... args) {
+            secondSelect = table.selectDistinct(top, whereClause, args);
             return this;
         }
 
