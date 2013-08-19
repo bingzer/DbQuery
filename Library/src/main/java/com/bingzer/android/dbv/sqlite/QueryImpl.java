@@ -75,13 +75,13 @@ abstract class QueryImpl<T> implements IQuery<T> {
             this.columnString = new StringBuilder("* ");
             this.fromString = new StringBuilder("FROM ").append(table);
             this.limitString = new StringBuilder();
-            this.orderByString = new StringBuilder();
-            this.groupByString = new StringBuilder();
-            this.havingString = new StringBuilder();
             this.whereString = new StringBuilder();
 
             if(distinct) selectString.append("DISTINCT ");
-            if(top > 0) limitString.append(" LIMIT ").append(top);
+            if(top > 0) {
+                limitString = new StringBuilder();
+                limitString.append(" LIMIT ").append(top);
+            }
         }
 
         SelectImpl where(String whereClause, Object... args){
@@ -110,7 +110,8 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public OrderBy orderBy(String... columns) {
-            orderByString.delete(0, orderByString.length());
+            if(orderByString == null) orderByString = new StringBuilder();
+            else orderByString.delete(0, orderByString.length());
             if(columns != null){
                 orderByString.append("ORDER BY ").append(Util.join(",", columns));
             }
@@ -139,35 +140,14 @@ abstract class QueryImpl<T> implements IQuery<T> {
         }
 
         @Override
-        public String toString(){
-            StringBuilder sql = new StringBuilder();
-            sql.append(selectString);
-            sql.append(columnString).append(Database.SPACE);
-            sql.append(fromString).append(Database.SPACE);
-            // where
-            if(whereString.length() > 0)sql.append(Database.SPACE).append(whereString);
-
-            // group by + having
-            if(groupByString.length() > 0) sql.append(Database.SPACE).append(groupByString);
-            if(havingString.length() > 0) sql.append(Database.SPACE).append(havingString);
-
-            // order by
-            if(orderByString.length() > 0) sql.append(Database.SPACE).append(orderByString);
-
-            // limit
-            if(limitString.length() > 0) sql.append(Database.SPACE).append(limitString);
-
-            return sql.toString();
-        }
-
-        @Override
         public Paging paging(int row) {
             return new PagingImpl(config, this, row);
         }
 
         @Override
         public GroupBy groupBy(String... columns) {
-            groupByString.delete(0, groupByString.length());
+            if(groupByString == null) groupByString = new StringBuilder();
+            else groupByString.delete(0, groupByString.length());
             if(columns != null){
                 groupByString.append("GROUP BY ").append(Util.join(",", columns));
             }
@@ -182,10 +162,32 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public Having having(String clause, Object... args) {
-            havingString.delete(0, havingString.length());
-            havingString.append("HAVING ").append(Util.bindArgs(clause, args));
+            if(havingString == null) havingString = new StringBuilder();
+            else havingString.delete(0, havingString.length());
+            if(clause != null){
+                havingString.append("HAVING ").append(Util.bindArgs(clause, args));
+            }
 
             return this;
+        }
+
+        @Override
+        public String toString(){
+            StringBuilder sql = new StringBuilder();
+            sql.append(selectString);
+            sql.append(columnString).append(Database.SPACE);
+            sql.append(fromString).append(Database.SPACE);
+            sql.append(whereString).append(Database.SPACE);
+
+            // group by + having
+            if(groupByString != null) sql.append(Database.SPACE).append(groupByString);
+            if(havingString != null) sql.append(Database.SPACE).append(havingString);
+            // order by
+            if(orderByString != null) sql.append(Database.SPACE).append(orderByString);
+            // limit
+            if(limitString != null) sql.append(Database.SPACE).append(limitString);
+
+            return sql.toString();
         }
     }
 
@@ -368,17 +370,15 @@ abstract class QueryImpl<T> implements IQuery<T> {
             // join builder
             sql.append(joinBuilder).append(Database.SPACE);
             // where
-            if(whereString.length() > 0) sql.append(whereString);
+            sql.append(whereString).append(Database.SPACE);
 
             // group by + having
-            if(groupByString.length() > 0) sql.append(Database.SPACE).append(groupByString);
-            if(havingString.length() > 0) sql.append(Database.SPACE).append(havingString);
-
+            if(groupByString != null) sql.append(Database.SPACE).append(groupByString);
+            if(havingString != null) sql.append(Database.SPACE).append(havingString);
             // order by
-            if(orderByString.length() > 0) sql.append(Database.SPACE).append(orderByString);
-
+            if(orderByString != null) sql.append(Database.SPACE).append(orderByString);
             // limit
-            if(limitString.length() > 0) sql.append(Database.SPACE).append(limitString);
+            if(limitString != null) sql.append(Database.SPACE).append(limitString);
 
             return sql.toString();
         }
@@ -552,7 +552,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
         public int getTotalPage() {
             // we can't count row when orderBy or having is included
             // TODO: there's gotta be a way to do this
-            if(select.groupByString.length() > 0 || select.havingString.length() > 0)
+            if(select.groupByString != null || select.havingString != null)
                 throw new UnsupportedOperationException("Cannot count row when querying using 'GroupBy' or 'Having'");
 
             float row = -1;
@@ -631,16 +631,15 @@ abstract class QueryImpl<T> implements IQuery<T> {
             if(select instanceof Join){
                 sql.append(((Join)select).joinBuilder).append(Database.SPACE);
             }
-
             // where
-            if(select.whereString.length() > 0) sql.append(Database.SPACE).append(select.whereString);
+            sql.append(Database.SPACE).append(select.whereString);
 
             // group by + having (Only when not to count)
-            if(select.groupByString.length() > 0) sql.append(Database.SPACE).append(select.groupByString);
-            if(select.havingString.length() > 0) sql.append(Database.SPACE).append(select.havingString);
+            if(select.groupByString != null) sql.append(Database.SPACE).append(select.groupByString);
+            if(select.havingString != null) sql.append(Database.SPACE).append(select.havingString);
 
             // order by
-            if(select.orderByString.length() > 0) sql.append(Database.SPACE).append(select.orderByString);
+            if(select.orderByString != null) sql.append(Database.SPACE).append(select.orderByString);
 
             // pagination only when it's not a row count
             if(!asRowCount){
