@@ -17,6 +17,7 @@ import java.util.List;
  * Created by Ricky on 8/14/13.
  */
 public class EntityJoinTest extends AndroidTestCase {
+    static boolean populated = false;
     IDatabase db;
 
     @Override
@@ -48,29 +49,33 @@ public class EntityJoinTest extends AndroidTestCase {
             }
         });
 
-        db.get("Orders").delete();
-        db.get("Products").delete();
-        db.get("Customers").delete();
+        if(!populated){
+            db.get("Orders").delete();
+            db.get("Products").delete();
+            db.get("Customers").delete();
 
-        // initial value
-        IQuery.InsertWith insert = db.get("Customers").insert("Name", "Address");
-        insert.val("Baloteli", "Italy");
-        insert.val("Pirlo", "Italy");
-        insert.val("Ronaldo", "Portugal");
-        insert.val("Messi", "Argentina");
+            // initial value
+            IQuery.InsertWith insert = db.get("Customers").insert("Name", "Address");
+            insert.val("Baloteli", "Italy");
+            insert.val("Pirlo", "Italy");
+            insert.val("Ronaldo", "Portugal");
+            insert.val("Messi", "Argentina");
 
-        insert = db.get("Products").insert("Name", "Price");
-        insert.val("Computer", 600);
-        insert.val("Smartphone", 450);
-        insert.val("Car", 20000);
-        insert.val("House", 500000);
-        insert.val("Monitor", 120);
+            insert = db.get("Products").insert("Name", "Price");
+            insert.val("Computer", 600);
+            insert.val("Smartphone", 450);
+            insert.val("Car", 20000);
+            insert.val("House", 500000);
+            insert.val("Monitor", 120);
 
-        insert = db.get("Orders").insert("Quantity", "ProductId", "CustomerId");
-        insert.val(2, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Baloteli"));
-        insert.val(1, db.get("Products").selectId("Name = ?", "House"), db.get("Customers").selectId("Name = ?", "Ronaldo"));
-        insert.val(5, db.get("Products").selectId("Name = ?", "Monitor"), db.get("Customers").selectId("Name = ?", "Messi"));
-        insert.val(1, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Messi"));
+            insert = db.get("Orders").insert("Quantity", "ProductId", "CustomerId");
+            insert.val(2, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Baloteli"));
+            insert.val(1, db.get("Products").selectId("Name = ?", "House"), db.get("Customers").selectId("Name = ?", "Ronaldo"));
+            insert.val(5, db.get("Products").selectId("Name = ?", "Monitor"), db.get("Customers").selectId("Name = ?", "Messi"));
+            insert.val(1, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Messi"));
+
+            populated = true;
+        }
     }
 
     public void testEntityJoin(){

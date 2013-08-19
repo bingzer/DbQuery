@@ -675,6 +675,36 @@ public class TableTest extends AndroidTestCase{
         cursor.close();
     }
 
+    public void testRaw(){
+        // inception
+        Cursor c = db.get("Orders O").raw("SELECT * FROM Orders").query();
+        assertTrue(c.getCount() > 0);
+        c.close();
+
+        try{
+            c = db.get("Orders O").raw("SELECT * FROM Orders WHERE Name is invalidy syntax").query();
+            assertFalse("Should throw an exception", true);
+        }
+        catch (Exception e){
+            assertTrue(true);
+        }
+        finally {
+            c.close();
+        }
+    }
+
+    public void testRaw_Args(){
+        // inception
+        Cursor c = db.get("Orders O").raw("SELECT * FROM Customers WHERE Name = ?", "Lionel Messi").query();
+        assertTrue(c.getCount() > 0);
+        c.close();
+
+        // inception
+        c = db.get("Orders O").raw("SELECT * FROM Customers WHERE Name = ?", "Lionel Baloteli").query();
+        assertTrue(c.getCount() == 0);
+        c.close();
+    }
+
 
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
@@ -768,6 +798,13 @@ public class TableTest extends AndroidTestCase{
         assertEquals(average, "1");
     }
 
+    public void testDrop(){
+        if(db.get("TableToDrop") != null){
+            assertTrue(db.get("TableToDrop").drop().query());
+            assertNull(db.get("TableToDrop"));
+        }
+    }
+
 
     /////////////////////////////////////////////////////////////////////
 
@@ -794,6 +831,9 @@ public class TableTest extends AndroidTestCase{
                 .addInteger("CustomerId")
                 .addInteger("ProductId")
                 .add("Date", "TEXT");
+
+        modeling.add("TableToDrop")
+                .addPrimaryKey("Id");
     }
 
 
@@ -851,8 +891,6 @@ public class TableTest extends AndroidTestCase{
         insert.val(getCustomerId("Andrea Pirlo"), getProductId("Cellphone"), getRandomDate());
         insert.val(getCustomerId("Andrea Pirlo"), getProductId("Sunglasses"), getRandomDate());
         insert.val(getCustomerId("Andrea Pirlo"), getProductId("Computer"), getRandomDate());
-
-
     }
 
     ///////////////////////////////////////////////
