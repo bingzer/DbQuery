@@ -521,6 +521,117 @@ public class TableTest extends AndroidTestCase{
         cursor.close();
     }
 
+    public void testJoin_Select_Id(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .select(3, "C.Name = ?", "Christiano Ronaldo")
+                .columns("O.Id, C.Id")
+                .query();
+        assertTrue(cursor.getCount() == 3);
+        cursor.moveToFirst();
+        int id = cursor.getInt(0);
+        cursor.close();
+
+        cursor = db.get("Orders").select(id).columns("Id", "CustomerId").query();
+        assertTrue(cursor.getCount() == 1);
+
+        cursor.moveToFirst();
+        assertEquals(cursor.getInt(0), id);
+        assertEquals(cursor.getInt(1), getCustomerId("Christiano Ronaldo"));
+    }
+
+    public void testJoin_Select_Top_Condition(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .select(2, "C.Name = 'Christiano Ronaldo'").query();
+        assertTrue(cursor.getCount() == 2);
+        cursor.close();
+    }
+
+    public void testJoin_Select_Top_WhereClause(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .select(3, "C.Name = ?", "Lionel Messi").query();
+        assertTrue(cursor.getCount() == 3);
+        cursor.close();
+    }
+
+    public void testJoin_Select_Condition(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .select("C.Name = 'Mario Baloteli'")
+                .columns("C.Name AS CustomerName")
+                .query();
+        assertTrue(cursor.getCount() > 0);
+        while(cursor.moveToNext()){
+            assertEquals(cursor.getString(0), "Mario Baloteli");
+        }
+        cursor.close();
+    }
+
+    public void testJoin_Select_WhereClause(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .select("C.Name = ?", "Lionel Messi")
+                .columns("C.Name AS CustomerName")
+                .query();
+        assertTrue(cursor.getCount() > 0);
+        while(cursor.moveToNext()){
+            assertEquals(cursor.getString(0), "Lionel Messi");
+        }
+        cursor.close();
+    }
+
+    public void testJoin_SelectDistinct_All(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .selectDistinct()
+                .columns("C.Name AS CustomerName")
+                .orderBy("O.Id")
+                .query();
+        assertTrue(cursor.getCount() == 6);
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Wayne Rooney");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Lionel Messi");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Christiano Ronaldo");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Mario Baloteli");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Kaka");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Andrea Pirlo");
+        cursor.close();
+    }
+
+    public void testJoin_SelectDistinct_Top(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .selectDistinct(3)
+                .columns("C.Name AS CustomerName")
+                .orderBy("O.Id")
+                .query();
+        assertTrue(cursor.getCount() == 3);
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Wayne Rooney");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Lionel Messi");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Christiano Ronaldo");
+        cursor.close();
+    }
+
+    public void testJoin_SelectDistinct_Top_Condition(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .selectDistinct(3, "Name <> 'Wayne Rooney'")
+                .columns("C.Name AS CustomerName")
+                .orderBy("O.Id")
+                .query();
+        assertTrue(cursor.getCount() == 3);
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Lionel Messi");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Christiano Ronaldo");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Mario Baloteli");
+        cursor.close();
+    }
+
+    public void testJoin_SelectDistinct_Top_WhereClause(){
+        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+                .selectDistinct(3, "Name <> ?", "Christiano Ronaldo")
+                .columns("C.Name AS CustomerName")
+                .orderBy("O.Id")
+                .query();
+        assertTrue(cursor.getCount() == 3);
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Wayne Rooney");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Lionel Messi");
+        if(cursor.moveToNext()) assertEquals(cursor.getString(0), "Mario Baloteli");
+        cursor.close();
+    }
+
 
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
