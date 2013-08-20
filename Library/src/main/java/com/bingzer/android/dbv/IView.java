@@ -79,8 +79,16 @@ public interface IView extends
 
     }
 
+    /**
+     * SQL Statement for <code>View</code>
+     */
     public static interface Statement extends Model{
 
+        /**
+         * Append the following sql
+         * @param sql the sql to append
+         * @return this
+         */
         Statement append(String sql);
 
     }

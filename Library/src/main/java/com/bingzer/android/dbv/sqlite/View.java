@@ -15,18 +15,16 @@
  */
 package com.bingzer.android.dbv.sqlite;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.IView;
 
 /**
  * Created by Ricky Tobing on 8/19/13.
  */
-public class View extends Table implements IView {
+class View extends Table implements IView {
 
-    View (Database db, SQLiteDatabase sqlDb, String name){
-        super(db, sqlDb, name);
+    View (Database db, String name){
+        super(db, name);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class View extends Table implements IView {
             query.value = false;
         }
 
-        if(query.value) ((Database)db).removeTable(this);
+        if(query.value) db.removeTable(this);
         return query;
     }
 

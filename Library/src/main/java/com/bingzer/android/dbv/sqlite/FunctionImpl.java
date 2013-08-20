@@ -24,7 +24,7 @@ import com.bingzer.android.dbv.IFunction;
 class FunctionImpl implements IFunction {
 
     Object value;
-    StringBuilder builder;
+    final StringBuilder builder;
 
     FunctionImpl(String functionName, String tableName, String columnName){
         builder = new StringBuilder("SELECT ")

@@ -18,7 +18,6 @@ package com.bingzer.android.dbv.sqlite;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
@@ -38,22 +37,19 @@ import java.util.List;
  * Created by Ricky Tobing on 7/16/13.
  */
 class Table implements ITable {
-
-    IDatabase db;
     String alias;
     String name;
 
+    final Database db;
     final List<String> columns;
-    final SQLiteDatabase sqlDb;
 
 
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    Table (Database db, SQLiteDatabase sqlDb, String name){
+    Table (Database db, String name){
         this.name = name;
         this.db = db;
-        this.sqlDb = sqlDb;
         this.columns = new LinkedList<String>();
         queryColumns();
     }
@@ -151,7 +147,7 @@ class Table implements ITable {
     public IQuery.Select select(int top, String whereClause, Object... args) {
         return new QueryImpl.SelectImpl(db.getConfig(), this, top, false){
             @Override public Cursor query(){
-                return sqlDb.rawQuery(toString(), null);
+                return db.sqLiteDb.rawQuery(toString(), null);
             }
         }.where(whereClause, args);
     }
@@ -185,7 +181,7 @@ class Table implements ITable {
     public IQuery.Select selectDistinct(int top, String whereClause, Object... args) {
         return new QueryImpl.SelectImpl(db.getConfig(), this, top, true){
             @Override public Cursor query(){
-                return sqlDb.rawQuery(toString(), null);
+                return db.sqLiteDb.rawQuery(toString(), null);
             }
         }.where(whereClause, args);
     }
@@ -193,7 +189,7 @@ class Table implements ITable {
     @Override
     public IQuery.Insert insert(final ContentValues contents) {
         QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
-        query.value = (int) sqlDb.insertOrThrow(getName(), null, contents);
+        query.value = (int) db.sqLiteDb.insertOrThrow(getName(), null, contents);
 
         return query;
     }
@@ -218,7 +214,7 @@ class Table implements ITable {
             public void onContentValuesSet(QueryImpl.InsertWithImpl query, ContentValues contentValues) {
                 this.query = query;
                 this.contentValues = contentValues;
-                this.query.value = (int) sqlDb.insertOrThrow(getName(), null, contentValues);
+                this.query.value = (int) db.sqLiteDb.insertOrThrow(getName(), null, contentValues);
             }
 
             @Override
@@ -359,7 +355,7 @@ class Table implements ITable {
     public IQuery.Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
         QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
         String[] args = Util.toStringArray(whereArgs);
-        query.value = sqlDb.update(getName(), contents, whereClause, args);
+        query.value = db.sqLiteDb.update(getName(), contents, whereClause, args);
 
         return query;
     }
@@ -411,7 +407,7 @@ class Table implements ITable {
     @Override
     public IQuery.Delete delete(final String whereClause, final Object... whereArgs) {
         QueryImpl.DeleteImpl query = new QueryImpl.DeleteImpl();
-        query.value = sqlDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs));
+        query.value = db.sqLiteDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs));
 
         return query;
     }
@@ -477,7 +473,7 @@ class Table implements ITable {
             builder.append(Util.bindArgs(whereClause, whereArgs));
         }
 
-        Cursor cursor = sqlDb.rawQuery(builder.toString(), null);
+        Cursor cursor = db.sqLiteDb.rawQuery(builder.toString(), null);
         try{
             if(cursor.moveToNext()){
                 count = cursor.getInt(0);
@@ -504,8 +500,8 @@ class Table implements ITable {
         return new QueryImpl<Cursor>(db.getConfig()){
             @Override public Cursor query(){
                 if(args == null || args.length == 0)
-                    return sqlDb.rawQuery(sql, null);
-                else return sqlDb.rawQuery(sql, Util.toStringArray(args));
+                    return db.sqLiteDb.rawQuery(sql, null);
+                else return db.sqLiteDb.rawQuery(sql, Util.toStringArray(args));
             }
         };
     }
@@ -521,7 +517,7 @@ class Table implements ITable {
             query.value = false;
         }
 
-        if(query.value) ((Database)db).removeTable(this);
+        if(query.value) db.removeTable(this);
         return query;
     }
 
@@ -529,7 +525,7 @@ class Table implements ITable {
     public IQuery.InnerJoin join(String tableName, String onClause) {
         return new QueryImpl.InnerJoinImpl(db.getConfig(), this, tableName, onClause){
             @Override public Cursor query(){
-                return sqlDb.rawQuery(toString(), null);
+                return db.sqLiteDb.rawQuery(toString(), null);
             }
         };
     }
@@ -543,7 +539,7 @@ class Table implements ITable {
     public IQuery.OuterJoin outerJoin(String tableName, String onClause) {
         return new QueryImpl.OuterJoinImpl(db.getConfig(), this, tableName, onClause){
             @Override public Cursor query(){
-                return sqlDb.rawQuery(toString(), null);
+                return db.sqLiteDb.rawQuery(toString(), null);
             }
         };
     }
@@ -695,7 +691,7 @@ class Table implements ITable {
     void queryColumns(){
         columns.clear();
         String pragmaSql = Util.bindArgs("PRAGMA table_info(?)", name);
-        Cursor cursor = sqlDb.rawQuery(pragmaSql, null);
+        Cursor cursor = db.sqLiteDb.rawQuery(pragmaSql, null);
         try{
             // this will throw IllegalArgumentException if not found
             // meaning that this table does not exist

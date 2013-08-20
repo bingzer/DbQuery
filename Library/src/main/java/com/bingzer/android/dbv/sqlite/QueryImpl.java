@@ -195,7 +195,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
 
     static class InsertImpl implements IQuery.Insert {
-        Integer value;
+        int value;
 
         @Override
         public Integer query() {
@@ -239,7 +239,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
 
     static class UpdateImpl implements IQuery.Update {
-        Integer value;
+        int value;
 
         @Override
         public Integer query() {
@@ -249,7 +249,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
 
     static class DeleteImpl implements IQuery.Delete {
-        Integer value;
+        int value;
 
         @Override
         public Integer query() {
@@ -261,7 +261,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
 
     static class DropImpl implements IQuery<Boolean>{
-        Boolean value;
+        boolean value;
 
         @Override
         public Boolean query() {
@@ -542,13 +542,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public String toString() {
-
-            final StringBuilder sql = new StringBuilder();
-            sql.append(firstSelect);
-            sql.append(" UNION ").append(unionAll ? " ALL " : "");
-            sql.append(secondSelect);
-
-            return sql.toString();
+            return String.valueOf(firstSelect) + " UNION " + (unionAll ? " ALL " : "") + secondSelect;
         }
     }
 

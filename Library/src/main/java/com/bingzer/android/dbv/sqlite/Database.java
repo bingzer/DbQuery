@@ -45,9 +45,9 @@ public class Database implements IDatabase {
     private final List<IView> views = new LinkedList<IView>();
     private final IConfig config;
 
-    private int version;
-    private DbOpenHelper dbHelper;
-    private SQLiteDatabase sqLiteDb;
+    int version;
+    DbOpenHelper dbHelper;
+    SQLiteDatabase sqLiteDb;
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
@@ -98,7 +98,7 @@ public class Database implements IDatabase {
         // not found
         // okay maybe it's just been created..
         try{
-            ITable table = new Table(this, sqLiteDb, tableName);
+            ITable table = new Table(this, tableName);
             table.setAlias(alias);
             tables.add(table);
             return table;
@@ -129,7 +129,7 @@ public class Database implements IDatabase {
         // not found
         // okay maybe it's just been created..
         try{
-            IView view = new View(this, sqLiteDb, viewName);
+            IView view = new View(this, viewName);
             view.setAlias(alias);
             views.add(view);
             return view;
@@ -162,7 +162,7 @@ public class Database implements IDatabase {
                 while(cursor.moveToNext()){
                     String tableName = cursor.getString(0);
 
-                    Table table = new Table(Database.this, sqLiteDb, tableName);
+                    Table table = new Table(Database.this, tableName);
                     tables.add(table);
                 }
             }
@@ -541,15 +541,7 @@ public class Database implements IDatabase {
 
         @Override
         public String toString(){
-            StringBuilder builder = new StringBuilder();
-
-            // -------------- create table
-            builder.append("CREATE VIEW").append(ifNotExists ? " IF NOT EXISTS " : Database.SPACE);
-            builder.append(name);
-            // ----- select statement
-            builder.append(" AS ").append(selectBuilder);
-
-            return builder.toString();
+            return "CREATE VIEW" + (ifNotExists ? " IF NOT EXISTS " : Database.SPACE) + name + " AS " + selectBuilder;
         }
     }
 

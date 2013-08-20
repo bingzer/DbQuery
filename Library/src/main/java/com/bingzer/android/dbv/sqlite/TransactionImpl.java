@@ -25,8 +25,8 @@ import com.bingzer.android.dbv.IDatabase;
  */
 class TransactionImpl implements IDatabase.Transaction {
 
-    private Database database;
-    private IDatabase.Batch batch;
+    final Database database;
+    final IDatabase.Batch batch;
 
     TransactionImpl(Database database, IDatabase.Batch batch){
         this.database = database;
@@ -35,11 +35,11 @@ class TransactionImpl implements IDatabase.Transaction {
 
     @Override
     public void commit() {
-        database.begin();
         synchronized (this){
+            database.begin();
             batch.exec(database);
+            database.commit();
         }
-        database.commit();
     }
 
     @Override
