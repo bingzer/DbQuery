@@ -15,12 +15,12 @@ DbQuery
 Sometimes we are stuck using the following code in Android development.
 ``` java
 Cursor cursor = db.query("Customers", // table name
-                        new String[] {"Id", "Address", "Age"},  // columns
-			"Id IN (?,?,?)",                       // whereClause
-			new String[]{"" + customerId1, "" + customerId2, "" + customerId3},  // whereArgs
-			null,         // groupBy
-			null,         // having
-			"Age");       // orderBy
+                         new String[] {"Id", "Address", "Age"},  // columns
+                         "Id IN (?,?,?)",                       // whereClause
+                         new String[]{"" + customerId1, "" + customerId2, "" + customerId3},  // whereArgs
+                         null,         // groupBy
+                         null,         // having
+                         "Age");       // orderBy
 ```
 The purpose of `DbQuery` is to be able to write this query differently
 ``` java
