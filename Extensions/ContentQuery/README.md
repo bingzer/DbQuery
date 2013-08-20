@@ -7,7 +7,7 @@ ContentQuery
 ``` java
 ...
 String uri = ...
-IResolver resolver = ContentProvider.resolve(uri, getApplicationContext());
+IResolver resolver = ContentQuery.resolve(uri, getApplicationContext());
 Cursor cursor = resolver.select("Name = ?", "John Doe")
                         .columns("_id", "Name", "DisplayName")
                         .query();
