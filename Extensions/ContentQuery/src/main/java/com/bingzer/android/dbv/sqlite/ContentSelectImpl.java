@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.content;
-
-import android.content.Context;
+package com.bingzer.android.dbv.sqlite;
 
 import com.bingzer.android.dbv.IConfig;
 
 /**
- * ContentQuery allows DbQuery style while
- * querying data from ContentProvider
- *
- * Created by Ricky Tobing on 8/20/13.
+ * Created by Ricky on 8/20/13.
  */
-public final class ContentQuery {
-
-    static final IConfig config = new Config();
-
-    public static IResolver resolve(String uri, Context context){
-        return new Resolver(config, uri, context);
+public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
+    ContentSelectImpl(IConfig config) {
+        super(config, null);
     }
 }
