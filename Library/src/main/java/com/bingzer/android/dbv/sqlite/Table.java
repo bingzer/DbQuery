@@ -384,7 +384,7 @@ class Table implements ITable {
         }
         else{
             // delete all
-            return deleteAll();
+            return delete("1 = 1");
         }
     }
 
@@ -424,11 +424,6 @@ class Table implements ITable {
             ids[i] = entityList.getEntityList().get(i).getId();
         }
         return  delete(ids);
-    }
-
-    @Override
-    public IQuery.Delete deleteAll() {
-        return delete("1 = 1");
     }
 
     @Override

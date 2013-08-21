@@ -85,7 +85,7 @@ class Resolver implements IResolver {
         }
         else{
             // delete all
-            return deleteAll();
+            return delete("1 = 1");
         }
     }
 
@@ -102,11 +102,6 @@ class Resolver implements IResolver {
                 return value();
             }
         }.val(contentResolver.delete(uri, whereClause, Util.toStringArray(whereArgs)));
-    }
-
-    @Override
-    public IQuery.Delete deleteAll() {
-        return delete("1 = 1");
     }
 
     @Override

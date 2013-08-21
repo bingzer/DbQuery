@@ -34,7 +34,7 @@ public class EntityTest extends AndroidTestCase {
             }
         });
 
-        db.get("Person").deleteAll();
+        db.get("Person").delete();
 
         IQuery.InsertWith insert = db.get("Person").insert("Name", "Age", "Address");
         insert.val("John", 23, "Washington DC".getBytes());

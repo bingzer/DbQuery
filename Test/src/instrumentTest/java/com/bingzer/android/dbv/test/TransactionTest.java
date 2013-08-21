@@ -32,7 +32,7 @@ public class TransactionTest extends AndroidTestCase {
             }
         });
 
-        db.get("Person").deleteAll();
+        db.get("Person").delete();
     }
 
     public void testRollback(){

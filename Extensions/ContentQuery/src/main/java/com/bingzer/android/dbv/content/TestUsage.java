@@ -19,6 +19,9 @@ package com.bingzer.android.dbv.content;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.DbQuery;
+import com.bingzer.android.dbv.IDatabase;
+
 /**
  * This will be removed
  * Created by Ricky Tobing on 8/20/13.
@@ -29,6 +32,10 @@ class TestUsage {
 
     void test(){
 
+        IDatabase db = DbQuery.getDatabase("");
+
         IResolver resolver = ContentQuery.resolve(uri, context);
+
+
     }
 }
