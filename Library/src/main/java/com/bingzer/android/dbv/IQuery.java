@@ -18,6 +18,7 @@ package com.bingzer.android.dbv;
 
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.queries.Distinguishable;
 import com.bingzer.android.dbv.queries.EntitySelectable;
 import com.bingzer.android.dbv.queries.Groupable;
 import com.bingzer.android.dbv.queries.Joinable;
@@ -151,7 +152,7 @@ public interface IQuery<T> {
      * @see OuterJoin
      */
     public static interface InnerJoin extends
-            Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select{
+            Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select, Distinguishable{
 
     }
 
@@ -165,7 +166,7 @@ public interface IQuery<T> {
      * @see InnerJoin
      */
     public static interface OuterJoin extends
-            Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select{
+            Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select, Distinguishable{
 
     }
 

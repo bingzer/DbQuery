@@ -24,6 +24,7 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.queries.Distinguishable;
 import com.bingzer.android.dbv.queries.Selectable;
 
 /**
@@ -287,7 +288,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    private static abstract class Join extends SelectImpl implements IQuery.InnerJoin, IQuery.OuterJoin, Selectable {
+    private static abstract class Join extends SelectImpl implements IQuery.InnerJoin, IQuery.OuterJoin, Selectable, Distinguishable {
 
         protected final Table table;
         protected StringBuilder joinBuilder;
@@ -447,7 +448,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    static abstract class UnionImpl extends SelectImpl implements Union {
+    static abstract class UnionImpl extends SelectImpl implements Union, Distinguishable {
         Select firstSelect;
         Select secondSelect;
         boolean unionAll;

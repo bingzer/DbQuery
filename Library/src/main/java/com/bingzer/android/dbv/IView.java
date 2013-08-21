@@ -16,6 +16,7 @@
 package com.bingzer.android.dbv;
 
 import com.bingzer.android.dbv.queries.Countable;
+import com.bingzer.android.dbv.queries.Distinguishable;
 import com.bingzer.android.dbv.queries.Droppable;
 import com.bingzer.android.dbv.queries.Function;
 import com.bingzer.android.dbv.queries.RawQueryable;
@@ -30,7 +31,8 @@ import com.bingzer.android.dbv.queries.Tangible;
  * <code>UPDATE</code> operations in a <code>View</code>
  */
 public interface IView extends
-        Selectable, RawQueryable, Countable, Droppable,
+        Selectable, Distinguishable,
+        RawQueryable, Countable, Droppable,
         SelectIdentifiable, Function, Tangible
         /*Joinable.Inner, Joinable.Outer,
         Alterable, Unionable  */{

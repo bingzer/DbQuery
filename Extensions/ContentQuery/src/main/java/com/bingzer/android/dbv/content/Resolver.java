@@ -19,6 +19,7 @@ package com.bingzer.android.dbv.content;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
 import com.bingzer.android.dbv.IConfig;
@@ -28,6 +29,7 @@ import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.sqlite.ContentDeleteImpl;
 import com.bingzer.android.dbv.sqlite.ContentInsertImpl;
+import com.bingzer.android.dbv.sqlite.ContentSelectImpl;
 import com.bingzer.android.dbv.sqlite.Utils;
 
 import java.util.Collection;
@@ -118,11 +120,6 @@ class Resolver implements IResolver {
     }
 
     @Override
-    public IQuery.Insert insert(ContentValues contents) {
-        return new ContentInsertImpl().val(contentResolver.insert(uri, contents));
-    }
-
-    @Override
     public IQuery.Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
@@ -148,64 +145,65 @@ class Resolver implements IResolver {
     }
 
     @Override
-    public IQuery.Select select(int top, String condition) {
-        return null;
+    public IQuery.Insert insert(ContentValues contents) {
+        return new ContentInsertImpl().val(contentResolver.insert(uri, contents));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public IQuery.Select select(int id) {
+        return select(generateParamId(id));
     }
 
     @Override
     public IQuery.Select select(String condition) {
-        return null;
+        return select(-1, condition);
     }
 
     @Override
-    public IQuery.Select select(int id) {
-        return null;
+    public IQuery.Select select(int top, String condition) {
+        return select(top, condition, (Object)null);
     }
 
     @Override
     public IQuery.Select select(int... ids) {
-        return null;
+        if(ids != null && ids.length > 0){
+            StringBuilder whereClause = new StringBuilder();
+            whereClause.append(generateIdString()).append(" ");
+            whereClause.append(" IN (");
+            for(int i = 0; i < ids.length; i++){
+                whereClause.append(ids[i]);
+                if(i < ids.length - 1){
+                    whereClause.append(",");
+                }
+            }
+            whereClause.append(")");
+
+            return select(whereClause.toString());
+        }
+        else{
+            // select all
+            return select((String)null);
+        }
     }
 
     @Override
     public IQuery.Select select(String whereClause, Object... args) {
-        return null;
+        return select(-1, whereClause, args);
     }
 
     @Override
-    public IQuery.Select select(int top, String whereClause, Object... args) {
-        return null;
+    public IQuery.Select select(final int top, final String whereClause, final Object... args) {
+        return new ContentSelectImpl(config, false) {
+            @Override
+            public Cursor query() {
+                return contentResolver.query(uri, getProjections(), getSelection(), getSelectionArgs(), getSortingOrder());
+            }
+        }.where(whereClause, args);
     }
 
-    @Override
-    public IQuery.Select selectDistinct() {
-        return null;
-    }
-
-    @Override
-    public IQuery.Select selectDistinct(String condition) {
-        return null;
-    }
-
-    @Override
-    public IQuery.Select selectDistinct(String whereClause, Object... args) {
-        return null;
-    }
-
-    @Override
-    public IQuery.Select selectDistinct(int top) {
-        return null;
-    }
-
-    @Override
-    public IQuery.Select selectDistinct(int top, String condition) {
-        return null;
-    }
-
-    @Override
-    public IQuery.Select selectDistinct(int top, String whereClause, Object... args) {
-        return null;
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public IQuery.Update update(String column, Object value, int id) {
@@ -253,10 +251,6 @@ class Resolver implements IResolver {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    IConfig getConfig(){
-        return config;
-    }
 
     String generateParamId(int id){
         return generateIdString() + " = " + id;

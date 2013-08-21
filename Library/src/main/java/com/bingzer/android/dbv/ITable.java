@@ -19,6 +19,7 @@ package com.bingzer.android.dbv;
 import com.bingzer.android.dbv.queries.Alterable;
 import com.bingzer.android.dbv.queries.Countable;
 import com.bingzer.android.dbv.queries.Deletable;
+import com.bingzer.android.dbv.queries.Distinguishable;
 import com.bingzer.android.dbv.queries.Droppable;
 import com.bingzer.android.dbv.queries.Function;
 import com.bingzer.android.dbv.queries.SelectIdentifiable;
@@ -52,7 +53,7 @@ import java.util.List;
  * @author Ricky Tobing
  */
 public interface ITable extends
-        Selectable, SelectIdentifiable,
+        Selectable, SelectIdentifiable, Distinguishable,
         Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,
         RawQueryable, Countable, Tangible,

@@ -17,12 +17,71 @@
 package com.bingzer.android.dbv.sqlite;
 
 import com.bingzer.android.dbv.IConfig;
+import com.bingzer.android.dbv.Util;
 
 /**
  * Created by Ricky on 8/20/13.
  */
 public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
-    ContentSelectImpl(IConfig config) {
+
+    boolean distinct = false;
+    String whereClause;
+    Object[] whereArgs;
+
+    public ContentSelectImpl(IConfig config, boolean distinct) {
         super(config, null);
+        this.distinct = distinct;
+    }
+
+    @Override
+    public ContentSelectImpl where(String whereClause, Object... args){
+        this.whereClause = whereClause;
+        this.whereArgs = args;
+        return this;
+    }
+
+    public boolean isDistinct(){
+        return distinct;
+    }
+
+    /**
+     * This is columns
+     * @return array of columns names
+     */
+    public String[] getProjections(){
+        return columnString.toString().split(",");
+    }
+
+    /**
+     * This is the where string
+     * @return where clause
+     */
+    public String getSelection(){
+        return whereClause;
+    }
+
+    /**
+     * Where args
+     * @return selection args
+     */
+    public String[] getSelectionArgs(){
+        return Util.toStringArray(whereArgs);
+    }
+
+    /**
+     * Order by
+     * @return
+     */
+    public String getSortingOrder(){
+        StringBuilder sortingOrder = new StringBuilder();
+
+        // without the 'ORDER BY'
+        if(orderByString != null)
+            sortingOrder.append(orderByString.substring(orderByString.indexOf("ORDER BY")).trim());
+        // add limit
+        if(limitString != null)
+            sortingOrder.append(" ").append(limitString);
+
+        return sortingOrder.toString();
     }
 }
