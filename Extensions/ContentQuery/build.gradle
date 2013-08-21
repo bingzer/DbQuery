@@ -22,8 +22,8 @@ android {
     }
 }
 
-archivesBaseName = 'dbquery-ext-content'
-artifactId = 'dbquery-content'
+archivesBaseName = 'content-query'
+artifactId = 'content-query'
 group = "com.bingzer.android.dbv"
 version = getVersionName()
 android.defaultConfig.versionCode = getVersionCode()
