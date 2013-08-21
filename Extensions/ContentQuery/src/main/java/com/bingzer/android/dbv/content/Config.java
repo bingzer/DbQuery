@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.content;
 
 import com.bingzer.android.dbv.IConfig;
@@ -28,7 +27,7 @@ import com.bingzer.android.dbv.IConfig;
  *
  * Created by Ricky Tobing on 7/19/13.
  */
-class Config implements IConfig {
+class Config implements IConfig, Cloneable{
     String idNamingConvention;
     boolean appendTableName;
     boolean foreignKeySupport;
@@ -41,6 +40,14 @@ class Config implements IConfig {
         this.foreignKeySupport = false;
         this.debug = false;
         this.readOnly = false;
+    }
+
+    Config(IConfig config){
+        this.idNamingConvention = config.getIdNamingConvention();
+        this.appendTableName = config.getAppendTableNameForId();
+        this.foreignKeySupport = config.getForeignKeySupport();
+        this.debug = config.getDebug();
+        this.readOnly = config.isReadOnly();
     }
 
     @Override
@@ -92,5 +99,4 @@ class Config implements IConfig {
     public boolean isReadOnly() {
         return readOnly;
     }
-
 }

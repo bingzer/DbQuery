@@ -29,7 +29,9 @@ import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.sqlite.ContentDeleteImpl;
 import com.bingzer.android.dbv.sqlite.ContentInsertImpl;
+import com.bingzer.android.dbv.sqlite.ContentInsertWithImpl;
 import com.bingzer.android.dbv.sqlite.ContentSelectImpl;
+import com.bingzer.android.dbv.sqlite.ContentUpdateImpl;
 import com.bingzer.android.dbv.sqlite.Utils;
 
 import java.util.Collection;
@@ -49,6 +51,15 @@ class Resolver implements IResolver {
         this.uri = Uri.parse(uriString);
         this.config = config;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public IConfig getConfig() {
+        return config;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public IQuery.Delete delete(int id) {
@@ -126,22 +137,41 @@ class Resolver implements IResolver {
 
     @Override
     public IQuery.InsertWith insert(String... columns) {
-        throw new UnsupportedOperationException();
-    }
+        return new ContentInsertWithImpl(new ContentInsertWithImpl.ContentSet() {
+            private ContentValues contentValues;
+            private ContentInsertWithImpl query;
+            private int value = -1;
 
-    @Override
-    public IQuery.Insert insert(IEntity entity) {
-        return null;
-    }
+            @Override
+            public void onContentValuesSet(ContentInsertWithImpl query, ContentValues contentValues) {
+                this.query = query;
+                this.contentValues = contentValues;
+                this.query.val( contentResolver.insert(uri, contentValues) );
+            }
 
-    @Override
-    public <E extends IEntity> IQuery.Insert insert(IEntityList<E> entityList) {
-        return null;
+            @Override
+            public Integer query() {
+                if(contentValues == null)
+                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.InsertWith.val()");
+                // return
+                return value;
+            }
+        }, columns);
     }
 
     @Override
     public IQuery.Insert insert(ContentValues contents) {
         return new ContentInsertImpl().val(contentResolver.insert(uri, contents));
+    }
+
+    @Override
+    public IQuery.Insert insert(IEntity entity) {
+        throw new UnsupportedOperationException("Not Yet Implemented");
+    }
+
+    @Override
+    public <E extends IEntity> IQuery.Insert insert(IEntityList<E> entityList) {
+        throw new UnsupportedOperationException("Not Yet Implemented");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,47 +232,54 @@ class Resolver implements IResolver {
 
     @Override
     public IQuery.Update update(String column, Object value, int id) {
-        return null;
+        return update(column, value, generateParamId(id));
     }
 
     @Override
     public IQuery.Update update(String column, Object value, String condition) {
-        return null;
+        return update(column, value, condition, (Object)null);
     }
 
     @Override
     public IQuery.Update update(String column, Object value, String whereClause, Object... whereArgs) {
-        return null;
+        return update(new String[]{column}, new Object[]{ value }, whereClause, whereArgs);
     }
 
     @Override
     public IQuery.Update update(String[] columns, Object[] values, String condition) {
-        return null;
+        return update(columns, values, condition, (Object)null);
     }
 
     @Override
     public IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs) {
-        return null;
-    }
-
-    @Override
-    public IQuery.Update update(IEntity entity) {
-        return null;
-    }
-
-    @Override
-    public <E extends IEntity> IQuery.Update update(IEntityList<E> entityList) {
-        return null;
+        final ContentValues contentValues = new ContentValues();
+        for(int i = 0; i < columns.length; i++){
+            Utils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+        }
+        return update(contentValues, whereClause, whereArgs);
     }
 
     @Override
     public IQuery.Update update(ContentValues contents, int id) {
-        return null;
+        return update(contents, generateParamId(id), (Object)null);
     }
 
     @Override
     public IQuery.Update update(ContentValues contents, String whereClause, Object... whereArgs) {
-        return null;
+        ContentUpdateImpl query = new ContentUpdateImpl();
+        String[] args = Util.toStringArray(whereArgs);
+        query.val(contentResolver.update(uri, contents, whereClause, args));
+        return query;
+    }
+
+    @Override
+    public IQuery.Update update(IEntity entity) {
+        throw new UnsupportedOperationException("Not Yet Implemented");
+    }
+
+    @Override
+    public <E extends IEntity> IQuery.Update update(IEntityList<E> entityList) {
+        throw new UnsupportedOperationException("Not Yet Implemented");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

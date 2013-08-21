@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.content;
 
 import android.content.Context;
@@ -31,6 +30,6 @@ public final class ContentQuery {
     static final IConfig config = new Config();
 
     public static IResolver resolve(String uri, Context context){
-        return new Resolver(config, uri, context);
+        return new Resolver(new Config(config), uri, context);
     }
 }

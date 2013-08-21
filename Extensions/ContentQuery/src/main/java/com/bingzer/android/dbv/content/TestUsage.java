@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.content;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
@@ -35,7 +33,5 @@ class TestUsage {
         IDatabase db = DbQuery.getDatabase("");
 
         IResolver resolver = ContentQuery.resolve(uri, context);
-
-
     }
 }
