@@ -15,28 +15,65 @@ import com.bingzer.android.dbv.content.IResolver;
 public class ContentTest extends AndroidTestCase {
 
     IResolver resolver;
+    int baloteliId, pirloId, kakaId, messiId, ronaldoId;
 
     @Override
     public void setUp(){
-        insertToDictionary("Balotelli");
-        insertToDictionary("Pirlo");
-        insertToDictionary("Kaka");
-        insertToDictionary("Messi");
-        insertToDictionary("Ronaldo");
-
-
         resolver = ContentQuery.resolve(UserDictionary.Words.CONTENT_URI, getContext());
+        resolver.setReturnedColumns("_id", "word");
+        resolver.delete("word IN (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo").query();
+
+        baloteliId = insertToDictionary("Baloteli");
+        pirloId = insertToDictionary("Pirlo");
+        kakaId = insertToDictionary("Kaka");
+        messiId = insertToDictionary("Messi");
+        ronaldoId = insertToDictionary("Ronaldo");
     }
 
-    void insertToDictionary(String word){
-        Uri uri = UserDictionary.Words.CONTENT_URI;
-        ContentValues values = new ContentValues();
-        values.put(UserDictionary.Words.WORD, word);
-
-        getContext().getContentResolver().insert(uri, values);
+    int insertToDictionary(String word){
+        int id = resolver.insert("word").val(word).query();
+        assertTrue(id > 0);
+        return id;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
+
+    public void testSelectId(){
+        Cursor cursor = resolver.select(baloteliId).query();
+        if(cursor.moveToNext()){
+            assertTrue(cursor.getInt(0) > 0);
+            assertTrue(cursor.getString(1).equalsIgnoreCase("Baloteli"));
+        }
+        cursor.close();
+
+        cursor = resolver.select(pirloId).query();
+        if(cursor.moveToNext()){
+            assertTrue(cursor.getInt(0) > 0);
+            assertTrue(cursor.getString(1).equalsIgnoreCase("Pirlo"));
+        }
+        cursor.close();
+
+        cursor = resolver.select(kakaId).query();
+        if(cursor.moveToNext()){
+            assertTrue(cursor.getInt(0) > 0);
+            assertTrue(cursor.getString(1).equalsIgnoreCase("Kaka"));
+        }
+        cursor.close();
+
+        cursor = resolver.select(messiId).query();
+        if(cursor.moveToNext()){
+            assertTrue(cursor.getInt(0) > 0);
+            assertTrue(cursor.getString(1).equalsIgnoreCase("Messi"));
+        }
+        cursor.close();
+
+        cursor = resolver.select(ronaldoId).query();
+        if(cursor.moveToNext()){
+            assertTrue(cursor.getInt(0) > 0);
+            assertTrue(cursor.getString(1).equalsIgnoreCase("Ronaldo"));
+        }
+        cursor.close();
+    }
 
     public void testSelect(){
         boolean foundBaloteli = false;
@@ -53,7 +90,7 @@ public class ContentTest extends AndroidTestCase {
             int index = cursor.getColumnIndex(UserDictionary.Words.WORD);
             String word = cursor.getString(index);
 
-            if(!foundBaloteli) foundBaloteli = word.equals("Balotelli");
+            if(!foundBaloteli) foundBaloteli = word.equals("Baloteli");
             if(!foundPirlo) foundPirlo = word.equals("Pirlo");
             if(!foundKaka) foundKaka = word.equals("Kaka");
             if(!foundMessi) foundMessi = word.equals("Messi");

@@ -29,6 +29,11 @@ public class ContentInsertImpl extends QueryImpl.InsertImpl {
         return this;
     }
 
+    @Override
+    public final Integer query(){
+        return UriUtil.parseIdFromUri(uri);
+    }
+
     public String toString(){
         return uri.toString();
     }

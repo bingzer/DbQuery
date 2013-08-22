@@ -48,10 +48,10 @@ public class ContentInsertWithImpl implements IQuery.InsertWith{
 
     @Override
     public Integer query() {
-        return null;
+        return UriUtil.parseIdFromUri(value);
     }
 
-    public void val(Uri value){
+    public void setUri(Uri value){
         this.value = value;
     }
 

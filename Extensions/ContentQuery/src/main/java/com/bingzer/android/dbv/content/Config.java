@@ -35,7 +35,7 @@ class Config implements IConfig, Cloneable{
     boolean readOnly;
 
     Config(){
-        this.idNamingConvention = "_Id";
+        this.idNamingConvention = "_id";
         this.appendTableName = false;
         this.foreignKeySupport = false;
         this.debug = false;

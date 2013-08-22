@@ -28,11 +28,12 @@ public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
     String whereClause;
     Object[] whereArgs;
 
-    public ContentSelectImpl(IConfig config, boolean distinct) {
+    public ContentSelectImpl(IConfig config, boolean distinct, String... returnedColumns) {
         super(config, null);
         this.distinct = distinct;
-        this.columnString = new StringBuilder(config.getIdNamingConvention());
         this.limitString = null;
+        this.columnString.delete(0, columnString.length());
+        this.columnString.append(Util.join(", ", returnedColumns));
     }
 
     @Override
@@ -42,16 +43,16 @@ public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
         return this;
     }
 
-    public boolean isDistinct(){
-        return distinct;
-    }
-
     /**
      * This is columns
      * @return array of columns names
      */
     public String[] getProjections(){
-        return columnString.toString().split(",");
+        String[] projections =  columnString.toString().split(",");
+        for(int i = 0; i < projections.length; i++){
+            projections[i] = projections[i].trim();
+        }
+        return projections;
     }
 
     /**

@@ -16,16 +16,20 @@
 package com.bingzer.android.dbv.content;
 
 import com.bingzer.android.dbv.IConfig;
+import com.bingzer.android.dbv.queries.Countable;
 import com.bingzer.android.dbv.queries.Deletable;
 import com.bingzer.android.dbv.queries.Insertable;
 import com.bingzer.android.dbv.queries.Selectable;
+import com.bingzer.android.dbv.queries.Tangible;
 import com.bingzer.android.dbv.queries.Updatable;
 
 /**
  * Created by Ricky Tobing on 8/20/13.
  */
-public interface IResolver extends Selectable, Insertable, Updatable, Deletable {
+public interface IResolver
+        extends Selectable, Insertable, Updatable, Deletable /*,Tangible , Countable*/{
 
     IConfig getConfig();
 
+    void setReturnedColumns(String... columns);
 }

@@ -45,6 +45,7 @@ class Resolver implements IResolver {
     final IConfig config;
     final Uri uri;
     final ContentResolver contentResolver;
+    String[] returnedColumns;
 
     Resolver(IConfig config, Uri uri, Context context){
         this.contentResolver = context.getContentResolver();
@@ -57,6 +58,11 @@ class Resolver implements IResolver {
     @Override
     public IConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public void setReturnedColumns(String... columns) {
+        returnedColumns = columns;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,13 +152,13 @@ class Resolver implements IResolver {
             public void onContentValuesSet(ContentInsertWithImpl query, ContentValues contentValues) {
                 this.query = query;
                 this.contentValues = contentValues;
-                this.query.val( contentResolver.insert(uri, contentValues) );
+                this.query.setUri(contentResolver.insert(uri, contentValues));
             }
 
             @Override
             public Integer query() {
                 if(contentValues == null)
-                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.InsertWith.val()");
+                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.InsertWith.setUri()");
                 // return
                 return value;
             }
@@ -220,10 +226,14 @@ class Resolver implements IResolver {
 
     @Override
     public IQuery.Select select(final int top, final String whereClause, final Object... args) {
-        return new ContentSelectImpl(config, false) {
+        return new ContentSelectImpl(config, false, returnedColumns) {
             @Override
             public Cursor query() {
-                return contentResolver.query(uri, getProjections(), getSelection(), getSelectionArgs(), getSortingOrder());
+                String[] projections = getProjections();
+                String selection = getSelection();
+                String[] selectionArgs = getSelectionArgs();
+                String sortOrder = getSortingOrder();
+                return contentResolver.query(uri, projections, selection, selectionArgs, sortOrder);
             }
         }.where(whereClause, args);
     }
