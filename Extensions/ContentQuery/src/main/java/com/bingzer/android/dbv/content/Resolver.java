@@ -293,22 +293,22 @@ class Resolver implements IResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Select select(int id) {
+    public ContentQuery.Select select(int id) {
         return select(generateParamId(id));
     }
 
     @Override
-    public IQuery.Select select(String condition) {
+    public ContentQuery.Select select(String condition) {
         return select(-1, condition);
     }
 
     @Override
-    public IQuery.Select select(int top, String condition) {
+    public ContentQuery.Select select(int top, String condition) {
         return select(top, condition, (Object)null);
     }
 
     @Override
-    public IQuery.Select select(int... ids) {
+    public ContentQuery.Select select(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(generateIdString()).append(" ");
@@ -330,12 +330,12 @@ class Resolver implements IResolver {
     }
 
     @Override
-    public IQuery.Select select(String whereClause, Object... args) {
+    public ContentQuery.Select select(String whereClause, Object... args) {
         return select(-1, whereClause, args);
     }
 
     @Override
-    public IQuery.Select select(final int top, final String whereClause, final Object... args) {
+    public ContentQuery.Select select(final int top, final String whereClause, final Object... args) {
         return new ContentSelectImpl(config, top, defaultProjections) {
             @Override
             public Cursor query() {

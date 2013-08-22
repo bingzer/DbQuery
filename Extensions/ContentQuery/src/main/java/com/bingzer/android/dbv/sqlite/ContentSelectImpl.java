@@ -16,30 +16,58 @@
 
 package com.bingzer.android.dbv.sqlite;
 
-import android.database.Cursor;
-
 import com.bingzer.android.dbv.IConfig;
-import com.bingzer.android.dbv.IEntity;
-import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.content.ContentQuery;
 
 /**
  * Created by Ricky on 8/20/13.
  */
-public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
-
-    String whereClause;
+public abstract class ContentSelectImpl implements ContentQuery.Select, ContentQuery.Select.OrderBy {
+    final IConfig config;
+    StringBuilder columnString;
+    StringBuilder limitString;
+    String orderByString;
+    String whereString;
     Object[] whereArgs;
 
-    public ContentSelectImpl(IConfig config, int top, String... returnedColumns) {
-        super(config, null, top, false);
-        this.columnString.delete(0, columnString.length());
-        this.columnString.append(Util.join(", ", returnedColumns));
+    public ContentSelectImpl(IConfig config, int top, String... projections){
+        this.config = config;
+        this.columnString = new StringBuilder();
+        this.columnString.append(Util.join(", ", projections));
+
+        if(top > 0) {
+            limitString = new StringBuilder();
+            limitString.append(" LIMIT ").append(top);
+        }
     }
 
     @Override
+    public ContentSelectImpl columns(String... columns) {
+        columnString.delete(0, columnString.length());
+        if(columns != null){
+            columnString.append(Util.join(", ", columns));
+        }
+        else{
+            columnString.append("*");
+        }
+
+        return this;
+    }
+
+    @Override
+    public OrderBy orderBy(String... columns) {
+        orderByString = Util.join(",", columns);
+        return this;
+    }
+
+    @Override
+    public Paging paging(int row) {
+        return new PagingImpl(config, null, row);
+    }
+
     public ContentSelectImpl where(String whereClause, Object... args){
-        this.whereClause = whereClause;
+        this.whereString = whereClause;
         this.whereArgs = args;
         return this;
     }
@@ -61,7 +89,7 @@ public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
      * @return where clause
      */
     public String getSelection(){
-        return whereClause;
+        return whereString;
     }
 
     /**
@@ -80,8 +108,8 @@ public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
         StringBuilder sortingOrder = new StringBuilder();
 
         // without the 'ORDER BY'
-        if(orderByString != null)
-            sortingOrder.append(orderByString.substring(orderByString.indexOf("ORDER BY") + "ORDER BY".length()).trim());
+        if(orderByString != null) sortingOrder.append(orderByString);
+
         // add limit
         if(limitString != null && limitString.length() > 0){
             if(orderByString == null) sortingOrder.append(config.getIdNamingConvention());

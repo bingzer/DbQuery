@@ -18,6 +18,7 @@ package com.bingzer.android.dbv.content;
 import android.net.Uri;
 
 import com.bingzer.android.dbv.IConfig;
+import com.bingzer.android.dbv.queries.ContentSelectable;
 import com.bingzer.android.dbv.queries.Countable;
 import com.bingzer.android.dbv.queries.Deletable;
 import com.bingzer.android.dbv.queries.Insertable;
@@ -29,7 +30,7 @@ import com.bingzer.android.dbv.queries.Updatable;
  * Created by Ricky Tobing on 8/20/13.
  */
 public interface IResolver
-        extends Selectable, Insertable, Updatable, Deletable , Tangible /*, Countable*/{
+        extends ContentSelectable, Insertable, Updatable, Deletable , Tangible /*, Countable*/{
 
     /**
      * Returns the URI

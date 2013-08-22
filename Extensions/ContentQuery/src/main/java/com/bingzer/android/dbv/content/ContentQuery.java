@@ -16,9 +16,13 @@
 package com.bingzer.android.dbv.content;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
 import com.bingzer.android.dbv.IConfig;
+import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.EntitySelectable;
+import com.bingzer.android.dbv.queries.Pagination;
 
 /**
  * ContentQuery allows DbQuery style while
@@ -37,4 +41,46 @@ public final class ContentQuery {
     public static IResolver resolve(Uri uri, Context context){
         return new Resolver(new Config(config), uri, context);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * For select statement
+     * <p>
+     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
+     * </p>
+     */
+    public static interface Select extends IQuery<Cursor>, EntitySelectable, Pagination  {
+
+        /**
+         * Specified the column to return.
+         * default or null will produce SELECT * FROM
+         * @param columns column names
+         * @return {@link Select}
+         */
+        ContentQuery.Select columns(String... columns);
+
+        /**
+         * Order by. To create multiple orderBy ASC or DESC or both,
+         * this is possible
+         * <code>
+         * <pre>
+         *   db.get("Table").select().orderBy("Id", "Name", "Price DESC");
+         * </pre>
+         * </code>
+         * @param columns column names
+         * @return {@link Select}
+         */
+        ContentQuery.Select.OrderBy orderBy(String... columns);
+
+        /**
+         * Order By
+         */
+        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable, Pagination {
+
+        }
+
+    }
+
 }
