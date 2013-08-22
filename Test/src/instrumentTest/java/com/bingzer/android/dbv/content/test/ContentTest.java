@@ -207,6 +207,26 @@ public class ContentTest extends AndroidTestCase {
         assertTrue(foundBaloteli && foundPirlo && foundKaka && foundMessi && foundRonaldo);
     }
 
+    public void selectId_Condition(){
+        assertEquals(baloteliId, resolver.selectId("word = 'Baloteli'"));
+        assertEquals(pirloId, resolver.selectId("word = 'Pirlo'"));
+        assertEquals(kakaId, resolver.selectId("word = 'Kaka'"));
+        assertEquals(messiId, resolver.selectId("word = 'Messi'"));
+        assertEquals(ronaldoId, resolver.selectId("word = 'Ronaldo'"));
+
+        assertEquals(-1, resolver.select("word = 'whatever'"));
+    }
+
+    public void selectId_WhereClause(){
+        assertEquals(baloteliId, resolver.selectId("word = ?", "Balotelli"));
+        assertEquals(pirloId, resolver.selectId("word = ?", "Pirlo"));
+        assertEquals(kakaId, resolver.selectId("word = ?", "Kaka"));
+        assertEquals(messiId, resolver.selectId("word = ?", "Messi"));
+        assertEquals(ronaldoId, resolver.selectId("word = ?", "Ronaldo"));
+
+        assertEquals(-1, resolver.select("word = ?", "yoasfsdfsdfsdf"));
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     public void testInsert_ContentValues(){

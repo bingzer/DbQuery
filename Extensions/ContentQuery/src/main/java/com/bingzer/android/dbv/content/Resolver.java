@@ -293,6 +293,29 @@ class Resolver implements IResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public int selectId(String condition) {
+        return selectId(condition, (Object)null);
+    }
+
+    @Override
+    public int selectId(String whereClause, Object... args) {
+        int id = -1;
+        Cursor cursor = null;
+        try{
+            cursor = select(whereClause, args).query();
+            if(cursor.moveToNext()){
+                int index = cursor.getColumnIndex(config.getIdNamingConvention());
+                id = cursor.getInt(index);
+            }
+        }
+        finally {
+            if(cursor != null) cursor.close();
+        }
+
+        return id;
+    }
+
+    @Override
     public ContentQuery.Select select(int id) {
         return select(generateParamId(id));
     }

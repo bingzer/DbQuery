@@ -22,6 +22,7 @@ import com.bingzer.android.dbv.queries.ContentSelectable;
 import com.bingzer.android.dbv.queries.Countable;
 import com.bingzer.android.dbv.queries.Deletable;
 import com.bingzer.android.dbv.queries.Insertable;
+import com.bingzer.android.dbv.queries.SelectIdentifiable;
 import com.bingzer.android.dbv.queries.Selectable;
 import com.bingzer.android.dbv.queries.Tangible;
 import com.bingzer.android.dbv.queries.Updatable;
@@ -29,8 +30,11 @@ import com.bingzer.android.dbv.queries.Updatable;
 /**
  * Created by Ricky Tobing on 8/20/13.
  */
-public interface IResolver
-        extends ContentSelectable, Insertable, Updatable, Deletable , Tangible /*, Countable*/{
+public interface IResolver extends
+        ContentSelectable,
+        SelectIdentifiable,
+        Insertable, Updatable, Deletable,
+        Tangible /*, Countable*/{
 
     /**
      * Returns the URI
