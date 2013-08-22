@@ -36,6 +36,11 @@ class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Ma
     }
 
     @Override
+    public IEntity.Action get(String column) {
+        return super.get(column);
+    }
+
+    @Override
     public void map(String column, IEntity.Action action) {
         put(column, action);
     }

@@ -62,6 +62,21 @@ public interface IEntity {
          * @param action
          */
         void mapId(Action<Integer> action);
+
+        /**
+         * Clears all the mapping
+         */
+        void clear();
+
+        /**
+         * Returns the <code>Action</code> object
+         * for the specified column.
+         * Null if not found
+         * @see Action
+         * @param column column name
+         * @return <code>Action</code>
+         */
+        Action get(String column);
     }
 
     /**
