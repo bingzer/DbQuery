@@ -24,14 +24,11 @@ import com.bingzer.android.dbv.Util;
  */
 public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
 
-    boolean distinct = false;
     String whereClause;
     Object[] whereArgs;
 
-    public ContentSelectImpl(IConfig config, boolean distinct, String... returnedColumns) {
-        super(config, null);
-        this.distinct = distinct;
-        this.limitString = null;
+    public ContentSelectImpl(IConfig config, int top, String... returnedColumns) {
+        super(config, null, top, false);
         this.columnString.delete(0, columnString.length());
         this.columnString.append(Util.join(", ", returnedColumns));
     }
@@ -82,8 +79,10 @@ public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
         if(orderByString != null)
             sortingOrder.append(orderByString.substring(orderByString.indexOf("ORDER BY") + "ORDER BY".length()).trim());
         // add limit
-        if(limitString != null)
+        if(limitString != null && limitString.length() > 0){
+            if(orderByString == null) sortingOrder.append(config.getIdNamingConvention());
             sortingOrder.append(" ").append(limitString);
+        }
 
         return sortingOrder.toString();
     }

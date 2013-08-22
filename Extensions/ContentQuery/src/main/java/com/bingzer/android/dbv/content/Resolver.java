@@ -226,7 +226,7 @@ class Resolver implements IResolver {
 
     @Override
     public IQuery.Select select(final int top, final String whereClause, final Object... args) {
-        return new ContentSelectImpl(config, false, returnedColumns) {
+        return new ContentSelectImpl(config, top, returnedColumns) {
             @Override
             public Cursor query() {
                 String[] projections = getProjections();

@@ -75,6 +75,11 @@ public class ContentTest extends AndroidTestCase {
         cursor.close();
     }
 
+    public void testSelect_Top_Condition(){
+        Cursor cursor = resolver.select(2, "word not null").query();
+        assertTrue(cursor.getCount() == 2);
+    }
+
     public void testSelect(){
         boolean foundBaloteli = false;
         boolean foundPirlo = false;
