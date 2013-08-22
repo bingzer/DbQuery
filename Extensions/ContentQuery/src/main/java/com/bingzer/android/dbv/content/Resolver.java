@@ -27,12 +27,7 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
-import com.bingzer.android.dbv.sqlite.ContentDeleteImpl;
-import com.bingzer.android.dbv.sqlite.ContentInsertImpl;
-import com.bingzer.android.dbv.sqlite.ContentInsertWithImpl;
-import com.bingzer.android.dbv.sqlite.ContentSelectImpl;
-import com.bingzer.android.dbv.sqlite.ContentUpdateImpl;
-import com.bingzer.android.dbv.sqlite.Utils;
+import com.bingzer.android.dbv.sqlite.*;
 
 import java.util.Collection;
 
@@ -45,15 +40,22 @@ class Resolver implements IResolver {
     final IConfig config;
     final Uri uri;
     final ContentResolver contentResolver;
-    String[] returnedColumns;
+    String[] defaultProjections;
 
     Resolver(IConfig config, Uri uri, Context context){
         this.contentResolver = context.getContentResolver();
         this.uri = uri;
         this.config = config;
+        // default projections from cnofig.getIdNamingConvention()
+        setDefaultProjections();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Uri getUri() {
+        return uri;
+    }
 
     @Override
     public IConfig getConfig() {
@@ -61,8 +63,15 @@ class Resolver implements IResolver {
     }
 
     @Override
-    public void setReturnedColumns(String... columns) {
-        returnedColumns = columns;
+    public void setDefaultProjections(String... columns) {
+        if(columns == null || columns.length == 0)
+            defaultProjections = new String[] { config.getIdNamingConvention() };
+        else defaultProjections = columns;
+    }
+
+    @Override
+    public String[] getDefaultProjections() {
+        return defaultProjections;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +235,7 @@ class Resolver implements IResolver {
 
     @Override
     public IQuery.Select select(final int top, final String whereClause, final Object... args) {
-        return new ContentSelectImpl(config, top, returnedColumns) {
+        return new ContentSelectImpl(config, top, defaultProjections) {
             @Override
             public Cursor query() {
                 String[] projections = getProjections();
@@ -234,6 +243,27 @@ class Resolver implements IResolver {
                 String[] selectionArgs = getSelectionArgs();
                 String sortOrder = getSortingOrder();
                 return contentResolver.query(uri, projections, selection, selectionArgs, sortOrder);
+            }
+
+            @Override
+            public void query(IEntity entity) {
+                final Cursor cursor = query();
+                final EntityMapper mapper = new EntityMapper(config);
+
+                Utils.mapEntityFromCursor(mapper, entity, cursor);
+
+                cursor.close();
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public <E extends IEntity> void query(IEntityList<E> entityList) {
+                final Cursor cursor = query();
+                final EntityMapper mapper = new EntityMapper(config);
+
+                Utils.mapEntityListFromCursor(mapper, entityList, cursor, config.getIdNamingConvention());
+
+                cursor.close();
             }
         }.where(whereClause, args);
     }

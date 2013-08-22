@@ -15,6 +15,8 @@
  */
 package com.bingzer.android.dbv.content;
 
+import android.net.Uri;
+
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.queries.Countable;
 import com.bingzer.android.dbv.queries.Deletable;
@@ -29,7 +31,31 @@ import com.bingzer.android.dbv.queries.Updatable;
 public interface IResolver
         extends Selectable, Insertable, Updatable, Deletable /*,Tangible , Countable*/{
 
+    /**
+     * Returns the URI
+     * @return the URI
+     */
+    Uri getUri();
+
+    /**
+     * Returns the default config
+     * @return the config
+     */
     IConfig getConfig();
 
-    void setReturnedColumns(String... columns);
+    /**
+     * Sets the default projections (columns) unless if otherwise
+     * specified with {@link com.bingzer.android.dbv.IQuery.Select#columns(String...)}
+     * in a select statement.
+     * By default the default projections is
+     * {@link com.bingzer.android.dbv.IConfig#getIdNamingConvention()}
+     * @param columns the columns to set
+     */
+    void setDefaultProjections(String... columns);
+
+    /**
+     * Returns the default projections
+     * @return projections
+     */
+    String[] getDefaultProjections();
 }

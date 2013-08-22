@@ -40,13 +40,51 @@ public class Utils {
         ContentUtil.mapActionToCursor(action, cursor, index);
     }
 
-
-    public static void mapEntityFromCursor(EntityMapper mapper, IEntity entity, Cursor cursor){
-        ContentUtil.mapEntityFromCursor(mapper, entity, cursor);
+    public static void mapEntityFromCursor(IEntity.Mapper mapper, IEntity entity, Cursor cursor){
+        entity.map(mapper);
+        if(cursor.moveToNext()){
+            for(int i = 0; i < cursor.getColumnCount(); i++){
+                String columnName = cursor.getColumnName(i);
+                IEntity.Action action = mapper.get(columnName);
+                if(action != null){
+                    ContentUtil.mapActionToCursor(action, cursor, i);
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
-    public static <E extends IEntity> void mapEntityListFromCursor(EntityMapper mapper, IEntityList<E> entityList, Cursor cursor){
-        ContentUtil.mapEntityListFromCursor(mapper, entityList, cursor);
+    public static <E extends IEntity> void mapEntityListFromCursor(IEntity.Mapper mapper, IEntityList<E> entityList, Cursor cursor, String columnId){
+        while(cursor.moveToNext()){
+            int columnIdIndex = cursor.getColumnIndex(columnId);
+            int id = -1;
+            if(columnIdIndex >= 0) id = cursor.getInt(columnIdIndex);
+
+            E entity = null;
+            for(IEntity e : entityList.getEntityList()){
+                if(e.getId() == id){
+                    entity = (E)e;
+                    break;
+                }
+            }
+            if(entity == null){
+                // creates new generic entity
+                entity = entityList.newEntity();
+                // add to the collection
+                entityList.getEntityList().add(entity);
+            }
+
+            // clear the mapper
+            mapper.clear();
+            // assign the mapper
+            entity.map(mapper);
+            for(int i = 0; i < cursor.getColumnCount(); i++){
+                String columnName = cursor.getColumnName(i);
+                IEntity.Action action = mapper.get(columnName);
+                if(action != null){
+                    ContentUtil.mapActionToCursor(action, cursor, i);
+                }
+            }
+        }// end while
     }
 }

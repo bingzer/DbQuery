@@ -16,7 +16,11 @@
 
 package com.bingzer.android.dbv.sqlite;
 
+import android.database.Cursor;
+
 import com.bingzer.android.dbv.IConfig;
+import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.Util;
 
 /**
