@@ -46,9 +46,9 @@ class Resolver implements IResolver {
     final Uri uri;
     final ContentResolver contentResolver;
 
-    Resolver(IConfig config, String uriString, Context context){
+    Resolver(IConfig config, Uri uri, Context context){
         this.contentResolver = context.getContentResolver();
-        this.uri = Uri.parse(uriString);
+        this.uri = uri;
         this.config = config;
     }
 

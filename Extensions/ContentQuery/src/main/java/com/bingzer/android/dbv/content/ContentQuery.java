@@ -16,6 +16,7 @@
 package com.bingzer.android.dbv.content;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.bingzer.android.dbv.IConfig;
 
@@ -30,6 +31,10 @@ public final class ContentQuery {
     static final IConfig config = new Config();
 
     public static IResolver resolve(String uri, Context context){
+        return resolve(Uri.parse(uri), context);
+    }
+
+    public static IResolver resolve(Uri uri, Context context){
         return new Resolver(new Config(config), uri, context);
     }
 }

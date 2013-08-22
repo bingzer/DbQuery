@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     compile project(':Library')
+    compile project(':Extensions:ContentQuery')
     compile 'com.android.support:support-v4:13.0.+'
 }
 
@@ -23,6 +24,6 @@ android {
 
     defaultConfig {
         minSdkVersion 7
-        targetSdkVersion 16
+        targetSdkVersion 17
     }
 }

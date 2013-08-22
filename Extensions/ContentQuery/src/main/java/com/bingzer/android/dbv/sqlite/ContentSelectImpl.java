@@ -31,6 +31,8 @@ public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
     public ContentSelectImpl(IConfig config, boolean distinct) {
         super(config, null);
         this.distinct = distinct;
+        this.columnString = new StringBuilder(config.getIdNamingConvention());
+        this.limitString = null;
     }
 
     @Override
@@ -77,7 +79,7 @@ public abstract class ContentSelectImpl extends QueryImpl.SelectImpl {
 
         // without the 'ORDER BY'
         if(orderByString != null)
-            sortingOrder.append(orderByString.substring(orderByString.indexOf("ORDER BY")).trim());
+            sortingOrder.append(orderByString.substring(orderByString.indexOf("ORDER BY") + "ORDER BY".length()).trim());
         // add limit
         if(limitString != null)
             sortingOrder.append(" ").append(limitString);
