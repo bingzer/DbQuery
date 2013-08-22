@@ -12,8 +12,6 @@ import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.content.ContentQuery;
 import com.bingzer.android.dbv.content.IResolver;
 
-import org.apache.http.impl.conn.tsccm.RefQueueWorker;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +46,39 @@ public class ContentTest extends AndroidTestCase {
     @Override
     public void tearDown(){
         resolver.delete(baloteliId, pirloId, kakaId, messiId, ronaldoId);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    public void testHas_Id(){
+        assertTrue(resolver.has(baloteliId));
+        assertTrue(resolver.has(pirloId));
+        assertTrue(resolver.has(kakaId));
+        assertTrue(resolver.has(messiId));
+        assertTrue(resolver.has(ronaldoId));
+
+        assertFalse(resolver.has(-1));
+        assertFalse(resolver.has(ronaldoId * -2));
+    }
+
+    public void testHas_Condition(){
+        assertTrue(resolver.has("word not null"));
+        assertTrue(resolver.has("word = 'Baloteli'"));
+        assertTrue(resolver.has("word = 'Baloteli' or word = 'Pirlo'"));
+
+        assertFalse(resolver.has("word = 'Baloteli' and _id = " + messiId));
+        assertFalse(resolver.has("word = 'Baloteli' and _id is null"));
+    }
+
+    public void testHas_WhereClause(){
+        assertTrue(resolver.has("word = ? and _id = ?", "Baloteli", baloteliId));
+        assertTrue(resolver.has("word = ? or _id = ?", "Baloteli", messiId));
+        assertTrue(resolver.has("_id in (?,?,?)", baloteliId, messiId, -1));
+        assertTrue(resolver.has("word in (?,?,?)", "Baloteli", "NONEXSITENCE", "SDFSDF"));
+
+        assertFalse(resolver.has("word = ? and _id = ?", "Baloteli", messiId));
+        assertFalse(resolver.has("word in (?,?,?)", "OPIO", "NONEXSITENCE", "SDFSDF"));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -223,6 +254,11 @@ public class ContentTest extends AndroidTestCase {
         for(Word w : list){
             assertTrue(resolver.delete(w.getId()).query() == 1);
         }
+    }
+
+    public void testInsertWith_Columns(){
+        assertTrue(resolver.insert("word").val("ABCDEFG").query() > 0);
+        assertTrue(resolver.has("word = ?", "ABCDEFG"));
     }
 
     /////////////////////////////// IEntity & IEntityList /////////////////////////////////////
