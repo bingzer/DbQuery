@@ -59,7 +59,15 @@ public interface IResolver
      */
     String[] getDefaultProjections();
 
+    /**
+     * Sets the default <code>Authority</code>
+     * @param authority authority to set
+     */
     void setDefaultAuthority(String authority);
 
+    /**
+     * Returns the <code>authority</code>
+     * @return Authority
+     */
     String getDefaultAuthority();
 }

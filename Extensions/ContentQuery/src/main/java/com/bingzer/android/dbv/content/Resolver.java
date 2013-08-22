@@ -230,6 +230,8 @@ class Resolver implements IResolver {
 
     @Override
     public <E extends IEntity> IQuery.Insert insert(IEntityList<E> entityList) {
+        if(authority == null) throw new IllegalArgumentException("Authority has not been set. Use IResolver.setDefaultAuthority() to set");
+
         final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
         final IEntity.Action[] idSetters = new IEntity.Action[entityList.getEntityList().size()];
         final String[] uriStrings = new String[entityList.getEntityList().size()];

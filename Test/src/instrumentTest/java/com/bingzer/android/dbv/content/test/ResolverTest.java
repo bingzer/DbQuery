@@ -35,6 +35,15 @@ public class ResolverTest extends AndroidTestCase {
         assertEquals(resolver.getDefaultProjections()[0], resolver.getConfig().getIdNamingConvention());
     }
 
+    public void testGetAuthority(){
+        // defaults
+        assertNull(resolver.getDefaultAuthority());
+
+        resolver.setDefaultAuthority("MyAuthority");
+        assertNotNull(resolver.getDefaultAuthority());
+        assertEquals("MyAuthority", resolver.getDefaultAuthority());
+    }
+
     /////////////////////// config /////////////////////////////////
 
     public void test_ConfigGetIdNamingConvention(){
