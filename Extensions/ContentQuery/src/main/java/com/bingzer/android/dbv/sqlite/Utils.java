@@ -20,6 +20,10 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.content.*;
+
+import java.util.Iterator;
 
 /**
  * Created by Ricky on 8/20/13.
@@ -87,4 +91,5 @@ public class Utils {
             }
         }// end while
     }
+
 }

@@ -1,13 +1,18 @@
 package com.bingzer.android.dbv.content.test;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.content.ContentQuery;
 import com.bingzer.android.dbv.content.IResolver;
+
+import org.apache.http.impl.conn.tsccm.RefQueueWorker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +29,7 @@ public class ContentTest extends AndroidTestCase {
     public void setUp(){
         resolver = ContentQuery.resolve(UserDictionary.Words.CONTENT_URI, getContext());
         resolver.setDefaultProjections("_id", "word");
+        resolver.setDefaultAuthority(UserDictionary.AUTHORITY);
         resolver.delete("word IN (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo").query();
 
         baloteliId = insertToDictionary("Baloteli");
@@ -170,6 +176,55 @@ public class ContentTest extends AndroidTestCase {
         assertTrue(foundBaloteli && foundPirlo && foundKaka && foundMessi && foundRonaldo);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    public void testInsert_ContentValues(){
+        ContentValues values = new ContentValues();
+        values.put("word", "OLA");
+
+        IQuery.Insert insert = resolver.insert(values);
+        assertTrue(insert.query() > 0);
+
+        Uri actual = Uri.parse(insert.toString());
+        Uri expected = Uri.withAppendedPath(resolver.getUri(), insert.query().toString());
+        assertEquals(actual, expected);
+
+        assertTrue(resolver.delete(insert.query()).query() > 0);
+    }
+
+    public void testInsert_IEntity(){
+        Word word = new Word();
+        word.setWord("M&M");
+
+        IQuery.Insert insert = resolver.insert(word);
+        assertTrue(insert.query() > 0);
+
+        Uri actual = Uri.parse(insert.toString());
+        Uri expected = Uri.withAppendedPath(resolver.getUri(), insert.query().toString());
+        assertEquals(actual, expected);
+
+        assertTrue(resolver.delete(insert.query()).query() > 0);
+    }
+
+    public void testInsert_IEntityList(){
+        WordList list = new WordList();
+        list.add(new Word("LigerIsReal"));
+        list.add(new Word("NoProblemoBeHapppy"));
+        list.add(new Word("Sweeth Yo"));
+
+
+        IQuery.Insert insert = resolver.insert(list);
+        assertTrue(insert.query() == 3); // 3 got inserted
+
+        for(Word w : list){
+            assertTrue(w.getId() > 0);
+        }
+
+        for(Word w : list){
+            assertTrue(resolver.delete(w.getId()).query() == 1);
+        }
+    }
+
     /////////////////////////////// IEntity & IEntityList /////////////////////////////////////
 
     public void testSelectId_Entity(){
@@ -213,6 +268,14 @@ public class ContentTest extends AndroidTestCase {
 
         private int id;
         private String word;
+
+        Word(){
+            this(null);
+        }
+
+        Word(String word){
+            this.word = word;
+        }
 
         void setId(int id) {
             this.id = id;

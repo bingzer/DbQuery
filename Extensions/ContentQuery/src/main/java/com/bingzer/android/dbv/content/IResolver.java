@@ -29,7 +29,7 @@ import com.bingzer.android.dbv.queries.Updatable;
  * Created by Ricky Tobing on 8/20/13.
  */
 public interface IResolver
-        extends Selectable, Insertable, Updatable, Deletable /*,Tangible , Countable*/{
+        extends Selectable, Insertable, Updatable, Deletable , Tangible /*, Countable*/{
 
     /**
      * Returns the URI
@@ -58,4 +58,8 @@ public interface IResolver
      * @return projections
      */
     String[] getDefaultProjections();
+
+    void setDefaultAuthority(String authority);
+
+    String getDefaultAuthority();
 }

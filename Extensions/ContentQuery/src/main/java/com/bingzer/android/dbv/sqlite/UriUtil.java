@@ -5,9 +5,9 @@ import android.net.Uri;
 /**
  * Created by Ricky on 8/21/13.
  */
-class UriUtil {
+public class UriUtil {
 
-    static int parseIdFromUri(Uri uri){
+    public static int parseIdFromUri(Uri uri){
         String uriString = uri.toString();
         String valueString = uriString.substring(uriString.lastIndexOf("/") + 1, uriString.length());
         try{

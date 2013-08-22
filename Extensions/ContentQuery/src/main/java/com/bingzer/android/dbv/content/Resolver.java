@@ -16,6 +16,8 @@
 
 package com.bingzer.android.dbv.content;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,7 +31,11 @@ import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.sqlite.*;
 
+import org.apache.http.client.utils.URIUtils;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  *
@@ -41,6 +47,7 @@ class Resolver implements IResolver {
     final Uri uri;
     final ContentResolver contentResolver;
     String[] defaultProjections;
+    String authority;
 
     Resolver(IConfig config, Uri uri, Context context){
         this.contentResolver = context.getContentResolver();
@@ -72,6 +79,16 @@ class Resolver implements IResolver {
     @Override
     public String[] getDefaultProjections() {
         return defaultProjections;
+    }
+
+    @Override
+    public void setDefaultAuthority(String authority) {
+        this.authority = authority;
+    }
+
+    @Override
+    public String getDefaultAuthority() {
+        return authority;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,17 +193,99 @@ class Resolver implements IResolver {
 
     @Override
     public IQuery.Insert insert(ContentValues contents) {
-        return new ContentInsertImpl().val(contentResolver.insert(uri, contents));
+        return new ContentInsertImpl().setUri(contentResolver.insert(uri, contents));
     }
 
     @Override
     public IQuery.Insert insert(IEntity entity) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        // build content values..
+        final EntityMapper mapper = new EntityMapper(config);
+        final ContentValues contentValues = new ContentValues();
+        entity.map(mapper);
+
+        Iterator<String> keys = mapper.keySet().iterator();
+        String idString = generateIdString();
+        IEntity.Action<Integer> idSetter = null;
+        while(keys.hasNext()){
+            String key = keys.next();
+            IEntity.Action action = mapper.get(key);
+
+            // ignore if column = "Id"
+            if(key.equalsIgnoreCase(idString)) {
+                idSetter = action;
+            }
+            else if(action != null){
+                Utils.mapContentValuesFromAction(contentValues, key, action);
+            }
+        }
+
+        IQuery.Insert insert = insert(contentValues);
+        // assign the newly inserted id
+        if(idSetter != null){
+            idSetter.set(insert.query());
+        }
+
+        return insert;
     }
 
     @Override
     public <E extends IEntity> IQuery.Insert insert(IEntityList<E> entityList) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
+        final IEntity.Action[] idSetters = new IEntity.Action[entityList.getEntityList().size()];
+        final String[] uriStrings = new String[entityList.getEntityList().size()];
+
+        for(int i = 0; i < entityList.getEntityList().size(); i++){
+            final IEntity entity = entityList.getEntityList().get(i);
+            // build content values..
+            final EntityMapper mapper = new EntityMapper(config);
+            final ContentValues contentValues = new ContentValues();
+            entity.map(mapper);
+
+            Iterator<String> keys = mapper.keySet().iterator();
+            String idString = generateIdString();
+            while(keys.hasNext()){
+                String key = keys.next();
+                IEntity.Action action = mapper.get(key);
+
+                // ignore if column = "Id"
+                if(key.equalsIgnoreCase(idString)) {
+                    idSetters[i] = action;
+                }
+                else if(action != null){
+                    Utils.mapContentValuesFromAction(contentValues, key, action);
+                }
+            }
+
+            ContentProviderOperation operation =
+                    ContentProviderOperation.newInsert(uri)
+                    .withValues(contentValues)
+                    .build();
+            operationList.add(operation);
+        }
+
+        try{
+            ContentProviderResult[] results = contentResolver.applyBatch(authority, operationList);
+            for(int i = 0; i < results.length; i++){
+                idSetters[i].set(UriUtil.parseIdFromUri(results[i].uri));
+                uriStrings[i] = results[i].uri.toString();
+            }
+        }
+        catch (Exception e){
+            throw new Error(e);
+        }
+
+        return new ContentInsertImpl(){
+
+            @Override
+            public Integer query(){
+                return uriStrings.length;
+            }
+
+            @Override
+            public String toString(){
+                return Util.join(";", uriStrings);
+            }
+        };
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,6 +419,28 @@ class Resolver implements IResolver {
     @Override
     public <E extends IEntity> IQuery.Update update(IEntityList<E> entityList) {
         throw new UnsupportedOperationException("Not Yet Implemented");
+    }
+
+    @Override
+    public boolean has(int id) {
+        return has(generateParamId(id));
+    }
+
+    @Override
+    public boolean has(String condition) {
+        return has(condition, (Object) null);
+    }
+
+    @Override
+    public boolean has(String whereClause, Object... whereArgs) {
+        Cursor cursor = null;
+        try{
+            cursor = select(whereClause, whereArgs).columns(config.getIdNamingConvention()).query();
+            return cursor.getCount() > 0;
+        }
+        finally {
+            if(cursor != null) cursor.close();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

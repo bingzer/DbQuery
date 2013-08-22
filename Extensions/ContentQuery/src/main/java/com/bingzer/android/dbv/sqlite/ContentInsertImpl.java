@@ -17,6 +17,8 @@ package com.bingzer.android.dbv.sqlite;
 
 import android.net.Uri;
 
+import java.net.CacheRequest;
+
 /**
  * Created by Ricky on 8/20/13.
  */
@@ -24,16 +26,18 @@ public class ContentInsertImpl extends QueryImpl.InsertImpl {
 
     Uri uri;
 
-    public ContentInsertImpl val(Uri value){
+    public ContentInsertImpl setUri(Uri value){
         this.uri = value;
+        this.value = UriUtil.parseIdFromUri(uri);
         return this;
     }
 
     @Override
-    public final Integer query(){
+    public Integer query(){
         return UriUtil.parseIdFromUri(uri);
     }
 
+    @Override
     public String toString(){
         return uri.toString();
     }
