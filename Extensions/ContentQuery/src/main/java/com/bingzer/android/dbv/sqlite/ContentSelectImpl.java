@@ -174,7 +174,15 @@ public abstract class ContentSelectImpl implements ContentQuery.Select, ContentQ
         public Cursor query(){
             select.limitString = new StringBuilder();
             select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
-            return select.query();
+            Cursor cursor = null;
+            try{
+                cursor = select.query();
+                return cursor;
+            }
+            finally {
+                if (cursor != null && cursor.getCount() > 0)
+                    pageNumber++;
+            }
         }
 
         @Override

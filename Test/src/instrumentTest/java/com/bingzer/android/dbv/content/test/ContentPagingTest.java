@@ -54,5 +54,35 @@ public class ContentPagingTest extends AndroidTestCase {
         assertTrue(cursor.moveToNext());
         assertEquals(cursor.getInt(0), baloteliId);
         assertEquals(cursor.getString(1), "Baloteli");
+        assertTrue(cursor.moveToNext());
+        assertEquals(cursor.getInt(0), pirloId);
+        assertEquals(cursor.getString(1), "Pirlo");
+        cursor.close();
+
+        cursor = paging.query();
+        assertEquals(cursor.getCount(), 2);
+        assertTrue(cursor.moveToNext());
+        assertEquals(cursor.getInt(0), kakaId);
+        assertEquals(cursor.getString(1), "Kaka");
+        assertTrue(cursor.moveToNext());
+        assertEquals(cursor.getInt(0), messiId);
+        assertEquals(cursor.getString(1), "Messi");
+        cursor.close();
+
+        cursor = paging.query();
+        assertTrue(cursor.moveToNext());
+        assertEquals(cursor.getInt(0), ronaldoId);
+        assertEquals(cursor.getString(1), "Ronaldo");
+        cursor.close();
+    }
+
+    public void testPaging_GetTotalPage(){
+        IQuery.Paging paging = resolver
+                .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
+                .orderBy("_id")
+                .paging(2);
+
+        assertEquals(paging.getTotalPage(), 3);
+
     }
 }
