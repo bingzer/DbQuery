@@ -76,6 +76,35 @@ public class ContentPagingTest extends AndroidTestCase {
         cursor.close();
     }
 
+    public void testPaging_IEntity(){
+        IQuery.Paging paging = resolver
+                .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
+                .orderBy("_id")
+                .paging(2);
+
+        WordList list = new WordList();
+
+        paging.query(list);
+        assertEquals(list.size(), 2);
+        assertEquals(list.get(0).getId(), baloteliId);
+        assertEquals(list.get(0).getWord(), "Baloteli");
+        assertEquals(list.get(1).getId(), pirloId);
+        assertEquals(list.get(1).getWord(), "Pirlo");
+
+        paging.query(list);
+        assertEquals(list.size(), 4);
+        assertEquals(list.get(2).getId(), kakaId);
+        assertEquals(list.get(2).getWord(), "Kaka");
+        assertEquals(list.get(3).getId(), messiId);
+        assertEquals(list.get(3).getWord(), "Messi");
+
+
+        paging.query(list);
+        assertEquals(list.size(), 5);
+        assertEquals(list.get(4).getId(), ronaldoId);
+        assertEquals(list.get(4).getWord(), "Ronaldo");
+    }
+
     public void testPaging_GetTotalPage(){
         IQuery.Paging paging = resolver
                 .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)

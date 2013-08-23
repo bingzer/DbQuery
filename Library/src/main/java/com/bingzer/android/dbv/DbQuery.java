@@ -48,7 +48,7 @@ import java.util.List;
  * @see IDatabase
  * @author Ricky Tobing
  */
-public class DbQuery {
+public final class DbQuery {
 
     private static List<IDatabase> databaseList = new LinkedList<IDatabase>();
 
@@ -72,5 +72,11 @@ public class DbQuery {
         databaseList.add(db);
 
         return getDatabase(databaseName);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////
+    private DbQuery(){
+        // nothing
     }
 }

@@ -1,6 +1,7 @@
 package com.bingzer.android.dbv.test;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
@@ -66,7 +67,7 @@ public class PaginationTest extends AndroidTestCase {
         insert.val("Montolivo", 28, "Milan".getBytes(), janitorId);
     }
 
-    public void testSimplePagination(){
+    public void testPaging_Simple(){
         IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
 
@@ -77,7 +78,7 @@ public class PaginationTest extends AndroidTestCase {
         assertTrue(personList.size() == 2);
         assertTrue(personList.get(0).getName().equalsIgnoreCase("John"));
         assertTrue(personList.get(1).getName().equalsIgnoreCase("Ronaldo"));
-        assertTrue(paging.getPageNumber() == 1);
+        assertTrue(paging.getPageNumber() == 0);
         // #2
         paging.query(personList);
         assertTrue(personList.size() == 4);
@@ -85,7 +86,7 @@ public class PaginationTest extends AndroidTestCase {
         assertTrue(personList.get(1).getName().equalsIgnoreCase("Ronaldo"));
         assertTrue(personList.get(2).getName().equalsIgnoreCase("Messi"));
         assertTrue(personList.get(3).getName().equalsIgnoreCase("Kaka"));
-        assertTrue(paging.getPageNumber() == 2);
+        assertTrue(paging.getPageNumber() == 1);
         // #3
         paging.query(personList);
         assertTrue(personList.size() == 6);
@@ -95,20 +96,52 @@ public class PaginationTest extends AndroidTestCase {
         assertTrue(personList.get(3).getName().equalsIgnoreCase("Kaka"));
         assertTrue(personList.get(4).getName().equalsIgnoreCase("Pirlo"));
         assertTrue(personList.get(5).getName().equalsIgnoreCase("Montolivo"));
-        assertTrue(paging.getPageNumber() == 3);
+        assertTrue(paging.getPageNumber() == 2);
 
         paging.query(personList);
         assertTrue(paging.getPageNumber() == 3);
         assertTrue(personList.size() == 6);
 
         paging.query();
-        assertTrue(paging.getPageNumber() == 3);
+        assertTrue(paging.getPageNumber() == 4);
 
         paging.query(5);
         assertTrue(paging.getPageNumber() == 5);
     }
 
-    public void testPaginationWithJoin(){
+    public void testPaging_Query_PageNumber(){
+        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        assertTrue(paging.getRowLimit() == 2);
+
+        Cursor cursor = paging.query(1);
+        assertTrue(cursor.getCount() == 2);
+
+        assertTrue(cursor.moveToNext());
+        assertEquals(cursor.getString(1), "Messi");
+        assertTrue(cursor.moveToNext());
+        assertEquals(cursor.getString(1), "Kaka");
+        assertFalse(cursor.moveToNext());
+
+        assertTrue(paging.getPageNumber() == 1);
+        cursor.close();
+    }
+
+    public void testPaging_Query_PageNumber_IEntityList(){
+        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        assertTrue(paging.getRowLimit() == 2);
+
+        PersonWithJobList personList = new PersonWithJobList();
+
+        // #2
+        paging.query(1, personList);
+        assertTrue(personList.size() == 2);
+        assertEquals(personList.get(0).getName(), "Messi");
+        assertEquals(personList.get(1).getName(), "Kaka");
+        assertTrue(paging.getPageNumber() == 1);
+    }
+
+
+    public void testPaging_WithJoin(){
         IQuery.Paging paging = db.get("Person P")
                 .join("Jobs J", "J.Id = P.JobId")
                 .select()
@@ -126,7 +159,7 @@ public class PaginationTest extends AndroidTestCase {
         assertTrue(personList.get(0).getJobId() == managerId);
         assertTrue(personList.get(1).getName().equalsIgnoreCase("Ronaldo"));
         assertTrue(personList.get(1).getJobId() == guardId);
-        assertTrue(paging.getPageNumber() == 1);
+        assertTrue(paging.getPageNumber() == 0);
         // #2
         paging.query(personList);
         assertTrue(personList.size() == 4);
@@ -136,7 +169,7 @@ public class PaginationTest extends AndroidTestCase {
         assertTrue(personList.get(2).getJobId() == guardId);
         assertTrue(personList.get(3).getName().equalsIgnoreCase("Kaka"));
         assertTrue(personList.get(3).getJobId() == guardId);
-        assertTrue(paging.getPageNumber() == 2);
+        assertTrue(paging.getPageNumber() == 1);
         // #3
         paging.query(personList);
         assertTrue(personList.size() == 6);
@@ -148,14 +181,14 @@ public class PaginationTest extends AndroidTestCase {
         assertTrue(personList.get(4).getJobId() == supervisorId);
         assertTrue(personList.get(5).getName().equalsIgnoreCase("Montolivo"));
         assertTrue(personList.get(5).getJobId() == janitorId);
-        assertTrue(paging.getPageNumber() == 3);
+        assertTrue(paging.getPageNumber() == 2);
 
         paging.query(personList);
         assertTrue(paging.getPageNumber() == 3);
         assertTrue(personList.size() == 6);
 
         paging.query();
-        assertTrue(paging.getPageNumber() == 3);
+        assertTrue(paging.getPageNumber() == 4);
 
         paging.query(5);
         assertTrue(paging.getPageNumber() == 5);

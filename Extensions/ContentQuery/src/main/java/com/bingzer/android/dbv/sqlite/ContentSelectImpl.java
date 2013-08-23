@@ -22,8 +22,6 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
-import com.bingzer.android.dbv.content.*;
-import com.bingzer.android.dbv.content.EntityMapper;
 import com.bingzer.android.dbv.queries.ContentSelectable;
 
 /**
@@ -127,11 +125,10 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
 
 
     static class PagingImpl implements IQuery.Paging, IQuery<Cursor> {
-
-        private final int rowLimit;
-        private final ContentSelectImpl select;
-        private int pageNumber = 0;
         final IConfig config;
+        final int rowLimit;
+        private final ContentSelectImpl select;
+        private int pageNumber = -1;
 
         PagingImpl(IConfig config, ContentSelectImpl select, int rowLimit){
             this.config = config;
@@ -165,44 +162,35 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
         }
 
         @Override
-        public Cursor query(int pageNumber) {
-            ensurePageNumberValid(pageNumber);
-            return query();
+        public Cursor query(){
+            ++pageNumber;
+            return runQuery();
         }
 
         @Override
-        public Cursor query(){
+        public Cursor query(int pageNumber) {
+            ensurePageNumberValid(pageNumber);
+            return runQuery();
+        }
+
+        @Override
+        public <E extends IEntity> void query(int pageNumber, IEntityList<E> entityList) {
+            ensurePageNumberValid(pageNumber);
             select.limitString = new StringBuilder();
             select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
-            Cursor cursor = null;
-            try{
-                cursor = select.query();
-                return cursor;
-            }
-            finally {
-                if (cursor != null && cursor.getCount() > 0)
-                    pageNumber++;
-            }
+            select.query(entityList);
         }
 
         @Override
         public void query(IEntity entity) {
-            final Cursor cursor = query();
-            final IEntity.Mapper mapper = new com.bingzer.android.dbv.content.EntityMapper(config);
-
-            ContentUtils.mapEntityFromCursor(mapper, entity, cursor);
-
-            cursor.close();
+            select.limitString = new StringBuilder();
+            select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
+            select.query(entity);
         }
 
         @Override
         public <E extends IEntity> void query(IEntityList<E> entityList) {
-            final Cursor cursor = query();
-            final IEntity.Mapper mapper = new EntityMapper(config);
-
-            ContentUtils.mapEntityListFromCursor(mapper, entityList, cursor, config.getIdNamingConvention());
-
-            cursor.close();
+            query(++pageNumber, entityList);
         }
 
         int getOffset(){
@@ -213,6 +201,12 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
             if(pageNumber < 0)
                 throw new IllegalArgumentException("PageNumber must be over 0");
             this.pageNumber = pageNumber;
+        }
+
+        Cursor runQuery(){
+            select.limitString = new StringBuilder();
+            select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
+            return select.query();
         }
     }
 }

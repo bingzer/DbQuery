@@ -554,7 +554,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         private final int rowLimit;
         private final SelectImpl select;
-        private int pageNumber = 0;
+        private int pageNumber = -1;
 
         PagingImpl(IConfig config, SelectImpl select, int rowLimit){
             super(config);
@@ -604,26 +604,30 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public Cursor query(){
-            Cursor cursor = null;
-            try{
-                cursor = select.table.raw(toString()).query();
-                return cursor;
-            }
-            finally {
-                if (cursor != null && cursor.getCount() > 0)
-                    pageNumber++;
-            }
+            ++pageNumber;
+            return runQuery();
         }
 
         @Override
         public Cursor query(int pageNumber) {
             ensurePageNumberValid(pageNumber);
-            return query();
+            return runQuery();
+        }
+
+        @Override
+        public <E extends IEntity> void query(int pageNumber, IEntityList<E> entityList) {
+            ensurePageNumberValid(pageNumber);
+            final Cursor cursor = runQuery();
+            final EntityMapper mapper = new EntityMapper(select.table);
+
+            MappingUtil.mapEntityListFromCursor(mapper, entityList, cursor);
+
+            cursor.close();
         }
 
         @Override
         public void query(IEntity entity) {
-            final Cursor cursor = query();
+            final Cursor cursor = runQuery();
             final EntityMapper mapper = new EntityMapper(select.table);
 
             MappingUtil.mapEntityFromCursor(mapper, entity, cursor);
@@ -633,12 +637,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public <E extends IEntity> void query(IEntityList<E> entityList) {
-            final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(select.table);
-
-            MappingUtil.mapEntityListFromCursor(mapper, entityList, cursor);
-
-            cursor.close();
+            query(++pageNumber, entityList);
         }
 
         @Override
@@ -687,5 +686,10 @@ abstract class QueryImpl<T> implements IQuery<T> {
                 throw new IllegalArgumentException("PageNumber must be over 0");
             this.pageNumber = pageNumber;
         }
+
+        Cursor runQuery(){
+            return select.table.raw(toString()).query();
+        }
+
     }
 }

@@ -162,7 +162,7 @@ Teddy       20000.0     Janitor
                 .orderBy("e.name")
                 .groupBy("e.name")
                 .paging(2);
-        assertTrue(paging.getPageNumber() == 0);
+        assertTrue(paging.getPageNumber() == -1);
         /*
         Should produce
 NAME        SUM(SALARY) position
@@ -181,7 +181,7 @@ Teddy       20000.0     Janitor
         //////////////////////////////
         // page #1
         Cursor cursor = paging.query();
-        assertTrue(paging.getPageNumber() == 1);
+        assertTrue(paging.getPageNumber() == 0);
 
         cursor.moveToNext();
         assertTrue(cursor.getString(0).equals("Allen"));
@@ -196,7 +196,7 @@ Teddy       20000.0     Janitor
         //////////////////////////////
         // page #2
         cursor = paging.query();
-        assertTrue(paging.getPageNumber() == 2);
+        assertTrue(paging.getPageNumber() == 1);
         assertTrue(paging.getRowLimit() == cursor.getCount());
 
         cursor.moveToNext();

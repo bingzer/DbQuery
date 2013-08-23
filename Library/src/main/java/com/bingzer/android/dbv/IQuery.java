@@ -298,6 +298,23 @@ public interface IQuery<T> {
          * @return cursor
          */
         Cursor query(int pageNumber);
+
+        /**
+         * Query and store the result to an {@link com.bingzer.android.dbv.IEntityList}.
+         * Equivalent to calling
+         * <code><pre>
+         *   IPaging paging = ...
+         *   IEntityList list = ...
+         *
+         *   paging.setPageNumber(pageNumber);
+         *   paging.query(list);
+         * </pre></code>
+         * @see IEntityList
+         * @param pageNumber the page number to set
+         * @param entityList IEntityList
+         * @param <E> IEntity
+         */
+        <E extends IEntity> void query(int pageNumber, IEntityList<E> entityList);
     }
 
     ////////////////////////////////////////////////////
