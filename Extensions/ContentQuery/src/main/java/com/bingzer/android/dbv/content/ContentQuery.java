@@ -21,7 +21,6 @@ import android.net.Uri;
 
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.content.impl.Resolver;
 import com.bingzer.android.dbv.queries.EntitySelectable;
 import com.bingzer.android.dbv.queries.Pagination;
 import com.bingzer.android.dbv.sqlite.ContentConfig;

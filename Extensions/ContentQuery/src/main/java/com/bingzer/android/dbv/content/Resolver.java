@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.content.impl;
+package com.bingzer.android.dbv.content;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -29,9 +29,6 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
-import com.bingzer.android.dbv.content.ContentQuery;
-import com.bingzer.android.dbv.content.IResolver;
-import com.bingzer.android.dbv.content.impl.*;
 import com.bingzer.android.dbv.sqlite.*;
 
 import java.util.ArrayList;
@@ -197,6 +194,7 @@ public class Resolver implements IResolver {
         return new ContentInsertImpl().setUri(contentResolver.insert(uri, contents));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IQuery.Insert insert(IEntity entity) {
         // build content values..
@@ -229,6 +227,7 @@ public class Resolver implements IResolver {
         return insert;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <E extends IEntity> IQuery.Insert insert(IEntityList<E> entityList) {
         if(authority == null) throw new IllegalArgumentException("Authority has not been set. Use IResolver.setDefaultAuthority() to set");
@@ -478,4 +477,5 @@ public class Resolver implements IResolver {
     String generateIdString(){
         return config.getIdNamingConvention();
     }
+
 }
