@@ -198,7 +198,7 @@ class Table implements ITable {
     public IQuery.Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            ContentUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+            MappingUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
         }
 
         return insert(contentValues);
@@ -247,7 +247,7 @@ class Table implements ITable {
                 idSetter = action;
             }
             else if(action != null){
-                ContentUtil.mapContentValuesFromAction(contentValues, key, action);
+                MappingUtil.mapContentValuesFromAction(contentValues, key, action);
             }
         }
 
@@ -302,7 +302,7 @@ class Table implements ITable {
     public IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            ContentUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+            MappingUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
         }
 
         return update(contentValues, whereClause, (Object[]) Util.toStringArray(whereArgs));
@@ -322,7 +322,7 @@ class Table implements ITable {
 
             IEntity.Action action = mapper.get(key);
             if (action != null) {
-                ContentUtil.mapContentValuesFromAction(contentValues, key, action);
+                MappingUtil.mapContentValuesFromAction(contentValues, key, action);
             }
         }
 

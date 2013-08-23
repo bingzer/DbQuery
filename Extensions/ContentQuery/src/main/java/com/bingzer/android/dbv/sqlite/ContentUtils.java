@@ -20,28 +20,24 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.content.*;
-
-import java.util.Iterator;
 
 /**
  * Created by Ricky on 8/20/13.
  */
-public class Utils {
+public class ContentUtils {
 
     public static void mapContentValuesFromGenericObject(ContentValues contentValues, String key, Object value){
-        ContentUtil.mapContentValuesFromGenericObject(contentValues, key, value);
+        MappingUtil.mapContentValuesFromGenericObject(contentValues, key, value);
     }
 
 
     public static void mapContentValuesFromAction(ContentValues contentValues, String key, IEntity.Action action){
-        ContentUtil.mapContentValuesFromAction(contentValues, key, action);
+        MappingUtil.mapContentValuesFromAction(contentValues, key, action);
     }
 
     @SuppressWarnings("unchecked")
     public static void mapActionToCursor(IEntity.Action action, Cursor cursor, int index){
-        ContentUtil.mapActionToCursor(action, cursor, index);
+        MappingUtil.mapActionToCursor(action, cursor, index);
     }
 
     public static void mapEntityFromCursor(IEntity.Mapper mapper, IEntity entity, Cursor cursor){
@@ -51,7 +47,7 @@ public class Utils {
                 String columnName = cursor.getColumnName(i);
                 IEntity.Action action = mapper.get(columnName);
                 if(action != null){
-                    ContentUtil.mapActionToCursor(action, cursor, i);
+                    MappingUtil.mapActionToCursor(action, cursor, i);
                 }
             }
         }
@@ -86,7 +82,7 @@ public class Utils {
                 String columnName = cursor.getColumnName(i);
                 IEntity.Action action = mapper.get(columnName);
                 if(action != null){
-                    ContentUtil.mapActionToCursor(action, cursor, i);
+                    MappingUtil.mapActionToCursor(action, cursor, i);
                 }
             }
         }// end while

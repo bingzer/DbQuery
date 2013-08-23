@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.content;
+package com.bingzer.android.dbv.content.impl;
 
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
@@ -23,10 +23,10 @@ import java.util.HashMap;
 /**
  * Created by Ricky Tobing on 8/9/13.
  */
-class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
+public class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
     final IConfig config;
 
-    EntityMapper(IConfig config){
+    public EntityMapper(IConfig config){
         this.config = config;
     }
 

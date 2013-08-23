@@ -38,7 +38,7 @@ public class ContentInsertWithImpl implements IQuery.InsertWith{
     public IQuery<Integer> val(Object... values) {
         ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columnNames.length; i++){
-            ContentUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
+            MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
         }
 
         query.onContentValuesSet(this, contentValues);

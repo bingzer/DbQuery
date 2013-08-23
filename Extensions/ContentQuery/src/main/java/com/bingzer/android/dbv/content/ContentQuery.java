@@ -21,8 +21,10 @@ import android.net.Uri;
 
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.content.impl.Resolver;
 import com.bingzer.android.dbv.queries.EntitySelectable;
 import com.bingzer.android.dbv.queries.Pagination;
+import com.bingzer.android.dbv.sqlite.ContentConfig;
 
 /**
  * ContentQuery allows DbQuery style while
@@ -32,14 +34,14 @@ import com.bingzer.android.dbv.queries.Pagination;
  */
 public final class ContentQuery {
 
-    static final IConfig config = new Config();
+    static final IConfig config = new ContentConfig();
 
     public static IResolver resolve(String uri, Context context){
         return resolve(Uri.parse(uri), context);
     }
 
     public static IResolver resolve(Uri uri, Context context){
-        return new Resolver(new Config(config), uri, context);
+        return new Resolver(new ContentConfig(config), uri, context);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////

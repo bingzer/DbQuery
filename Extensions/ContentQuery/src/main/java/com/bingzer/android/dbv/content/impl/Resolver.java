@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.content;
+package com.bingzer.android.dbv.content.impl;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -29,9 +29,10 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.content.ContentQuery;
+import com.bingzer.android.dbv.content.IResolver;
+import com.bingzer.android.dbv.content.impl.*;
 import com.bingzer.android.dbv.sqlite.*;
-
-import org.apache.http.client.utils.URIUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +42,7 @@ import java.util.Iterator;
  *
  * Created by Ricky on 8/20/13.
  */
-class Resolver implements IResolver {
+public class Resolver implements IResolver {
 
     final IConfig config;
     final Uri uri;
@@ -49,7 +50,7 @@ class Resolver implements IResolver {
     String[] defaultProjections;
     String authority;
 
-    Resolver(IConfig config, Uri uri, Context context){
+    public Resolver(IConfig config, Uri uri, Context context){
         this.contentResolver = context.getContentResolver();
         this.uri = uri;
         this.config = config;
@@ -161,7 +162,7 @@ class Resolver implements IResolver {
     public IQuery.Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            Utils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+            ContentUtils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
         }
 
         return insert(contentValues);
@@ -215,7 +216,7 @@ class Resolver implements IResolver {
                 idSetter = action;
             }
             else if(action != null){
-                Utils.mapContentValuesFromAction(contentValues, key, action);
+                ContentUtils.mapContentValuesFromAction(contentValues, key, action);
             }
         }
 
@@ -254,7 +255,7 @@ class Resolver implements IResolver {
                     idSetters[i] = action;
                 }
                 else if(action != null){
-                    Utils.mapContentValuesFromAction(contentValues, key, action);
+                    ContentUtils.mapContentValuesFromAction(contentValues, key, action);
                 }
             }
 
@@ -374,7 +375,7 @@ class Resolver implements IResolver {
                 final Cursor cursor = query();
                 final EntityMapper mapper = new EntityMapper(config);
 
-                Utils.mapEntityFromCursor(mapper, entity, cursor);
+                ContentUtils.mapEntityFromCursor(mapper, entity, cursor);
 
                 cursor.close();
             }
@@ -385,7 +386,7 @@ class Resolver implements IResolver {
                 final Cursor cursor = query();
                 final EntityMapper mapper = new EntityMapper(config);
 
-                Utils.mapEntityListFromCursor(mapper, entityList, cursor, config.getIdNamingConvention());
+                ContentUtils.mapEntityListFromCursor(mapper, entityList, cursor, config.getIdNamingConvention());
 
                 cursor.close();
             }
@@ -418,7 +419,7 @@ class Resolver implements IResolver {
     public IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            Utils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+            ContentUtils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
         }
         return update(contentValues, whereClause, whereArgs);
     }

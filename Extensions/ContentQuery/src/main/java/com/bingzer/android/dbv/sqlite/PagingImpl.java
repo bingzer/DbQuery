@@ -7,16 +7,16 @@ import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.content.ContentQuery;
+import com.bingzer.android.dbv.content.impl.EntityMapper;
 
-public class PagingImpl implements IQuery.Paging, IQuery<Cursor> {
+class PagingImpl implements IQuery.Paging, IQuery<Cursor> {
 
     private final int rowLimit;
-    private final ContentQuery.Select select;
+    private final ContentSelectImpl select;
     private int pageNumber = 0;
     final IConfig config;
 
-    PagingImpl(IConfig config, ContentQuery.Select select, int rowLimit){
+    PagingImpl(IConfig config, ContentSelectImpl select, int rowLimit){
         this.config = config;
         this.select = select;
         this.rowLimit = rowLimit;
@@ -48,24 +48,36 @@ public class PagingImpl implements IQuery.Paging, IQuery<Cursor> {
     }
 
     @Override
-    public Cursor query(){
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Cursor query(int pageNumber) {
         ensurePageNumberValid(pageNumber);
         return query();
     }
 
     @Override
+    public Cursor query(){
+        select.limitString = new StringBuilder();
+        select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
+        return select.query();
+    }
+
+    @Override
     public void query(IEntity entity) {
-        throw new UnsupportedOperationException();
+        final Cursor cursor = query();
+        final IEntity.Mapper mapper = new com.bingzer.android.dbv.content.impl.EntityMapper(config);
+
+        ContentUtils.mapEntityFromCursor(mapper, entity, cursor);
+
+        cursor.close();
     }
 
     @Override
     public <E extends IEntity> void query(IEntityList<E> entityList) {
-        throw new UnsupportedOperationException();
+        final Cursor cursor = query();
+        final IEntity.Mapper mapper = new EntityMapper(config);
+
+        ContentUtils.mapEntityListFromCursor(mapper, entityList, cursor, config.getIdNamingConvention());
+
+        cursor.close();
     }
 
     int getOffset(){

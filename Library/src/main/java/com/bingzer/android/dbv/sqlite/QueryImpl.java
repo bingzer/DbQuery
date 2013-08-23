@@ -124,7 +124,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(table);
 
-            ContentUtil.mapEntityFromCursor(mapper, entity, cursor);
+            MappingUtil.mapEntityFromCursor(mapper, entity, cursor);
 
             cursor.close();
         }
@@ -135,7 +135,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(table);
 
-            ContentUtil.mapEntityListFromCursor(mapper, entityList, cursor);
+            MappingUtil.mapEntityListFromCursor(mapper, entityList, cursor);
 
             cursor.close();
         }
@@ -221,7 +221,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
         public IQuery<Integer> val(Object... values) {
             ContentValues contentValues = new ContentValues();
             for(int i = 0; i < columnNames.length; i++){
-                ContentUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
+                MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
             }
 
             ((ContentSet) query).onContentValuesSet(this, contentValues);
@@ -626,7 +626,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(select.table);
 
-            ContentUtil.mapEntityFromCursor(mapper, entity, cursor);
+            MappingUtil.mapEntityFromCursor(mapper, entity, cursor);
 
             cursor.close();
         }
@@ -636,7 +636,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(select.table);
 
-            ContentUtil.mapEntityListFromCursor(mapper, entityList, cursor);
+            MappingUtil.mapEntityListFromCursor(mapper, entityList, cursor);
 
             cursor.close();
         }

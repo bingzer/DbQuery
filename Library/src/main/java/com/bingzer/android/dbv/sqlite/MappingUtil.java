@@ -18,14 +18,13 @@ package com.bingzer.android.dbv.sqlite;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 
 /**
  * Created by Ricky on 8/9/13.
  */
-class ContentUtil {
+class MappingUtil {
 
     static void mapContentValuesFromGenericObject(ContentValues contentValues, String key, Object value){
         if(value instanceof String) contentValues.put(key, (String) value);
@@ -83,7 +82,7 @@ class ContentUtil {
                 String columnName = cursor.getColumnName(i);
                 IEntity.Action action = mapper.get(columnName);
                 if(action != null){
-                    ContentUtil.mapActionToCursor(action, cursor, i);
+                    MappingUtil.mapActionToCursor(action, cursor, i);
                 }
             }
         }
@@ -118,7 +117,7 @@ class ContentUtil {
                 String columnName = cursor.getColumnName(i);
                 IEntity.Action action = mapper.get(columnName);
                 if(action != null){
-                    ContentUtil.mapActionToCursor(action, cursor, i);
+                    MappingUtil.mapActionToCursor(action, cursor, i);
                 }
             }
         }// end while

@@ -27,6 +27,7 @@ public abstract class ContentSelectImpl implements ContentQuery.Select, ContentQ
     final IConfig config;
     StringBuilder columnString;
     StringBuilder limitString;
+    String sortOrderString;
     String orderByString;
     String whereString;
     Object[] whereArgs;
@@ -63,7 +64,7 @@ public abstract class ContentSelectImpl implements ContentQuery.Select, ContentQ
 
     @Override
     public Paging paging(int row) {
-        return new PagingImpl(config, null, row);
+        return new PagingImpl(config, this, row);
     }
 
     public ContentSelectImpl where(String whereClause, Object... args){
