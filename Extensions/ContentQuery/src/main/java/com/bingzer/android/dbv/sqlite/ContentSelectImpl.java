@@ -30,17 +30,17 @@ import com.bingzer.android.dbv.content.EntityMapper;
  * Created by Ricky on 8/20/13.
  */
 public abstract class ContentSelectImpl implements ContentQuery.Select, ContentQuery.Select.OrderBy {
-    final IConfig config;
+    final ContentConfig config;
     StringBuilder columnString;
     StringBuilder limitString;
     String orderByString;
     String whereString;
     Object[] whereArgs;
 
-    public ContentSelectImpl(IConfig config, int top, String... projections){
+    public ContentSelectImpl(ContentConfig config, int top){
         this.config = config;
         this.columnString = new StringBuilder();
-        this.columnString.append(Util.join(", ", projections));
+        this.columnString.append(Util.join(", ", config.getDefaultProjections()));
 
         if(top > 0) {
             limitString = new StringBuilder();

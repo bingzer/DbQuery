@@ -19,8 +19,8 @@ public class ContentPagingTest extends AndroidTestCase {
     @Override
     public void setUp(){
         resolver = ContentQuery.resolve(UserDictionary.Words.CONTENT_URI, getContext());
-        resolver.setDefaultProjections("_id", "word");
-        resolver.setDefaultAuthority(UserDictionary.AUTHORITY);
+        resolver.getConfig().setDefaultProjections("_id", "word");
+        resolver.getConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
         resolver.delete("word IN (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo").query();
 
         baloteliId = insertToDictionary("Baloteli");

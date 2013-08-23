@@ -26,8 +26,8 @@ public class ContentTest extends AndroidTestCase {
     @Override
     public void setUp(){
         resolver = ContentQuery.resolve(UserDictionary.Words.CONTENT_URI, getContext());
-        resolver.setDefaultProjections("_id", "word");
-        resolver.setDefaultAuthority(UserDictionary.AUTHORITY);
+        resolver.getConfig().setDefaultProjections("_id", "word");
+        resolver.getConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
         resolver.delete("word IN (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo").query();
 
         baloteliId = insertToDictionary("Baloteli");
@@ -46,6 +46,7 @@ public class ContentTest extends AndroidTestCase {
     @Override
     public void tearDown(){
         resolver.delete(baloteliId, pirloId, kakaId, messiId, ronaldoId);
+        resolver.delete("word like ?", "%-Updated");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +84,31 @@ public class ContentTest extends AndroidTestCase {
 
     ///////////////////////////////////////////////////////////////////////////////////
 
-    public void testSelectId(){
+    public void testCount(){
+        assertTrue(resolver.count() > 0);
+    }
+
+    public void testCount_Condition(){
+        assertEquals(1, resolver.count("word = 'Baloteli'"));
+        assertEquals(0, resolver.count("word = 'sdfsdfsdf'"));
+        assertEquals(2, resolver.count("word in ('Baloteli', 'Messi')"));
+
+        assertFalse(resolver.count("word not null") == -1);
+        assertFalse(resolver.count("word not null") == 0);
+    }
+
+    public void testCount_WhereClause(){
+        assertEquals(1, resolver.count("word = ?", "Ronaldo"));
+        assertEquals(0, resolver.count("word = 'sdfsdfsdf'"));
+        assertEquals(5, resolver.count("word in (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo"));
+
+        assertFalse(resolver.count("word not null") == -1);
+        assertFalse(resolver.count("word not null") == 0);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    public void testSelect_Id(){
         Cursor cursor = resolver.select(baloteliId).query();
         if(cursor.moveToNext()){
             assertTrue(cursor.getInt(0) > 0);
@@ -182,7 +207,7 @@ public class ContentTest extends AndroidTestCase {
         cursor.close();
     }
 
-    public void testSelect_GroupBy(){
+    public void testSelect_OrderBy(){
         boolean foundBaloteli = false;
         boolean foundPirlo = false;
         boolean foundKaka = false;
@@ -191,7 +216,7 @@ public class ContentTest extends AndroidTestCase {
         Cursor cursor = resolver
                 .select()
                 .columns("word")
-                .orderBy("word")
+                .orderBy("_id")
                 .query();
         while(cursor.moveToNext()){
             int index = cursor.getColumnIndex(UserDictionary.Words.WORD);
@@ -205,6 +230,62 @@ public class ContentTest extends AndroidTestCase {
         }
 
         assertTrue(foundBaloteli && foundPirlo && foundKaka && foundMessi && foundRonaldo);
+    }
+
+
+    public void testSelect_OrderBy2(){
+        Cursor cursor = resolver
+                .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
+                .columns("word")
+                .orderBy("word")
+                .query();
+
+        assertTrue(cursor.getCount() == 5);
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Baloteli", cursor.getString(0));
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Kaka", cursor.getString(0));
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Messi", cursor.getString(0));
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Pirlo", cursor.getString(0));
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Ronaldo", cursor.getString(0));
+
+        cursor.close();
+    }
+
+
+    public void testSelect_OrderBy3(){
+        Cursor cursor = resolver
+                .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
+                .columns("word")
+                .orderBy("word desc")
+                .query();
+
+        assertTrue(cursor.getCount() == 5);
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Ronaldo", cursor.getString(0));
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Pirlo", cursor.getString(0));
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Messi", cursor.getString(0));
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Kaka", cursor.getString(0));
+
+        assertTrue(cursor.moveToNext());
+        assertEquals("Baloteli", cursor.getString(0));
+
+        cursor.close();
     }
 
     public void selectId_Condition(){
@@ -279,7 +360,124 @@ public class ContentTest extends AndroidTestCase {
     public void testInsertWith_Columns(){
         assertTrue(resolver.insert("word").val("ABCDEFG").query() > 0);
         assertTrue(resolver.has("word = ?", "ABCDEFG"));
+
+        assertTrue(resolver.delete("word = ? ", "ABCDEFG").query() > 0);
+        assertFalse(resolver.has("word = ?", "ABCDEFG"));
     }
+
+    public void testInsert_Array(){
+        assertTrue(resolver.insert(new String[]{"word"}, new Object[]{"ABCDEFG"}).query() > 0);
+        assertTrue(resolver.has("word = ?", "ABCDEFG"));
+
+        assertTrue(resolver.delete("word = ? ", "ABCDEFG").query() > 0);
+        assertFalse(resolver.has("word = ?", "ABCDEFG"));
+    }
+
+    /////////////////////////////// Update /////////////////////////////////////
+
+    public void testUpdate_ContentValues_Id(){
+        assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
+
+        ContentValues values = new ContentValues();
+        values.put("word", "Baloteli-Updated");
+        assertTrue(resolver.update(values, baloteliId).query() == 1);
+
+        assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
+    }
+
+    public void testUpdate_ContentValues_WhereClause(){
+        assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
+
+        ContentValues values = new ContentValues();
+        values.put("word", "Baloteli-Updated");
+        assertTrue(resolver.update(values, "_id = ?", baloteliId).query() == 1);
+
+        assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
+    }
+
+    public void testUpdate_IEntity(){
+        assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
+
+        Word word = new Word("Baloteli-Updated");
+        word.setId(baloteliId);
+        assertTrue(resolver.update(word).query() > 0);
+
+        assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
+    }
+
+    public void testUpdate_IEntityList(){
+        assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
+        assertFalse(resolver.has("word = ?", "Messi-Updated"));
+        assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
+
+        WordList list = new WordList();
+        resolver.select(baloteliId, messiId, ronaldoId).orderBy("_id").query(list);
+        assertTrue(list.size() == 3);
+
+        list.get(0).setWord("Baloteli-Updated");
+        list.get(1).setWord("Messi-Updated");
+        list.get(2).setWord("Ronaldo-Updated");
+
+        assertTrue(resolver.update(list).query() == 3);
+        assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
+        assertTrue(resolver.has("word = ?", "Messi-Updated"));
+        assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
+    }
+
+    public void testUpdate_ColumnValue_Id(){
+        assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
+
+        assertTrue(resolver.update("word", "Ronaldo-Updated", ronaldoId).query() == 1);
+
+        assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
+    }
+
+    public void testUpdate_ColumnValue_Condition(){
+        assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
+        assertFalse(resolver.has("word = ?", "Messi-Updated"));
+
+        assertTrue(resolver.update("word", "Baloteli-Updated", "word = 'Baloteli'").query() == 1);
+        assertTrue(resolver.update("word", "Messi-Updated", "_id = " + messiId).query() == 1);
+
+        assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
+        assertTrue(resolver.has("word = ?", "Messi-Updated"));
+    }
+
+    public void testUpdate_ColumnValue_WhereClause(){
+        assertFalse(resolver.has("word = ?", "Pirlo-Updated"));
+        assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
+
+        assertTrue(resolver.update("word", "Pirlo-Updated", "word = ?", "Pirlo").query() == 1);
+        assertTrue(resolver.update("word", "Ronaldo-Updated", "_id = ?", ronaldoId).query() == 1);
+
+        assertTrue(resolver.has("word = ?", "Pirlo-Updated"));
+        assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
+    }
+
+    public void testUpdate_ColumnsValues_Condition(){
+        assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
+        assertFalse(resolver.has("word = ?", "Messi-Updated"));
+
+        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Baloteli-Updated"}, "word = 'Baloteli'").query() == 1);
+        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Messi-Updated"}, "_id = " + messiId).query() == 1);
+
+        assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
+        assertTrue(resolver.has("word = ?", "Messi-Updated"));
+    }
+
+    public void testUpdate_ColumnsValues_WhereClause(){
+        assertFalse(resolver.has("word = ?", "Pirlo-Updated"));
+        assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
+
+        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Pirlo-Updated"}, "word = ?", "Pirlo").query() == 1);
+        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Ronaldo-Updated"}, "_id = ?", ronaldoId).query() == 1);
+
+        assertTrue(resolver.has("word = ?", "Pirlo-Updated"));
+        assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
+    }
+
+
+
 
     /////////////////////////////// IEntity & IEntityList /////////////////////////////////////
 

@@ -30,18 +30,18 @@ public class ResolverTest extends AndroidTestCase {
     }
 
     public void testGetDefaultProjections(){
-        assertNotNull(resolver.getDefaultProjections());
-        assertTrue(resolver.getDefaultProjections().length > 0);
-        assertEquals(resolver.getDefaultProjections()[0], resolver.getConfig().getIdNamingConvention());
+        assertNotNull(resolver.getConfig().getDefaultProjections());
+        assertTrue(resolver.getConfig().getDefaultProjections().length > 0);
+        assertEquals(resolver.getConfig().getDefaultProjections()[0], resolver.getConfig().getIdNamingConvention());
     }
 
     public void testGetAuthority(){
         // defaults
-        assertNull(resolver.getDefaultAuthority());
+        assertNull(resolver.getConfig().getDefaultAuthority());
 
-        resolver.setDefaultAuthority("MyAuthority");
-        assertNotNull(resolver.getDefaultAuthority());
-        assertEquals("MyAuthority", resolver.getDefaultAuthority());
+        resolver.getConfig().setDefaultAuthority("MyAuthority");
+        assertNotNull(resolver.getConfig().getDefaultAuthority());
+        assertEquals("MyAuthority", resolver.getConfig().getDefaultAuthority());
     }
 
     /////////////////////// config /////////////////////////////////

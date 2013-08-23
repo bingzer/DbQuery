@@ -26,6 +26,7 @@ import com.bingzer.android.dbv.queries.SelectIdentifiable;
 import com.bingzer.android.dbv.queries.Selectable;
 import com.bingzer.android.dbv.queries.Tangible;
 import com.bingzer.android.dbv.queries.Updatable;
+import com.bingzer.android.dbv.sqlite.ContentConfig;
 
 /**
  * Created by Ricky Tobing on 8/20/13.
@@ -34,7 +35,7 @@ public interface IResolver extends
         ContentSelectable,
         SelectIdentifiable,
         Insertable, Updatable, Deletable,
-        Tangible /*, Countable*/{
+        Tangible, Countable{
 
     /**
      * Returns the URI
@@ -46,33 +47,5 @@ public interface IResolver extends
      * Returns the default config
      * @return the config
      */
-    IConfig getConfig();
-
-    /**
-     * Sets the default projections (columns) unless if otherwise
-     * specified with {@link com.bingzer.android.dbv.IQuery.Select#columns(String...)}
-     * in a select statement.
-     * By default the default projections is
-     * {@link com.bingzer.android.dbv.IConfig#getIdNamingConvention()}
-     * @param columns the columns to set
-     */
-    void setDefaultProjections(String... columns);
-
-    /**
-     * Returns the default projections
-     * @return projections
-     */
-    String[] getDefaultProjections();
-
-    /**
-     * Sets the default <code>Authority</code>
-     * @param authority authority to set
-     */
-    void setDefaultAuthority(String authority);
-
-    /**
-     * Returns the <code>authority</code>
-     * @return Authority
-     */
-    String getDefaultAuthority();
+    ContentConfig getConfig();
 }

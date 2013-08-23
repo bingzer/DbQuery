@@ -31,6 +31,7 @@ import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.sqlite.*;
 
+import java.net.CacheRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -41,18 +42,14 @@ import java.util.Iterator;
  */
 public class Resolver implements IResolver {
 
-    final IConfig config;
+    final ContentConfig config;
     final Uri uri;
     final ContentResolver contentResolver;
-    String[] defaultProjections;
-    String authority;
 
-    public Resolver(IConfig config, Uri uri, Context context){
+    public Resolver(ContentConfig config, Uri uri, Context context){
         this.contentResolver = context.getContentResolver();
         this.uri = uri;
         this.config = config;
-        // default projections from cnofig.getIdNamingConvention()
-        setDefaultProjections();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,30 +60,8 @@ public class Resolver implements IResolver {
     }
 
     @Override
-    public IConfig getConfig() {
+    public ContentConfig getConfig() {
         return config;
-    }
-
-    @Override
-    public void setDefaultProjections(String... columns) {
-        if(columns == null || columns.length == 0)
-            defaultProjections = new String[] { config.getIdNamingConvention() };
-        else defaultProjections = columns;
-    }
-
-    @Override
-    public String[] getDefaultProjections() {
-        return defaultProjections;
-    }
-
-    @Override
-    public void setDefaultAuthority(String authority) {
-        this.authority = authority;
-    }
-
-    @Override
-    public String getDefaultAuthority() {
-        return authority;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +205,8 @@ public class Resolver implements IResolver {
     @SuppressWarnings("unchecked")
     @Override
     public <E extends IEntity> IQuery.Insert insert(IEntityList<E> entityList) {
-        if(authority == null) throw new IllegalArgumentException("Authority has not been set. Use IResolver.setDefaultAuthority() to set");
+        if(config.getDefaultAuthority() == null)
+            throw new IllegalArgumentException("Authority has not been set. Use ContentConfig.setDefaultAuthority() to set");
 
         final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
         final IEntity.Action[] idSetters = new IEntity.Action[entityList.getEntityList().size()];
@@ -266,7 +242,8 @@ public class Resolver implements IResolver {
         }
 
         try{
-            ContentProviderResult[] results = contentResolver.applyBatch(authority, operationList);
+            ContentProviderResult[] results =
+                    contentResolver.applyBatch(getConfig().getDefaultAuthority(), operationList);
             for(int i = 0; i < results.length; i++){
                 idSetters[i].set(UriUtil.parseIdFromUri(results[i].uri));
                 uriStrings[i] = results[i].uri.toString();
@@ -359,7 +336,7 @@ public class Resolver implements IResolver {
 
     @Override
     public ContentQuery.Select select(final int top, final String whereClause, final Object... args) {
-        return new ContentSelectImpl(config, top, defaultProjections) {
+        return new ContentSelectImpl(config, top) {
             @Override
             public Cursor query() {
                 String[] projections = getProjections();
@@ -438,12 +415,74 @@ public class Resolver implements IResolver {
 
     @Override
     public IQuery.Update update(IEntity entity) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
+
+        final EntityMapper mapper = new EntityMapper(config);
+        final ContentValues contentValues = new ContentValues();
+        entity.map(mapper);
+
+        for (String key : mapper.keySet()) {
+            // ignore if "Id"
+            if (key.equalsIgnoreCase(generateIdString())) continue;
+
+            IEntity.Action action = mapper.get(key);
+            if (action != null) {
+                ContentUtils.mapContentValuesFromAction(contentValues, key, action);
+            }
+        }
+
+        return update(contentValues, entity.getId());
     }
 
     @Override
     public <E extends IEntity> IQuery.Update update(IEntityList<E> entityList) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        if(getConfig().getDefaultAuthority() == null)
+            throw new IllegalArgumentException("Authority has not been set. Use IResolver.setDefaultAuthority() to set");
+
+        final ContentUpdateImpl query = new ContentUpdateImpl();
+        final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
+
+        for(int i = 0; i < entityList.getEntityList().size(); i++){
+            final IEntity entity = entityList.getEntityList().get(i);
+            // build content values..
+            final EntityMapper mapper = new EntityMapper(config);
+            final ContentValues contentValues = new ContentValues();
+            entity.map(mapper);
+
+            Iterator<String> keys = mapper.keySet().iterator();
+            String idString = generateIdString();
+            while(keys.hasNext()){
+                String key = keys.next();
+                IEntity.Action action = mapper.get(key);
+
+                // ignore if column = "Id"
+                if(!key.equalsIgnoreCase(idString)) {
+                    ContentUtils.mapContentValuesFromAction(contentValues, key, action);
+                }
+            }
+
+            ContentProviderOperation operation =
+                    ContentProviderOperation.newUpdate(uri)
+                            .withValues(contentValues)
+                            .withSelection(generateParamId(entity.getId()), null)
+                            .build();
+            operationList.add(operation);
+        }
+
+        try{
+            int count = 0;
+            ContentProviderResult[] results =
+                    contentResolver.applyBatch(getConfig().getDefaultAuthority(), operationList);
+            for(ContentProviderResult result : results){
+                count += result.count;
+            }
+            query.val(count);
+        }
+        catch (Exception e){
+            throw new Error(e);
+        }
+
+        return query;
     }
 
     @Override
@@ -468,6 +507,32 @@ public class Resolver implements IResolver {
         }
     }
 
+    @Override
+    public int count() {
+        return count(null);
+    }
+
+    @Override
+    public int count(String condition) {
+        return count(condition, (Object)null);
+    }
+
+    @Override
+    public int count(String whereClause, Object... whereArgs) {
+        int count = -1;
+        Cursor cursor = null;
+        try{
+            cursor = select(whereClause, whereArgs).columns(config.getIdNamingConvention()).query();
+            count = cursor.getCount();
+        }
+        finally {
+            if(cursor != null)
+                cursor.close();
+        }
+
+        return count;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     String generateParamId(int id){
@@ -477,5 +542,4 @@ public class Resolver implements IResolver {
     String generateIdString(){
         return config.getIdNamingConvention();
     }
-
 }

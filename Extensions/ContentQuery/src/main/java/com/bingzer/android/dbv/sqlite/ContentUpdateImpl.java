@@ -25,11 +25,6 @@ public class ContentUpdateImpl extends QueryImpl.UpdateImpl {
         return this;
     }
 
-    public ContentUpdateImpl where(String whereClause, Object... whereArgs){
-
-        return this;
-    }
-
     public int value(){
         return value;
     }

@@ -33,7 +33,7 @@ import com.bingzer.android.dbv.sqlite.ContentConfig;
  */
 public final class ContentQuery {
 
-    static final IConfig config = new ContentConfig();
+    static final ContentConfig config = new ContentConfig();
 
     public static IResolver resolve(String uri, Context context){
         return resolve(Uri.parse(uri), context);
