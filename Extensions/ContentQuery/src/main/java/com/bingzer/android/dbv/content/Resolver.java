@@ -122,12 +122,16 @@ public class Resolver implements IResolver {
 
     @Override
     public IQuery.Delete delete(IEntity entity) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        return delete(entity.getId());
     }
 
     @Override
     public <E extends IEntity> IQuery.Delete delete(IEntityList<E> entityList) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        int[] ids = new int[entityList.getEntityList().size()];
+        for(int i = 0; i < ids.length; i++){
+            ids[i] = entityList.getEntityList().get(i).getId();
+        }
+        return delete(ids);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.bingzer.android.dbv.content.ContentQuery;
 import com.bingzer.android.dbv.content.IResolver;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -476,6 +477,92 @@ public class ContentTest extends AndroidTestCase {
         assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
     }
 
+    /////////////////////////////// Delete /////////////////////////////////////
+
+    public void testDelete_Id(){
+        assertTrue(resolver.has(baloteliId));
+
+        assertTrue(resolver.delete(baloteliId).query() == 1);
+
+        assertFalse(resolver.has(baloteliId));
+    }
+
+    public void testDelete_Ids(){
+        assertTrue(resolver.has(baloteliId));
+        assertTrue(resolver.has(messiId));
+
+        assertTrue(resolver.delete(baloteliId, messiId).query() == 2);
+
+        assertFalse(resolver.has(baloteliId));
+        assertFalse(resolver.has(messiId));
+    }
+
+    public void testDelete_IdList(){
+        assertTrue(resolver.has(baloteliId));
+        assertTrue(resolver.has(messiId));
+        assertTrue(resolver.has(kakaId));
+
+        List<Integer> list = new LinkedList<Integer>();
+        list.add(baloteliId);
+        list.add(messiId);
+        list.add(kakaId);
+
+        assertTrue(resolver.delete(list).query() == 3);
+
+        assertFalse(resolver.has(baloteliId));
+        assertFalse(resolver.has(messiId));
+        assertFalse(resolver.has(kakaId));
+    }
+
+    public void testDelete_Condition(){
+        assertTrue(resolver.has(baloteliId));
+        assertTrue(resolver.has(messiId));
+        assertTrue(resolver.has(kakaId));
+
+        assertTrue(resolver.delete("word = 'Baloteli' or word = 'Messi' or word = 'Kaka'").query() == 3);
+
+        assertFalse(resolver.has(baloteliId));
+        assertFalse(resolver.has(messiId));
+        assertFalse(resolver.has(kakaId));
+    }
+
+    public void testDelete_WhereClause(){
+        assertTrue(resolver.has(baloteliId));
+        assertTrue(resolver.has(messiId));
+        assertTrue(resolver.has(kakaId));
+
+        assertTrue(resolver.delete("word = ? or _id = ? or word = ?", "Baloteli", messiId, "Kaka").query() == 3);
+
+        assertFalse(resolver.has(baloteliId));
+        assertFalse(resolver.has(messiId));
+        assertFalse(resolver.has(kakaId));
+    }
+
+    public void testDelete_IEntity(){
+        assertTrue(resolver.has(baloteliId));
+        Word word = new Word("Baloteli");
+        word.setId(baloteliId);
+
+        assertTrue(resolver.delete(word).query() == 1);
+
+        assertFalse(resolver.has(baloteliId));
+    }
+
+    public void testDelete_IEntityList(){
+        assertTrue(resolver.has(baloteliId));
+        assertTrue(resolver.has(messiId));
+        assertTrue(resolver.has(kakaId));
+
+        WordList list = new WordList();
+        list.add(new Word(baloteliId, "Baloteli"));
+        list.add(new Word(messiId, "Messi"));
+        list.add(new Word(kakaId, "Kaka"));
+        assertTrue(resolver.delete(list).query() == 3);
+
+        assertFalse(resolver.has(baloteliId));
+        assertFalse(resolver.has(messiId));
+        assertFalse(resolver.has(kakaId));
+    }
 
 
 
@@ -528,6 +615,11 @@ public class ContentTest extends AndroidTestCase {
         }
 
         Word(String word){
+            this(-1, word);
+        }
+
+        Word(int id, String word){
+            this.id = id;
             this.word = word;
         }
 
