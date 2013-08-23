@@ -8,22 +8,22 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.content.ContentQuery;
-import com.bingzer.android.dbv.content.IResolver;
+import com.bingzer.android.dbv.content.IStrictResolver;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Ricky on 8/21/13.
+ * Created by Ricky Tobing on 8/23/13.
  */
-public class ContentTest extends AndroidTestCase {
+public class ContentStrictTest extends AndroidTestCase {
 
-    IResolver resolver;
+    IStrictResolver resolver;
     int baloteliId, pirloId, kakaId, messiId, ronaldoId;
 
     @Override
     public void setUp(){
-        resolver = ContentQuery.resolve(UserDictionary.Words.CONTENT_URI, getContext());
+        resolver = ContentQuery.strictlyResolve(UserDictionary.Words.CONTENT_URI, getContext());
         resolver.getConfig().setDefaultProjections("_id", "word");
         resolver.getConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
         resolver.delete("word IN (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo").query();
@@ -599,9 +599,6 @@ public class ContentTest extends AndroidTestCase {
             assertNotNull(w.getWord());
         }
     }
-
-
-
 
 
 

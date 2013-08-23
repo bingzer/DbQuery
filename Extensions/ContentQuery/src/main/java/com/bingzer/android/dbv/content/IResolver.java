@@ -15,37 +15,10 @@
  */
 package com.bingzer.android.dbv.content;
 
-import android.net.Uri;
-
-import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.queries.ContentSelectable;
-import com.bingzer.android.dbv.queries.Countable;
-import com.bingzer.android.dbv.queries.Deletable;
-import com.bingzer.android.dbv.queries.Insertable;
-import com.bingzer.android.dbv.queries.SelectIdentifiable;
-import com.bingzer.android.dbv.queries.Selectable;
-import com.bingzer.android.dbv.queries.Tangible;
-import com.bingzer.android.dbv.queries.Updatable;
-import com.bingzer.android.dbv.sqlite.ContentConfig;
 
 /**
  * Created by Ricky Tobing on 8/20/13.
  */
-public interface IResolver extends
-        ContentSelectable,
-        SelectIdentifiable,
-        Insertable, Updatable, Deletable,
-        Tangible, Countable{
-
-    /**
-     * Returns the URI
-     * @return the URI
-     */
-    Uri getUri();
-
-    /**
-     * Returns the default config
-     * @return the config
-     */
-    ContentConfig getConfig();
+public interface IResolver extends IBaseResolver, ContentSelectable{
 }

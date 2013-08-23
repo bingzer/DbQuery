@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.content;
 
-import android.net.Uri;
+import com.bingzer.android.dbv.queries.ContentStrictSelectable;
 
 /**
- * Created by Ricky on 8/21/13.
+ * Created by Ricky Tobing on 8/23/13.
  */
-public class UriUtil {
-
-    public static int parseIdFromUri(Uri uri){
-        String uriString = uri.toString();
-        String valueString = uriString.substring(uriString.lastIndexOf("/") + 1, uriString.length());
-        try{
-            return Integer.parseInt(valueString);
-        }
-        catch (NumberFormatException e){
-            return -1;
-        }
-    }
-
+public interface IStrictResolver extends IBaseResolver, ContentStrictSelectable {
 }

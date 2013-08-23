@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.sqlite;
 
 import android.database.Cursor;
@@ -25,11 +24,12 @@ import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.content.*;
 import com.bingzer.android.dbv.content.EntityMapper;
+import com.bingzer.android.dbv.queries.ContentSelectable;
 
 /**
  * Created by Ricky on 8/20/13.
  */
-public abstract class ContentSelectImpl implements ContentQuery.Select, ContentQuery.Select.OrderBy {
+public abstract class ContentSelectImpl implements ContentSelectable.Select, ContentSelectable.Select.OrderBy {
     final ContentConfig config;
     StringBuilder columnString;
     StringBuilder limitString;
@@ -108,7 +108,7 @@ public abstract class ContentSelectImpl implements ContentQuery.Select, ContentQ
 
     /**
      * Order by
-     * @return
+     * @return sorting order as string
      */
     public String getSortingOrder(){
         StringBuilder sortingOrder = new StringBuilder();

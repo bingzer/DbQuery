@@ -33,5 +33,7 @@ class TestUsage {
         IDatabase db = DbQuery.getDatabase("");
 
         IResolver resolver = ContentQuery.resolve(uri, context);
+
+        IStrictResolver strictResolver = ContentQuery.strictlyResolve(uri, context);
     }
 }

@@ -22,16 +22,15 @@ import android.net.Uri;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.sqlite.ContentConfig;
-import com.bingzer.android.dbv.sqlite.ContentSelectImpl;
+import com.bingzer.android.dbv.sqlite.ContentStrictSelectImpl;
 import com.bingzer.android.dbv.sqlite.ContentUtils;
 
 /**
- *
- * Created by Ricky on 8/20/13.
+ * Created by Ricky Tobing on 8/23/13.
  */
-class Resolver extends BaseResolver implements IResolver {
+class StrictResolver extends BaseResolver implements IStrictResolver{
 
-    Resolver(ContentConfig config, Uri uri, Context context){
+    StrictResolver(ContentConfig config, Uri uri, Context context){
         super(config, uri, context);
     }
 
@@ -81,16 +80,11 @@ class Resolver extends BaseResolver implements IResolver {
         return count;
     }
 
-    ///////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public Select select(int id) {
         return select(generateParamId(id));
-    }
-
-    @Override
-    public Select select(String condition) {
-        return select(-1, condition);
     }
 
     @Override
@@ -99,8 +93,8 @@ class Resolver extends BaseResolver implements IResolver {
     }
 
     @Override
-    public Select select(String whereClause, Object... args) {
-        return select(-1, whereClause, args);
+    public Select select(String condition) {
+        return select(-1, condition);
     }
 
     @Override
@@ -126,8 +120,13 @@ class Resolver extends BaseResolver implements IResolver {
     }
 
     @Override
-    public Select select(final int top, final String whereClause, final Object... args) {
-        return new ContentSelectImpl(config, top) {
+    public Select select(String whereClause, Object... args) {
+        return select(-1, whereClause, args);
+    }
+
+    @Override
+    public Select select(int top, String whereClause, Object... args) {
+        return new ContentStrictSelectImpl(config, top) {
             @Override
             public Cursor query() {
                 String[] projections = getProjections();
@@ -159,5 +158,4 @@ class Resolver extends BaseResolver implements IResolver {
             }
         }.where(whereClause, args);
     }
-
 }

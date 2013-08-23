@@ -18,12 +18,11 @@ package com.bingzer.android.dbv.queries;
 import android.database.Cursor;
 
 import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.content.ContentQuery;
 
 /**
- * Created by Ricky on 8/22/13.
+ * Created by Ricky Tobing on 8/23/13.
  */
-public interface ContentSelectable {
+public interface ContentStrictSelectable {
 
     /**
      * Select top (x) add the specified condition
@@ -79,7 +78,7 @@ public interface ContentSelectable {
      *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
      * </p>
      */
-    public static interface Select extends IQuery<Cursor>, EntitySelectable, Pagination  {
+    public static interface Select extends IQuery<Cursor>, EntitySelectable  {
 
         /**
          * Specified the column to return.
@@ -87,7 +86,7 @@ public interface ContentSelectable {
          * @param columns column names
          * @return {@link Select}
          */
-        ContentSelectable.Select columns(String... columns);
+        ContentStrictSelectable.Select columns(String... columns);
 
         /**
          * Order by. To create multiple orderBy ASC or DESC or both,
@@ -100,12 +99,12 @@ public interface ContentSelectable {
          * @param columns column names
          * @return {@link Select}
          */
-        ContentSelectable.Select.OrderBy orderBy(String... columns);
+        ContentStrictSelectable.Select.OrderBy orderBy(String... columns);
 
         /**
          * Order By
          */
-        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable, Pagination {
+        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable {
 
         }
 
