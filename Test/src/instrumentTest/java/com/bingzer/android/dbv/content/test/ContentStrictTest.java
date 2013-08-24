@@ -143,22 +143,6 @@ public class ContentStrictTest extends AndroidTestCase {
         cursor.close();
     }
 
-    public void testSelect_Top_Condition(){
-        Cursor cursor = resolver.select(2, "word not null").query();
-        assertTrue(cursor.getCount() == 2);
-        cursor.close();
-    }
-
-    public void testSelect_Top_WhereClause(){
-        Cursor cursor = resolver.select(1, "word = ?", "Baloteli").query();
-        assertTrue(cursor.getCount() == 1);
-        cursor.close();
-
-        cursor = resolver.select(2, "word in (?,?,?)", "Baloteli", "Messi", "Pirlo").query();
-        assertTrue(cursor.getCount() == 2);
-        cursor.close();
-    }
-
     public void testSelect_Ids(){
         Cursor cursor = resolver.select(baloteliId, pirloId, kakaId, messiId, ronaldoId).query();
         assertTrue(cursor.getCount() == 5);

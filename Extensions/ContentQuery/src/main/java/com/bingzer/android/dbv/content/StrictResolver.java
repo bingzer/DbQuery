@@ -88,13 +88,8 @@ class StrictResolver extends BaseResolver implements IStrictResolver{
     }
 
     @Override
-    public Select select(int top, String condition) {
-        return select(top, condition, (Object) null);
-    }
-
-    @Override
     public Select select(String condition) {
-        return select(-1, condition);
+        return select(condition, (Object)null);
     }
 
     @Override
@@ -121,12 +116,7 @@ class StrictResolver extends BaseResolver implements IStrictResolver{
 
     @Override
     public Select select(String whereClause, Object... args) {
-        return select(-1, whereClause, args);
-    }
-
-    @Override
-    public Select select(int top, String whereClause, Object... args) {
-        return new ContentStrictSelectImpl(config, top) {
+        return new ContentStrictSelectImpl(config) {
             @Override
             public Cursor query() {
                 String[] projections = getProjections();

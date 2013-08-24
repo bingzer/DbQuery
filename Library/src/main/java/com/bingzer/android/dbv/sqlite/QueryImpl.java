@@ -554,7 +554,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         private final int rowLimit;
         private final SelectImpl select;
-        private int pageNumber = -1;
+        private int pageNumber = 0;
 
         PagingImpl(IConfig config, SelectImpl select, int rowLimit){
             super(config);

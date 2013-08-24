@@ -25,20 +25,14 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
 
     final ContentConfig config;
     StringBuilder columnString;
-    StringBuilder limitString;
     String orderByString;
     String whereString;
     Object[] whereArgs;
 
-    public ContentStrictSelectImpl(ContentConfig config, int top){
+    public ContentStrictSelectImpl(ContentConfig config){
         this.config = config;
         this.columnString = new StringBuilder();
         this.columnString.append(Util.join(", ", config.getDefaultProjections()));
-
-        if(top > 0) {
-            limitString = new StringBuilder();
-            limitString.append(" LIMIT ").append(top);
-        }
     }
 
     @Override
@@ -99,18 +93,7 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
      * @return sorting order as string
      */
     public String getSortingOrder(){
-        StringBuilder sortingOrder = new StringBuilder();
-
-        // without the 'ORDER BY'
-        if(orderByString != null) sortingOrder.append(orderByString);
-
-        // add limit
-        if(limitString != null && limitString.length() > 0){
-            if(orderByString == null) sortingOrder.append(config.getIdNamingConvention());
-            sortingOrder.append(" ").append(limitString);
-        }
-
-        return sortingOrder.toString();
+        return orderByString;
     }
 
 }

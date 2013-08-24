@@ -128,7 +128,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
         final IConfig config;
         final int rowLimit;
         private final ContentSelectImpl select;
-        private int pageNumber = -1;
+        private int pageNumber = 0;
 
         PagingImpl(IConfig config, ContentSelectImpl select, int rowLimit){
             this.config = config;

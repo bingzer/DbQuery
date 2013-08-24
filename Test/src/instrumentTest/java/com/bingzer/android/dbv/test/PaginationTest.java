@@ -70,12 +70,12 @@ public class PaginationTest extends AndroidTestCase {
     public void testPaging_Simple(){
         IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
 
         PersonWithJobList personList = new PersonWithJobList();
 
         // #1
-        paging.next().query(personList);
+        paging.query(personList);
         assertTrue(paging.getPageNumber() == 0);
         assertTrue(personList.size() == 2);
         assertEquals(personList.get(0).getName(), "John");
@@ -113,7 +113,7 @@ public class PaginationTest extends AndroidTestCase {
     public void testPaging_Query_PageNumber(){
         IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
 
         Cursor cursor = paging.query(1);
         assertTrue(cursor.getCount() == 2);
@@ -131,7 +131,7 @@ public class PaginationTest extends AndroidTestCase {
     public void testPaging_Query_PageNumber_IEntityList(){
         IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
 
         PersonWithJobList personList = new PersonWithJobList();
 
@@ -146,7 +146,7 @@ public class PaginationTest extends AndroidTestCase {
     public void testPaging_SetPageNumber(){
         IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(3);
         assertTrue(paging.getRowLimit() == 3);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
 
         paging.setPageNumber(1);
         assertTrue(paging.getPageNumber() == 1);
@@ -165,7 +165,7 @@ public class PaginationTest extends AndroidTestCase {
     public void testPaging_SetPageNumber2(){
         IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
 
         paging.setPageNumber(1);
         assertTrue(paging.getPageNumber() == 1);
@@ -189,12 +189,12 @@ public class PaginationTest extends AndroidTestCase {
                 .orderBy("P.Id")
                 .paging(2);
         assertTrue(paging.getRowLimit() == 2);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
 
         PersonWithJobList personList = new PersonWithJobList();
 
         // #1
-        paging.next().query(personList);
+        paging.query(personList);
         assertTrue(paging.getPageNumber() == 0);
         assertTrue(personList.size() == 2);
         assertEquals(personList.get(0).getName(), "John");
@@ -237,7 +237,7 @@ public class PaginationTest extends AndroidTestCase {
 
     public void testGetTotalPage(){
         IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getTotalPage() == 3);
     }

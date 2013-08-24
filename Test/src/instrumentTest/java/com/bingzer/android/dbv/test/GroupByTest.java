@@ -162,7 +162,7 @@ Teddy       20000.0     Janitor
                 .orderBy("e.name")
                 .groupBy("e.name")
                 .paging(2);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
         /*
         Should produce
 NAME        SUM(SALARY) position
@@ -180,7 +180,7 @@ Teddy       20000.0     Janitor
 
         //////////////////////////////
         // page #1
-        Cursor cursor = paging.next().query();
+        Cursor cursor = paging.query();
         assertTrue(paging.getPageNumber() == 0);
 
         cursor.moveToNext();
@@ -408,7 +408,7 @@ Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
                 .groupBy("c.name")
                 .having("sum(c.salary) > ? AND e.position <> ?", 30000, "Guard")  // we take off "KIM
                 .paging(2);
-        assertTrue(paging.getPageNumber() == -1);
+        assertTrue(paging.getPageNumber() == 0);
 
         try{
             paging.getTotalPage();
@@ -421,7 +421,7 @@ Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
         }
 
         // # PAGE 1
-        Cursor cursor = paging.next().query();
+        Cursor cursor = paging.query();
         assertTrue(paging.getPageNumber() == 0);
         assertTrue(paging.getRowLimit() == cursor.getCount());
         // # 1

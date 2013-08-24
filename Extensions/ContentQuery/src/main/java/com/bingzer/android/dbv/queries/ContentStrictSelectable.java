@@ -25,14 +25,6 @@ import com.bingzer.android.dbv.IQuery;
 public interface ContentStrictSelectable {
 
     /**
-     * Select top (x) add the specified condition
-     * @param top number to return
-     * @param condition the condition
-     * @return {@link com.bingzer.android.dbv.IQuery.Select}
-     */
-    Select select(int top, String condition);
-
-    /**
      * Select some condition
      * @param condition the condition
      * @return {@link IQuery.Select}
@@ -62,14 +54,6 @@ public interface ContentStrictSelectable {
      * @return {@link IQuery.Select}
      */
     Select select(String whereClause, Object... args);
-
-    /**
-     * Select
-     * @param whereClause 'where' clause
-     * @param args arguments
-     * @return {@link IQuery.Select}
-     */
-    Select select(int top, String whereClause, Object... args);
 
     /**
      * For select statement
