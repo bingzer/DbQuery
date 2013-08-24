@@ -266,6 +266,19 @@ public interface IQuery<T> {
         void setPageNumber(int pageNumber);
 
         /**
+         * Go to the next page
+         * @return this
+         */
+        Paging next();
+
+        /**
+         * Go to the previous page.
+         * If the previous page is < 0. It will return page 0 (first page)
+         * @return this
+         */
+        Paging previous();
+
+        /**
          * Returns the number of page available.
          * This method will run SQL <code>"SELECT COUNT(*)"</code> query
          * once called. This is very expensive call, but it's useful
@@ -282,8 +295,6 @@ public interface IQuery<T> {
 
         /**
          * Returns the current cursor.
-         * This also append the pageNumber by one
-         *
          * @return current cursor
          */
         Cursor query();

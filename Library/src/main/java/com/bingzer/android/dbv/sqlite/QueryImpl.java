@@ -578,6 +578,18 @@ abstract class QueryImpl<T> implements IQuery<T> {
         }
 
         @Override
+        public Paging next() {
+            pageNumber++;
+            return this;
+        }
+
+        @Override
+        public Paging previous() {
+            if(pageNumber - 1 > 0) pageNumber--;
+            return this;
+        }
+
+        @Override
         public int getTotalPage() {
             // we can't count row when orderBy or having is included
             // TODO: there's gotta be a way to do this
@@ -604,20 +616,19 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public Cursor query(){
-            ++pageNumber;
-            return runQuery();
+            return select.table.raw(toString()).query();
         }
 
         @Override
         public Cursor query(int pageNumber) {
             ensurePageNumberValid(pageNumber);
-            return runQuery();
+            return query();
         }
 
         @Override
         public <E extends IEntity> void query(int pageNumber, IEntityList<E> entityList) {
             ensurePageNumberValid(pageNumber);
-            final Cursor cursor = runQuery();
+            final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(select.table);
 
             MappingUtil.mapEntityListFromCursor(mapper, entityList, cursor);
@@ -627,7 +638,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public void query(IEntity entity) {
-            final Cursor cursor = runQuery();
+            final Cursor cursor = query();
             final EntityMapper mapper = new EntityMapper(select.table);
 
             MappingUtil.mapEntityFromCursor(mapper, entity, cursor);
@@ -637,7 +648,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
         @Override
         public <E extends IEntity> void query(IEntityList<E> entityList) {
-            query(++pageNumber, entityList);
+            query(pageNumber, entityList);
         }
 
         @Override
@@ -685,10 +696,6 @@ abstract class QueryImpl<T> implements IQuery<T> {
             if(pageNumber < 0)
                 throw new IllegalArgumentException("PageNumber must be over 0");
             this.pageNumber = pageNumber;
-        }
-
-        Cursor runQuery(){
-            return select.table.raw(toString()).query();
         }
 
     }

@@ -152,6 +152,18 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
         }
 
         @Override
+        public Paging next() {
+            pageNumber++;
+            return this;
+        }
+
+        @Override
+        public Paging previous() {
+            if(pageNumber - 1 > 0) pageNumber--;
+            return this;
+        }
+
+        @Override
         public int getTotalPage() {
             Cursor cursor = select.query();
             float row = cursor.getCount();
@@ -163,34 +175,29 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
 
         @Override
         public Cursor query(){
-            ++pageNumber;
-            return runQuery();
+            return fixSelect().query();
         }
 
         @Override
         public Cursor query(int pageNumber) {
             ensurePageNumberValid(pageNumber);
-            return runQuery();
+            return query();
         }
 
         @Override
         public <E extends IEntity> void query(int pageNumber, IEntityList<E> entityList) {
             ensurePageNumberValid(pageNumber);
-            select.limitString = new StringBuilder();
-            select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
-            select.query(entityList);
+            fixSelect().query(entityList);
         }
 
         @Override
         public void query(IEntity entity) {
-            select.limitString = new StringBuilder();
-            select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
-            select.query(entity);
+            fixSelect().query(entity);
         }
 
         @Override
         public <E extends IEntity> void query(IEntityList<E> entityList) {
-            query(++pageNumber, entityList);
+            query(pageNumber, entityList);
         }
 
         int getOffset(){
@@ -203,10 +210,10 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
             this.pageNumber = pageNumber;
         }
 
-        Cursor runQuery(){
+        ContentSelectImpl fixSelect(){
             select.limitString = new StringBuilder();
             select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
-            return select.query();
+            return select;
         }
     }
 }

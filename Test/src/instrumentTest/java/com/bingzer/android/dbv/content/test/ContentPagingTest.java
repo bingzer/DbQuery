@@ -48,8 +48,11 @@ public class ContentPagingTest extends AndroidTestCase {
                 .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
                 .orderBy("_id")
                 .paging(2);
+        assertTrue(paging.getPageNumber() == -1);
 
-        Cursor cursor = paging.query();
+        Cursor cursor = paging.next().query();
+        assertTrue(paging.getPageNumber() == 0);
+
         assertEquals(cursor.getCount(), 2);
         assertTrue(cursor.moveToNext());
         assertEquals(cursor.getInt(0), baloteliId);
@@ -59,7 +62,9 @@ public class ContentPagingTest extends AndroidTestCase {
         assertEquals(cursor.getString(1), "Pirlo");
         cursor.close();
 
-        cursor = paging.query();
+        cursor = paging.next().query();
+        assertTrue(paging.getPageNumber() == 1);
+
         assertEquals(cursor.getCount(), 2);
         assertTrue(cursor.moveToNext());
         assertEquals(cursor.getInt(0), kakaId);
@@ -69,7 +74,9 @@ public class ContentPagingTest extends AndroidTestCase {
         assertEquals(cursor.getString(1), "Messi");
         cursor.close();
 
-        cursor = paging.query();
+        cursor = paging.next().query();
+        assertTrue(paging.getPageNumber() == 2);
+
         assertTrue(cursor.moveToNext());
         assertEquals(cursor.getInt(0), ronaldoId);
         assertEquals(cursor.getString(1), "Ronaldo");
@@ -81,17 +88,22 @@ public class ContentPagingTest extends AndroidTestCase {
                 .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
                 .orderBy("_id")
                 .paging(2);
+        assertTrue(paging.getPageNumber() == -1);
 
         WordList list = new WordList();
 
-        paging.query(list);
+        paging.next().query(list);
+        assertTrue(paging.getPageNumber() == 0);
+
         assertEquals(list.size(), 2);
         assertEquals(list.get(0).getId(), baloteliId);
         assertEquals(list.get(0).getWord(), "Baloteli");
         assertEquals(list.get(1).getId(), pirloId);
         assertEquals(list.get(1).getWord(), "Pirlo");
 
-        paging.query(list);
+        paging.next().query(list);
+        assertTrue(paging.getPageNumber() == 1);
+
         assertEquals(list.size(), 4);
         assertEquals(list.get(2).getId(), kakaId);
         assertEquals(list.get(2).getWord(), "Kaka");
@@ -99,7 +111,9 @@ public class ContentPagingTest extends AndroidTestCase {
         assertEquals(list.get(3).getWord(), "Messi");
 
 
-        paging.query(list);
+        paging.next().query(list);
+        assertTrue(paging.getPageNumber() == 2);
+
         assertEquals(list.size(), 5);
         assertEquals(list.get(4).getId(), ronaldoId);
         assertEquals(list.get(4).getWord(), "Ronaldo");
@@ -110,8 +124,17 @@ public class ContentPagingTest extends AndroidTestCase {
                 .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
                 .orderBy("_id")
                 .paging(2);
+        assertTrue(paging.getPageNumber() == -1);
 
         assertEquals(paging.getTotalPage(), 3);
 
+    }
+
+    public void testPaging_SetPageNumber(){
+        IQuery.Paging paging = resolver
+                .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
+                .orderBy("_id")
+                .paging(2);
+        assertTrue(paging.getPageNumber() == -1);
     }
 }

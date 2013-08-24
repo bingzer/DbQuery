@@ -180,7 +180,7 @@ Teddy       20000.0     Janitor
 
         //////////////////////////////
         // page #1
-        Cursor cursor = paging.query();
+        Cursor cursor = paging.next().query();
         assertTrue(paging.getPageNumber() == 0);
 
         cursor.moveToNext();
@@ -195,7 +195,7 @@ Teddy       20000.0     Janitor
 
         //////////////////////////////
         // page #2
-        cursor = paging.query();
+        cursor = paging.next().query();
         assertTrue(paging.getPageNumber() == 1);
         assertTrue(paging.getRowLimit() == cursor.getCount());
 
@@ -408,6 +408,7 @@ Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
                 .groupBy("c.name")
                 .having("sum(c.salary) > ? AND e.position <> ?", 30000, "Guard")  // we take off "KIM
                 .paging(2);
+        assertTrue(paging.getPageNumber() == -1);
 
         try{
             paging.getTotalPage();
@@ -420,7 +421,8 @@ Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
         }
 
         // # PAGE 1
-        Cursor cursor = paging.query();
+        Cursor cursor = paging.next().query();
+        assertTrue(paging.getPageNumber() == 0);
         assertTrue(paging.getRowLimit() == cursor.getCount());
         // # 1
         cursor.moveToNext();
@@ -433,7 +435,8 @@ Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
 
 
         // # PAGE 2
-        cursor = paging.query();
+        cursor = paging.next().query();
+        assertTrue(paging.getPageNumber() == 1);
         cursor.moveToNext();
         assertTrue(cursor.getString(0).equals("Teddy"));
         assertTrue(cursor.getFloat(1) == 40000f);  // 20k + 20k
