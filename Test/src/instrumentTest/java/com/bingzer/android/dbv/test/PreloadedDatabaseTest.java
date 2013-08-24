@@ -52,6 +52,10 @@ public class PreloadedDatabaseTest extends AndroidTestCase {
         assertTrue(db.getVersion() == 1);
     }
 
+    public void testGetName(){
+        assertEquals("Chinook.sqlitex", db.getName());
+    }
+
     @Override
     public void tearDown(){
         db.close();

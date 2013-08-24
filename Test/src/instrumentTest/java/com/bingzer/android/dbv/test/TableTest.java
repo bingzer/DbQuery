@@ -142,6 +142,23 @@ public class TableTest extends AndroidTestCase{
     }
 
     ///////////////////////////////////////////////
+    // ----------------- count() ------------------//
+    public void testCount(){
+        assertEquals(7, db.get("Customers").count());
+        assertEquals(10, db.get("Products").count());
+    }
+
+    public void testCount_Condition(){
+        assertEquals(2, db.get("Customers").count("Name = 'Lionel Messi' or Name = 'Christiano Ronaldo'"));
+        assertEquals(2, db.get("Customers").count("Name = 'Lionel Messi' or Name = 'Christiano Ronaldo' or Name = 'NONE'"));
+    }
+
+    public void testCount_WhereClause(){
+        assertEquals(7, db.get("Customers").count("Name = ? or Id is not null", "Lionel Messi"));
+        assertEquals(1, db.get("Products").count("Name = ?", "Computer"));
+    }
+
+    ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ SELECT ----------------//
 
