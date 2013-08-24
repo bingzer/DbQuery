@@ -14,6 +14,9 @@ Cursor cursor = resolver.select("Name = ?", "John Doe")
 ...
 ```
 
+# Documentation
+See [https://github.com/bingzer/DbQuery/wiki/ContentQuery](https://github.com/bingzer/DbQuery/wiki/ContentQuery)
+
 # License
 ``` java
 /**
