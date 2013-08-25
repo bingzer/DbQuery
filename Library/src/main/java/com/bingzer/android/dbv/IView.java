@@ -34,6 +34,7 @@ public interface IView extends
         Selectable, Distinguishable,
         RawQueryable, Countable, Droppable,
         SelectIdentifiable, Function, Tangible
+        // in the future we may support these...
         /*Joinable.Inner, Joinable.Outer,
         Alterable, Unionable  */{
 

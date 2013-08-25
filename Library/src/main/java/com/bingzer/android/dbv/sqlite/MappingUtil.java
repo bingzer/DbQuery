@@ -22,6 +22,7 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 
 /**
+ * Provides a 'mapping' utility methods.
  * Created by Ricky on 8/9/13.
  */
 class MappingUtil {

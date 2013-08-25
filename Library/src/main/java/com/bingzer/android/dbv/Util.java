@@ -29,17 +29,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv;
 
 /**
  * Utility methods
  */
-public class Util {
+public final class Util {
 
     private static final String QUESTION_MARK = "\\?";
     private static final String NULL = "null";
 
+    /**
+     * Use this method for built-in and/ pre-sanitize methods
+     * provided by Android. (i.e: SQLiteDatabase.update() or insert())
+     * The framework should sanitize the string.
+     * <b>WARNING</b>
+     * Do not use this anywhere to replace '?' with 'args'.
+     * Use {@link #bindArgs(String, Object...)} instead.
+     * @param args arguments
+     * @return array of <code>String</code>
+     */
     public static String[] toStringArray(Object... args){
         if(args == null || args.length == 0) return null;
 
@@ -53,12 +62,18 @@ public class Util {
         return array;
     }
 
-
+    /**
+     * This method will sanitize 'args'. Use this method to
+     * bind '?' with arguments.
+     * @param clause any clause that has '?'
+     * @param args arguments
+     * @return properly sanitized and formatted string
+     */
     public static String bindArgs(String clause, Object... args){
-        if(args == null && clause.contains(QUESTION_MARK)){
+        if(args == null){
             clause = clause.replaceAll(QUESTION_MARK, NULL);
         }
-        else if(args != null){
+        else {
             // replace ? add args
             for (Object arg : args) {
                 clause = clause.replaceFirst(QUESTION_MARK, safeEscape(arg));
@@ -68,11 +83,21 @@ public class Util {
         return clause;
     }
 
+    /**
+     * Safe escape /sanitize an object. Object is checked to see
+     * if it's a String/Integer/null/Character or custom.
+     * If it's String/Character or customer, the string will be
+     * sanitized by calling {@link #sqlEscapeString(String)}.
+     * If it's a <code>Number</code>, it's not going to get sanitized.
+     * @param obj any object (maybe null)
+     * @return sanitized <code>String</code>
+     */
     public static String safeEscape(Object obj){
         if(obj instanceof String) return sqlEscapeString((String)obj);
-        else if(obj instanceof Character) return sqlEscapeString(obj.toString());
+        else if(obj instanceof Number) return obj.toString();
         else if(obj == null) return NULL;
-        else return obj.toString();
+        else if(obj instanceof Character) return sqlEscapeString(obj.toString());
+        else return sqlEscapeString(obj.toString());
     }
 
     /**
@@ -125,4 +150,9 @@ public class Util {
     }
 
 
+    //////////////////////////////////////////////////////////////////////////////
+
+    private Util(){
+        // nothing
+    }
 }
