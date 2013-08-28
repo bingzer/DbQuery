@@ -111,9 +111,11 @@ public final class Util {
         StringBuilder builder = new StringBuilder();
         if (strings != null) {
             for (int i = 0; i < strings.length; i++) {
-                builder.append(strings[i]);
-                // append the separator if it's not the last one
-                if (i != strings.length - 1) builder.append(separator);
+                if(strings[i] != null){
+                    builder.append(strings[i]);
+                    // append the separator if it's not the last one
+                    if (i != strings.length - 1) builder.append(separator);
+                }
             }
         }
         return builder.toString();

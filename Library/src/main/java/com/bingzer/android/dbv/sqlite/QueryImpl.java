@@ -113,8 +113,12 @@ abstract class QueryImpl<T> implements IQuery<T> {
         public OrderBy orderBy(String... columns) {
             if(orderByString == null) orderByString = new StringBuilder();
             else orderByString.delete(0, orderByString.length());
+
             if(columns != null){
-                orderByString.append("ORDER BY ").append(Util.join(",", columns));
+                String joined = Util.join(",", columns);
+                if(joined.length() > 0){
+                    orderByString.append("ORDER BY ").append(Util.join(",", columns));
+                }
             }
             return this;
         }
