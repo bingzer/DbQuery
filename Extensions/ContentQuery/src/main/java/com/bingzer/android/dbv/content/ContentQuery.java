@@ -22,26 +22,54 @@ import com.bingzer.android.dbv.sqlite.ContentConfig;
 
 /**
  * ContentQuery allows DbQuery style while
- * querying data from ContentProvider
+ * querying data from ContentProvider.
  *
- * Created by Ricky Tobing on 8/20/13.
+ * For complete documentation please refer to:
+ * <a href="https://github.com/bingzer/DbQuery/wiki/ContentQuery">https://github.com/bingzer/DbQuery/wiki/ContentQuery</a>
+ *
+ * @see IResolver
+ * @see IStrictResolver
  */
 public final class ContentQuery {
 
     static final ContentConfig config = new ContentConfig();
 
+    /**
+     * Creates an {@link IResolver} for the specified URI
+     * @param uri the uri string
+     * @param context GOD-object {@link Context}
+     * @return {@link IResolver}
+     */
     public static IResolver resolve(String uri, Context context){
         return resolve(Uri.parse(uri), context);
     }
 
+    /**
+     * Creates an {@link IResolver} for the specified URI
+     * @param uri the uri object
+     * @param context GOD-object {@link Context}
+     * @return {@link IResolver}
+     */
     public static IResolver resolve(Uri uri, Context context){
         return new Resolver(new ContentConfig(config), uri, context);
     }
 
+    /**
+     * Creates an {@link IStrictResolver} for the specified URI
+     * @param uri the uri string
+     * @param context GOD-object {@link Context}
+     * @return {@link IStrictResolver}
+     */
     public static IStrictResolver strictlyResolve(String uri, Context context){
         return strictlyResolve(Uri.parse(uri), context);
     }
 
+    /**
+     * Creates an {@link IStrictResolver} for the specified URI
+     * @param uri the uri object
+     * @param context GOD-object {@link Context}
+     * @return {@link IStrictResolver}
+     */
     public static IStrictResolver strictlyResolve(Uri uri, Context context){
         return new StrictResolver(new ContentConfig(config), uri, context);
     }
