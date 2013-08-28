@@ -15,7 +15,6 @@
  */
 package com.bingzer.android.dbv.content;
 
-import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 
 import java.util.HashMap;
@@ -24,15 +23,15 @@ import java.util.HashMap;
  * Created by Ricky Tobing on 8/9/13.
  */
 class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
-    final IConfig config;
+    final IBaseResolver resolver;
 
-    EntityMapper(IConfig config){
-        this.config = config;
+    EntityMapper(IBaseResolver resolver){
+        this.resolver = resolver;
     }
 
     @Override
     public void mapId(IEntity.Action<Integer> action) {
-        map(config.getIdNamingConvention(), action);
+        map(resolver.generateIdString(), action);
     }
 
     @Override

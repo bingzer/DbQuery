@@ -22,23 +22,24 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.content.IBaseResolver;
 import com.bingzer.android.dbv.queries.ContentSelectable;
 
 /**
  * Created by Ricky on 8/20/13.
  */
 public abstract class ContentSelectImpl implements ContentSelectable.Select, ContentSelectable.Select.OrderBy {
-    final ContentConfig config;
+    final IBaseResolver resolver;
     StringBuilder columnString;
     StringBuilder limitString;
     String orderByString;
     String whereString;
     Object[] whereArgs;
 
-    public ContentSelectImpl(ContentConfig config, int top){
-        this.config = config;
+    public ContentSelectImpl(IBaseResolver resolver, int top){
+        this.resolver = resolver;
         this.columnString = new StringBuilder();
-        this.columnString.append(Util.join(", ", config.getDefaultProjections()));
+        this.columnString.append(Util.join(", ", generateDefaultProjections()));
 
         if(top > 0) {
             limitString = new StringBuilder();
@@ -53,7 +54,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
             columnString.append(Util.join(", ", columns));
         }
         else{
-            columnString.append("*");
+            columnString.append(Util.join(", ", generateDefaultProjections()));
         }
 
         return this;
@@ -67,7 +68,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
 
     @Override
     public Paging paging(int row) {
-        return new PagingImpl(config, this, row);
+        return new PagingImpl(resolver, this, row);
     }
 
     public ContentSelectImpl where(String whereClause, Object... args){
@@ -116,7 +117,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
 
         // add limit
         if(limitString != null && limitString.length() > 0){
-            if(orderByString == null) sortingOrder.append(config.getIdNamingConvention());
+            if(orderByString == null) sortingOrder.append(resolver.generateIdString());
             sortingOrder.append(" ").append(limitString);
         }
 
@@ -124,15 +125,26 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
         return null;
     }
 
+    String[] generateDefaultProjections(){
+        String[] projections = resolver.getConfig().getDefaultProjections();
+        for(int i = 0; i < projections.length; i++){
+            if(projections[i].equals(resolver.getConfig().getIdNamingConvention())){
+                projections[i] = resolver.generateIdString();
+            }
+        }
+
+        return projections;
+    }
+
 
     static class PagingImpl implements IQuery.Paging, IQuery<Cursor> {
-        final IConfig config;
+        final IBaseResolver resolver;
         final int rowLimit;
         private final ContentSelectImpl select;
         private int pageNumber = 0;
 
-        PagingImpl(IConfig config, ContentSelectImpl select, int rowLimit){
-            this.config = config;
+        PagingImpl(IBaseResolver resolver, ContentSelectImpl select, int rowLimit){
+            this.resolver = resolver;
             this.select = select;
             this.rowLimit = rowLimit;
         }

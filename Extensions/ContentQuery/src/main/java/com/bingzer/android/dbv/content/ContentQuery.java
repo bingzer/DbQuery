@@ -32,8 +32,6 @@ import com.bingzer.android.dbv.sqlite.ContentConfig;
  */
 public final class ContentQuery {
 
-    static final ContentConfig config = new ContentConfig();
-
     /**
      * Creates an {@link IResolver} for the specified URI
      * @param uri the uri string
@@ -51,7 +49,7 @@ public final class ContentQuery {
      * @return {@link IResolver}
      */
     public static IResolver resolve(Uri uri, Context context){
-        return new Resolver(new ContentConfig(config), uri, context);
+        return new Resolver(new ContentConfig(), uri, context);
     }
 
     /**
@@ -71,7 +69,7 @@ public final class ContentQuery {
      * @return {@link IStrictResolver}
      */
     public static IStrictResolver strictlyResolve(Uri uri, Context context){
-        return new StrictResolver(new ContentConfig(config), uri, context);
+        return new StrictResolver(new ContentConfig(), uri, context);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////

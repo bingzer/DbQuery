@@ -28,18 +28,6 @@ public class ContentConfig extends Config {
         setDefaultProjections();
     }
 
-    public ContentConfig(ContentConfig config){
-        if(config != null){
-            setAppendTableNameForId(config.getAppendTableNameForId());
-            setDebug(config.getDebug());
-            setForeignKeySupport(config.getForeignKeySupport());
-            setIdNamingConvention(config.getIdNamingConvention());
-            setReadOnly(config.isReadOnly());
-            setDefaultAuthority(config.getDefaultAuthority());
-            setDefaultProjections(config.getDefaultProjections());
-        }
-    }
-
     /**
      * Sets the default projections (columns) unless if otherwise
      * specified with {@link com.bingzer.android.dbv.IQuery.Select#columns(String...)}
@@ -51,7 +39,14 @@ public class ContentConfig extends Config {
     public void setDefaultProjections(String... columns){
         if(columns == null || columns.length == 0)
             defaultProjections = new String[] { idNamingConvention };
-        else defaultProjections = columns;
+        else {
+            for (String column : columns) {
+                if (column.equalsIgnoreCase(getIdNamingConvention())) {
+                    setIdNamingConvention(column);
+                }
+            }
+            defaultProjections = columns;
+        }
     }
 
     /**
@@ -76,5 +71,20 @@ public class ContentConfig extends Config {
      */
     public String getDefaultAuthority(){
         return authority;
+    }
+
+    @Override
+    public void setIdNamingConvention(String id) {
+        String oldId = getIdNamingConvention();
+        super.setIdNamingConvention(id);
+
+        if(defaultProjections != null && defaultProjections.length > 0){
+            for(int i = 0; i < defaultProjections.length; i++){
+                if(defaultProjections[i].equalsIgnoreCase(oldId)){
+                    defaultProjections[i] = id;
+                }
+            }
+        }
+        else setDefaultProjections();
     }
 }

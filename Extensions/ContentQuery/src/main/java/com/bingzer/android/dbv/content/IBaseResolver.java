@@ -42,4 +42,5 @@ public interface IBaseResolver extends SelectIdentifiable, Insertable, Updatable
      */
     ContentConfig getConfig();
 
+    String generateIdString();
 }

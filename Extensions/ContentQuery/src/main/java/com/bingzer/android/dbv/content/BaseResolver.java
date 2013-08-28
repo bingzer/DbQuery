@@ -37,6 +37,8 @@ import com.bingzer.android.dbv.sqlite.UriUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Ricky Tobing on 8/23/13.
@@ -178,7 +180,7 @@ abstract class BaseResolver implements IBaseResolver {
     @Override
     public IQuery.Insert insert(IEntity entity) {
         // build content values..
-        final EntityMapper mapper = new EntityMapper(config);
+        final EntityMapper mapper = new EntityMapper(this);
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
@@ -220,7 +222,7 @@ abstract class BaseResolver implements IBaseResolver {
         for(int i = 0; i < entityList.getEntityList().size(); i++){
             final IEntity entity = entityList.getEntityList().get(i);
             // build content values..
-            final EntityMapper mapper = new EntityMapper(config);
+            final EntityMapper mapper = new EntityMapper(this);
             final ContentValues contentValues = new ContentValues();
             entity.map(mapper);
 
@@ -330,7 +332,7 @@ abstract class BaseResolver implements IBaseResolver {
     public IQuery.Update update(IEntity entity) {
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
 
-        final EntityMapper mapper = new EntityMapper(config);
+        final EntityMapper mapper = new EntityMapper(this);
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
@@ -358,7 +360,7 @@ abstract class BaseResolver implements IBaseResolver {
         for(int i = 0; i < entityList.getEntityList().size(); i++){
             final IEntity entity = entityList.getEntityList().get(i);
             // build content values..
-            final EntityMapper mapper = new EntityMapper(config);
+            final EntityMapper mapper = new EntityMapper(this);
             final ContentValues contentValues = new ContentValues();
             entity.map(mapper);
 
@@ -424,14 +426,26 @@ abstract class BaseResolver implements IBaseResolver {
     @Override
     public abstract int count(String whereClause, Object... whereArgs);
 
+    @Override
+    public String generateIdString(){
+        if(config.getAppendTableNameForId()){
+            String tableName = "";
+            Matcher m = getUriPattern().matcher(uri.toString());
+            if(m.find()){
+                tableName = m.group(3);
+            }
+            return tableName + config.getIdNamingConvention();
+        }
+        return config.getIdNamingConvention();
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     String generateParamId(int id){
         return generateIdString() + " = " + id;
     }
 
-    String generateIdString(){
-        return config.getIdNamingConvention();
+    Pattern getUriPattern(){
+        return Pattern.compile("(content://)(.+)/(\\w+)/?((\\d+)|(#)|(\\*))?");
     }
-
 }

@@ -16,6 +16,7 @@
 package com.bingzer.android.dbv.sqlite;
 
 import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.content.IBaseResolver;
 import com.bingzer.android.dbv.queries.ContentStrictSelectable;
 
 /**
@@ -23,16 +24,16 @@ import com.bingzer.android.dbv.queries.ContentStrictSelectable;
  */
 public abstract class ContentStrictSelectImpl implements ContentStrictSelectable.Select, ContentStrictSelectable.Select.OrderBy{
 
-    final ContentConfig config;
+    final IBaseResolver resolver;
     StringBuilder columnString;
     String orderByString;
     String whereString;
     Object[] whereArgs;
 
-    public ContentStrictSelectImpl(ContentConfig config){
-        this.config = config;
+    public ContentStrictSelectImpl(IBaseResolver resolver){
+        this.resolver = resolver;
         this.columnString = new StringBuilder();
-        this.columnString.append(Util.join(", ", config.getDefaultProjections()));
+        this.columnString.append(Util.join(", ", generateDefaultProjections()));
     }
 
     @Override
@@ -42,7 +43,7 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
             columnString.append(Util.join(", ", columns));
         }
         else{
-            columnString.append("*");
+            columnString.append(Util.join(", ", generateDefaultProjections()));
         }
 
         return this;
@@ -96,4 +97,14 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
         return orderByString;
     }
 
+    String[] generateDefaultProjections(){
+        String[] projections = resolver.getConfig().getDefaultProjections();
+        for(int i = 0; i < projections.length; i++){
+            if(projections[i].equals(resolver.getConfig().getIdNamingConvention())){
+                projections[i] = resolver.generateIdString();
+            }
+        }
+
+        return projections;
+    }
 }

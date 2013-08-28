@@ -42,7 +42,7 @@ class Resolver extends BaseResolver implements IResolver {
         try{
             cursor = select(whereClause, args).query();
             if(cursor.moveToNext()){
-                int index = cursor.getColumnIndex(config.getIdNamingConvention());
+                int index = cursor.getColumnIndex(generateIdString());
                 id = cursor.getInt(index);
             }
         }
@@ -57,7 +57,7 @@ class Resolver extends BaseResolver implements IResolver {
     public boolean has(String whereClause, Object... whereArgs) {
         Cursor cursor = null;
         try{
-            cursor = select(whereClause, whereArgs).columns(config.getIdNamingConvention()).query();
+            cursor = select(whereClause, whereArgs).columns(generateIdString()).query();
             return cursor.getCount() > 0;
         }
         finally {
@@ -70,7 +70,7 @@ class Resolver extends BaseResolver implements IResolver {
         int count = -1;
         Cursor cursor = null;
         try{
-            cursor = select(whereClause, whereArgs).columns(config.getIdNamingConvention()).query();
+            cursor = select(whereClause, whereArgs).columns(generateIdString()).query();
             count = cursor.getCount();
         }
         finally {
@@ -127,7 +127,7 @@ class Resolver extends BaseResolver implements IResolver {
 
     @Override
     public Select select(final int top, final String whereClause, final Object... args) {
-        return new ContentSelectImpl(config, top) {
+        return new ContentSelectImpl(this, top) {
             @Override
             public Cursor query() {
                 String[] projections = getProjections();
@@ -140,7 +140,7 @@ class Resolver extends BaseResolver implements IResolver {
             @Override
             public void query(IEntity entity) {
                 final Cursor cursor = query();
-                final EntityMapper mapper = new EntityMapper(config);
+                final EntityMapper mapper = new EntityMapper(Resolver.this);
 
                 ContentUtils.mapEntityFromCursor(mapper, entity, cursor);
 
@@ -151,9 +151,9 @@ class Resolver extends BaseResolver implements IResolver {
             @SuppressWarnings("unchecked")
             public <E extends IEntity> void query(IEntityList<E> entityList) {
                 final Cursor cursor = query();
-                final EntityMapper mapper = new EntityMapper(config);
+                final EntityMapper mapper = new EntityMapper(Resolver.this);
 
-                ContentUtils.mapEntityListFromCursor(mapper, entityList, cursor, config.getIdNamingConvention());
+                ContentUtils.mapEntityListFromCursor(mapper, entityList, cursor, generateIdString());
 
                 cursor.close();
             }

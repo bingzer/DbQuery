@@ -41,7 +41,7 @@ class StrictResolver extends BaseResolver implements IStrictResolver{
         try{
             cursor = select(whereClause, args).query();
             if(cursor.moveToNext()){
-                int index = cursor.getColumnIndex(config.getIdNamingConvention());
+                int index = cursor.getColumnIndex(generateIdString());
                 id = cursor.getInt(index);
             }
         }
@@ -56,7 +56,7 @@ class StrictResolver extends BaseResolver implements IStrictResolver{
     public boolean has(String whereClause, Object... whereArgs) {
         Cursor cursor = null;
         try{
-            cursor = select(whereClause, whereArgs).columns(config.getIdNamingConvention()).query();
+            cursor = select(whereClause, whereArgs).columns(generateIdString()).query();
             return cursor.getCount() > 0;
         }
         finally {
@@ -69,7 +69,7 @@ class StrictResolver extends BaseResolver implements IStrictResolver{
         int count = -1;
         Cursor cursor = null;
         try{
-            cursor = select(whereClause, whereArgs).columns(config.getIdNamingConvention()).query();
+            cursor = select(whereClause, whereArgs).columns(generateIdString()).query();
             count = cursor.getCount();
         }
         finally {
@@ -116,7 +116,7 @@ class StrictResolver extends BaseResolver implements IStrictResolver{
 
     @Override
     public Select select(String whereClause, Object... args) {
-        return new ContentStrictSelectImpl(config) {
+        return new ContentStrictSelectImpl(this) {
             @Override
             public Cursor query() {
                 String[] projections = getProjections();
@@ -129,7 +129,7 @@ class StrictResolver extends BaseResolver implements IStrictResolver{
             @Override
             public void query(IEntity entity) {
                 final Cursor cursor = query();
-                final EntityMapper mapper = new EntityMapper(config);
+                final EntityMapper mapper = new EntityMapper(StrictResolver.this);
 
                 ContentUtils.mapEntityFromCursor(mapper, entity, cursor);
 
@@ -140,9 +140,9 @@ class StrictResolver extends BaseResolver implements IStrictResolver{
             @SuppressWarnings("unchecked")
             public <E extends IEntity> void query(IEntityList<E> entityList) {
                 final Cursor cursor = query();
-                final EntityMapper mapper = new EntityMapper(config);
+                final EntityMapper mapper = new EntityMapper(StrictResolver.this);
 
-                ContentUtils.mapEntityListFromCursor(mapper, entityList, cursor, config.getIdNamingConvention());
+                ContentUtils.mapEntityListFromCursor(mapper, entityList, cursor, generateIdString());
 
                 cursor.close();
             }
