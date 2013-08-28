@@ -61,7 +61,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
 
     @Override
     public OrderBy orderBy(String... columns) {
-        orderByString = Util.join(",", columns);
+        orderByString = Util.join(",", columns).trim();
         return this;
     }
 
@@ -112,7 +112,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
         StringBuilder sortingOrder = new StringBuilder();
 
         // without the 'ORDER BY'
-        if(orderByString != null) sortingOrder.append(orderByString);
+        if(orderByString != null && orderByString.length() > 0) sortingOrder.append(orderByString);
 
         // add limit
         if(limitString != null && limitString.length() > 0){
@@ -120,7 +120,8 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
             sortingOrder.append(" ").append(limitString);
         }
 
-        return sortingOrder.toString();
+        if(sortingOrder.length() > 0) return sortingOrder.toString();
+        return null;
     }
 
 
