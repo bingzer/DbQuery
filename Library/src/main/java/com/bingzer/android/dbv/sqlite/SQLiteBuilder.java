@@ -108,4 +108,43 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
     public void onError(Throwable error) {
         throw new Error(error);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Convenient class to use if you don't need to model your database at all.
+     * This class is really convenient if you have a pre-loaded database
+     * <code>
+     * <pre>
+     * Context context = ...
+     * IDatabase db = DbQuery.getDatabase("Test");
+     *
+     * db.open(version, new SQLiteBuilder.WithoutModeling(context));
+     * </pre>
+     * </code>
+     */
+    public static final class WithoutModeling extends SQLiteBuilder {
+
+        Context context;
+
+        /**
+         * Supply the context here.
+         * You should always use <code>ApplicationContext</code>
+         * here whenever possible
+         * @param context the context
+         */
+        public WithoutModeling(Context context){
+            this.context = context;
+        }
+
+        @Override
+        public Context getContext() {
+            return context;
+        }
+
+        @Override
+        public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
+            // do nothing
+        }
+    }
 }

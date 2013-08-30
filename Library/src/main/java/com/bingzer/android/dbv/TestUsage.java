@@ -32,29 +32,10 @@ class TestUsage {
     void init(){
 
         int version = 0;
+        version++;
 
         IDatabase db = DbQuery.getDatabase("Test");
-        db.open(version, new SQLiteBuilder() {
-            @Override
-            public Context getContext() {
-                return null;
-            }
-
-            @Override
-            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
-                modeling.add("Table1")
-                        .add("Column1", "INTEGER", "primary key autoincrement not null")
-                        .add("Column2", "TEXT")
-                        .ifNotExists();
-
-                modeling.addView("")
-                        .as("SELECT * FROM table1 ")
-                        .append("WHERE X SF")
-                        .append("")
-                        .ifNotExists();
-            }
-
-        });
+        db.open(version, new SQLiteBuilder.WithoutModeling(null));
 
         //db.get("")
 
@@ -96,6 +77,8 @@ class TestUsage {
         // --- groupable
         db.get("").select().groupBy("","").having("","").query();
         db.get("").select().groupBy("").query();
+
+        version++;
     }
 
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {
