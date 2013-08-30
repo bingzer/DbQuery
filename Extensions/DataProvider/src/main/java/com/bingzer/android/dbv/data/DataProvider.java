@@ -47,7 +47,7 @@ abstract class DataProvider extends ContentProvider implements IDataProvider{
         }
 
         return getTable(uri)
-                .select(selection, selectionArgs)
+                .select(selection, (Object[])selectionArgs)
                 .columns(projections)
                 .orderBy(sortOrder)
                 .query();
@@ -62,14 +62,14 @@ abstract class DataProvider extends ContentProvider implements IDataProvider{
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         return getTable(uri)
-                .delete(selection, selectionArgs)
+                .delete(selection,  (Object[]) selectionArgs)
                 .query();
     }
 
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
         return getTable(uri)
-                .update(contentValues, selection, selectionArgs)
+                .update(contentValues, selection,  (Object[]) selectionArgs)
                 .query();
     }
 
