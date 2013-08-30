@@ -122,6 +122,127 @@ public interface IEntity {
          */
         public abstract T get();
 
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Action type for Id.
+         * Helper class for {@link Mapper#mapId(com.bingzer.android.dbv.IEntity.Action)}
+         * <code>
+         * <pre>
+         * ...
+         * mapper.mapId(new Action.TypeId(this){
+         *    public void set(Integer value) {
+         *      id = value;
+         *    }
+         * });
+         * ...
+         * </pre>
+         * </code>
+         *
+         * @see Mapper
+         * @see Action
+         */
+        public static abstract class TypeId extends Action<Integer>{
+            final IEntity entity;
+
+            public TypeId(IEntity entity) {
+                super(Integer.class);
+                this.entity = entity;
+            }
+
+            @Override
+            public final Integer get(){
+                return entity.getId();
+            }
+        }
+
+        /**
+         * Action type for <code>String</code>
+         * @see Mapper
+         * @see Action
+         */
+        public static abstract class TypeString extends Action<String>{
+            public TypeString() {
+                super(String.class);
+            }
+        }
+
+        /**
+         * Action type for <code>Integer</code>
+         * @see Mapper
+         * @see Action
+         */
+        public static abstract class TypeInteger extends Action<Integer>{
+            public TypeInteger() {
+                super(Integer.class);
+            }
+        }
+
+        /**
+         * Action type for <code>Long</code>
+         * @see Mapper
+         * @see Action
+         */
+        public static abstract class TypeLong extends Action<Long>{
+            public TypeLong() {
+                super(Long.class);
+            }
+        }
+
+        /**
+         * Action type for <code>Short</code>
+         * @see Mapper
+         * @see Action
+         */
+        public static abstract class TypeShort extends Action<Short>{
+            public TypeShort() {
+                super(Short.class);
+            }
+        }
+
+        /**
+         * Action type for <code>Float</code>
+         * @see Mapper
+         * @see Action
+         */
+        public static abstract class TypeFloat extends Action<Float>{
+            public TypeFloat() {
+                super(Float.class);
+            }
+        }
+
+        /**
+         * Action type for <code>Boolean</code>
+         * @see Mapper
+         * @see Action
+         */public static abstract class TypeBoolean extends Action<Boolean>{
+            public TypeBoolean() {
+                super(Boolean.class);
+            }
+        }
+
+        /**
+         * Action type for <code>Double</code>
+         * @see Mapper
+         * @see Action
+         */
+        public static abstract class TypeDouble extends Action<Double>{
+            public TypeDouble() {
+                super(Double.class);
+            }
+        }
+
+        /**
+         * Action type for <code>byte[]</code>
+         * @see Mapper
+         * @see Action
+         */
+        public static abstract class TypeBytes extends Action<byte[]>{
+            public TypeBytes() {
+                super(byte[].class);
+            }
+        }
+
     }
 
 

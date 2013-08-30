@@ -114,7 +114,7 @@ class TestUsage {
 
         @Override
         public void map(Mapper mapper) {
-            mapper.map("Name", new Action<String>(String.class){
+            mapper.map("Name", new Action.TypeString(){
                 @Override public void set(String value) {
                     name = value;
                 }
@@ -123,7 +123,7 @@ class TestUsage {
                     return name;
                 }
             });
-            mapper.map("Age", new Action<Integer>(Integer.class){
+            mapper.map("Age", new Action.TypeInteger(){
 
                 @Override public void set(Integer value) {
                     age = value;
@@ -134,15 +134,11 @@ class TestUsage {
                     return age;
                 }
             });
-            mapper.mapId(new Action<Integer>(Integer.class) {
+            mapper.mapId(new Action.TypeId(this){
+
                 @Override
                 public void set(Integer value) {
                     id = value;
-                }
-
-                @Override
-                public Integer get() {
-                    return id;
                 }
             });
         }
