@@ -79,10 +79,7 @@ class Table implements ITable {
 
     @Override
     public int getColumnCount() {
-        if(columns != null){
-            return columns.size();
-        }
-        return  0;
+        return columns.size();
     }
 
     @Override
