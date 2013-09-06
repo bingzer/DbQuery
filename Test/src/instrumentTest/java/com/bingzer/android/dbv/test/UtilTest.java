@@ -1,8 +1,12 @@
 package com.bingzer.android.dbv.test;
 
+import android.database.Cursor;
 import android.test.AndroidTestCase;
 
+import com.bingzer.android.dbv.DbQuery;
+import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 /**
  * Created by Ricky on 8/9/13.
@@ -21,8 +25,8 @@ public class UtilTest extends AndroidTestCase{
     }
 
     public void testJoin(){
-        assertTrue(Util.join(",","a","b").equals("a,b"));
-        assertTrue(Util.join(".","a","b").equals("a.b"));
+        assertTrue(Util.join(",", "a", "b").equals("a,b"));
+        assertTrue(Util.join(".", "a", "b").equals("a.b"));
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -42,5 +46,17 @@ public class UtilTest extends AndroidTestCase{
         String actual = Util.bindArgs("Hello ?, how are you ?", "World");
         assertEquals(expected, actual);
 
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public void testArguments(){
+        IDatabase db = DbQuery.getDatabase("TestDb");
+        db.open(1, new SQLiteBuilder.WithoutModeling(getContext()));
+
+        Cursor cursor = db.get("Customers")
+                .select("Name = ?", "$Yo$")
+                .query();
+        cursor.close();
     }
 }
