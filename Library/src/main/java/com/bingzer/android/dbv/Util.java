@@ -37,6 +37,7 @@ package com.bingzer.android.dbv;
 public final class Util {
 
     private static final String QUESTION_MARK = "\\?";
+    private static final char QUESTION_MARK_CHAR = QUESTION_MARK.charAt(1);
     private static final String NULL = "null";
 
     /**
@@ -71,16 +72,25 @@ public final class Util {
      */
     public static String bindArgs(String clause, Object... args){
         if(args == null){
-            clause = clause.replaceAll(QUESTION_MARK, NULL);
+            return clause.replaceAll(QUESTION_MARK, NULL);
         }
         else {
-            // replace ? add args
-            for (Object arg : args) {
-                clause = clause.replaceFirst(QUESTION_MARK, safeEscape(arg));
-            }
-        }
+            StringBuilder result = new StringBuilder();
 
-        return clause;
+            // replace ? with args
+            for(int i = 0, counter = 0; i < clause.length(); i++){
+                final char c = clause.charAt(i);
+                if(c == QUESTION_MARK_CHAR && counter < args.length){
+                    // replace this
+                    result.append(safeEscape(args[counter++]));
+                }
+                else{
+                    result.append(c);
+                }
+            }
+
+            return result.toString();
+        }
     }
 
     /**

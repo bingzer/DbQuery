@@ -13,11 +13,11 @@ public class UtilTest extends AndroidTestCase{
         String bad = "'hello'";
         String good = "hello";
 
-        bad = Util.safeEscape(bad);
-        good = Util.safeEscape(good);
+        String newBad = Util.safeEscape(bad);
+        String newGood = Util.safeEscape(good);
 
-        assertTrue(bad.equalsIgnoreCase("'''hello'''"));
-        assertTrue(good.equalsIgnoreCase("'hello'"));
+        assertEquals(newBad, "'''hello'''");
+        assertTrue(newGood.equalsIgnoreCase("'hello'"));
     }
 
     public void testJoin(){
@@ -25,15 +25,22 @@ public class UtilTest extends AndroidTestCase{
         assertTrue(Util.join(".","a","b").equals("a.b"));
     }
 
-    public void testBindArgs(){
-        assertTrue(Util.bindArgs("ENTER THE DARK SIDE", 1,2,3).equals("ENTER THE DARK SIDE"));
-        assertTrue(Util.bindArgs("Hello ?, How ? You", "World", 'R', "Invalid").equals("Hello 'World', How 'R' You"));
-        assertTrue(Util.bindArgs("INSERT INTO (?,?,?)", 1,2,3).equals("INSERT INTO (1,2,3)"));
+    ////////////////////////////////////////////////////////////////////////////////
 
-        assertTrue(Util.bindArgs("?", "'wake'").equals("'''wake'''"));
+    public void testBindArgs(){
+        String expected = "Name = 'Whatever' AND Age = 2 OR Address is null";
+        String actual = Util.bindArgs("Name = ? AND Age = ? OR Address is ?", "Whatever", 2, null);
+        assertEquals(expected, actual);
+
+        expected = "Name = 'I''m fine. You?' AND Age = 2 OR Address is 'Wallaby Way, Sidney?'";
+        actual = Util.bindArgs("Name = ? AND Age = ? OR Address is ?", "I'm fine. You?", 2, "Wallaby Way, Sidney?");
+        assertEquals(expected, actual);
     }
 
     public void testBindArgs_WithMissingArgs(){
-        assertTrue(Util.bindArgs("Hello ?, how are you ?", "World").equals("Hello 'World', how are you ?"));
+        String expected = "Hello 'World', how are you ?";
+        String actual = Util.bindArgs("Hello ?, how are you ?", "World");
+        assertEquals(expected, actual);
+
     }
 }
