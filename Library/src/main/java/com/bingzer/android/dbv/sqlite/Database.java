@@ -642,10 +642,15 @@ public class Database implements IDatabase {
 
                     onOpen(preloadedSQLiteDb);
                     // check version..
+                    if(preloadedSQLiteDb.getVersion() == database.getVersion())
+                        // do nothing
+                        Log.i(TAG, "Same version. Do nothing");
                     // upgrade
-                    if(preloadedSQLiteDb.getVersion() < database.getVersion())
+                    else if(preloadedSQLiteDb.getVersion() < database.getVersion())
                         onUpgrade(preloadedSQLiteDb, preloadedSQLiteDb.getVersion(), database.getVersion());
-                    else onDowngrade(preloadedSQLiteDb, preloadedSQLiteDb.getVersion(), database.getVersion());
+                    // downgrade
+                    else
+                        onDowngrade(preloadedSQLiteDb, preloadedSQLiteDb.getVersion(), database.getVersion());
                 }
                 catch (Exception e){
                     builder.onError(e);
