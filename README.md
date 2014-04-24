@@ -7,7 +7,12 @@ DbQuery
 
 * See complete wiki and documentation here: 
 [https://github.com/bingzer/DbQuery/wiki](https://github.com/bingzer/DbQuery/wiki)
-* **Download** latest binary: (via Maven Central)
+
+Download
+========
+Download the latest binary: (via Maven Central)
+
+Gradle:
 ```groovy
 compile 'com.bingzer.android.dbv:dbquery:1.0.0'
 ```
