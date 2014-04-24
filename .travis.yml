@@ -28,7 +28,7 @@ before_install:
   - wget https://dl-ssl.google.com/android/android-sdk_${ANDROID_SDK_VERSION}-linux.tgz
   - tar -zxf android-sdk_${ANDROID_SDK_VERSION}-linux.tgz
   - export ANDROID_HOME=`pwd`/android-sdk-linux
-  - export ANDROID_BUILD_TOOLS_HOME=${ANDROID_HOME}/build-tools/19.0.3
+  - export ANDROID_BUILD_TOOLS_HOME=${ANDROID_HOME}/build-tools/19.0.0
   - export PATH=${ANDROID_BUILD_TOOLS_HOME}:${ANDROID_HOME}/tools:${PATH}
 
   - export BASEDIR=`pwd`
