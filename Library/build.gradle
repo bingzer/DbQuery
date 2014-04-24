@@ -1,63 +1,21 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
-    }
-}
+project.ext.set("archivesBaseName", "dbquery");
 
-apply plugin: 'maven'
 apply plugin: 'android-library'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    compile 'com.android.support:support-v4:13.0.+'
+    compile 'com.android.support:support-v4:19.1.+'
 }
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion "17.0.0"
+    compileSdkVersion Integer.parseInt(project.VERSION_SDK)
+    buildToolsVersion project.VERSION_TOOLS
 
     defaultConfig {
-        minSdkVersion 7
-        targetSdkVersion 17
+        minSdkVersion Integer.parseInt(project.VERSION_SDK_MIN)
+        targetSdkVersion Integer.parseInt(project.VERSION_SDK_TARGET)
+        versionCode Integer.parseInt(project.VERSION_CODE)
+        versionName project.VERSION_NAME
     }
 }
 
-archivesBaseName = 'dbquery'
-artifactId = 'dbquery'
-group = "com.bingzer.android.dbv"
-version = getVersionName()
-android.defaultConfig.versionCode = getVersionCode()
-android.defaultConfig.versionName = getVersionName()
-
-
-pom {
-    project {
-        artifactId = archivesBaseName
-        groupId = group
-        version = version
-    }
-}.writeTo(project(':Library').buildDir.getAbsolutePath() + '/pom.xml')
-
-//////////////////// java doc
-
-task generateJavadoc(type: Javadoc) {
-    source = android.sourceSets.main.allJava
-    destinationDir = new File(project.buildDir, "javadoc")
-    failOnError = true
-}
-
-task zipJavadoc << {
-    String targetZip = "$project.buildDir/$archivesBaseName-$project.version-javadoc.zip"
-    ant.zip(destfile: targetZip) {
-        fileset(dir: new File(project.buildDir, "javadoc")) {
-            include(name: '*.*')
-            include(name: '**/**')
-        }
-    }
-}
+apply from: '../maven-push.gradle'

@@ -1,35 +1,21 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
-    }
-}
-apply plugin: 'android'
+project.ext.set("archivesBaseName", "dbquery-sample");
 
-repositories {
-    mavenCentral()
-}
+apply plugin: 'android'
 
 dependencies {
     compile project(':Library')
-    compile 'com.android.support:support-v4:13.0.+'
+    compile project(':Extensions:ContentQuery')
+    compile project(':Extensions:DataProvider')
 }
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion "17.0.0"
+    compileSdkVersion Integer.parseInt(project.VERSION_SDK)
+    buildToolsVersion project.VERSION_TOOLS
 
     defaultConfig {
-        minSdkVersion 7
-        targetSdkVersion 17
+        minSdkVersion Integer.parseInt(project.VERSION_SDK_MIN)
+        targetSdkVersion Integer.parseInt(project.VERSION_SDK_TARGET)
+        versionCode Integer.parseInt(project.VERSION_CODE)
+        versionName project.VERSION_NAME
     }
 }
-
-archivesBaseName = 'dbquery-sample'
-artifactId = 'dbquery'
-group = "com.bingzer.android.dbv"
-version = getVersionName()
-android.defaultConfig.versionCode = getVersionCode()
-android.defaultConfig.versionName = getVersionName()
