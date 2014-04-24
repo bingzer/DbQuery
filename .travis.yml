@@ -1,66 +1,35 @@
-
-language: java
-
 branches:
-  excludes:
-    - gh-pages
-
-notifications:
-  email: false
-
-env:
-  global:
-    - ANDROID_SDK_VERSION="r22.0.1"
-    - ANDROID_BUILD_TOOLS_VERSION="r19"
-    - ANDROID_PLATFORM_TOOLS_VERSION="r19"
-
+  only:
+    - master
+language:
+  - java
 jdk:
   - openjdk7
-
 before_install:
-  # Update a system for ia32 libraries
-  # Just full upgrade of system and installing a ia32-libs not works
-  # It's debian based system, /very/ stable version only
-  - sudo apt-get update -qq
+  # environment info
+  - mvn -version
+  - gradle -v
+  - uname -a
+  # required libs for android build tools
+  - if [ `uname -m` = x86_64 ]; then sudo apt-get update; fi
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
-
-  # Base android sdk setup
-  - wget https://dl-ssl.google.com/android/android-sdk_${ANDROID_SDK_VERSION}-linux.tgz
-  - tar -zxf android-sdk_${ANDROID_SDK_VERSION}-linux.tgz
+  # for gradle output style
+  - export TERM=dumb
+  # newer version of gradle
+  - wget http://services.gradle.org/distributions/gradle-1.10-bin.zip
+  - unzip -qq gradle-1.10-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-1.10
+  - export PATH=$GRADLE_HOME/bin:$PATH
+  # just to test gradle version, against our provided one
+  - gradle -v
+  # newest android SDK 22.6.1
+  - wget http://dl.google.com/android/android-sdk_r22.6.1-linux.tgz
+  - tar -zxf android-sdk_r22.6.1-linux.tgz
   - export ANDROID_HOME=`pwd`/android-sdk-linux
-  - export ANDROID_BUILD_TOOLS_HOME=${ANDROID_HOME}/build-tools/19.0.0
-  - export PATH=${ANDROID_BUILD_TOOLS_HOME}:${ANDROID_HOME}/tools:${PATH}
+  - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+  # manually set sdk.dir variable, according to local paths
+  - echo "sdk.dir=$ANDROID_HOME" > local.properties
+  # list packages for debug purpose
+  - android list sdk -a -e -u
+  - echo yes | android update sdk -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-19,build-tools-19.0.3 --force --no-ui
 
-  - export BASEDIR=`pwd`
-
-  # Build tools
-  # Zip from repository contains android-*.*.* folder inside,
-  # we are need only a content from it
-  - mkdir -p ${ANDROID_BUILD_TOOLS_HOME}
-  - cd ${ANDROID_BUILD_TOOLS_HOME}
-  - export FILE=build-tools_${ANDROID_BUILD_TOOLS_VERSION}-linux.zip
-  - wget https://dl-ssl.google.com/android/repository/${FILE}
-  - unzip -q ${FILE}
-  - rm ${FILE}
-  - export FILE=$(ls)
-  - mv ${FILE}/* .
-  - rmdir ${FILE}
-  - cd ${BASEDIR}
-
-  # Platform tools unneed for build, but i know Google - crazy peoples
-  # In case of fire uncomment lines below
-  - export FILE=platform-tools_${ANDROID_BUILD_TOOLS_VERSION}-linux.zip
-  - wget https://dl-ssl.google.com/android/repository/${FILE}
-  - unzip -q ${FILE}
-  - rm ${FILE}
-  - export PATH=${ANDROID_HOME}/platform-tools:${PATH}
-
-  # We should update Gradle, because Android Build Tools works with 1.6,
-  # but on travis installed 1.4
-  - wget http://downloads.gradle.org/distributions/gradle-1.10-all.zip
-  - unzip -q -o gradle-1.10-all.zip
-  - export PATH="${BASEDIR}/gradle-1.10/bin:${PATH}"
-
-  # Let's try to build...
-install: gradle build
-script: gradle check
