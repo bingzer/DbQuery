@@ -49,23 +49,13 @@ before_install:
 
   # Platform tools unneed for build, but i know Google - crazy peoples
   # In case of fire uncomment lines below
-  #- export FILE=platform-tools_${ANDROID_BUILD_TOOLS_VERSION}-linux.zip
-  #- wget https://dl-ssl.google.com/android/repository/${FILE}
-  #- unzip -q ${FILE}
-  #- rm ${FILE}
-  #- export PATH=${ANDROID_HOME}/platform-tools:${PATH}
-
-  # Android SDK Platform API 14
-  - export FILE=android-19_r03.zip
+  - export FILE=platform-tools_${ANDROID_BUILD_TOOLS_VERSION}-linux.zip
   - wget https://dl-ssl.google.com/android/repository/${FILE}
-  - mkdir -p ${ANDROID_HOME}/platforms
-  - unzip -q ${FILE} -d ${ANDROID_HOME}/platforms
-  - mv ${ANDROID_HOME}/platforms/android-4.0.2 ${ANDROID_HOME}/platforms/android-19
+  - unzip -q ${FILE}
   - rm ${FILE}
+  - export PATH=${ANDROID_HOME}/platform-tools:${PATH}
 
-  - unset FILE
-
-  # We are should update Gradle, because Android Build Tools works with 1.6,
+  # We should update Gradle, because Android Build Tools works with 1.6,
   # but on travis installed 1.4
   - wget http://downloads.gradle.org/distributions/gradle-1.10-all.zip
   - unzip -q -o gradle-1.10-all.zip
