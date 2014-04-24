@@ -7,11 +7,10 @@ DbQuery
 
 * See complete wiki and documentation here: 
 [https://github.com/bingzer/DbQuery/wiki](https://github.com/bingzer/DbQuery/wiki)
-* Download latest binary here:
-[https://github.com/bingzer/DbQuery/releases](https://github.com/bingzer/DbQuery/releases)
-  * **v.1.0** : [https://github.com/bingzer/DbQuery/releases/tag/v.1.0](https://github.com/bingzer/DbQuery/releases/tag/v.1.0)
-* How to build:
-[https://github.com/bingzer/DbQuery/wiki/How-to-build](https://github.com/bingzer/DbQuery/wiki/How-to-build)
+* **Download** latest binary: (via Maven Central)
+```groovy
+compile 'com.bingzer.android.dbv:dbquery:1.0.0'
+```
 
 #Why
 Sometimes we are stuck using the following code in Android development.
