@@ -2,10 +2,6 @@ project.ext.set("archivesBaseName", "dbquery");
 
 apply plugin: 'android-library'
 
-dependencies {
-    compile 'com.android.support:support-v4:19.1.+'
-}
-
 android {
     compileSdkVersion Integer.parseInt(project.VERSION_SDK)
     buildToolsVersion project.VERSION_TOOLS
@@ -18,4 +14,5 @@ android {
     }
 }
 
-apply from: '../maven-push.gradle'
+if (isMavenRelease())
+    apply from: '../maven-push.gradle'

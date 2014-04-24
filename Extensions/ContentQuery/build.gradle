@@ -18,4 +18,5 @@ android {
     }
 }
 
-apply from: '../../maven-push.gradle'
+if (isMavenRelease())
+    apply from: '../../maven-push.gradle'

@@ -4,6 +4,10 @@ def isReleaseBuild() {
     return version.contains("SNAPSHOT") == false
 }
 
+def isMavenRelease() {
+    return Boolean.parseBoolean(MAVEN_RELEASE)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 buildscript {
