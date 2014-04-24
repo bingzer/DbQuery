@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bingzer/DbQuery.svg?branch=master)](https://travis-ci.org/bingzer/DbQuery)
+
 DbQuery
 ==============
 
