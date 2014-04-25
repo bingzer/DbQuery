@@ -17,6 +17,7 @@
 package com.bingzer.android.dbv.sqlite;
 
 import com.bingzer.android.dbv.IFunction;
+import com.bingzer.android.dbv.Util;
 
 /**
  * Created by Ricky Tobing on 7/20/13.
@@ -26,10 +27,18 @@ class FunctionImpl implements IFunction {
     Object value;
     final StringBuilder builder;
 
-    FunctionImpl(String functionName, String tableName, String columnName){
+    FunctionImpl(String functionName, String tableName, String columnName, String condition){
         builder = new StringBuilder("SELECT ")
                 .append(functionName).append("(").append(columnName).append(") AS FN ")
                 .append(" FROM ").append(tableName);
+
+        if(condition != null){
+            // append where if necessary
+            if(!condition.toLowerCase().startsWith("where"))
+                builder.append(" WHERE ");
+            // safely prepare the where part
+            builder.append(condition);
+        }
     }
 
     ////////////////////////////////////////////
@@ -94,23 +103,28 @@ class FunctionImpl implements IFunction {
     //////////////////////////////////////////////////////////
 
     static class AverageImpl extends FunctionImpl implements Average {
-        AverageImpl(String tableName, String columnName){
-            super("AVG", tableName, columnName);
+        AverageImpl(String tableName, String columnName, String condition){
+            super("AVG", tableName, columnName, condition);
         }
     }
     static class SumImpl extends FunctionImpl implements Sum {
-        SumImpl(String tableName, String columnName){
-            super("SUM", tableName, columnName);
+        SumImpl(String tableName, String columnName, String condition){
+            super("SUM", tableName, columnName, condition);
+        }
+    }
+    static class TotalImpl extends FunctionImpl implements Total {
+        TotalImpl(String tableName, String columnName, String condition){
+            super("TOTAL", tableName, columnName, condition);
         }
     }
     static class MaxImpl extends FunctionImpl implements Max {
-        MaxImpl(String tableName, String columnName){
-            super("MAX", tableName, columnName);
+        MaxImpl(String tableName, String columnName, String condition){
+            super("MAX", tableName, columnName, condition);
         }
     }
     static class MinImpl extends FunctionImpl implements Min {
-        MinImpl(String tableName, String columnName){
-            super("MIN", tableName, columnName);
+        MinImpl(String tableName, String columnName, String condition){
+            super("MIN", tableName, columnName, condition);
         }
     }
 

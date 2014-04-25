@@ -836,6 +836,50 @@ public class TableTest extends AndroidTestCase{
         assertEquals(average, "2688");
     }
 
+    public void testAvg_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.avg("Price", "Price > 100").asDouble();
+        assertEquals(average, (double) 5340); // this number may change
+
+        average = productTable.avg("Price", "Price > 100").asFloat();
+        assertEquals(average, (float) 5340);
+
+        average = productTable.avg("Price", "Price > 100").asInt();
+        assertEquals(average, 5340);
+
+        average = productTable.avg("Price", "Price > 100").asLong();
+        assertEquals(average, (long) 5340);
+
+        average = productTable.avg("Price", "Price > 100").value();
+        assertEquals(average, 5340);
+
+        average = productTable.avg("Price", "Price > 100").asString();
+        assertEquals(average, "5340");
+    }
+
+    public void testAvg_WhereClause(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.avg("Price", "Price > ?", 100).asDouble();
+        assertEquals(average, (double) 5340); // this number may change
+
+        average = productTable.avg("Price", "Price > ?", 100).asFloat();
+        assertEquals(average, (float) 5340);
+
+        average = productTable.avg("Price", "Price > ?", 100).asInt();
+        assertEquals(average, 5340);
+
+        average = productTable.avg("Price", "Price > ?", 100).asLong();
+        assertEquals(average, (long) 5340);
+
+        average = productTable.avg("Price", "Price > ?", 100).value();
+        assertEquals(average, 5340);
+
+        average = productTable.avg("Price", "Price > ?", 100).asString();
+        assertEquals(average, "5340");
+    }
+
     public void testSum(){
         ITable productTable = db.get("Products");
 
@@ -856,6 +900,117 @@ public class TableTest extends AndroidTestCase{
 
         average = productTable.sum("Price").asString();
         assertEquals(average, "26881");
+    }
+
+    public void testSum_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.sum("Price", "Name like 'C%'").asDouble();
+        assertEquals(average, (double) 21201); // this number may change
+
+        average = productTable.sum("Price", "Name like 'C%'").asFloat();
+        assertEquals(average, (float) 21201);
+
+        average = productTable.sum("Price", "Name like 'C%'").asInt();
+        assertEquals(average, 21201);
+
+        average = productTable.sum("Price", "Name like 'C%'").asLong();
+        assertEquals(average, (long) 21201);
+
+        average = productTable.sum("Price", "Name like 'C%'").value();
+        assertEquals(average, 21201);
+
+        average = productTable.sum("Price", "Name like 'C%'").asString();
+        assertEquals(average, "21201");
+    }
+
+    public void testSum_WhereClause(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.sum("Price", "Name like ?", "C%").asDouble();
+        assertEquals(average, (double) 21201); // this number may change
+
+        average = productTable.sum("Price", "Name like ?", "C%").asFloat();
+        assertEquals(average, (float) 21201);
+
+        average = productTable.sum("Price", "Name like ?", "C%").asInt();
+        assertEquals(average, 21201);
+
+        average = productTable.sum("Price", "Name like ?", "C%").asLong();
+        assertEquals(average, (long) 21201);
+
+        average = productTable.sum("Price", "Name like ?", "C%").value();
+        assertEquals(average, 21201);
+
+        average = productTable.sum("Price", "Name like ?", "C%").asString();
+        assertEquals(average, "21201");
+    }
+
+
+    public void testTotal(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.total("Price").asDouble();
+        assertEquals(average, (double) 26881); // this number may change
+
+        average = productTable.total("Price").asFloat();
+        assertEquals(average, (float) 26881);
+
+        average = productTable.total("Price").asInt();
+        assertEquals(average, 26881);
+
+        average = productTable.total("Price").asLong();
+        assertEquals(average, (long) 26881);
+
+        average = productTable.total("Price").value();
+        assertEquals(average, 26881);
+
+        average = productTable.total("Price").asString();
+        assertEquals(average, "26881");
+    }
+
+    public void testTotal_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.total("Price", "Name like 'C%'").asDouble();
+        assertEquals(average, (double) 21201); // this number may change
+
+        average = productTable.total("Price", "Name like 'C%'").asFloat();
+        assertEquals(average, (float) 21201);
+
+        average = productTable.total("Price", "Name like 'C%'").asInt();
+        assertEquals(average, 21201);
+
+        average = productTable.total("Price", "Name like 'C%'").asLong();
+        assertEquals(average, (long) 21201);
+
+        average = productTable.total("Price", "Name like 'C%'").value();
+        assertEquals(average, 21201);
+
+        average = productTable.total("Price", "Name like 'C%'").asString();
+        assertEquals(average, "21201");
+    }
+
+    public void testTotal_WhereClause(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.total("Price", "Name like ?", "C%").asDouble();
+        assertEquals(average, (double) 21201); // this number may change
+
+        average = productTable.total("Price", "Name like ?", "C%").asFloat();
+        assertEquals(average, (float) 21201);
+
+        average = productTable.total("Price", "Name like ?", "C%").asInt();
+        assertEquals(average, 21201);
+
+        average = productTable.total("Price", "Name like ?", "C%").asLong();
+        assertEquals(average, (long) 21201);
+
+        average = productTable.total("Price", "Name like ?", "C%").value();
+        assertEquals(average, 21201);
+
+        average = productTable.sum("Price", "Name like ?", "C%").asString();
+        assertEquals(average, "21201");
     }
 
     public void testMax(){
@@ -880,6 +1035,50 @@ public class TableTest extends AndroidTestCase{
         assertEquals(average, "20000");
     }
 
+    public void testMax_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.max("Price", "Price < 2").asDouble();
+        assertEquals(average, (double) 1); // this number may change
+
+        average = productTable.max("Price", "Price < 2").asFloat();
+        assertEquals(average, (float) 1);
+
+        average = productTable.max("Price", "Price < 2").asInt();
+        assertEquals(average, 1);
+
+        average = productTable.max("Price", "Price < 2").asLong();
+        assertEquals(average, (long) 1);
+
+        average = productTable.max("Price", "Price < 2").value();
+        assertEquals(average, 1);
+
+        average = productTable.max("Price", "Price < 2").asString();
+        assertEquals(average, "1");
+    }
+
+    public void testMax_Where(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.max("Price", "Price < ?", 2).asDouble();
+        assertEquals(average, (double) 1); // this number may change
+
+        average = productTable.max("Price", "Price < ?", 2).asFloat();
+        assertEquals(average, (float) 1);
+
+        average = productTable.max("Price", "Price < ?", 2).asInt();
+        assertEquals(average, 1);
+
+        average = productTable.max("Price", "Price < ?", 2).asLong();
+        assertEquals(average, (long) 1);
+
+        average = productTable.max("Price", "Price < ?", 2).value();
+        assertEquals(average, 1);
+
+        average = productTable.max("Price", "Price < ?", 2).asString();
+        assertEquals(average, "1");
+    }
+
     public void testMin(){
         ITable productTable = db.get("Products");
 
@@ -900,6 +1099,50 @@ public class TableTest extends AndroidTestCase{
 
         average = productTable.min("Price").asString();
         assertEquals(average, "1");
+    }
+
+    public void testMin_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.min("Price", "Price > 101").asDouble();
+        assertEquals(average, (double) 200); // this number may change
+
+        average = productTable.min("Price", "Price > 101").asFloat();
+        assertEquals(average, (float) 200);
+
+        average = productTable.min("Price", "Price > 101").asInt();
+        assertEquals(average, 200);
+
+        average = productTable.min("Price", "Price > 101").asLong();
+        assertEquals(average, (long) 200);
+
+        average = productTable.min("Price", "Price > 101").value();
+        assertEquals(average, 200);
+
+        average = productTable.min("Price", "Price > 101").asString();
+        assertEquals(average, "200");
+    }
+
+    public void testMin_WhereClause(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.min("Price", "Price > ?", 101).asDouble();
+        assertEquals(average, (double) 200); // this number may change
+
+        average = productTable.min("Price", "Price > ?", 101).asFloat();
+        assertEquals(average, (float) 200);
+
+        average = productTable.min("Price", "Price > ?", 101).asInt();
+        assertEquals(average, 200);
+
+        average = productTable.min("Price", "Price > ?", 101).asLong();
+        assertEquals(average, (long) 200);
+
+        average = productTable.min("Price", "Price > ?", 101).value();
+        assertEquals(average, 200);
+
+        average = productTable.min("Price", "Price > ?", 101).asString();
+        assertEquals(average, "200");
     }
 
     public void testDrop(){

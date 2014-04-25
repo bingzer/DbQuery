@@ -31,11 +31,75 @@ public interface Function {
     IFunction.Average avg(String columnName);
 
     /**
-     * Returns the total for the specified <code>columnName</code>
+     * Returns average for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param condition the condition
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Average avg(String columnName, String condition);
+
+    /**
+     * Returns average for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param whereClause where
+     * @param args arguments
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Average avg(String columnName, String whereClause, Object... args);
+
+    /**
+     * Returns the sum value for the specified <code>columnName</code>
      * @param columnName column name
      * @return {@link com.bingzer.android.dbv.IFunction.Sum}
      */
     IFunction.Sum sum(String columnName);
+
+    /**
+     * Returns the sum value for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param condition the condition
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Sum sum(String columnName, String condition);
+
+    /**
+     * Returns the sum value for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param whereClause where
+     * @param args arguments
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Sum sum(String columnName, String whereClause, Object... args);
+
+    /**
+     * Returns the sum value for the specified <code>columnName</code>
+     * @param columnName column name
+     * @return {@link com.bingzer.android.dbv.IFunction.Sum}
+     */
+    IFunction.Total total(String columnName);
+
+    /**
+     * Returns the sum value for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param condition the condition
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Total total(String columnName, String condition);
+
+    /**
+     * Returns the sum value for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param whereClause where
+     * @param args arguments
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Total total(String columnName, String whereClause, Object... args);
 
     /**
      * Returns the maximum value for the specified <code>columnName</code>
@@ -44,6 +108,24 @@ public interface Function {
      */
     IFunction.Max max(String columnName);
 
+    /**
+     * Returns the maximum value for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param condition the condition
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Max max(String columnName, String condition);
+
+    /**
+     * Returns the maximum value for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param whereClause where
+     * @param args arguments
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Max max(String columnName, String whereClause, Object... args);
 
     /**
      * Returns the minimum value for the specified <code>columnName</code>
@@ -51,4 +133,23 @@ public interface Function {
      * @return {@link com.bingzer.android.dbv.IFunction.Min}
      */
     IFunction.Min min(String columnName);
+
+    /**
+     * Returns the minimum value for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param condition the condition
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Min min(String columnName, String condition);
+
+    /**
+     * Returns the minimum value for the specified <code>columnName</code>
+     * with condition
+     * @param columnName column name
+     * @param whereClause where
+     * @param args arguments
+     * @return {@link com.bingzer.android.dbv.IFunction.Average}
+     */
+    IFunction.Min min(String columnName, String whereClause, Object... args);
 }

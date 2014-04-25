@@ -85,4 +85,11 @@ public interface IFunction {
 
     }
 
+    /**
+     * Represents <code>Total</code>
+     */
+    public static interface Total extends IFunction {
+
+    }
+
 }

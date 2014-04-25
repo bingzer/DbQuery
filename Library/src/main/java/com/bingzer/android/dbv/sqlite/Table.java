@@ -557,29 +557,75 @@ class Table implements ITable {
 
     @Override
     public IFunction.Average avg(String columnName) {
-        FunctionImpl.AverageImpl fn = new FunctionImpl.AverageImpl(toString(), columnName);
+        return avg(columnName, null);
+    }
+
+    @Override
+    public IFunction.Average avg(String columnName, String condition) {
+        FunctionImpl.AverageImpl fn = new FunctionImpl.AverageImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
             fn.value = cursor.getInt(0);
         }
         cursor.close();
         return fn;
+    }
+
+    @Override
+    public IFunction.Average avg(String columnName, String whereClause, Object... args) {
+        return avg(columnName, Util.bindArgs(whereClause, args));
     }
 
     @Override
     public IFunction.Sum sum(String columnName) {
-        FunctionImpl.SumImpl fn = new FunctionImpl.SumImpl(toString(), columnName);
+        return sum(columnName, null);
+    }
+
+    @Override
+    public IFunction.Sum sum(String columnName, String condition) {
+        FunctionImpl.SumImpl fn = new FunctionImpl.SumImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
             fn.value = cursor.getInt(0);
         }
         cursor.close();
         return fn;
+    }
+
+    @Override
+    public IFunction.Sum sum(String columnName, String whereClause, Object... args) {
+        return sum(columnName, Util.bindArgs(whereClause, args));
+    }
+
+    @Override
+    public IFunction.Total total(String columnName) {
+        return total(columnName, null);
+    }
+
+    @Override
+    public IFunction.Total total(String columnName, String condition) {
+        FunctionImpl.TotalImpl fn = new FunctionImpl.TotalImpl(toString(), columnName, condition);
+        Cursor cursor = raw(fn.toString()).query();
+        if(cursor.moveToNext()){
+            fn.value = cursor.getInt(0);
+        }
+        cursor.close();
+        return fn;
+    }
+
+    @Override
+    public IFunction.Total total(String columnName, String whereClause, Object... args) {
+        return total(columnName, Util.bindArgs(whereClause, args));
     }
 
     @Override
     public IFunction.Max max(String columnName) {
-        FunctionImpl.MaxImpl fn = new FunctionImpl.MaxImpl(toString(), columnName);
+        return max(columnName, null);
+    }
+
+    @Override
+    public IFunction.Max max(String columnName, String condition) {
+        FunctionImpl.MaxImpl fn = new FunctionImpl.MaxImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
             fn.value = cursor.getInt(0);
@@ -589,14 +635,29 @@ class Table implements ITable {
     }
 
     @Override
+    public IFunction.Max max(String columnName, String whereClause, Object... args) {
+        return max(columnName, Util.bindArgs(whereClause, args));
+    }
+
+    @Override
     public IFunction.Min min(String columnName) {
-        FunctionImpl.MinImpl fn = new FunctionImpl.MinImpl(toString(), columnName);
+        return min(columnName, null);
+    }
+
+    @Override
+    public IFunction.Min min(String columnName, String condition) {
+        FunctionImpl.MinImpl fn = new FunctionImpl.MinImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
             fn.value = cursor.getInt(0);
         }
         cursor.close();
         return fn;
+    }
+
+    @Override
+    public IFunction.Min min(String columnName, String whereClause, Object... args) {
+        return min(columnName, Util.bindArgs(whereClause, args));
     }
 
     @Override
