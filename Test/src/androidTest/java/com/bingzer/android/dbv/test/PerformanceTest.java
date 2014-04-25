@@ -27,7 +27,7 @@ public class PerformanceTest extends AndroidTestCase{
     public void setUp(){
         // http://chinookdatabase.codeplex.com/wikipage?title=Chinook_Schema&referringTitle=Home
         // chinook sample db
-        dbFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Chinook.sqlite");
+        dbFile = new File(getContext().getFilesDir(), "Chinook.sqlite");
 
         if(!dbFile.exists()){
             try{

@@ -41,7 +41,7 @@ public class SampleApp extends Application {
 
     private void extractDbFile(){
         // transfer the db file to sd card
-        dbFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "DbQuery-Sample.sqlite");
+        dbFile = new File(getBaseContext().getFilesDir(), "DbQuery-Sample.sqlite");
         if(!dbFile.exists()){
             try{
                 IOHelper.copyFile(getResources().getAssets().open("Chinook.sqlite"), dbFile);
