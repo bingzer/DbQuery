@@ -80,7 +80,9 @@ public interface IEntity {
     }
 
     /**
-     * An action used to set/get variables
+     * An action used to set/get variables. An action is
+     * basically references to a method. Since Java does not support
+     * reference to a method, we need this to map methods
      *
      * @param <T>
      */

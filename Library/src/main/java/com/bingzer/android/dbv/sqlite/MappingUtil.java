@@ -25,9 +25,17 @@ import com.bingzer.android.dbv.IEntityList;
  * Provides a 'mapping' utility methods.
  * Created by Ricky on 8/9/13.
  */
-class MappingUtil {
+public class MappingUtil {
 
-    static void mapContentValuesFromGenericObject(ContentValues contentValues, String key, Object value){
+    /**
+     * Map key + value to ContentValues.
+     * Convenient method to map generic object to a ContentValues.
+     *
+     * @param contentValues content values to map these key + value
+     * @param key the key
+     * @param value value.
+     */
+    public static void mapContentValuesFromGenericObject(ContentValues contentValues, String key, Object value){
         if(value instanceof String) contentValues.put(key, (String) value);
         else if(value instanceof Integer) contentValues.put(key, (Integer) value);
         else if(value == null) contentValues.putNull(key);
@@ -43,8 +51,15 @@ class MappingUtil {
         else throw new IllegalArgumentException("Unmapped");
     }
 
-
-    static void mapContentValuesFromAction(ContentValues contentValues, String key, IEntity.Action action){
+    /**
+     * Map {@link com.bingzer.android.dbv.IEntity.Action} to ContentValues.
+     * The value will be retrieved from action.get()
+     *
+     * @param contentValues the content values to map
+     * @param key the key
+     * @param action the action
+     */
+    public static void mapContentValuesFromAction(ContentValues contentValues, String key, IEntity.Action action){
         if(action.get() == null) contentValues.putNull(key);
         else if(action.getType() == String.class) contentValues.put(key, (String)action.get());
         else if(action.getType() == Integer.class) contentValues.put(key, (Integer) action.get());
@@ -60,8 +75,16 @@ class MappingUtil {
         else throw new IllegalArgumentException("Unmapped");
     }
 
+    /**
+     * Map action from a cursor. Based on what type of an action is, this method will
+     * map the value from cursor.getXXX() where XXX is a type.
+     *
+     * @param action the action to map
+     * @param cursor the target cursor
+     * @param index the index in the cursor
+     */
     @SuppressWarnings("unchecked")
-    static void mapActionToCursor(IEntity.Action action, Cursor cursor, int index){
+    public static void mapActionFromCursor(IEntity.Action action, Cursor cursor, int index){
         if(action.getType() == String.class) action.set(cursor.getString(index));
         else if(action.getType() == Integer.class) action.set(cursor.getInt(index));
         else if(action.getType() == Boolean.class) action.set(cursor.getInt(index) == 1);
@@ -75,22 +98,34 @@ class MappingUtil {
         else throw new IllegalArgumentException("Unmapped");
     }
 
-
-    static void mapEntityFromCursor(EntityMapper mapper, IEntity entity, Cursor cursor){
+    /**
+     * Maps an entity from a cursor
+     * @param mapper the entity mapper
+     * @param entity the entity to map
+     * @param cursor the cursor
+     */
+    public static void mapEntityFromCursor(EntityMapper mapper, IEntity entity, Cursor cursor){
         entity.map(mapper);
         if(cursor.moveToNext()){
             for(int i = 0; i < cursor.getColumnCount(); i++){
                 String columnName = cursor.getColumnName(i);
                 IEntity.Action action = mapper.get(columnName);
                 if(action != null){
-                    MappingUtil.mapActionToCursor(action, cursor, i);
+                    MappingUtil.mapActionFromCursor(action, cursor, i);
                 }
             }
         }
     }
 
+    /**
+     * Maps an entity list from cursor
+     * @param mapper the entity mapper
+     * @param entityList the list to map
+     * @param cursor the cursor
+     * @param <E> type of IEntity
+     */
     @SuppressWarnings("unchecked")
-    static <E extends IEntity> void mapEntityListFromCursor(EntityMapper mapper, IEntityList<E> entityList, Cursor cursor){
+    public static <E extends IEntity> void mapEntityListFromCursor(EntityMapper mapper, IEntityList<E> entityList, Cursor cursor){
         while(cursor.moveToNext()){
             int columnIdIndex = cursor.getColumnIndex(mapper.table.generateIdString());
             int id = -1;
@@ -118,7 +153,7 @@ class MappingUtil {
                 String columnName = cursor.getColumnName(i);
                 IEntity.Action action = mapper.get(columnName);
                 if(action != null){
-                    MappingUtil.mapActionToCursor(action, cursor, i);
+                    MappingUtil.mapActionFromCursor(action, cursor, i);
                 }
             }
         }// end while

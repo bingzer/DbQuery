@@ -37,7 +37,7 @@ public class ContentUtils {
 
     @SuppressWarnings("unchecked")
     public static void mapActionToCursor(IEntity.Action action, Cursor cursor, int index){
-        MappingUtil.mapActionToCursor(action, cursor, index);
+        MappingUtil.mapActionFromCursor(action, cursor, index);
     }
 
     public static void mapEntityFromCursor(IEntity.Mapper mapper, IEntity entity, Cursor cursor){
@@ -47,7 +47,7 @@ public class ContentUtils {
                 String columnName = cursor.getColumnName(i);
                 IEntity.Action action = mapper.get(columnName);
                 if(action != null){
-                    MappingUtil.mapActionToCursor(action, cursor, i);
+                    MappingUtil.mapActionFromCursor(action, cursor, i);
                 }
             }
         }
@@ -82,7 +82,7 @@ public class ContentUtils {
                 String columnName = cursor.getColumnName(i);
                 IEntity.Action action = mapper.get(columnName);
                 if(action != null){
-                    MappingUtil.mapActionToCursor(action, cursor, i);
+                    MappingUtil.mapActionFromCursor(action, cursor, i);
                 }
             }
         }// end while
