@@ -95,11 +95,40 @@ public interface IQuery<T> {
      */
     public static interface Update extends IQuery<Integer> {
 
+        /**
+         * Multiple columns
+         * @param columns column names
+         * @return num updated
+         */
         Columns columns(String... columns);
 
+        /**
+         * ContentValues
+         * @param values content values
+         * @return num updated
+         */
         IQuery<Integer> val(ContentValues values);
 
-        public static interface Columns {
+        /**
+         * For a single column update
+         * @param column the column name
+         * @param value the value
+         * @return integer
+         */
+        IQuery<Integer> val(String column, Object value);
+
+        /**
+         * For a multiple column update
+         * @param columnNames column names
+         * @param values values
+         * @return integer
+         */
+        IQuery<Integer> val(String[] columnNames, Object[] values);
+
+        /**
+         * The columns
+         */
+        static interface Columns {
             IQuery<Integer> val(Object... values);
         }
     }

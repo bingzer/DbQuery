@@ -447,6 +447,10 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     // ------------------ Update ----------------//
 
+    public void testUpdate_Empty(){
+        assertEquals(0, (int) db.get("Customers").update().query());
+    }
+
     public void testUpdate_Id(){
         int ronaldoId = getCustomerId("Christiano Ronaldo");
 
@@ -527,6 +531,20 @@ public class TableTest extends AndroidTestCase{
         contentValues.put("Name", "Christiano Ronal");
         contentValues.put("Address", "7 Real Madrid");
         assertTrue(db.get("Customers").update(contentValues, crId).query() > 0);
+    }
+
+    public void testUpdate_SingleColumns(){
+        int ronaldoId = getCustomerId("Christiano Ronaldo");
+
+        assertEquals(1, (int) db.get("Customers").update(ronaldoId).val("Country", "US").query());
+        assertEquals(0, (int) db.get("Customers").update(-1).val("Country", "US").query());
+    }
+
+    public void testUpdate_MultipleColumns(){
+        int ronaldoId = getCustomerId("Christiano Ronaldo");
+
+        assertEquals(1, (int) db.get("Customers").update(ronaldoId).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
+        assertEquals(0, (int) db.get("Customers").update(-1).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
     }
 
     ///////////////////////////////////////////////

@@ -363,7 +363,10 @@ class Table implements ITable {
     public IQuery.Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
         QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
         String[] args = Util.toStringArray(whereArgs);
-        query.value = db.sqLiteDb.update(getName(), contents, whereClause, args);
+
+        // only update when content has something
+        if(contents != null && contents.size() > 0)
+            query.value = db.sqLiteDb.update(getName(), contents, whereClause, args);
 
         return query;
     }

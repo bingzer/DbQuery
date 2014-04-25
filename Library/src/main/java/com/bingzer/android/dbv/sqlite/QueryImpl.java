@@ -252,12 +252,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
             return new Columns() {
                 @Override
                 public IQuery<Integer> val(Object... values) {
-                    contentValues = new ContentValues();
-                    for(int i = 0; i < columns.length; i++){
-                        MappingUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
-                    }
-
-                    return UpdateImpl.this;
+                    return UpdateImpl.this.val(columns, values);
                 }
             };
         }
@@ -265,6 +260,23 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public IQuery<Integer> val(ContentValues values) {
             contentValues = values;
+            return this;
+        }
+
+        @Override
+        public IQuery<Integer> val(String column, Object value) {
+            contentValues = new ContentValues();
+            MappingUtil.mapContentValuesFromGenericObject(contentValues, column, value);
+            return this;
+        }
+
+        @Override
+        public IQuery<Integer> val(String[] columnNames, Object[] values) {
+            contentValues = new ContentValues();
+            for(int i = 0; i < columnNames.length; i++){
+                MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
+            }
+
             return this;
         }
 
