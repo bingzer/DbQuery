@@ -32,11 +32,3 @@ before_install:
   # list packages for debug purpose
   - android list sdk -a -e -u
   - echo yes | android update sdk -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-19,build-tools-19.0.3 --force --no-ui
-
-  # Sonatype bypass
-  - echo "nexusUsername=dummy" >> Library/gradle.properties
-  - echo "nexusPassword=dummy" >> Library/gradle.properties
-  - echo "nexusUsername=dummy" >> Extensions/ContentQuery/gradle.properties
-  - echo "nexusPassword=dummy" >> Extensions/ContentQuery/gradle.properties
-  - echo "nexusUsername=dummy" >> Extensions/DataProvider/gradle.properties
-  - echo "nexusPassword=dummy" >> Extensions/DataProvider/gradle.properties
