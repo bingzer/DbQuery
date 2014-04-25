@@ -1,4 +1,4 @@
-package com.bingzer.android.dbv.data.test;
+package com.bingzer.android.dbv.test;
 
 import android.content.Context;
 import android.os.Environment;
@@ -7,7 +7,6 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.data.BasicDataProvider;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
-import com.bingzer.android.dbv.test.IOHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +19,7 @@ public class ChinookDataProvider extends BasicDataProvider {
     @Override
     public IDatabase openDatabase() {
         IDatabase db;
-        File dbFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Chinook.sqlite");
+        File dbFile = new File(getContext().getFilesDir(), "Chinook.sqlite");
 
         if(!dbFile.exists()){
             try{

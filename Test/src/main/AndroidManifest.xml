@@ -30,10 +30,8 @@
 
         <provider
                 android:authorities="com.bingzer.android.dbv.data.test"
-                android:name="com.bingzer.android.dbv.data.test.ChinookDataProvider"
+                android:name="com.bingzer.android.dbv.test.ChinookDataProvider"
                 android:exported="true"/>
     </application>
 
-    <instrumentation android:name="android.test.InstrumentationTestRunner"
-                     android:targetPackage="com.bingzer.android.dbv.test" android:label="DBV test" />
 </manifest>
