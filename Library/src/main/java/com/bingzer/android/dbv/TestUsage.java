@@ -78,6 +78,17 @@ class TestUsage {
         db.get("").select().groupBy("","").having("","").query();
         db.get("").select().groupBy("").query();
 
+
+        db.get("").update("", "").columns("Name", "age").val("Ricky", 11).query();
+
+        db.get("").update().val(null).query();
+
+        String[] columns = {"",""};
+        Object[] values = {0, ""};
+
+        db.get("").update(1).columns(columns).val(values).query();
+
+
         version++;
     }
 

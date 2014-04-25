@@ -211,7 +211,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    static class InsertWithImpl extends InsertImpl implements InsertWith {
+    static class InsertWithImpl extends InsertImpl implements IQuery.InsertWith {
 
         IQuery<Integer> query;
         String[] columnNames;
@@ -243,14 +243,39 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
     ////////////////////////////////////////////
 
-    static class UpdateImpl implements IQuery.Update {
-        int value;
+    static class UpdateImpl implements IQuery.Update, IQuery<Integer> {
+        int value = 0;
+        protected ContentValues contentValues;
+
+        @Override
+        public Columns columns(final String... columns) {
+            return new Columns() {
+                @Override
+                public IQuery<Integer> val(Object... values) {
+                    contentValues = new ContentValues();
+                    for(int i = 0; i < columns.length; i++){
+                        MappingUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+                    }
+
+                    return UpdateImpl.this;
+                }
+            };
+        }
+
+        @Override
+        public IQuery<Integer> val(ContentValues values) {
+            contentValues = values;
+            return this;
+        }
 
         @Override
         public Integer query() {
             return value;
         }
     }
+
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
 
 
     static class DeleteImpl implements IQuery.Delete {

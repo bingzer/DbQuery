@@ -28,52 +28,33 @@ import com.bingzer.android.dbv.IQuery;
 public interface Updatable {
 
     /**
-     * Update a column add its id
-     * @param column the column
-     * @param value value
+     * Update using id
      * @param id the id
      * @return Update object
      */
-    IQuery.Update update(String column, Object value, int id);
+    IQuery.Update update(int id);
 
     /**
-     * Update a column add specified condition
-     * @param column column
-     * @param value value
+     * Bulk-update using ids
+     * @param ids the ids
+     * @return Update object
+     */
+    IQuery.Update update(int... ids);
+
+    /**
+     * Update using a condition
      * @param condition the condition
      * @return Update object
      */
-    IQuery.Update update(String column, Object value, String condition);
+    IQuery.Update update(String condition);
 
     /**
-     * Update a column add specified condition
-     * @param column column
-     * @param value value
+     * Update using a condition
      * @param whereClause whereClause
      * @param whereArgs arguments
      * @return Update object
      */
-    IQuery.Update update(String column, Object value, String whereClause, Object... whereArgs);
-
-    /**
-     * Bulk-update columns add their val add specified condition.
-     * @param columns array of columns
-     * @param values array of values
-     * @param condition condition
-     * @return Update object
-     */
-    IQuery.Update update(String[] columns, Object[] values, String condition);
-
-    /**
-     * Bulk-update
-     * @param columns array of columns
-     * @param values array of values
-     * @param whereClause whereClause
-     * @param whereArgs arguments
-     * @return Update object
-     */
-    IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs);
-
+    IQuery.Update update(String whereClause, Object... whereArgs);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////

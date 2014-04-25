@@ -16,6 +16,7 @@
 
 package com.bingzer.android.dbv;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.bingzer.android.dbv.queries.Distinguishable;
@@ -94,6 +95,13 @@ public interface IQuery<T> {
      */
     public static interface Update extends IQuery<Integer> {
 
+        Columns columns(String... columns);
+
+        IQuery<Integer> val(ContentValues values);
+
+        public static interface Columns {
+            IQuery<Integer> val(Object... values);
+        }
     }
 
     ////////////////////////////////////////////////////

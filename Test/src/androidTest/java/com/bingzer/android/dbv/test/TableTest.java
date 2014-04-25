@@ -57,15 +57,17 @@ public class TableTest extends AndroidTestCase{
             }
         });
 
-        if(!populated){
-            db.get("Customers").delete();
-            db.get("Products").delete();
-            db.get("Orders").delete();
-            populateData();
-            populated = true;
-        }
+        db.get("Customers").delete();
+        db.get("Products").delete();
+        db.get("Orders").delete();
+        populateData();
 
         customerTable = db.get("Customers");
+    }
+
+    @Override
+    public void tearDown(){
+        db.close();
     }
 
 
@@ -444,6 +446,73 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ Update ----------------//
+
+    public void testUpdate_Id(){
+        int ronaldoId = getCustomerId("Christiano Ronaldo");
+
+        int updated = db.get("Customers").update(ronaldoId).columns("Name").val("Ronaldo-Edited").query();
+        assertTrue(1 == updated);
+
+        Cursor cursor = db.get("Customers").select(ronaldoId).columns("Name").query();
+        cursor.moveToNext();
+        assertEquals("Ronaldo-Edited", cursor.getString(0));
+
+        // change back up to ronaldo-edited for other tests
+        updated = db.get("Customers").update("Name = ?", "Ronaldo-Edited").columns("Name").val("Christiano Ronaldo").query();
+        assertTrue(1 == updated);
+    }
+
+    public void testUpdate_WhereClause(){
+        // update 2 countries customers
+        assertEquals(2, (int) db.get("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").columns("Country").val("US").query());
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = ?", "Christiano Ronaldo").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = ?", "Lionel Messi").columns("Country").val("Spain").query());
+    }
+
+    public void testUpdate_Condition(){
+        // update 2 countries customers
+        assertEquals(2, (int) db.get("Customers").update("Name = 'Christiano Ronaldo' OR Name = 'Lionel Messi'").columns("Country").val("US").query());
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
+    }
+
+    public void testUpdate_WhereClause_ContentValues(){
+        ContentValues v = new ContentValues();
+        v.put("Country", "US");
+        v.put("City", "City");
+
+        int ronaldoId = getCustomerId("Christiano Ronaldo");
+        int messiId = getCustomerId("Lionel Messi");
+
+        // update 2 countries customers
+        assertEquals(2, (int) db.get("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").val(v).query());
+
+        // check the updated
+        Cursor c = db.get("Customers").select(ronaldoId).columns("Country", "City").query();
+        c.moveToNext();
+        assertEquals("US", c.getString(0));
+        assertEquals("City", c.getString(1));
+        c.close();
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country", "City").val("Spain", "Madrid").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country", "City").val("Spain", "Barcelona").query());
+    }
+
+    public void testUpdate_Ints(){
+        int ronaldoId = getCustomerId("Christiano Ronaldo");
+        int messiId = getCustomerId("Lionel Messi");
+
+        assertEquals(2, (int) db.get("Customers").update(ronaldoId, messiId).columns("Country").val("US").query());
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
+    }
 
     public void testUpdate_ContentValues_And_WithId(){
         ContentValues contentValues = new ContentValues();

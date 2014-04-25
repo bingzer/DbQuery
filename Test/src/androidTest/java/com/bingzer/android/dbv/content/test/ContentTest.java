@@ -425,7 +425,7 @@ public class ContentTest extends AndroidTestCase {
     public void testUpdate_ColumnValue_Id(){
         assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
 
-        assertTrue(resolver.update("word", "Ronaldo-Updated", ronaldoId).query() == 1);
+        assertTrue(resolver.update(ronaldoId).columns("word").val("Ronaldo-Updated").query() == 1);
 
         assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
     }
@@ -434,8 +434,8 @@ public class ContentTest extends AndroidTestCase {
         assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
         assertFalse(resolver.has("word = ?", "Messi-Updated"));
 
-        assertTrue(resolver.update("word", "Baloteli-Updated", "word = 'Baloteli'").query() == 1);
-        assertTrue(resolver.update("word", "Messi-Updated", "_id = " + messiId).query() == 1);
+        assertTrue(resolver.update("word = 'Baloteli'").columns("word").val("Baloteli-Updated").query() == 1);
+        assertTrue(resolver.update("_id  = " + messiId).columns("word").val("Messi-Updated").query() == 1);
 
         assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
         assertTrue(resolver.has("word = ?", "Messi-Updated"));
@@ -445,8 +445,8 @@ public class ContentTest extends AndroidTestCase {
         assertFalse(resolver.has("word = ?", "Pirlo-Updated"));
         assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
 
-        assertTrue(resolver.update("word", "Pirlo-Updated", "word = ?", "Pirlo").query() == 1);
-        assertTrue(resolver.update("word", "Ronaldo-Updated", "_id = ?", ronaldoId).query() == 1);
+        assertTrue(resolver.update("word = 'Pirlo'").columns("word").val("Pirlo-Updated").query() == 1);
+        assertTrue(resolver.update("_id  = " + ronaldoId).columns("word").val("Ronaldo-Updated").query() == 1);
 
         assertTrue(resolver.has("word = ?", "Pirlo-Updated"));
         assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
@@ -456,8 +456,8 @@ public class ContentTest extends AndroidTestCase {
         assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
         assertFalse(resolver.has("word = ?", "Messi-Updated"));
 
-        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Baloteli-Updated"}, "word = 'Baloteli'").query() == 1);
-        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Messi-Updated"}, "_id = " + messiId).query() == 1);
+        assertTrue(resolver.update("word = 'Baloteli'").columns(new String[]{"word"}).val(new Object[]{"Baloteli-Updated"}).query() == 1);
+        assertTrue(resolver.update("_id = " + messiId).columns(new String[]{"word"}).val(new Object[]{"Messi-Updated"}).query() == 1);
 
         assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
         assertTrue(resolver.has("word = ?", "Messi-Updated"));
@@ -467,8 +467,8 @@ public class ContentTest extends AndroidTestCase {
         assertFalse(resolver.has("word = ?", "Pirlo-Updated"));
         assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
 
-        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Pirlo-Updated"}, "word = ?", "Pirlo").query() == 1);
-        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Ronaldo-Updated"}, "_id = ?", ronaldoId).query() == 1);
+        assertTrue(resolver.update("word = ?", "Pirlo").columns(new String[]{"word"}).val(new Object[]{"Pirlo-Updated"}).query() == 1);
+        assertTrue(resolver.update("_id = ?", ronaldoId).columns(new String[]{"word"}).val(new Object[]{"Ronaldo-Updated"}).query() == 1);
 
         assertTrue(resolver.has("word = ?", "Pirlo-Updated"));
         assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));

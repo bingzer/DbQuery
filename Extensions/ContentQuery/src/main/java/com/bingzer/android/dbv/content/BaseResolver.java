@@ -287,32 +287,44 @@ abstract class BaseResolver implements IBaseResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Update update(String column, Object value, int id) {
-        return update(column, value, generateParamId(id));
+    public IQuery.Update update(int id) {
+        return update(generateParamId(id));
     }
 
     @Override
-    public IQuery.Update update(String column, Object value, String condition) {
-        return update(column, value, condition, (Object)null);
-    }
+    public IQuery.Update update(int... ids) {
+        if(ids != null && ids.length > 0){
+            StringBuilder whereClause = new StringBuilder();
+            whereClause.append(generateIdString()).append(" ");
+            whereClause.append(" IN (");
+            for(int i = 0; i < ids.length; i++){
+                whereClause.append(ids[i]);
+                if(i < ids.length - 1){
+                    whereClause.append(",");
+                }
+            }
+            whereClause.append(")");
 
-    @Override
-    public IQuery.Update update(String column, Object value, String whereClause, Object... whereArgs) {
-        return update(new String[]{column}, new Object[]{ value }, whereClause, whereArgs);
-    }
-
-    @Override
-    public IQuery.Update update(String[] columns, Object[] values, String condition) {
-        return update(columns, values, condition, (Object)null);
-    }
-
-    @Override
-    public IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs) {
-        final ContentValues contentValues = new ContentValues();
-        for(int i = 0; i < columns.length; i++){
-            ContentUtils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+            return update(whereClause.toString());
         }
-        return update(contentValues, whereClause, whereArgs);
+        else{
+            // select all
+            return update((String) null);
+        }
+    }
+
+    @Override
+    public IQuery.Update update(String condition) {
+        return update(condition, (Object) null);
+    }
+
+    @Override
+    public IQuery.Update update(final String whereClause, final Object... whereArgs) {
+        return new ContentUpdateImpl(){
+            @Override public Integer query(){
+                return update(contentValues, whereClause, whereArgs).query();
+            }
+        };
     }
 
     @Override

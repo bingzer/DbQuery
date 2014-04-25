@@ -105,7 +105,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.Select select(int top, String condition) {
-        return select(top, condition, (Object)null);
+        return select(top, condition, (Object) null);
     }
 
     @Override
@@ -276,33 +276,44 @@ class Table implements ITable {
     }
 
     @Override
-    public IQuery.Update update(String column, Object value, int id) {
-        return update(column, value, generateParamId(id));
+    public IQuery.Update update(int id) {
+        return update(generateParamId(id));
     }
 
     @Override
-    public IQuery.Update update(String column, Object value, String condition) {
-        return update(new String[]{column}, new Object[]{value}, condition);
-    }
+    public IQuery.Update update(int... ids) {
+        if(ids != null && ids.length > 0){
+            StringBuilder whereClause = new StringBuilder();
+            whereClause.append(generateIdString()).append(" ");
+            whereClause.append(" IN (");
+            for(int i = 0; i < ids.length; i++){
+                whereClause.append(ids[i]);
+                if(i < ids.length - 1){
+                    whereClause.append(",");
+                }
+            }
+            whereClause.append(")");
 
-    @Override
-    public IQuery.Update update(String column, Object value, String whereClause, Object... whereArgs) {
-        return update(new String[]{column}, new Object[]{value}, whereClause, whereArgs);
-    }
-
-    @Override
-    public IQuery.Update update(String[] columns, Object[] values, String condition) {
-        return update(columns, values, condition, (Object)null);
-    }
-
-    @Override
-    public IQuery.Update update(String[] columns, Object[] values, String whereClause, Object... whereArgs) {
-        final ContentValues contentValues = new ContentValues();
-        for(int i = 0; i < columns.length; i++){
-            MappingUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+            return update(whereClause.toString());
         }
+        else{
+            // select all
+            return update((String) null);
+        }
+    }
 
-        return update(contentValues, whereClause, (Object[]) Util.toStringArray(whereArgs));
+    @Override
+    public IQuery.Update update(String condition) {
+        return update(condition, (Object) null);
+    }
+
+    @Override
+    public IQuery.Update update(final String whereClause, final Object... whereArgs) {
+        return new QueryImpl.UpdateImpl(){
+            @Override public Integer query(){
+                return update(contentValues, whereClause, whereArgs).query();
+            }
+        };
     }
 
     @Override
