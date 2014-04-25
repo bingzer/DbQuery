@@ -48,4 +48,4 @@ before_install:
 #  - ./wait_for_emulator.sh
 
 script:
-  - gradle test
+  - gradle Test:connectedAndroidTest
