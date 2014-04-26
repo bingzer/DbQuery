@@ -20,6 +20,7 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.ITable;
 
 /**
  * Provides a 'mapping' utility methods.
@@ -99,12 +100,13 @@ public class MappingUtil {
     }
 
     /**
-     * Maps an entity from a cursor
-     * @param mapper the entity mapper
+     * Maps an entity from a cursor. Cursor will be automatically close
+     * @param table the table
      * @param entity the entity to map
      * @param cursor the cursor
      */
-    public static void mapEntityFromCursor(EntityMapper mapper, IEntity entity, Cursor cursor){
+    public static void mapEntityFromCursor(ITable table, IEntity entity, Cursor cursor){
+        EntityMapper mapper = new EntityMapper((Table) table);
         entity.map(mapper);
         if(cursor.moveToNext()){
             for(int i = 0; i < cursor.getColumnCount(); i++){
@@ -115,17 +117,20 @@ public class MappingUtil {
                 }
             }
         }
+
+        cursor.close();
     }
 
     /**
-     * Maps an entity list from cursor
-     * @param mapper the entity mapper
+     * Maps an entity list from cursor. Cursor will be automatically close
+     * @param table the table
      * @param entityList the list to map
      * @param cursor the cursor
      * @param <E> type of IEntity
      */
     @SuppressWarnings("unchecked")
-    public static <E extends IEntity> void mapEntityListFromCursor(EntityMapper mapper, IEntityList<E> entityList, Cursor cursor){
+    public static <E extends IEntity> void mapEntityListFromCursor(ITable table, IEntityList<E> entityList, Cursor cursor){
+        EntityMapper mapper = new EntityMapper((Table) table);
         while(cursor.moveToNext()){
             int columnIdIndex = cursor.getColumnIndex(mapper.table.generateIdString());
             int id = -1;
@@ -157,6 +162,8 @@ public class MappingUtil {
                 }
             }
         }// end while
+
+        cursor.close();
     }
 
 

@@ -20,6 +20,7 @@ import android.database.Cursor;
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.IEnumerable;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.content.IBaseResolver;
@@ -189,6 +190,17 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
         @Override
         public Cursor query(){
             return fixSelect().query();
+        }
+
+        @Override
+        public void query(IEnumerable<Cursor> enumerable) {
+            final Cursor cursor = query();
+
+            while(cursor.moveToNext()){
+                enumerable.next(cursor);
+            }
+
+            cursor.close();
         }
 
         @Override

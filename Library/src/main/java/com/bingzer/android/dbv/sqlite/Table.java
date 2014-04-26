@@ -44,8 +44,7 @@ class Table implements ITable {
     final List<String> columns;
 
 
-    ////////////////////////////////////////////
-    ////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     Table (Database db, String name){
         this.name = name;
@@ -54,8 +53,7 @@ class Table implements ITable {
         queryColumns();
     }
 
-    ////////////////////////////////////////////
-    ////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public String getName() {
@@ -82,9 +80,11 @@ class Table implements ITable {
         return columns.size();
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public IQuery.Select select(String condition) {
-        return select(condition, (Object)null);
+        return select(condition, (Object) null);
     }
 
     @Override
@@ -156,7 +156,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.Select selectDistinct(String condition) {
-        return selectDistinct(condition, (Object)null);
+        return selectDistinct(condition, (Object) null);
     }
 
     @Override
@@ -171,7 +171,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.Select selectDistinct(int top, String condition) {
-        return selectDistinct(top, condition, (Object)null);
+        return selectDistinct(top, condition, (Object) null);
     }
 
     @Override
@@ -556,6 +556,26 @@ class Table implements ITable {
     }
 
     @Override
+    public IQuery.Union union(IQuery.Select select) {
+        return new QueryImpl.UnionImpl(select, this) {
+            @Override
+            public Cursor query() {
+                return raw(toString()).query();
+            }
+        };
+    }
+
+    @Override
+    public IQuery.Union unionAll(IQuery.Select select) {
+        return new QueryImpl.UnionImpl(select, this, true) {
+            @Override
+            public Cursor query() {
+                return raw(toString()).query();
+            }
+        };
+    }
+
+    @Override
     public IFunction.Average avg(String columnName) {
         return avg(columnName, null);
     }
@@ -692,13 +712,6 @@ class Table implements ITable {
         };
     }
 
-    @Override
-    public String toString(){
-        if(alias != null && alias.length() > 0)
-            return name + " " + alias;
-        return name;
-    }
-
     ////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////
 
@@ -718,23 +731,10 @@ class Table implements ITable {
     }
 
     @Override
-    public IQuery.Union union(IQuery.Select select) {
-        return new QueryImpl.UnionImpl(select, this) {
-            @Override
-            public Cursor query() {
-                return raw(toString()).query();
-            }
-        };
-    }
-
-    @Override
-    public IQuery.Union unionAll(IQuery.Select select) {
-        return new QueryImpl.UnionImpl(select, this, true) {
-            @Override
-            public Cursor query() {
-                return raw(toString()).query();
-            }
-        };
+    public String toString(){
+        if(alias != null && alias.length() > 0)
+            return name + " " + alias;
+        return name;
     }
 
     ////////////////////////////////////////////////////////////////////

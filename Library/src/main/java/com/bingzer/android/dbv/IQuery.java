@@ -19,12 +19,8 @@ package com.bingzer.android.dbv;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.bingzer.android.dbv.queries.Distinguishable;
-import com.bingzer.android.dbv.queries.EntitySelectable;
-import com.bingzer.android.dbv.queries.Groupable;
-import com.bingzer.android.dbv.queries.Joinable;
-import com.bingzer.android.dbv.queries.Pagination;
-import com.bingzer.android.dbv.queries.Selectable;
+import com.bingzer.android.dbv.queries.*;
+import com.bingzer.android.dbv.queries.CursorEnumerable;
 
 /**
  * <p>
@@ -144,7 +140,7 @@ public interface IQuery<T> {
      * </p>
      */
     public static interface Select
-            extends IQuery<Cursor>, EntitySelectable, Pagination, Groupable /*,Unionable*/ {
+            extends IQuery<Cursor>, EntitySelectable, CursorEnumerable, Pagination, Groupable /*,Unionable*/ {
 
         /**
          * Specified the column to return.
@@ -170,7 +166,7 @@ public interface IQuery<T> {
         /**
          * Order By
          */
-        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable, Pagination, Groupable {
+        public static interface OrderBy extends IQuery<Cursor>, CursorEnumerable, EntitySelectable, Pagination, Groupable {
 
         }
 
@@ -233,7 +229,7 @@ public interface IQuery<T> {
      *
      * @see Having
      */
-    public static interface GroupBy extends IQuery<Cursor>, EntitySelectable, Pagination {
+    public static interface GroupBy extends IQuery<Cursor>, EntitySelectable, Pagination, CursorEnumerable {
 
         /**
          * Adds a <code>HAVING</code> statement
@@ -263,7 +259,7 @@ public interface IQuery<T> {
      *
      * @see GroupBy
      */
-    public static interface Having extends IQuery<Cursor>, EntitySelectable, Pagination {
+    public static interface Having extends IQuery<Cursor>, EntitySelectable, Pagination, CursorEnumerable {
 
     }
 
@@ -277,7 +273,7 @@ public interface IQuery<T> {
      *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
      * </p>
      */
-    public static interface Paging extends IQuery<Cursor>, EntitySelectable {
+    public static interface Paging extends IQuery<Cursor>, EntitySelectable, CursorEnumerable {
 
         /**
          * Returns the number of row set in the beginning.

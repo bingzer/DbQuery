@@ -16,8 +16,9 @@
 
 package com.bingzer.android.dbv;
 
-import android.content.Context;
+import android.database.Cursor;
 
+import com.bingzer.android.dbv.sqlite.MappingUtil;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 import java.util.LinkedList;

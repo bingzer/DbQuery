@@ -1,12 +1,14 @@
 package com.bingzer.android.dbv.test;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.IEnumerable;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
@@ -91,6 +93,23 @@ public class EntityJoinTest extends AndroidTestCase {
         assertTrue(order.getProductName().equals("Monitor"));
         assertTrue(order.getId() > 0);
         assertTrue(order.getQuantity() == 5);
+    }
+
+    public void testEntityJoin_Enumerable(){
+        db.get("Orders O")
+                .join("Products P", "P.Id = O.ProductId")
+                .join("Customers C", "C.Id = O.CustomerId")
+                .select("C.Name = ? AND P.Name = ?", "Messi", "Monitor")
+                .columns("O.Id AS Id", "Quantity", "P.Name AS ProductName", "C.Name AS CustomerName")
+                .query(new IEnumerable<Cursor>() {
+                    @Override
+                    public void next(Cursor cursor) {
+                        assertEquals("Messi", cursor.getString(cursor.getColumnIndex("CustomerName")));
+                        assertEquals("Monitor", cursor.getString(cursor.getColumnIndex("ProductName")));
+                        assertTrue(cursor.getInt(cursor.getColumnIndex("Id")) > 0);
+                        assertEquals(5, cursor.getInt(cursor.getColumnIndex("Quantity")));
+                    }
+                });
     }
 
 

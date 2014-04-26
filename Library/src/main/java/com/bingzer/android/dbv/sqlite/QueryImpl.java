@@ -22,6 +22,7 @@ import android.database.Cursor;
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.IEnumerable;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.queries.Distinguishable;
@@ -124,24 +125,25 @@ abstract class QueryImpl<T> implements IQuery<T> {
         }
 
         @Override
-        public void query(IEntity entity) {
+        public void query(IEnumerable<Cursor> enumerable) {
             final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(table);
 
-            MappingUtil.mapEntityFromCursor(mapper, entity, cursor);
+            while(cursor.moveToNext()){
+                enumerable.next(cursor);
+            }
 
             cursor.close();
         }
 
         @Override
+        public void query(IEntity entity) {
+            MappingUtil.mapEntityFromCursor(table, entity, query());
+        }
+
+        @Override
         @SuppressWarnings("unchecked")
         public <E extends IEntity> void query(IEntityList<E> entityList) {
-            final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(table);
-
-            MappingUtil.mapEntityListFromCursor(mapper, entityList, cursor);
-
-            cursor.close();
+            MappingUtil.mapEntityListFromCursor(table, entityList, query());
         }
 
         @Override
@@ -661,6 +663,15 @@ abstract class QueryImpl<T> implements IQuery<T> {
         }
 
         @Override
+        public void query(IEnumerable<Cursor> enumerable) {
+            final Cursor cursor = query();
+            while(cursor.moveToNext()){
+                enumerable.next(cursor);
+            }
+            cursor.close();
+        }
+
+        @Override
         public Cursor query(int pageNumber) {
             ensurePageNumberValid(pageNumber);
             return query();
@@ -669,22 +680,12 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public <E extends IEntity> void query(int pageNumber, IEntityList<E> entityList) {
             ensurePageNumberValid(pageNumber);
-            final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(select.table);
-
-            MappingUtil.mapEntityListFromCursor(mapper, entityList, cursor);
-
-            cursor.close();
+            MappingUtil.mapEntityListFromCursor(select.table, entityList, query());
         }
 
         @Override
         public void query(IEntity entity) {
-            final Cursor cursor = query();
-            final EntityMapper mapper = new EntityMapper(select.table);
-
-            MappingUtil.mapEntityFromCursor(mapper, entity, cursor);
-
-            cursor.close();
+            MappingUtil.mapEntityFromCursor(select.table, entity, query());
         }
 
         @Override
@@ -738,6 +739,5 @@ abstract class QueryImpl<T> implements IQuery<T> {
                 throw new IllegalArgumentException("PageNumber must be over 0");
             this.pageNumber = pageNumber;
         }
-
     }
 }

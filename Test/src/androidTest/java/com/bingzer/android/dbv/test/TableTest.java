@@ -23,8 +23,10 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.IEnumerable;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
+import com.bingzer.android.dbv.sqlite.MappingUtil;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 import java.text.SimpleDateFormat;
@@ -211,6 +213,26 @@ public class TableTest extends AndroidTestCase{
         if(c.moveToNext()) assertEquals(c.getString(1), "Null Player");
 
         c.close();
+    }
+
+    public void testSelect_EnumerableCursor(){
+        int kakaId = getCustomerId("Kaka");
+        int pirloId = getCustomerId("Andrea Pirlo");
+
+        customerTable.select(kakaId, pirloId).orderBy("Name").query(new IEnumerable<Cursor>() {
+            int counter = 0;
+
+            @Override
+            public void next(Cursor cursor) {
+                // pirlo goes first
+                if(counter == 0)
+                    assertEquals("Andrea Pirlo", cursor.getString(cursor.getColumnIndex("Name")));
+                else
+                    assertEquals("Kaka", cursor.getString(cursor.getColumnIndex("Name")));
+
+                counter++;
+            }
+        });
     }
 
     public void testSelect_Condition(){

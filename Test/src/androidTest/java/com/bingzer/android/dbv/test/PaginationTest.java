@@ -8,6 +8,7 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.IEnumerable;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
@@ -122,7 +123,24 @@ public class PaginationTest extends AndroidTestCase {
         paging.previous().query(personList);
         assertTrue(paging.getPageNumber() == 2);
         assertTrue(personList.size() == 2);  // because the rowlimit = 2
+    }
 
+    public void testPaging_Query_Enumerable(){
+        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+
+        paging.query(new IEnumerable<Cursor>() {
+            int counter = 0;
+            @Override
+            public void next(Cursor object) {
+                if(counter == 0)
+                    assertEquals("John", object.getString(object.getColumnIndex("Name")));
+                else
+                    assertEquals("Ronaldo", object.getString(object.getColumnIndex("Name")));
+
+
+                counter++;
+            }
+        });
     }
 
     public void testPaging_Query_PageNumber(){
