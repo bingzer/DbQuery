@@ -57,10 +57,13 @@ public class TableTest extends AndroidTestCase{
             }
         });
 
-        db.get("Customers").delete();
-        db.get("Products").delete();
-        db.get("Orders").delete();
-        populateData();
+        if(!populated) {
+            db.get("Customers").delete();
+            db.get("Products").delete();
+            db.get("Orders").delete();
+            populateData();
+            populated = true;
+        }
 
         customerTable = db.get("Customers");
     }
@@ -454,16 +457,12 @@ public class TableTest extends AndroidTestCase{
     public void testUpdate_Id(){
         int ronaldoId = getCustomerId("Christiano Ronaldo");
 
-        int updated = db.get("Customers").update(ronaldoId).columns("Name").val("Ronaldo-Edited").query();
+        int updated = db.get("Customers").update(ronaldoId).columns("PostalCode").val(123).query();
         assertTrue(1 == updated);
 
-        Cursor cursor = db.get("Customers").select(ronaldoId).columns("Name").query();
+        Cursor cursor = db.get("Customers").select(ronaldoId).columns("PostalCode").query();
         cursor.moveToNext();
-        assertEquals("Ronaldo-Edited", cursor.getString(0));
-
-        // change back up to ronaldo-edited for other tests
-        updated = db.get("Customers").update("Name = ?", "Ronaldo-Edited").columns("Name").val("Christiano Ronaldo").query();
-        assertTrue(1 == updated);
+        assertEquals(123, cursor.getInt(0));
     }
 
     public void testUpdate_WhereClause(){
@@ -520,17 +519,12 @@ public class TableTest extends AndroidTestCase{
 
     public void testUpdate_ContentValues_And_WithId(){
         ContentValues contentValues = new ContentValues();
-        contentValues.put("Name", "John Doe");
+        contentValues.put("PostalCode", 123456);
         contentValues.put("Address", "Whatever Street");
 
         int crId = db.get("Customers").selectId("Name = ?", "Christiano Ronaldo");
         int updateId = db.get("Customers").update(contentValues, "Name = ?", "Christiano Ronaldo").query();
         assertTrue(updateId > 0);
-
-        // reset value..
-        contentValues.put("Name", "Christiano Ronal");
-        contentValues.put("Address", "7 Real Madrid");
-        assertTrue(db.get("Customers").update(contentValues, crId).query() > 0);
     }
 
     public void testUpdate_SingleColumns(){
