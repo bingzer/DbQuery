@@ -108,6 +108,21 @@ public class PaginationTest extends AndroidTestCase {
 
         paging.next().query(5);
         assertTrue(paging.getPageNumber() == 5);
+
+        paging.previous().query(5);
+        assertTrue(paging.getPageNumber() == 5);
+
+        paging.previous().query();
+        assertTrue(paging.getPageNumber() == 4);
+
+        paging.previous().query(personList);
+        assertTrue(paging.getPageNumber() == 3);
+
+        personList = new PersonWithJobList();
+        paging.previous().query(personList);
+        assertTrue(paging.getPageNumber() == 2);
+        assertTrue(personList.size() == 2);  // because the rowlimit = 2
+
     }
 
     public void testPaging_Query_PageNumber(){
