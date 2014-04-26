@@ -10,11 +10,30 @@ DbQuery
 
 Download
 ========
-Download the latest binary: (via Maven Central)
-
-Gradle:
+Download the latest stable binary (Master branch)
 ```groovy
-compile 'com.bingzer.android.dbv:dbquery:1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.bingzer.android.dbv:dbquery:1.0.0'
+}
+```
+
+Download snapshots (Dev branch)
+```groovy
+
+repositories {
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+    compile 'com.bingzer.android.dbv:dbquery:1.1.0-SNAPSHOT'
+}
 ```
 
 #Why
