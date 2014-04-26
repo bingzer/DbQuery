@@ -16,9 +16,6 @@
 
 package com.bingzer.android.dbv;
 
-import android.database.Cursor;
-
-import com.bingzer.android.dbv.sqlite.MappingUtil;
 import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
 
 import java.util.LinkedList;
@@ -50,6 +47,8 @@ class TestUsage {
 
         PersonList list = new PersonList();
         db.get("").update(list);
+
+        db.get("").insert("S").query();
 
 
         db.begin(new IDatabase.Batch() {
@@ -104,11 +103,11 @@ class TestUsage {
         public Person newEntity() {
             return new Person();
         }
+
     }
 
 
     static class Person implements IEntity{
-
         private int id;
         private String name;
         private int age;
@@ -126,6 +125,8 @@ class TestUsage {
 
         @Override
         public void map(Mapper mapper) {
+            //mapper.reflect(this);
+
             mapper.map("Name", new Action.TypeString(){
                 @Override public void set(String value) {
                     name = value;

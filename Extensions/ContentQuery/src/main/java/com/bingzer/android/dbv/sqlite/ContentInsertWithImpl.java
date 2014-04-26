@@ -55,7 +55,7 @@ public class ContentInsertWithImpl implements IQuery.InsertWith{
         this.value = value;
     }
 
-    public static interface ContentSet extends IQuery<Integer> {
+    public static interface ContentSet {
 
         void onContentValuesSet(ContentInsertWithImpl query, ContentValues contentValues);
 

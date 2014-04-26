@@ -70,6 +70,16 @@ abstract class BaseResolver implements IBaseResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public int selectId(String condition) {
+        return selectId(condition, (Object)null);
+    }
+
+    @Override
+    public abstract int selectId(String whereClause, Object... args);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
     public IQuery.Delete delete(int id) {
         return delete(generateParamId(id));
     }
@@ -137,6 +147,8 @@ abstract class BaseResolver implements IBaseResolver {
         return delete(ids);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public IQuery.Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
@@ -150,23 +162,9 @@ abstract class BaseResolver implements IBaseResolver {
     @Override
     public IQuery.InsertWith insert(String... columns) {
         return new ContentInsertWithImpl(new ContentInsertWithImpl.ContentSet() {
-            private ContentValues contentValues;
-            private ContentInsertWithImpl query;
-            private int value = -1;
-
             @Override
             public void onContentValuesSet(ContentInsertWithImpl query, ContentValues contentValues) {
-                this.query = query;
-                this.contentValues = contentValues;
-                this.query.setUri(contentResolver.insert(uri, contentValues));
-            }
-
-            @Override
-            public Integer query() {
-                if(contentValues == null)
-                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.InsertWith.setUri()");
-                // return
-                return value;
+                query.setUri(contentResolver.insert(uri, contentValues));
             }
         }, columns);
     }
@@ -277,16 +275,6 @@ abstract class BaseResolver implements IBaseResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public int selectId(String condition) {
-        return selectId(condition, (Object)null);
-    }
-
-    @Override
-    public abstract int selectId(String whereClause, Object... args);
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
     public IQuery.Update update(int id) {
         return update(generateParamId(id));
     }
@@ -320,11 +308,12 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public IQuery.Update update(final String whereClause, final Object... whereArgs) {
-        return new ContentUpdateImpl(){
-            @Override public Integer query(){
-                return update(contentValues, whereClause, whereArgs).query();
+        return new ContentUpdateImpl(new ContentUpdateImpl.ContentSet(){
+            @Override
+            public void onContentValuesSet(ContentUpdateImpl query, ContentValues contentValues) {
+                query.setValue(update(contentValues, whereClause, whereArgs).query());
             }
-        };
+        });
     }
 
     @Override
@@ -336,7 +325,7 @@ abstract class BaseResolver implements IBaseResolver {
     public IQuery.Update update(ContentValues contents, String whereClause, Object... whereArgs) {
         ContentUpdateImpl query = new ContentUpdateImpl();
         String[] args = Util.toStringArray(whereArgs);
-        query.val(contentResolver.update(uri, contents, whereClause, args));
+        query.setValue(contentResolver.update(uri, contents, whereClause, args));
         return query;
     }
 
@@ -403,7 +392,7 @@ abstract class BaseResolver implements IBaseResolver {
             for(ContentProviderResult result : results){
                 count += result.count;
             }
-            query.val(count);
+            query.setValue(count);
         }
         catch (Exception e){
             throw new Error(e);

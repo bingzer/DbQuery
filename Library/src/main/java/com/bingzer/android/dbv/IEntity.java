@@ -51,6 +51,12 @@ public interface IEntity {
     public static interface Mapper {
 
         /**
+         * Use reflections to map
+         * @param entity an entity
+         */
+        // void reflect(IEntity entity);
+
+        /**
          *
          * @param column the column name
          * @param action the action used to set/get
@@ -59,9 +65,11 @@ public interface IEntity {
 
         /**
          * Maps id
-         * @param action
+         * @param action the action to map
          */
         void mapId(Action<Integer> action);
+
+        ///////////////////////////////////////////////////////////////////
 
         /**
          * Clears all the mapping

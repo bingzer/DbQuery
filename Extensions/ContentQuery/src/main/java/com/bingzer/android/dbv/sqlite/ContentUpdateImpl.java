@@ -15,17 +15,81 @@
  */
 package com.bingzer.android.dbv.sqlite;
 
+import android.content.ContentValues;
+
+import com.bingzer.android.dbv.IQuery;
+
 /**
  * Created by Ricky on 8/20/13.
  */
-public class ContentUpdateImpl extends QueryImpl.UpdateImpl {
+public class ContentUpdateImpl implements IQuery.Update {
+    int value = 0;
+    private ContentSet query;
+    protected ContentValues contentValues;
 
-    public ContentUpdateImpl val(int value){
+    public ContentUpdateImpl(){
+        this(null);
+    }
+
+    public ContentUpdateImpl(ContentSet query){
+        this.query = query;
+    }
+
+    public void setValue(int value){
         this.value = value;
+    }
+
+    @Override
+    public Columns columns(final String... columns) {
+        return new Columns() {
+            @Override
+            public IQuery<Integer> val(Object... values) {
+                return ContentUpdateImpl.this.val(columns, values);
+            }
+        };
+    }
+
+    @Override
+    public IQuery<Integer> val(ContentValues values) {
+        contentValues = values;
+
+        return notifyContentValuesSet();
+    }
+
+    @Override
+    public IQuery<Integer> val(String column, Object value) {
+        contentValues = new ContentValues();
+        MappingUtil.mapContentValuesFromGenericObject(contentValues, column, value);
+
+        return notifyContentValuesSet();
+    }
+
+    @Override
+    public IQuery<Integer> val(String[] columnNames, Object[] values) {
+        contentValues = new ContentValues();
+        for(int i = 0; i < columnNames.length; i++){
+            MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
+        }
+
+        return notifyContentValuesSet();
+    }
+
+    @Override
+    public final Integer query() {
+        return value;
+    }
+
+    // notify so that we can execute the update
+    private IQuery<Integer> notifyContentValuesSet(){
+        if(query != null)
+            query.onContentValuesSet(this, contentValues);
         return this;
     }
 
-    public int value(){
-        return value;
+
+    public static interface ContentSet {
+
+        void onContentValuesSet(ContentUpdateImpl query, ContentValues contentValues);
+
     }
 }

@@ -80,7 +80,7 @@ class Table implements ITable {
         return columns.size();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public IQuery.Select select(String condition) {
@@ -149,6 +149,8 @@ class Table implements ITable {
         }.where(whereClause, args);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public IQuery.Select selectDistinct() {
         return selectDistinct(null);
@@ -183,6 +185,8 @@ class Table implements ITable {
         }.where(whereClause, args);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public IQuery.Insert insert(final ContentValues contents) {
         QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
@@ -203,23 +207,10 @@ class Table implements ITable {
 
     @Override
     public IQuery.InsertWith insert(String... columns) {
-        return new QueryImpl.InsertWithImpl(new QueryImpl.InsertWithImpl.ContentSet() {
-            private ContentValues contentValues;
-            private QueryImpl.InsertWithImpl query;
-
+        return new QueryImpl.InsertWithImpl(new QueryImpl.ContentSet<QueryImpl.InsertWithImpl>() {
             @Override
             public void onContentValuesSet(QueryImpl.InsertWithImpl query, ContentValues contentValues) {
-                this.query = query;
-                this.contentValues = contentValues;
-                this.query.value = (int) db.sqLiteDb.insertOrThrow(getName(), null, contentValues);
-            }
-
-            @Override
-            public Integer query() {
-                if(contentValues == null)
-                    throw new IllegalArgumentException("ContentValues are not specified. Use IQuery.InsertWith.val()");
-                // return
-                return this.query.value;
+                query.value = (int) db.sqLiteDb.insertOrThrow(getName(), null, contentValues);
             }
         }, columns);
     }
@@ -275,6 +266,8 @@ class Table implements ITable {
         return query;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public IQuery.Update update(int id) {
         return update(generateParamId(id));
@@ -309,11 +302,12 @@ class Table implements ITable {
 
     @Override
     public IQuery.Update update(final String whereClause, final Object... whereArgs) {
-        return new QueryImpl.UpdateImpl(){
-            @Override public Integer query(){
-                return update(contentValues, whereClause, whereArgs).query();
+        return new QueryImpl.UpdateImpl(new QueryImpl.ContentSet<QueryImpl.UpdateImpl>() {
+            @Override
+            public void onContentValuesSet(QueryImpl.UpdateImpl query, ContentValues contentValues) {
+                query.value = update(contentValues, whereClause, whereArgs).query();
             }
-        };
+        });
     }
 
     @Override
@@ -370,6 +364,8 @@ class Table implements ITable {
 
         return query;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public IQuery.Delete delete(final int id) {
@@ -437,6 +433,8 @@ class Table implements ITable {
         return  delete(ids);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public boolean has(String condition) {
         return has(condition, (Object) null);
@@ -463,6 +461,8 @@ class Table implements ITable {
         // nope!
         return false;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public int count(String condition) {
@@ -496,6 +496,8 @@ class Table implements ITable {
         return count(null);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public IQuery<Cursor> raw(final String sql) {
         return raw(sql, (String) null);
@@ -512,6 +514,8 @@ class Table implements ITable {
         };
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public IQuery<Boolean> drop() {
         QueryImpl.DropImpl query = new QueryImpl.DropImpl();
@@ -526,6 +530,8 @@ class Table implements ITable {
         if(query.value) db.removeTable(this);
         return query;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public IQuery.InnerJoin join(String tableName, String onClause) {
@@ -555,6 +561,8 @@ class Table implements ITable {
         return outerJoin(tableName, name + "." + column1 + "=" + tableName + "." + column2);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public IQuery.Union union(IQuery.Select select) {
         return new QueryImpl.UnionImpl(select, this) {
@@ -574,6 +582,8 @@ class Table implements ITable {
             }
         };
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public IFunction.Average avg(String columnName) {
@@ -680,6 +690,8 @@ class Table implements ITable {
         return min(columnName, Util.bindArgs(whereClause, args));
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public Alter alter() {
         return new Alter(){
@@ -712,8 +724,7 @@ class Table implements ITable {
         };
     }
 
-    ////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public boolean equals(Object o) {
@@ -737,8 +748,7 @@ class Table implements ITable {
         return name;
     }
 
-    ////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     IConfig getConfig(){
         return db.getConfig();

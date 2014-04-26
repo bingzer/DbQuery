@@ -202,7 +202,7 @@ abstract class QueryImpl<T> implements IQuery<T> {
     ////////////////////////////////////////////
 
     static class InsertImpl implements IQuery.Insert {
-        int value;
+        int value = 0;
 
         @Override
         public Integer query() {
@@ -215,10 +215,10 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
     static class InsertWithImpl extends InsertImpl implements IQuery.InsertWith {
 
-        IQuery<Integer> query;
+        ContentSet<InsertWithImpl> query;
         String[] columnNames;
 
-        InsertWithImpl(ContentSet query, String... columnNames){
+        InsertWithImpl(ContentSet<InsertWithImpl> query, String... columnNames){
             this.query = query;
             this.columnNames = columnNames;
         }
@@ -230,15 +230,9 @@ abstract class QueryImpl<T> implements IQuery<T> {
                 MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
             }
 
-            ((ContentSet) query).onContentValuesSet(this, contentValues);
+            query.onContentValuesSet(this, contentValues);
 
             return this;
-        }
-
-        static interface ContentSet extends IQuery<Integer> {
-
-            void onContentValuesSet(InsertWithImpl query, ContentValues contentValues);
-
         }
     }
 
@@ -247,7 +241,16 @@ abstract class QueryImpl<T> implements IQuery<T> {
 
     static class UpdateImpl implements IQuery.Update, IQuery<Integer> {
         int value = 0;
+        private ContentSet<UpdateImpl> query;
         protected ContentValues contentValues;
+
+        UpdateImpl(){
+            this(null);
+        }
+
+        UpdateImpl(ContentSet<UpdateImpl> query){
+            this.query = query;
+        }
 
         @Override
         public Columns columns(final String... columns) {
@@ -262,14 +265,16 @@ abstract class QueryImpl<T> implements IQuery<T> {
         @Override
         public IQuery<Integer> val(ContentValues values) {
             contentValues = values;
-            return this;
+
+            return notifyContentValuesSet();
         }
 
         @Override
         public IQuery<Integer> val(String column, Object value) {
             contentValues = new ContentValues();
             MappingUtil.mapContentValuesFromGenericObject(contentValues, column, value);
-            return this;
+
+            return notifyContentValuesSet();
         }
 
         @Override
@@ -279,13 +284,29 @@ abstract class QueryImpl<T> implements IQuery<T> {
                 MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
             }
 
-            return this;
+            return notifyContentValuesSet();
         }
 
         @Override
-        public Integer query() {
+        public final Integer query() {
             return value;
         }
+
+        // notify so that we can execute the update
+        private IQuery<Integer> notifyContentValuesSet(){
+            if(query != null)
+                query.onContentValuesSet(this, contentValues);
+            return this;
+        }
+    }
+
+    ////////////////////////////////////////////
+    ////////////////////////////////////////////
+
+    static interface ContentSet<E extends IQuery<Integer>> {
+
+        void onContentValuesSet(E query, ContentValues contentValues);
+
     }
 
     ////////////////////////////////////////////
