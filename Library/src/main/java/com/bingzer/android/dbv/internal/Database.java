@@ -37,9 +37,8 @@ import java.util.List;
  * Created by Ricky Tobing on 7/16/13.
  */
 public class Database implements IDatabase {
-
-    public static final String TAG = "DBV.SQLite.Database";
     public static final String SPACE = " ";
+    private static final String TAG = "DBV.SQLite.Database";
 
     private final String name;
     private final DbModel dbModel = new DbModel();
@@ -47,9 +46,9 @@ public class Database implements IDatabase {
     private final List<IView> views = new LinkedList<IView>();
     private final IConfig config;
 
-    int version;
-    DbOpenHelper dbHelper;
-    SQLiteDatabase sqLiteDb;
+    private int version;
+    private DbOpenHelper dbHelper;
+    protected SQLiteDatabase sqLiteDb;
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////

@@ -43,7 +43,7 @@ public final class Resolver extends BaseResolver implements IResolver {
         try{
             cursor = select(whereClause, args).query();
             if(cursor.moveToNext()){
-                int index = cursor.getColumnIndex(getColumnIdName());
+                int index = cursor.getColumnIndex(getPrimaryKeyColumn());
                 id = cursor.getInt(index);
             }
         }
@@ -58,7 +58,7 @@ public final class Resolver extends BaseResolver implements IResolver {
     public boolean has(String whereClause, Object... whereArgs) {
         Cursor cursor = null;
         try{
-            cursor = select(whereClause, whereArgs).columns(getColumnIdName()).query();
+            cursor = select(whereClause, whereArgs).columns(getPrimaryKeyColumn()).query();
             return cursor.getCount() > 0;
         }
         finally {
@@ -71,7 +71,7 @@ public final class Resolver extends BaseResolver implements IResolver {
         int count = -1;
         Cursor cursor = null;
         try{
-            cursor = select(whereClause, whereArgs).columns(getColumnIdName()).query();
+            cursor = select(whereClause, whereArgs).columns(getPrimaryKeyColumn()).query();
             count = cursor.getCount();
         }
         finally {
@@ -108,7 +108,7 @@ public final class Resolver extends BaseResolver implements IResolver {
     public Select select(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
-            whereClause.append(getColumnIdName()).append(" ");
+            whereClause.append(getPrimaryKeyColumn()).append(" ");
             whereClause.append(" IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);

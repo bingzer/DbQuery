@@ -16,8 +16,6 @@
 
 package com.bingzer.android.dbv;
 
-import android.text.format.DateFormat;
-
 import com.bingzer.android.dbv.queries.Select;
 
 import java.util.LinkedList;
@@ -41,7 +39,6 @@ class TestUsage {
 
         Person person = new Person();
         db.get("Person").select().query(person);
-        //db.get("Person").insert(person).query();
 
         Select select = db.get("Person").select();
 

@@ -34,15 +34,15 @@ import com.bingzer.android.dbv.utils.EntityUtils;
 */
 public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Select.OrderBy, GroupBy, Having {
 
-    final Table table;
-    StringBuilder selectString;
-    StringBuilder columnString;
-    StringBuilder fromString;
-    StringBuilder limitString;
-    StringBuilder orderByString;
-    StringBuilder groupByString;
-    StringBuilder havingString;
-    StringBuilder whereString;
+    protected final Table table;
+    protected StringBuilder selectString;
+    protected StringBuilder columnString;
+    protected StringBuilder fromString;
+    protected StringBuilder limitString;
+    protected StringBuilder orderByString;
+    protected StringBuilder groupByString;
+    protected StringBuilder havingString;
+    protected StringBuilder whereString;
 
     public SelectImpl(Table table){
         this(table, false);

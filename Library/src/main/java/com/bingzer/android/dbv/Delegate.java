@@ -15,11 +15,10 @@
  */
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.contracts.ColumnIdentifier;
+import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * An action used to set/get variables. A delegate is
@@ -28,6 +27,7 @@ import java.util.Objects;
  *
  * @param <T>
  */
+@SuppressWarnings("ALL")
 public abstract class Delegate<T> {
 
     private Class<?> type;
@@ -216,15 +216,15 @@ public abstract class Delegate<T> {
      * Created by Ricky Tobing on 8/9/13.
      */
     public static class Mapper extends HashMap<String, Delegate> implements IEntity.Mapper {
-        private final ColumnIdentifier identifier;
+        private final PrimaryKeyIdentifier identifier;
 
-        public Mapper(ColumnIdentifier identifier){
+        public Mapper(PrimaryKeyIdentifier identifier){
             this.identifier = identifier;
         }
 
         @Override
         public void mapId(Delegate<Integer> delegate) {
-            map(identifier.getColumnIdName(), delegate);
+            map(identifier.getPrimaryKeyColumn(), delegate);
         }
 
         @Override

@@ -101,7 +101,7 @@ public abstract class StrictSelectImpl implements StrictSelectable.Select, Stric
         String[] projections = resolver.getConfig().getDefaultProjections();
         for(int i = 0; i < projections.length; i++){
             if(projections[i].equals(resolver.getConfig().getIdNamingConvention())){
-                projections[i] = resolver.getColumnIdName();
+                projections[i] = resolver.getPrimaryKeyColumn();
             }
         }
 

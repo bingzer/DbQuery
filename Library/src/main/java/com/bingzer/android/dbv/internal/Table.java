@@ -107,7 +107,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public String getColumnIdName(){
+    public String getPrimaryKeyColumn(){
         if(db.getConfig().getAppendTableNameForId()){
             return getName() + db.getConfig().getIdNamingConvention();
         }
@@ -129,7 +129,7 @@ public class Table implements ITable {
     @Override
     public int selectId(String whereClause, Object... args) {
         int id = -1;
-        Cursor cursor = select(whereClause, args).columns(getColumnIdName()).query();
+        Cursor cursor = select(whereClause, args).columns(getPrimaryKeyColumn()).query();
         if(cursor.moveToNext()){
             id = cursor.getInt(0);
         }
@@ -151,7 +151,7 @@ public class Table implements ITable {
     public Select select(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
-            whereClause.append(getColumnIdName()).append(" ");
+            whereClause.append(getPrimaryKeyColumn()).append(" ");
             whereClause.append(" IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
@@ -258,7 +258,7 @@ public class Table implements ITable {
         entity.map(mapper);
 
         Iterator<String> keys = mapper.keySet().iterator();
-        String idString = getColumnIdName();
+        String idString = getPrimaryKeyColumn();
         Delegate<Integer> idSetter = null;
         while(keys.hasNext()){
             String key = keys.next();
@@ -310,7 +310,7 @@ public class Table implements ITable {
     public Update update(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
-            whereClause.append(getColumnIdName()).append(" ");
+            whereClause.append(getPrimaryKeyColumn()).append(" ");
             whereClause.append(" IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
@@ -353,7 +353,7 @@ public class Table implements ITable {
 
         for (String key : mapper.keySet()) {
             // ignore if "Id"
-            if (key.equalsIgnoreCase(getColumnIdName())) continue;
+            if (key.equalsIgnoreCase(getPrimaryKeyColumn())) continue;
 
             Delegate delegate = mapper.get(key);
             if (delegate != null) {
@@ -409,7 +409,7 @@ public class Table implements ITable {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
 
-            whereClause.append(getColumnIdName()).append(" ");
+            whereClause.append(getPrimaryKeyColumn()).append(" ");
             whereClause.append("IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
@@ -789,7 +789,7 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     String generateParamId(int id){
-        return getColumnIdName() + " = " + id;
+        return getPrimaryKeyColumn() + " = " + id;
     }
 
     void queryColumns(){

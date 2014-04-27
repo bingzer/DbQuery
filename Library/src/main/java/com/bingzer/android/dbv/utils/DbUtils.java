@@ -137,7 +137,7 @@ public final class DbUtils {
     //                  master/core/java/android/database/DatabaseUtils.java
     ////////////////////////////////////////////////////////////////////////
 
-    static void appendEscapedSQLString(StringBuilder sb, String sqlString) {
+    private static void appendEscapedSQLString(StringBuilder sb, String sqlString) {
         sb.append('\'');
         if (sqlString.indexOf('\'') != -1) {
             int length = sqlString.length();
@@ -153,7 +153,7 @@ public final class DbUtils {
         sb.append('\'');
     }
 
-    static String sqlEscapeString(String value) {
+    private static String sqlEscapeString(String value) {
         StringBuilder builder = new StringBuilder();
 
         appendEscapedSQLString(builder, value);

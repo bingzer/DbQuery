@@ -16,13 +16,14 @@
 package com.bingzer.android.dbv.contracts;
 
 /**
- * Created by Ricky on 4/26/2014.
+ * Must be able to identify primary key column
  */
-public interface ColumnIdentifier {
+public interface PrimaryKeyIdentifier {
 
     /**
      * Returns the Column Id string for this table
      * @return the string
      */
-    String getColumnIdName();
+    String getPrimaryKeyColumn();
+
 }

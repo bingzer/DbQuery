@@ -26,8 +26,8 @@ import com.bingzer.android.dbv.utils.ContentValuesUtils;
 */
 public class InsertWithImpl extends InsertImpl implements InsertWith {
 
-    ContentSet<InsertWithImpl> query;
-    String[] columnNames;
+    private ContentSet<InsertWithImpl> query;
+    private String[] columnNames;
 
     public InsertWithImpl(ContentSet<InsertWithImpl> query, String... columnNames){
         this.query = query;

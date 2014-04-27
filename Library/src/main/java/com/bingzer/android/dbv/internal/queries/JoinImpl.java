@@ -28,7 +28,7 @@ import com.bingzer.android.dbv.queries.Select;
 */
 public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoin, Selectable, Distinguishable {
 
-    protected final Table table;
+    private  final Table table;
     protected StringBuilder joinBuilder;
 
     public JoinImpl(Table table, String joinType, String tableNameToJoin, String onClause){

@@ -14,10 +14,11 @@
  * limitations under the License.
  */package com.bingzer.android.dbv.content.resolvers;
 
+
 import android.net.Uri;
 
 import com.bingzer.android.dbv.content.queries.Config;
-import com.bingzer.android.dbv.contracts.ColumnIdentifier;
+import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
 import com.bingzer.android.dbv.contracts.Countable;
 import com.bingzer.android.dbv.contracts.Deletable;
 import com.bingzer.android.dbv.contracts.Insertable;
@@ -29,7 +30,7 @@ import com.bingzer.android.dbv.contracts.Updatable;
  * Created by Ricky Tobing on 8/23/13.
  */
 public interface IBaseResolver extends
-        ColumnIdentifier,
+        PrimaryKeyIdentifier,
         SelectIdentifiable, Insertable, Updatable, Deletable, Tangible, Countable {
 
     /**

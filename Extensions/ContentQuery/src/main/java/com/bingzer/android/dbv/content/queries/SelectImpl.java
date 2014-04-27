@@ -118,7 +118,7 @@ public abstract class SelectImpl implements Selectable.Select, Selectable.Select
 
         // add limit
         if(limitString != null && limitString.length() > 0){
-            if(orderByString == null) sortingOrder.append(resolver.getColumnIdName());
+            if(orderByString == null) sortingOrder.append(resolver.getPrimaryKeyColumn());
             sortingOrder.append(" ").append(limitString);
         }
 
@@ -130,7 +130,7 @@ public abstract class SelectImpl implements Selectable.Select, Selectable.Select
         String[] projections = resolver.getConfig().getDefaultProjections();
         for(int i = 0; i < projections.length; i++){
             if(projections[i].equals(resolver.getConfig().getIdNamingConvention())){
-                projections[i] = resolver.getColumnIdName();
+                projections[i] = resolver.getPrimaryKeyColumn();
             }
         }
 

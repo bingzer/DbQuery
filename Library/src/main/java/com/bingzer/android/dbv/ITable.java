@@ -16,7 +16,7 @@
 package com.bingzer.android.dbv;
 
 import com.bingzer.android.dbv.contracts.Alterable;
-import com.bingzer.android.dbv.contracts.ColumnIdentifier;
+import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
 import com.bingzer.android.dbv.contracts.Countable;
 import com.bingzer.android.dbv.contracts.Deletable;
 import com.bingzer.android.dbv.contracts.Distinguishable;
@@ -31,7 +31,6 @@ import com.bingzer.android.dbv.contracts.Tangible;
 import com.bingzer.android.dbv.contracts.Unionable;
 import com.bingzer.android.dbv.contracts.Updatable;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -54,7 +53,7 @@ import java.util.List;
  * @author Ricky Tobing
  */
 public interface ITable extends
-        ColumnIdentifier,
+        PrimaryKeyIdentifier,
         Selectable, SelectIdentifiable, Distinguishable,
         Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,

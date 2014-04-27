@@ -20,7 +20,7 @@ import android.database.Cursor;
 import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.contracts.ColumnIdentifier;
+import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
 
 /**
  * Created by Ricky on 4/26/2014.
@@ -32,7 +32,7 @@ public final class EntityUtils {
      * @param entity the entity to map
      * @param cursor the cursor
      */
-    public static void mapEntityFromCursor(ColumnIdentifier identifier, IEntity entity, Cursor cursor){
+    public static void mapEntityFromCursor(PrimaryKeyIdentifier identifier, IEntity entity, Cursor cursor){
         Delegate.Mapper mapper = new Delegate.Mapper(identifier);
         entity.map(mapper);
         if(cursor.moveToNext()){
@@ -56,10 +56,10 @@ public final class EntityUtils {
      * @param <E> type of IEntity
      */
     @SuppressWarnings("unchecked")
-    public static <E extends IEntity> void mapEntityListFromCursor(ColumnIdentifier identifier, IEntityList<E> entityList, Cursor cursor){
+    public static <E extends IEntity> void mapEntityListFromCursor(PrimaryKeyIdentifier identifier, IEntityList<E> entityList, Cursor cursor){
         Delegate.Mapper mapper = new Delegate.Mapper(identifier);
         while(cursor.moveToNext()){
-            int columnIdIndex = cursor.getColumnIndex(identifier.getColumnIdName());
+            int columnIdIndex = cursor.getColumnIndex(identifier.getPrimaryKeyColumn());
             int id = -1;
             if(columnIdIndex >= 0) id = cursor.getInt(columnIdIndex);
 
