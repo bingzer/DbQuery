@@ -219,6 +219,12 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      */
     Transaction begin(Batch batch);
 
+    /**
+     * Returns the absolute path where this database file exists
+     * @return the absolute path
+     */
+    String getPath();
+
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 

@@ -30,6 +30,8 @@ public class View extends Table implements IView {
 
     @Override
     public IQuery<Boolean> drop() {
+        db.enforceReadOnly();
+
         DropImpl query = new DropImpl();
         try{
             db.execSql("DROP VIEW " + getName());

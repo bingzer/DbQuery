@@ -223,6 +223,8 @@ public class Table implements ITable {
 
     @Override
     public Insert insert(final ContentValues contents) {
+        db.enforceReadOnly();
+
         InsertImpl query = new InsertImpl();
         query.setValue( db.sqLiteDb.insertOrThrow(getName(), null, contents) );
 
@@ -231,6 +233,8 @@ public class Table implements ITable {
 
     @Override
     public Insert insert(String[] columns, Object[] values) {
+        db.enforceReadOnly();
+
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
             ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
@@ -241,6 +245,8 @@ public class Table implements ITable {
 
     @Override
     public Insert insert(String column, Object value) {
+        db.enforceReadOnly();
+
         final ContentValues contentValues = new ContentValues();
         ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, column, value);
 
@@ -249,6 +255,8 @@ public class Table implements ITable {
 
     @Override
     public InsertInto insertInto(String... columns) {
+        db.enforceReadOnly();
+
         return new InsertIntoImpl(new ContentSet<InsertIntoImpl>() {
             @Override
             public void onContentValuesSet(InsertIntoImpl query, ContentValues contentValues) {
@@ -260,6 +268,8 @@ public class Table implements ITable {
     @Override
     @SuppressWarnings("unchecked")
     public Insert insert(IEntity entity) {
+        db.enforceReadOnly();
+
         // build content values..
         final Delegate.Mapper mapper = new Delegate.Mapper(this);
         final ContentValues contentValues = new ContentValues();
@@ -292,6 +302,8 @@ public class Table implements ITable {
 
     @Override
     public <E extends IEntity> Insert insert(final IEntityList<E> entityList) {
+        db.enforceReadOnly();
+
         final InsertImpl query = new InsertImpl();
         query.setValue(0l);
 
@@ -312,11 +324,15 @@ public class Table implements ITable {
 
     @Override
     public Update update(long id) {
+        db.enforceReadOnly();
+
         return update(generateParamId(id));
     }
 
     @Override
     public Update update(long... ids) {
+        db.enforceReadOnly();
+
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(getPrimaryKeyColumn()).append(" ");
@@ -339,11 +355,15 @@ public class Table implements ITable {
 
     @Override
     public Update update(String condition) {
+        db.enforceReadOnly();
+
         return update(condition, (Object) null);
     }
 
     @Override
     public Update update(final String whereClause, final Object... whereArgs) {
+        db.enforceReadOnly();
+
         return new UpdateImpl(new ContentSet<UpdateImpl>() {
             @Override
             public void onContentValuesSet(UpdateImpl query, ContentValues contentValues) {
@@ -354,6 +374,8 @@ public class Table implements ITable {
 
     @Override
     public Update update(IEntity entity) {
+        db.enforceReadOnly();
+
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
 
         final Delegate.Mapper mapper = new Delegate.Mapper(this);
@@ -375,6 +397,8 @@ public class Table implements ITable {
 
     @Override
     public <E extends IEntity> Update update(final IEntityList<E> entityList) {
+        db.enforceReadOnly();
+
         final UpdateImpl query = new UpdateImpl();
 
         db.begin(new IDatabase.Batch() {
@@ -391,11 +415,15 @@ public class Table implements ITable {
 
     @Override
     public Update update(ContentValues contents, long id) {
+        db.enforceReadOnly();
+
         return update(contents, generateParamId(id));
     }
 
     @Override
     public Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
+        db.enforceReadOnly();
+
         UpdateImpl query = new UpdateImpl();
         String[] args = DbUtils.toStringArray(whereArgs);
 
@@ -410,11 +438,15 @@ public class Table implements ITable {
 
     @Override
     public Delete delete(final long id) {
+        db.enforceReadOnly();
+
         return delete(generateParamId(id));
     }
 
     @Override
     public Delete delete(long... ids) {
+        db.enforceReadOnly();
+
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
 
@@ -438,6 +470,8 @@ public class Table implements ITable {
 
     @Override
     public Delete delete(Collection<Long> ids) {
+        db.enforceReadOnly();
+
         long[] idz = new long[ids.size()];
         int counter = 0;
         for (long id : ids) {
@@ -449,11 +483,15 @@ public class Table implements ITable {
 
     @Override
     public Delete delete(final String condition) {
+        db.enforceReadOnly();
+
         return delete(condition, (Object)null);
     }
 
     @Override
     public Delete delete(final String whereClause, final Object... whereArgs) {
+        db.enforceReadOnly();
+
         DeleteImpl query = new DeleteImpl();
         query.setValue(db.sqLiteDb.delete(getName(), whereClause, DbUtils.toStringArray((Object[]) whereArgs)));
 
@@ -462,11 +500,15 @@ public class Table implements ITable {
 
     @Override
     public Delete delete(IEntity entity) {
+        db.enforceReadOnly();
+
         return delete(entity.getId());
     }
 
     @Override
     public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
+        db.enforceReadOnly();
+
         long[] ids = new long[entityList.getEntityList().size()];
         for(int i = 0; i < ids.length; i++){
             ids[i] = entityList.getEntityList().get(i).getId();
@@ -559,6 +601,8 @@ public class Table implements ITable {
 
     @Override
     public IQuery<Boolean> drop() {
+        db.enforceReadOnly();
+
         DropImpl query = new DropImpl();
         try{
             db.execSql("DROP TABLE " + getName());
@@ -735,6 +779,8 @@ public class Table implements ITable {
 
     @Override
     public Alter alter() {
+        db.enforceReadOnly();
+
         return new Alter(){
             @Override
             public Alter rename(String newName) {
@@ -791,17 +837,11 @@ public class Table implements ITable {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    public IConfig getConfig(){
-        return db.getConfig();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    String generateParamId(long id){
+    private String generateParamId(long id){
         return getPrimaryKeyColumn() + " = " + id;
     }
 
-    void queryColumns(){
+    private void queryColumns(){
         columns.clear();
         String pragmaSql = DbUtils.bindArgs("PRAGMA table_info(?)", name);
         Cursor cursor = db.sqLiteDb.rawQuery(pragmaSql, null);
@@ -817,4 +857,5 @@ public class Table implements ITable {
             cursor.close();
         }
     }
+    
 }

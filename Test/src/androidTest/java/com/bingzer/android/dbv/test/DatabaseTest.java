@@ -25,6 +25,8 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.SQLiteBuilder;
 
+import java.io.File;
+
 /**
  * Created by Ricky Tobing on 7/18/13.
  */
@@ -93,7 +95,7 @@ public class DatabaseTest extends AndroidTestCase {
     public void testGetSQLiteOpenHelper(){
         try{
             // should trow exception
-            // we haven't open the readonlyDb
+            // we haven't open the db
             ((Database)db).getSQLiteOpenHelper();
             assertTrue("Good", true);
         }
@@ -105,7 +107,7 @@ public class DatabaseTest extends AndroidTestCase {
     public void testGetSQLiteDatabase(){
         try{
             // should trow exception
-            // we haven't open the readonlyDb
+            // we haven't open the db
             ((Database)db).getSQLiteDatabase();
             assertTrue("Good", true);
         }
@@ -114,4 +116,8 @@ public class DatabaseTest extends AndroidTestCase {
         }
     }
 
+    public void testPathExists(){
+        File dbFile = new File(db.getPath());
+        assertTrue(dbFile.exists());
+    }
 }

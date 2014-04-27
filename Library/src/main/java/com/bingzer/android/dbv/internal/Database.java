@@ -200,6 +200,13 @@ public class Database implements IDatabase {
     }
 
     @Override
+    public String getPath() {
+        ensureDbHelperIsReady();
+
+        return sqLiteDb.getPath();
+    }
+
+    @Override
     public IQuery<Cursor> raw(String sql) {
         return raw(sql, (Object)null);
     }
@@ -217,12 +224,15 @@ public class Database implements IDatabase {
 
     @Override
     public void execSql(String sql) {
+        enforceReadOnly();
         ensureDbHelperIsReady();
         sqLiteDb.execSQL(sql);
     }
 
     @Override
     public void execSql(String sql, Object... args) {
+        enforceReadOnly();
+
         if(args == null) execSql(sql);
         else{
             ensureDbHelperIsReady();
@@ -311,7 +321,10 @@ public class Database implements IDatabase {
     }
 
     void setForeignKeySupport(boolean on){
-        execSql("PRAGMA FOREIGN_KEYS = ?", on ? "ON" : "OFF");
+        if(on)
+            sqLiteDb.execSQL("PRAGMA FOREIGN_KEYS = ON");
+        else
+            sqLiteDb.execSQL("PRAGMA FOREIGN_KEYS = OFF");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -742,5 +755,10 @@ public class Database implements IDatabase {
             }
         }
 
+    }
+
+    protected void enforceReadOnly(){
+        if(config.isReadOnly())
+            throw new IllegalAccessError("Read-Only. Only SELECT statements are allowed.");
     }
 }
