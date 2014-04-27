@@ -28,7 +28,7 @@ import com.bingzer.android.dbv.internal.queries.TransactionImpl;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.IView;
-import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.utils.DbUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -211,7 +211,7 @@ public class Database implements IDatabase {
         return new IQuery<Cursor>() {
             @Override
             public Cursor query() {
-                return sqLiteDb.rawQuery(sql, Util.toStringArray(args));
+                return sqLiteDb.rawQuery(sql, DbUtils.toStringArray(args));
             }
         };
     }
@@ -227,7 +227,7 @@ public class Database implements IDatabase {
         if(args == null) execSql(sql);
         else{
             ensureDbHelperIsReady();
-            sqLiteDb.execSQL(Util.bindArgs(sql, args));
+            sqLiteDb.execSQL(DbUtils.bindArgs(sql, args));
         }
     }
 

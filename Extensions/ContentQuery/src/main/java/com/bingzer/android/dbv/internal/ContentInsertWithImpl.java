@@ -20,6 +20,7 @@ import android.net.Uri;
 
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.utils.ContentValuesUtils;
 
 /**
  * Created by Ricky on 8/20/13.
@@ -39,7 +40,7 @@ public class ContentInsertWithImpl implements InsertWith {
     public IQuery<Integer> val(Object... values) {
         ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columnNames.length; i++){
-            MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
+            ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
         }
 
         query.onContentValuesSet(this, contentValues);

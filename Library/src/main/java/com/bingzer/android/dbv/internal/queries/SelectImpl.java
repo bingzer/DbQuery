@@ -22,12 +22,12 @@ import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.queries.GroupBy;
 import com.bingzer.android.dbv.queries.Having;
-import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.internal.Database;
-import com.bingzer.android.dbv.internal.MappingUtil;
 import com.bingzer.android.dbv.internal.Table;
 import com.bingzer.android.dbv.queries.Paging;
 import com.bingzer.android.dbv.queries.Select;
+import com.bingzer.android.dbv.utils.EntityUtils;
 
 /**
 * Created by Ricky on 4/26/2014.
@@ -73,7 +73,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
             if(!whereClause.toLowerCase().startsWith("where"))
                 whereString.append(" WHERE ");
             // safely prepare the where part
-            whereString.append(Util.bindArgs(whereClause, args));
+            whereString.append(DbUtils.bindArgs(whereClause, args));
         }
         return this;
     }
@@ -82,7 +82,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
     public Select columns(String... columns) {
         columnString.delete(0, columnString.length());
         if(columns != null){
-            columnString.append(Util.join(", ", columns));
+            columnString.append(DbUtils.join(", ", columns));
         }
         else{
             columnString.append("*");
@@ -97,9 +97,9 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         else orderByString.delete(0, orderByString.length());
 
         if(columns != null){
-            String joined = Util.join(",", columns);
+            String joined = DbUtils.join(",", columns);
             if(joined.length() > 0){
-                orderByString.append("ORDER BY ").append(Util.join(",", columns));
+                orderByString.append("ORDER BY ").append(DbUtils.join(",", columns));
             }
         }
         return this;
@@ -118,13 +118,13 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
 
     @Override
     public void query(IEntity entity) {
-        MappingUtil.mapEntityFromCursor(table, entity, query());
+        EntityUtils.mapEntityFromCursor(table, entity, query());
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <E extends IEntity> void query(IEntityList<E> entityList) {
-        MappingUtil.mapEntityListFromCursor(table, entityList, query());
+        EntityUtils.mapEntityListFromCursor(table, entityList, query());
     }
 
     @Override
@@ -137,7 +137,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         if(groupByString == null) groupByString = new StringBuilder();
         else groupByString.delete(0, groupByString.length());
         if(columns != null){
-            groupByString.append("GROUP BY ").append(Util.join(",", columns));
+            groupByString.append("GROUP BY ").append(DbUtils.join(",", columns));
         }
 
         return this;
@@ -153,7 +153,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         if(havingString == null) havingString = new StringBuilder();
         else havingString.delete(0, havingString.length());
         if(clause != null){
-            havingString.append("HAVING ").append(Util.bindArgs(clause, args));
+            havingString.append("HAVING ").append(DbUtils.bindArgs(clause, args));
         }
 
         return this;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
@@ -139,19 +140,14 @@ public class UnionTest extends AndroidTestCase {
 
         @Override
         public void map(Mapper mapper) {
-            mapper.mapId(new Action<Integer>(Integer.class) {
+            mapper.mapId(new Delegate.TypeId(this) {
                 @Override
                 public void set(Integer value) {
                     setId(value);
                 }
-
-                @Override
-                public Integer get() {
-                    return getId();
-                }
             });
 
-            mapper.map("Name", new Action<String>(String.class){
+            mapper.map("Name", new Delegate.TypeString(){
 
                 @Override
                 public void set(String value) {

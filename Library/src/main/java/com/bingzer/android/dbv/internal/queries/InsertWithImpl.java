@@ -18,8 +18,8 @@ package com.bingzer.android.dbv.internal.queries;
 import android.content.ContentValues;
 
 import com.bingzer.android.dbv.queries.IQuery;
-import com.bingzer.android.dbv.internal.MappingUtil;
 import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.utils.ContentValuesUtils;
 
 /**
 * Created by Ricky on 4/26/2014.
@@ -38,7 +38,7 @@ public class InsertWithImpl extends InsertImpl implements InsertWith {
     public IQuery<Integer> val(Object... values) {
         ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columnNames.length; i++){
-            MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
+            ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
         }
 
         query.onContentValuesSet(this, contentValues);

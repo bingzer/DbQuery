@@ -21,7 +21,7 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.queries.IQuery;
-import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.content.IBaseResolver;
 import com.bingzer.android.dbv.contracts.ContentSelectable;
 import com.bingzer.android.dbv.queries.Paging;
@@ -40,7 +40,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
     public ContentSelectImpl(IBaseResolver resolver, int top){
         this.resolver = resolver;
         this.columnString = new StringBuilder();
-        this.columnString.append(Util.join(", ", generateDefaultProjections()));
+        this.columnString.append(DbUtils.join(", ", generateDefaultProjections()));
 
         if(top > 0) {
             limitString = new StringBuilder();
@@ -52,10 +52,10 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
     public ContentSelectImpl columns(String... columns) {
         columnString.delete(0, columnString.length());
         if(columns != null){
-            columnString.append(Util.join(", ", columns));
+            columnString.append(DbUtils.join(", ", columns));
         }
         else{
-            columnString.append(Util.join(", ", generateDefaultProjections()));
+            columnString.append(DbUtils.join(", ", generateDefaultProjections()));
         }
 
         return this;
@@ -63,7 +63,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
 
     @Override
     public OrderBy orderBy(String... columns) {
-        orderByString = Util.join(",", columns).trim();
+        orderByString = DbUtils.join(",", columns).trim();
         return this;
     }
 
@@ -103,7 +103,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
      * @return selection args
      */
     public String[] getSelectionArgs(){
-        return Util.toStringArray(whereArgs);
+        return DbUtils.toStringArray(whereArgs);
     }
 
     /**

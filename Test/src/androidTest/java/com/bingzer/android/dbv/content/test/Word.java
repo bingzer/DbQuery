@@ -1,5 +1,6 @@
 package com.bingzer.android.dbv.content.test;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 
 /**
@@ -40,8 +41,8 @@ public class Word implements IEntity{
     }
 
     @Override
-    public void map(IEntity.Mapper mapper) {
-        mapper.mapId(new IEntity.Action<Integer>(Integer.class) {
+    public void map(Mapper mapper) {
+        mapper.mapId(new Delegate.TypeInteger() {
             @Override
             public void set(Integer value) {
                 setId(value);
@@ -53,7 +54,7 @@ public class Word implements IEntity{
             }
         });
 
-        mapper.map("word", new IEntity.Action<String>(String.class){
+        mapper.map("word", new Delegate.TypeString(){
 
             @Override
             public void set(String value) {

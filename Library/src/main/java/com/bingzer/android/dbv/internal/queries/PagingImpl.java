@@ -21,8 +21,8 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.internal.Database;
-import com.bingzer.android.dbv.internal.MappingUtil;
 import com.bingzer.android.dbv.queries.Paging;
+import com.bingzer.android.dbv.utils.EntityUtils;
 
 /**
 * Created by Ricky on 4/26/2014.
@@ -113,12 +113,12 @@ public class PagingImpl extends QueryImpl<Cursor> implements Paging {
     @Override
     public <E extends IEntity> void query(int pageNumber, IEntityList<E> entityList) {
         ensurePageNumberValid(pageNumber);
-        MappingUtil.mapEntityListFromCursor(select.table, entityList, query());
+        EntityUtils.mapEntityListFromCursor(select.table, entityList, query());
     }
 
     @Override
     public void query(IEntity entity) {
-        MappingUtil.mapEntityFromCursor(select.table, entity, query());
+        EntityUtils.mapEntityFromCursor(select.table, entity, query());
     }
 
     @Override

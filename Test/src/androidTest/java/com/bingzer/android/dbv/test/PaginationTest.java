@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.SQLiteBuilder;
@@ -305,9 +305,9 @@ public class PaginationTest extends AndroidTestCase {
         }
 
         @Override
-        public void map(IEntity.Mapper mapper) {
+        public void map(Mapper mapper) {
             super.map(mapper);
-            mapper.map("JobId", new Action<Integer>(Integer.class){
+            mapper.map("JobId", new Delegate.TypeInteger(){
 
                 /**
                  * Sets the value

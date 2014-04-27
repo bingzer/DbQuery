@@ -15,7 +15,7 @@
  */
 package com.bingzer.android.dbv.internal;
 
-import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.content.IBaseResolver;
 import com.bingzer.android.dbv.contracts.ContentStrictSelectable;
 
@@ -33,17 +33,17 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
     public ContentStrictSelectImpl(IBaseResolver resolver){
         this.resolver = resolver;
         this.columnString = new StringBuilder();
-        this.columnString.append(Util.join(", ", generateDefaultProjections()));
+        this.columnString.append(DbUtils.join(", ", generateDefaultProjections()));
     }
 
     @Override
     public ContentStrictSelectImpl columns(String... columns) {
         columnString.delete(0, columnString.length());
         if(columns != null){
-            columnString.append(Util.join(", ", columns));
+            columnString.append(DbUtils.join(", ", columns));
         }
         else{
-            columnString.append(Util.join(", ", generateDefaultProjections()));
+            columnString.append(DbUtils.join(", ", generateDefaultProjections()));
         }
 
         return this;
@@ -51,7 +51,7 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
 
     @Override
     public OrderBy orderBy(String... columns) {
-        orderByString = Util.join(",", columns);
+        orderByString = DbUtils.join(",", columns);
         return this;
     }
 
@@ -86,7 +86,7 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
      * @return selection args
      */
     public String[] getSelectionArgs(){
-        return Util.toStringArray(whereArgs);
+        return DbUtils.toStringArray(whereArgs);
     }
 
     /**

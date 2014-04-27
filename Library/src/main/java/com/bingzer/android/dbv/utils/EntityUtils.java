@@ -1,8 +1,8 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance insert the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -12,38 +12,44 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * ----------------------------------------------------------------------------
+ *
+ * Copyright (C) 2006 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.utils;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.utils.ContentValuesUtils;
-import com.bingzer.android.dbv.utils.DelegateUtils;
+import com.bingzer.android.dbv.ITable;
 
 /**
- * Created by Ricky on 8/20/13.
+ * Created by Ricky on 4/26/2014.
  */
-public class ContentUtils {
-
-    public static void mapContentValuesFromGenericObject(ContentValues contentValues, String key, Object value){
-        ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, key, value);
-    }
-
-
-    public static void mapContentValuesFromAction(ContentValues contentValues, String key, Delegate delegate){
-        ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void mapActionToCursor(Delegate delegate, Cursor cursor, int index){
-        DelegateUtils.mapDelegateFromCursor(delegate, cursor, index);
-    }
-
-    public static void mapEntityFromCursor(IEntity.Mapper mapper, IEntity entity, Cursor cursor){
+public final class EntityUtils {
+    /**
+     * Maps an entity from a cursor. Cursor will be automatically close
+     * @param table the table
+     * @param entity the entity to map
+     * @param cursor the cursor
+     */
+    public static void mapEntityFromCursor(ITable table, IEntity entity, Cursor cursor){
+        Delegate.Mapper mapper = new Delegate.Mapper(table);
         entity.map(mapper);
         if(cursor.moveToNext()){
             for(int i = 0; i < cursor.getColumnCount(); i++){
@@ -54,12 +60,22 @@ public class ContentUtils {
                 }
             }
         }
+
+        cursor.close();
     }
 
+    /**
+     * Maps an entity list from cursor. Cursor will be automatically close
+     * @param table the table
+     * @param entityList the list to map
+     * @param cursor the cursor
+     * @param <E> type of IEntity
+     */
     @SuppressWarnings("unchecked")
-    public static <E extends IEntity> void mapEntityListFromCursor(IEntity.Mapper mapper, IEntityList<E> entityList, Cursor cursor, String columnId){
+    public static <E extends IEntity> void mapEntityListFromCursor(ITable table, IEntityList<E> entityList, Cursor cursor){
+        Delegate.Mapper mapper = new Delegate.Mapper(table);
         while(cursor.moveToNext()){
-            int columnIdIndex = cursor.getColumnIndex(columnId);
+            int columnIdIndex = cursor.getColumnIndex(table.getColumnIdName());
             int id = -1;
             if(columnIdIndex >= 0) id = cursor.getInt(columnIdIndex);
 
@@ -89,6 +105,13 @@ public class ContentUtils {
                 }
             }
         }// end while
+
+        cursor.close();
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    private EntityUtils() {
+        // nothing
+    }
 }

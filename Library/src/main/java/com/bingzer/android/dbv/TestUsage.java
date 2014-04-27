@@ -126,7 +126,7 @@ class TestUsage {
         public void map(Mapper mapper) {
             //mapper.reflect(this);
 
-            mapper.map("Name", new Action.TypeString(){
+            mapper.map("Name", new Delegate.TypeString(){
                 @Override public void set(String value) {
                     name = value;
                 }
@@ -135,7 +135,7 @@ class TestUsage {
                     return name;
                 }
             });
-            mapper.map("Age", new Action.TypeInteger(){
+            mapper.map("Age", new Delegate.TypeInteger(){
 
                 @Override public void set(Integer value) {
                     age = value;
@@ -146,7 +146,7 @@ class TestUsage {
                     return age;
                 }
             });
-            mapper.mapId(new Action.TypeId(this){
+            mapper.mapId(new Delegate.TypeId(this){
 
                 @Override
                 public void set(Integer value) {

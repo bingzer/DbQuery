@@ -22,10 +22,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.Delete;
-import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.internal.ContentConfig;
 import com.bingzer.android.dbv.internal.ContentDeleteImpl;
 import com.bingzer.android.dbv.internal.ContentInsertImpl;
@@ -133,7 +134,7 @@ abstract class BaseResolver implements IBaseResolver {
             public Integer query() {
                 return value();
             }
-        }.val(contentResolver.delete(uri, whereClause, Util.toStringArray(whereArgs)));
+        }.val(contentResolver.delete(uri, whereClause, DbUtils.toStringArray(whereArgs)));
     }
 
     @Override
@@ -187,17 +188,17 @@ abstract class BaseResolver implements IBaseResolver {
 
         Iterator<String> keys = mapper.keySet().iterator();
         String idString = generateIdString();
-        IEntity.Action<Integer> idSetter = null;
+        Delegate<Integer> idSetter = null;
         while(keys.hasNext()){
             String key = keys.next();
-            IEntity.Action action = mapper.get(key);
+            Delegate delegate = mapper.get(key);
 
             // ignore if column = "Id"
             if(key.equalsIgnoreCase(idString)) {
-                idSetter = action;
+                idSetter = delegate;
             }
-            else if(action != null){
-                ContentUtils.mapContentValuesFromAction(contentValues, key, action);
+            else if(delegate != null){
+                ContentUtils.mapContentValuesFromAction(contentValues, key, delegate);
             }
         }
 
@@ -217,7 +218,7 @@ abstract class BaseResolver implements IBaseResolver {
             throw new IllegalArgumentException("Authority has not been set. Use ContentConfig.setDefaultAuthority() to set");
 
         final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
-        final IEntity.Action[] idSetters = new IEntity.Action[entityList.getEntityList().size()];
+        final Delegate[] idSetters = new Delegate[entityList.getEntityList().size()];
         final String[] uriStrings = new String[entityList.getEntityList().size()];
 
         for(int i = 0; i < entityList.getEntityList().size(); i++){
@@ -231,14 +232,14 @@ abstract class BaseResolver implements IBaseResolver {
             String idString = generateIdString();
             while(keys.hasNext()){
                 String key = keys.next();
-                IEntity.Action action = mapper.get(key);
+                Delegate delegate = mapper.get(key);
 
                 // ignore if column = "Id"
                 if(key.equalsIgnoreCase(idString)) {
-                    idSetters[i] = action;
+                    idSetters[i] = delegate;
                 }
-                else if(action != null){
-                    ContentUtils.mapContentValuesFromAction(contentValues, key, action);
+                else if(delegate != null){
+                    ContentUtils.mapContentValuesFromAction(contentValues, key, delegate);
                 }
             }
 
@@ -270,7 +271,7 @@ abstract class BaseResolver implements IBaseResolver {
 
             @Override
             public String toString(){
-                return Util.join(";", uriStrings);
+                return DbUtils.join(";", uriStrings);
             }
         };
     }
@@ -327,7 +328,7 @@ abstract class BaseResolver implements IBaseResolver {
     @Override
     public Update update(ContentValues contents, String whereClause, Object... whereArgs) {
         ContentUpdateImpl query = new ContentUpdateImpl();
-        String[] args = Util.toStringArray(whereArgs);
+        String[] args = DbUtils.toStringArray(whereArgs);
         query.setValue(contentResolver.update(uri, contents, whereClause, args));
         return query;
     }
@@ -344,9 +345,9 @@ abstract class BaseResolver implements IBaseResolver {
             // ignore if "Id"
             if (key.equalsIgnoreCase(generateIdString())) continue;
 
-            IEntity.Action action = mapper.get(key);
-            if (action != null) {
-                ContentUtils.mapContentValuesFromAction(contentValues, key, action);
+            Delegate delegate = mapper.get(key);
+            if (delegate != null) {
+                ContentUtils.mapContentValuesFromAction(contentValues, key, delegate);
             }
         }
 
@@ -372,11 +373,11 @@ abstract class BaseResolver implements IBaseResolver {
             String idString = generateIdString();
             while(keys.hasNext()){
                 String key = keys.next();
-                IEntity.Action action = mapper.get(key);
+                Delegate delegate = mapper.get(key);
 
                 // ignore if column = "Id"
                 if(!key.equalsIgnoreCase(idString)) {
-                    ContentUtils.mapContentValuesFromAction(contentValues, key, action);
+                    ContentUtils.mapContentValuesFromAction(contentValues, key, delegate);
                 }
             }
 

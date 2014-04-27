@@ -19,6 +19,7 @@ import android.content.ContentValues;
 
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.queries.Update;
+import com.bingzer.android.dbv.utils.ContentValuesUtils;
 
 /**
  * Created by Ricky on 8/20/13.
@@ -60,7 +61,7 @@ public class ContentUpdateImpl implements Update {
     @Override
     public IQuery<Integer> val(String column, Object value) {
         contentValues = new ContentValues();
-        MappingUtil.mapContentValuesFromGenericObject(contentValues, column, value);
+        ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, column, value);
 
         return notifyContentValuesSet();
     }
@@ -69,7 +70,7 @@ public class ContentUpdateImpl implements Update {
     public IQuery<Integer> val(String[] columnNames, Object[] values) {
         contentValues = new ContentValues();
         for(int i = 0; i < columnNames.length; i++){
-            MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
+            ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
         }
 
         return notifyContentValuesSet();

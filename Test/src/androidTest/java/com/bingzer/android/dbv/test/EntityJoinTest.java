@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
@@ -176,19 +177,14 @@ public class EntityJoinTest extends AndroidTestCase {
          */
         @Override
         public void map(Mapper mapper) {
-            mapper.mapId(new Action<Integer>(Integer.class) {
+            mapper.mapId(new Delegate.TypeId(this) {
                 @Override
                 public void set(Integer value) {
                     setId(value);
                 }
-
-                @Override
-                public Integer get() {
-                    return getId();
-                }
             });
 
-            mapper.map("Quantity", new Action<Integer>(Integer.class){
+            mapper.map("Quantity", new Delegate.TypeInteger(){
 
                 /**
                  * Sets the value
@@ -211,7 +207,7 @@ public class EntityJoinTest extends AndroidTestCase {
                 }
             });
 
-            mapper.map("ProductName", new Action<String>(String.class){
+            mapper.map("ProductName", new Delegate.TypeString(){
 
                 /**
                  * Sets the value
@@ -234,7 +230,7 @@ public class EntityJoinTest extends AndroidTestCase {
                 }
             });
 
-            mapper.map("CustomerName", new Action<String>(String.class){
+            mapper.map("CustomerName", new Delegate.TypeString(){
 
                 /**
                  * Sets the value

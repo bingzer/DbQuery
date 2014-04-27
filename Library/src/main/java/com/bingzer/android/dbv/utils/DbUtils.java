@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -29,12 +29,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv;
+package com.bingzer.android.dbv.utils;
 
 /**
  * Utility methods
  */
-public final class Util {
+public final class DbUtils {
 
     private static final String QUESTION_MARK = "\\?";
     private static final char QUESTION_MARK_CHAR = QUESTION_MARK.charAt(1);
@@ -164,7 +164,7 @@ public final class Util {
 
     //////////////////////////////////////////////////////////////////////////////
 
-    private Util(){
+    private DbUtils(){
         // nothing
     }
 }

@@ -18,12 +18,13 @@ package com.bingzer.android.dbv.internal;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.internal.queries.AverageImpl;
 import com.bingzer.android.dbv.internal.queries.ContentSet;
 import com.bingzer.android.dbv.internal.queries.DeleteImpl;
@@ -54,6 +55,7 @@ import com.bingzer.android.dbv.queries.Sum;
 import com.bingzer.android.dbv.queries.Total;
 import com.bingzer.android.dbv.queries.Union;
 import com.bingzer.android.dbv.queries.Update;
+import com.bingzer.android.dbv.utils.ContentValuesUtils;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -231,7 +233,7 @@ public class Table implements ITable {
     public Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            MappingUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+            ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
         }
 
         return insert(contentValues);
@@ -251,23 +253,23 @@ public class Table implements ITable {
     @SuppressWarnings("unchecked")
     public Insert insert(IEntity entity) {
         // build content values..
-        final EntityMapper mapper = new EntityMapper(this);
+        final Delegate.Mapper mapper = new Delegate.Mapper(this);
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
         Iterator<String> keys = mapper.keySet().iterator();
         String idString = getColumnIdName();
-        IEntity.Action<Integer> idSetter = null;
+        Delegate<Integer> idSetter = null;
         while(keys.hasNext()){
             String key = keys.next();
-            IEntity.Action action = mapper.get(key);
+            Delegate delegate = mapper.get(key);
 
             // ignore if column = "Id"
             if(key.equalsIgnoreCase(idString)) {
-                idSetter = action;
+                idSetter = delegate;
             }
-            else if(action != null){
-                MappingUtil.mapContentValuesFromAction(contentValues, key, action);
+            else if(delegate != null){
+                ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
             }
         }
 
@@ -345,7 +347,7 @@ public class Table implements ITable {
     public Update update(IEntity entity) {
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
 
-        final EntityMapper mapper = new EntityMapper(this);
+        final Delegate.Mapper mapper = new Delegate.Mapper(this);
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
@@ -353,9 +355,9 @@ public class Table implements ITable {
             // ignore if "Id"
             if (key.equalsIgnoreCase(getColumnIdName())) continue;
 
-            IEntity.Action action = mapper.get(key);
-            if (action != null) {
-                MappingUtil.mapContentValuesFromAction(contentValues, key, action);
+            Delegate delegate = mapper.get(key);
+            if (delegate != null) {
+                ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
             }
         }
 
@@ -386,7 +388,7 @@ public class Table implements ITable {
     @Override
     public Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
         UpdateImpl query = new UpdateImpl();
-        String[] args = Util.toStringArray(whereArgs);
+        String[] args = DbUtils.toStringArray(whereArgs);
 
         // only update when content has something
         if(contents != null && contents.size() > 0)
@@ -444,7 +446,7 @@ public class Table implements ITable {
     @Override
     public Delete delete(final String whereClause, final Object... whereArgs) {
         DeleteImpl query = new DeleteImpl();
-        query.setValue(db.sqLiteDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs)));
+        query.setValue(db.sqLiteDb.delete(getName(), whereClause, DbUtils.toStringArray((Object[]) whereArgs)));
 
         return query;
     }
@@ -478,7 +480,7 @@ public class Table implements ITable {
     @Override
     public boolean has(String whereClause, Object... whereArgs) {
         StringBuilder sql = new StringBuilder("SELECT 1 FROM ").append(getName())
-                            .append(" WHERE ").append(Util.bindArgs(whereClause, whereArgs));
+                            .append(" WHERE ").append(DbUtils.bindArgs(whereClause, whereArgs));
         Cursor cursor = null;
         try{
             cursor = raw(sql.toString()).query();
@@ -506,7 +508,7 @@ public class Table implements ITable {
         StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM " + toString());
         if(whereClause != null){
             builder.append(" WHERE ");
-            builder.append(Util.bindArgs(whereClause, whereArgs));
+            builder.append(DbUtils.bindArgs(whereClause, whereArgs));
         }
 
         Cursor cursor = db.sqLiteDb.rawQuery(builder.toString(), null);
@@ -539,7 +541,7 @@ public class Table implements ITable {
             @Override public Cursor query(){
                 if(args == null || args.length == 0)
                     return db.sqLiteDb.rawQuery(sql, null);
-                else return db.sqLiteDb.rawQuery(sql, Util.toStringArray(args));
+                else return db.sqLiteDb.rawQuery(sql, DbUtils.toStringArray(args));
             }
         };
     }
@@ -633,7 +635,7 @@ public class Table implements ITable {
 
     @Override
     public Average avg(String columnName, String whereClause, Object... args) {
-        return avg(columnName, Util.bindArgs(whereClause, args));
+        return avg(columnName, DbUtils.bindArgs(whereClause, args));
     }
 
     @Override
@@ -654,7 +656,7 @@ public class Table implements ITable {
 
     @Override
     public Sum sum(String columnName, String whereClause, Object... args) {
-        return sum(columnName, Util.bindArgs(whereClause, args));
+        return sum(columnName, DbUtils.bindArgs(whereClause, args));
     }
 
     @Override
@@ -675,7 +677,7 @@ public class Table implements ITable {
 
     @Override
     public Total total(String columnName, String whereClause, Object... args) {
-        return total(columnName, Util.bindArgs(whereClause, args));
+        return total(columnName, DbUtils.bindArgs(whereClause, args));
     }
 
     @Override
@@ -696,7 +698,7 @@ public class Table implements ITable {
 
     @Override
     public Max max(String columnName, String whereClause, Object... args) {
-        return max(columnName, Util.bindArgs(whereClause, args));
+        return max(columnName, DbUtils.bindArgs(whereClause, args));
     }
 
     @Override
@@ -717,7 +719,7 @@ public class Table implements ITable {
 
     @Override
     public Min min(String columnName, String whereClause, Object... args) {
-        return min(columnName, Util.bindArgs(whereClause, args));
+        return min(columnName, DbUtils.bindArgs(whereClause, args));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -792,7 +794,7 @@ public class Table implements ITable {
 
     void queryColumns(){
         columns.clear();
-        String pragmaSql = Util.bindArgs("PRAGMA table_info(?)", name);
+        String pragmaSql = DbUtils.bindArgs("PRAGMA table_info(?)", name);
         Cursor cursor = db.sqLiteDb.rawQuery(pragmaSql, null);
         try{
             // this will throw IllegalArgumentException if not found

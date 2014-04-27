@@ -15,6 +15,7 @@
  */
 package com.bingzer.android.dbv.content;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 /**
  * Created by Ricky Tobing on 8/9/13.
  */
-class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
+class EntityMapper extends HashMap<String, Delegate> implements IEntity.Mapper {
     final IBaseResolver resolver;
 
     EntityMapper(IBaseResolver resolver){
@@ -30,18 +31,18 @@ class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Ma
     }
 
     @Override
-    public void mapId(IEntity.Action<Integer> action) {
-        map(resolver.generateIdString(), action);
+    public void mapId(Delegate<Integer> delegate) {
+        map(resolver.generateIdString(), delegate);
     }
 
     @Override
-    public IEntity.Action get(String column) {
+    public Delegate get(String column) {
         return super.get(column);
     }
 
     @Override
-    public void map(String column, IEntity.Action action) {
-        put(column, action);
+    public void map(String column, Delegate delegate) {
+        put(column, delegate);
     }
 
 }

@@ -31,6 +31,7 @@ import com.bingzer.android.dbv.contracts.Tangible;
 import com.bingzer.android.dbv.contracts.Unionable;
 import com.bingzer.android.dbv.contracts.Updatable;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -315,4 +316,6 @@ public interface ITable extends
         ////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////
     }
+
+
 }

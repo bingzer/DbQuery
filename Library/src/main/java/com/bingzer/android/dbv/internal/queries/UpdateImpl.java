@@ -18,8 +18,8 @@ package com.bingzer.android.dbv.internal.queries;
 import android.content.ContentValues;
 
 import com.bingzer.android.dbv.queries.IQuery;
-import com.bingzer.android.dbv.internal.MappingUtil;
 import com.bingzer.android.dbv.queries.Update;
+import com.bingzer.android.dbv.utils.ContentValuesUtils;
 
 /**
 * Created by Ricky on 4/26/2014.
@@ -57,7 +57,7 @@ public class UpdateImpl extends QueryImpl<Integer> implements Update, IQuery<Int
     @Override
     public IQuery<Integer> val(String column, Object value) {
         contentValues = new ContentValues();
-        MappingUtil.mapContentValuesFromGenericObject(contentValues, column, value);
+        ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, column, value);
 
         return notifyContentValuesSet();
     }
@@ -66,7 +66,7 @@ public class UpdateImpl extends QueryImpl<Integer> implements Update, IQuery<Int
     public IQuery<Integer> val(String[] columnNames, Object[] values) {
         contentValues = new ContentValues();
         for(int i = 0; i < columnNames.length; i++){
-            MappingUtil.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
+            ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
         }
 
         return notifyContentValuesSet();

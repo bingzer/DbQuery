@@ -1,5 +1,6 @@
 package com.bingzer.android.dbv.test;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 
 /**
@@ -56,8 +57,8 @@ public class Person implements IEntity{
     }
 
     @Override
-    public void map(IEntity.Mapper mapper) {
-        mapper.map("Name", new IEntity.Action<String>(String.class) {
+    public void map(Mapper mapper) {
+        mapper.map("Name", new Delegate.TypeString() {
 
             @Override
             public void set(String value) {
@@ -70,7 +71,7 @@ public class Person implements IEntity{
             }
         });
 
-        mapper.map("Address", new Action<byte[]>(byte[].class) {
+        mapper.map("Address", new Delegate.TypeBytes() {
             /**
              * Sets the value
              *
@@ -93,7 +94,7 @@ public class Person implements IEntity{
 
         });
 
-        mapper.map("Age", new IEntity.Action<Integer>(Integer.class){
+        mapper.map("Age", new Delegate.TypeInteger(){
 
             @Override
             public void set(Integer value) {
@@ -106,7 +107,7 @@ public class Person implements IEntity{
             }
         });
 
-        mapper.mapId(new IEntity.Action<Integer>(Integer.class){
+        mapper.mapId(new Delegate.TypeInteger(){
 
             @Override
             public void set(Integer value) {
