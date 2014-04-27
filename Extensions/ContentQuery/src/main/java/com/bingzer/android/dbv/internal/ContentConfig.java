@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal;
 
 /**
  * Created by Ricky on 8/22/13.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal;
 
 import com.bingzer.android.dbv.IEntity;
 

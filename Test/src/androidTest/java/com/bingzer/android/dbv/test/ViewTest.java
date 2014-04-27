@@ -8,9 +8,8 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IFunction;
 import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.IView;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.internal.SQLiteBuilder;
 
 /**
  * Created by Ricky Tobing on 8/19/13.

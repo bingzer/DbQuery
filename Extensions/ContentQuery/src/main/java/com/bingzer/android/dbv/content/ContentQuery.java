@@ -18,7 +18,7 @@ package com.bingzer.android.dbv.content;
 import android.content.Context;
 import android.net.Uri;
 
-import com.bingzer.android.dbv.sqlite.ContentConfig;
+import com.bingzer.android.dbv.internal.ContentConfig;
 
 /**
  * ContentQuery allows DbQuery style while

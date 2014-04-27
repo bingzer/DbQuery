@@ -13,32 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal;
 
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.IView;
+import com.bingzer.android.dbv.internal.impl.DropImpl;
 
 /**
  * Created by Ricky Tobing on 8/19/13.
  */
-class View extends Table implements IView {
+public class View extends Table implements IView {
 
-    View (Database db, String name){
+    public View (Database db, String name){
         super(db, name);
     }
 
     @Override
     public IQuery<Boolean> drop() {
-        QueryImpl.DropImpl query = new QueryImpl.DropImpl();
+        DropImpl query = new DropImpl();
         try{
             db.execSql("DROP VIEW " + getName());
-            query.value = true;
+            query.setValue(true);
         }
         catch (Exception e){
-            query.value = false;
+            query.setValue(false);
         }
 
-        if(query.value) db.removeTable(this);
+        if(query.query()) db.removeTable(this);
         return query;
     }
 

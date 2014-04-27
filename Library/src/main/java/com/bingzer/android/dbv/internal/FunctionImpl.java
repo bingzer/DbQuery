@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal;
 
 import com.bingzer.android.dbv.IFunction;
-import com.bingzer.android.dbv.Util;
 
 /**
  * Created by Ricky Tobing on 7/20/13.

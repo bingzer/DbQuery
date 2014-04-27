@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal.impl;
+
+import com.bingzer.android.dbv.IQuery;
 
 /**
- * Created by Ricky on 8/20/13.
- */
-public class ContentDeleteImpl extends QueryImpl.DeleteImpl {
-
-    public ContentDeleteImpl val(int value){
-        this.value = value;
-        return this;
+* Created by Ricky on 4/26/2014.
+*/
+public class InsertImpl extends QueryImpl<Integer> implements IQuery.Insert {
+    public InsertImpl(){
+        this.value = 0;
     }
-
-    public int value(){
-        return value;
-    }
-
 }

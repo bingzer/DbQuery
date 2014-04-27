@@ -16,7 +16,7 @@
 
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.sqlite.Database;
+import com.bingzer.android.dbv.internal.Database;
 
 import java.util.LinkedList;
 import java.util.List;

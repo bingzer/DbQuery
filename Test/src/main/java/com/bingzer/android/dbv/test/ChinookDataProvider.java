@@ -1,12 +1,11 @@
 package com.bingzer.android.dbv.test;
 
 import android.content.Context;
-import android.os.Environment;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.data.BasicDataProvider;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.internal.SQLiteBuilder;
 
 import java.io.File;
 import java.io.IOException;

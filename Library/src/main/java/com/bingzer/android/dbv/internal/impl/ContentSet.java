@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal.impl;
 
-import android.net.Uri;
+import android.content.ContentValues;
 
-import java.net.CacheRequest;
+import com.bingzer.android.dbv.IQuery;
 
 /**
- * Created by Ricky on 8/20/13.
- */
-public class ContentInsertImpl extends QueryImpl.InsertImpl {
+* Created by Ricky on 4/26/2014.
+*/
+public interface ContentSet<E extends IQuery<Integer>> {
 
-    Uri uri;
-
-    public ContentInsertImpl setUri(Uri value){
-        this.uri = value;
-        this.value = UriUtil.parseIdFromUri(uri);
-        return this;
-    }
-
-    @Override
-    public Integer query(){
-        return UriUtil.parseIdFromUri(uri);
-    }
-
-    @Override
-    public String toString(){
-        return uri.toString();
-    }
+    void onContentValuesSet(E query, ContentValues contentValues);
 
 }

@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -27,6 +26,17 @@ import com.bingzer.android.dbv.IFunction;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.internal.impl.ContentSet;
+import com.bingzer.android.dbv.internal.impl.DeleteImpl;
+import com.bingzer.android.dbv.internal.impl.DropImpl;
+import com.bingzer.android.dbv.internal.impl.InnerJoinImpl;
+import com.bingzer.android.dbv.internal.impl.InsertImpl;
+import com.bingzer.android.dbv.internal.impl.InsertWithImpl;
+import com.bingzer.android.dbv.internal.impl.OuterJoinImpl;
+import com.bingzer.android.dbv.internal.impl.QueryImpl;
+import com.bingzer.android.dbv.internal.impl.SelectImpl;
+import com.bingzer.android.dbv.internal.impl.UnionImpl;
+import com.bingzer.android.dbv.internal.impl.UpdateImpl;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,17 +46,14 @@ import java.util.List;
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
-class Table implements ITable {
-    String alias;
-    String name;
+public class Table implements ITable {
+    private String alias;
+    private String name;
+    private final List<String> columns;
 
-    final Database db;
-    final List<String> columns;
+    protected final Database db;
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-
-    Table (Database db, String name){
+    public Table (Database db, String name){
         this.name = name;
         this.db = db;
         this.columns = new LinkedList<String>();
@@ -142,7 +149,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.Select select(int top, String whereClause, Object... args) {
-        return new QueryImpl.SelectImpl(db.getConfig(), this, top, false){
+        return new SelectImpl(this, top, false){
             @Override public Cursor query(){
                 return db.sqLiteDb.rawQuery(toString(), null);
             }
@@ -178,7 +185,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.Select selectDistinct(int top, String whereClause, Object... args) {
-        return new QueryImpl.SelectImpl(db.getConfig(), this, top, true){
+        return new SelectImpl(this, top, true){
             @Override public Cursor query(){
                 return db.sqLiteDb.rawQuery(toString(), null);
             }
@@ -189,8 +196,8 @@ class Table implements ITable {
 
     @Override
     public IQuery.Insert insert(final ContentValues contents) {
-        QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
-        query.value = (int) db.sqLiteDb.insertOrThrow(getName(), null, contents);
+        InsertImpl query = new InsertImpl();
+        query.setValue( (int) db.sqLiteDb.insertOrThrow(getName(), null, contents) );
 
         return query;
     }
@@ -207,10 +214,10 @@ class Table implements ITable {
 
     @Override
     public IQuery.InsertWith insert(String... columns) {
-        return new QueryImpl.InsertWithImpl(new QueryImpl.ContentSet<QueryImpl.InsertWithImpl>() {
+        return new InsertWithImpl(new ContentSet<InsertWithImpl>() {
             @Override
-            public void onContentValuesSet(QueryImpl.InsertWithImpl query, ContentValues contentValues) {
-                query.value = (int) db.sqLiteDb.insertOrThrow(getName(), null, contentValues);
+            public void onContentValuesSet(InsertWithImpl query, ContentValues contentValues) {
+                query.setValue( (int) db.sqLiteDb.insertOrThrow(getName(), null, contentValues) );
             }
         }, columns);
     }
@@ -250,15 +257,14 @@ class Table implements ITable {
 
     @Override
     public <E extends IEntity> IQuery.Insert insert(final IEntityList<E> entityList) {
-        final QueryImpl.InsertImpl query = new QueryImpl.InsertImpl();
-        query.value = 0;
+        final InsertImpl query = new InsertImpl();
 
         db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
                 for(IEntity entity : entityList.getEntityList()){
                     insert(entity).query();
-                    query.value++;
+                    query.setValue(query.query() + 1);
                 }
             }
         }).execute();
@@ -302,10 +308,10 @@ class Table implements ITable {
 
     @Override
     public IQuery.Update update(final String whereClause, final Object... whereArgs) {
-        return new QueryImpl.UpdateImpl(new QueryImpl.ContentSet<QueryImpl.UpdateImpl>() {
+        return new UpdateImpl(new ContentSet<UpdateImpl>() {
             @Override
-            public void onContentValuesSet(QueryImpl.UpdateImpl query, ContentValues contentValues) {
-                query.value = update(contentValues, whereClause, whereArgs).query();
+            public void onContentValuesSet(UpdateImpl query, ContentValues contentValues) {
+                query.setValue( update(contentValues, whereClause, whereArgs).query() );
             }
         });
     }
@@ -333,14 +339,13 @@ class Table implements ITable {
 
     @Override
     public <E extends IEntity> IQuery.Update update(final IEntityList<E> entityList) {
-        final QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
-        query.value = 0;
+        final UpdateImpl query = new UpdateImpl();
 
         db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
                 for(IEntity entity : entityList.getEntityList()){
-                    query.value += update(entity).query();
+                    query.setValue( query.query() + update(entity).query() );
                 }
             }
         }).execute();
@@ -355,12 +360,12 @@ class Table implements ITable {
 
     @Override
     public IQuery.Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
-        QueryImpl.UpdateImpl query = new QueryImpl.UpdateImpl();
+        UpdateImpl query = new UpdateImpl();
         String[] args = Util.toStringArray(whereArgs);
 
         // only update when content has something
         if(contents != null && contents.size() > 0)
-            query.value = db.sqLiteDb.update(getName(), contents, whereClause, args);
+            query.setValue( db.sqLiteDb.update(getName(), contents, whereClause, args) );
 
         return query;
     }
@@ -413,8 +418,8 @@ class Table implements ITable {
 
     @Override
     public IQuery.Delete delete(final String whereClause, final Object... whereArgs) {
-        QueryImpl.DeleteImpl query = new QueryImpl.DeleteImpl();
-        query.value = db.sqLiteDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs));
+        DeleteImpl query = new DeleteImpl();
+        query.setValue( db.sqLiteDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs)) );
 
         return query;
     }
@@ -505,7 +510,7 @@ class Table implements ITable {
 
     @Override
     public IQuery<Cursor> raw(final String sql, final Object... args) {
-        return new QueryImpl<Cursor>(db.getConfig()){
+        return new QueryImpl<Cursor>(){
             @Override public Cursor query(){
                 if(args == null || args.length == 0)
                     return db.sqLiteDb.rawQuery(sql, null);
@@ -518,16 +523,16 @@ class Table implements ITable {
 
     @Override
     public IQuery<Boolean> drop() {
-        QueryImpl.DropImpl query = new QueryImpl.DropImpl();
+        DropImpl query = new DropImpl();
         try{
             db.execSql("DROP TABLE " + getName());
-            query.value = true;
+            query.setValue( true );
         }
         catch (Exception e){
-            query.value = false;
+            query.setValue( false );
         }
 
-        if(query.value) db.removeTable(this);
+        if(query.query()) db.removeTable(this);
         return query;
     }
 
@@ -535,7 +540,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.InnerJoin join(String tableName, String onClause) {
-        return new QueryImpl.InnerJoinImpl(db.getConfig(), this, tableName, onClause){
+        return new InnerJoinImpl(this, tableName, onClause){
             @Override public Cursor query(){
                 return db.sqLiteDb.rawQuery(toString(), null);
             }
@@ -549,7 +554,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.OuterJoin outerJoin(String tableName, String onClause) {
-        return new QueryImpl.OuterJoinImpl(db.getConfig(), this, tableName, onClause){
+        return new OuterJoinImpl(this, tableName, onClause){
             @Override public Cursor query(){
                 return db.sqLiteDb.rawQuery(toString(), null);
             }
@@ -565,7 +570,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.Union union(IQuery.Select select) {
-        return new QueryImpl.UnionImpl(select, this) {
+        return new UnionImpl(select, this) {
             @Override
             public Cursor query() {
                 return raw(toString()).query();
@@ -575,7 +580,7 @@ class Table implements ITable {
 
     @Override
     public IQuery.Union unionAll(IQuery.Select select) {
-        return new QueryImpl.UnionImpl(select, this, true) {
+        return new UnionImpl(select, this, true) {
             @Override
             public Cursor query() {
                 return raw(toString()).query();
@@ -750,9 +755,11 @@ class Table implements ITable {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    IConfig getConfig(){
+    public IConfig getConfig(){
         return db.getConfig();
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     String generateParamId(int id){
         return generateIdString() + " = " + id;

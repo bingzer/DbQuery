@@ -23,7 +23,7 @@ import com.bingzer.android.dbv.queries.Insertable;
 import com.bingzer.android.dbv.queries.SelectIdentifiable;
 import com.bingzer.android.dbv.queries.Tangible;
 import com.bingzer.android.dbv.queries.Updatable;
-import com.bingzer.android.dbv.sqlite.ContentConfig;
+import com.bingzer.android.dbv.internal.ContentConfig;
 
 /**
  * Created by Ricky Tobing on 8/23/13.

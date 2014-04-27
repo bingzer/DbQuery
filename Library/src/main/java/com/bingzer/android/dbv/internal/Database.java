@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -36,8 +36,8 @@ import java.util.List;
  */
 public class Database implements IDatabase {
 
-    static final String TAG = "DBV.SQLite.Database";
-    static final String SPACE = " ";
+    public static final String TAG = "DBV.SQLite.Database";
+    public static final String SPACE = " ";
 
     private final String name;
     private final DbModel dbModel = new DbModel();

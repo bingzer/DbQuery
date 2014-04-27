@@ -21,9 +21,9 @@ import android.net.Uri;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.sqlite.ContentConfig;
-import com.bingzer.android.dbv.sqlite.ContentSelectImpl;
-import com.bingzer.android.dbv.sqlite.ContentUtils;
+import com.bingzer.android.dbv.internal.ContentConfig;
+import com.bingzer.android.dbv.internal.ContentSelectImpl;
+import com.bingzer.android.dbv.internal.ContentUtils;
 
 /**
  *

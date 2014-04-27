@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.sqlite;
+package com.bingzer.android.dbv.internal.impl;
 
-import android.net.Uri;
+import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.internal.Table;
 
 /**
- * Created by Ricky on 8/21/13.
- */
-public class UriUtil {
-
-    public static int parseIdFromUri(Uri uri){
-        String uriString = uri.toString();
-        String valueString = uriString.substring(uriString.lastIndexOf("/") + 1, uriString.length());
-        try{
-            return Integer.parseInt(valueString);
-        }
-        catch (NumberFormatException e){
-            return -1;
-        }
+* Created by Ricky on 4/26/2014.
+*/
+public abstract class InnerJoinImpl extends Join implements IQuery.InnerJoin {
+    public InnerJoinImpl(Table table, String tableNameToJoin, String onClause) {
+        super(table, "INNER JOIN", tableNameToJoin, onClause);
     }
-
 }

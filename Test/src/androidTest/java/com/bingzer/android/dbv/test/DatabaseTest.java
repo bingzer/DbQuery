@@ -22,8 +22,8 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.sqlite.Database;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.internal.Database;
+import com.bingzer.android.dbv.internal.SQLiteBuilder;
 
 /**
  * Created by Ricky Tobing on 7/18/13.

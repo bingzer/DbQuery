@@ -26,8 +26,7 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEnumerable;
 import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.sqlite.MappingUtil;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.internal.SQLiteBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
