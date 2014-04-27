@@ -20,7 +20,7 @@ public class PreloadedDatabaseTest extends AndroidTestCase {
     @Override
     public void setUp(){
         // http://chinookdatabase.codeplex.com/wikipage?title=Chinook_Schema&referringTitle=Home
-        // chinook sample db
+        // chinook sample readonlyDb
         dbFile = new File(getContext().getFilesDir(), "Chinook.sqlite");
 
         if(!dbFile.exists()){

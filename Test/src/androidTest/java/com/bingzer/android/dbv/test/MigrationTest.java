@@ -52,7 +52,7 @@ public class MigrationTest extends AndroidTestCase {
         assertNotNull(db.get("Table1"));
         assertNull(db.get("Table2"));
 
-        //db.close();
+        //readonlyDb.close();
     }
 
     public void testUpgrade(){

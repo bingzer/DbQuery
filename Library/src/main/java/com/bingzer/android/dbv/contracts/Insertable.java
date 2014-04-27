@@ -29,14 +29,14 @@ import com.bingzer.android.dbv.queries.InsertWith;
 public interface Insertable {
 
     /**
-     * InsertWith content val
+     * Insert content val
      * @param contents content values
      * @return Insert object
      */
     Insert insert(ContentValues contents);
 
     /**
-     * InsertWith
+     * Insert multiple columns and multiple objects
      * @param columns column names
      * @param values the values
      * @return Insert object
@@ -44,7 +44,8 @@ public interface Insertable {
     Insert insert(String[] columns, Object[] values);
 
     /**
-     * InsertWith
+     * InsertWith follows by <code>val(Object... values)</code>
+     * to specify the values
      * @param columns column names
      * @return an InsertWith object
      */
@@ -61,7 +62,9 @@ public interface Insertable {
     Insert insert(IEntity entity);
 
     /**
-     * Bulk-insert an entity list
+     * Bulk-insert an entity list. The returned value, (via Insert.query())
+     * is an integer and returns the number of entity successfully inserted.
+     * Ids are automatically populated inside the IEntity object
      * @param entityList the entity list to insert
      * @param <E> extends IEntity
      * @return an Insert object

@@ -83,7 +83,7 @@ public class EntityListTest extends AndroidTestCase{
         personList.add(new Person("Person7", 77, "Whatever".getBytes()));
         personList.add(new Person("Person8", 88, "Whatever too".getBytes()));
 
-        assertTrue(db.get("Person").insert(personList).query() == 2);
+        assertTrue(db.get("Person").insert(personList).query() > 0);
         personList = new PersonList();
 
         db.get("Person").select().query(personList);

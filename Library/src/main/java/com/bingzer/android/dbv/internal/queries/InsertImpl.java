@@ -22,6 +22,8 @@ import com.bingzer.android.dbv.queries.Insert;
 */
 public class InsertImpl extends QueryImpl<Integer> implements Insert {
     public InsertImpl(){
-        this.value = 0;
+        // default if any error.
+        // -1 should be returned
+        this.value = -1;
     }
 }

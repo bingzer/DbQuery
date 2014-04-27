@@ -93,7 +93,7 @@ public class DatabaseTest extends AndroidTestCase {
     public void testGetSQLiteOpenHelper(){
         try{
             // should trow exception
-            // we haven't open the db
+            // we haven't open the readonlyDb
             ((Database)db).getSQLiteOpenHelper();
             assertTrue("Good", true);
         }
@@ -105,7 +105,7 @@ public class DatabaseTest extends AndroidTestCase {
     public void testGetSQLiteDatabase(){
         try{
             // should trow exception
-            // we haven't open the db
+            // we haven't open the readonlyDb
             ((Database)db).getSQLiteDatabase();
             assertTrue("Good", true);
         }

@@ -285,6 +285,7 @@ public class Table implements ITable {
     @Override
     public <E extends IEntity> Insert insert(final IEntityList<E> entityList) {
         final InsertImpl query = new InsertImpl();
+        query.setValue(0);
 
         db.begin(new IDatabase.Batch() {
             @Override
