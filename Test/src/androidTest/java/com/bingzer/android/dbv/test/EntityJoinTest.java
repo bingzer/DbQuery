@@ -128,7 +128,7 @@ public class EntityJoinTest extends AndroidTestCase {
     }
 
     static class Order implements IEntity {
-        int id = -1;
+        long id = -1;
         int quantity;
         // from product customerTable
         String productName;
@@ -161,12 +161,12 @@ public class EntityJoinTest extends AndroidTestCase {
             this.quantity = quantity;
         }
 
-        public void setId(int id){
+        public void setId(long id){
             this.id = id;
         }
 
         @Override
-        public int getId() {
+        public long getId() {
             return id;
         }
 
@@ -179,7 +179,7 @@ public class EntityJoinTest extends AndroidTestCase {
         public void map(Mapper mapper) {
             mapper.mapId(new Delegate.TypeId(this) {
                 @Override
-                public void set(Integer value) {
+                public void set(Long value) {
                     setId(value);
                 }
             });

@@ -22,7 +22,7 @@ import java.util.List;
 public class PaginationTest extends AndroidTestCase {
 
     IDatabase db;
-    int managerId, janitorId, guardId, supervisorId;
+    long managerId, janitorId, guardId, supervisorId;
 
     @Override
     public void setUp(){

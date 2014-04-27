@@ -86,16 +86,16 @@ public abstract class Delegate<T> {
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
-    public static abstract class TypeId extends Delegate<Integer> {
+    public static abstract class TypeId extends Delegate<Long> {
         final IEntity entity;
 
         public TypeId(IEntity entity) {
-            super(Integer.class);
+            super(Long.class);
             this.entity = entity;
         }
 
         @Override
-        public final Integer get(){
+        public final Long get(){
             return entity.getId();
         }
     }
@@ -199,21 +199,11 @@ public abstract class Delegate<T> {
         }
     }
 
-    /**
-     * Delegate type for <code>Object</code>
-     * @see com.bingzer.android.dbv.IEntity.Mapper
-     * @see Delegate
-     */
-    public static abstract class Type<T> extends Delegate<T> {
-        public Type(Class<?> clazz) {
-            super(clazz);
-        }
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Created by Ricky Tobing on 8/9/13.
+     * Delegate Mapper. Used to map a 'string' (column name) to its delegated
+     * based on tis type
      */
     public static class Mapper extends HashMap<String, Delegate> implements IEntity.Mapper {
         private final PrimaryKeyIdentifier identifier;
@@ -223,7 +213,7 @@ public abstract class Delegate<T> {
         }
 
         @Override
-        public void mapId(Delegate<Integer> delegate) {
+        public void mapId(Delegate<Long> delegate) {
             map(identifier.getPrimaryKeyColumn(), delegate);
         }
 

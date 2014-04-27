@@ -19,7 +19,7 @@ import java.util.List;
 public class ContentStrictTest extends AndroidTestCase {
 
     IStrictResolver resolver;
-    int baloteliId, pirloId, kakaId, messiId, ronaldoId;
+    long baloteliId, pirloId, kakaId, messiId, ronaldoId;
 
     @Override
     public void setUp(){
@@ -35,8 +35,8 @@ public class ContentStrictTest extends AndroidTestCase {
         ronaldoId = insertToDictionary("Ronaldo");
     }
 
-    int insertToDictionary(String word){
-        int id = resolver.insert("word", word).query();
+    long insertToDictionary(String word){
+        long id = resolver.insert("word", word).query();
         assertTrue(id > 0);
         return id;
     }
@@ -483,7 +483,7 @@ public class ContentStrictTest extends AndroidTestCase {
         assertTrue(resolver.has(messiId));
         assertTrue(resolver.has(kakaId));
 
-        List<Integer> list = new LinkedList<Integer>();
+        List<Long> list = new LinkedList<Long>();
         list.add(baloteliId);
         list.add(messiId);
         list.add(kakaId);

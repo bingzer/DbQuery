@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.contracts;
 
 import android.content.ContentValues;
@@ -32,14 +31,14 @@ public interface Updatable {
      * @param id the id
      * @return Update object
      */
-    Update update(int id);
+    Update update(long id);
 
     /**
      * Bulk-update using ids
      * @param ids the ids
      * @return Update object
      */
-    Update update(int... ids);
+    Update update(long... ids);
 
     /**
      * Update using a condition
@@ -83,7 +82,7 @@ public interface Updatable {
      * @param id the id
      * @return Update object
      */
-    Update update(ContentValues contents, int id);
+    Update update(ContentValues contents, long id);
 
     /**
      * Update using the {@link ContentValues}

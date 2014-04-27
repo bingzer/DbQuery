@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ import com.bingzer.android.dbv.content.resolvers.IBaseResolver;
  */
 public abstract class StrictSelectImpl implements StrictSelectable.Select, StrictSelectable.Select.OrderBy{
 
-    final IBaseResolver resolver;
-    StringBuilder columnString;
-    String orderByString;
-    String whereString;
-    Object[] whereArgs;
+    private final IBaseResolver resolver;
+    private StringBuilder columnString;
+    private String orderByString;
+    private String whereString;
+    private Object[] whereArgs;
 
     public StrictSelectImpl(IBaseResolver resolver){
         this.resolver = resolver;

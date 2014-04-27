@@ -73,11 +73,11 @@ public class ForeignKeyTest extends AndroidTestCase {
     // test away..
     public void testInsertOrder_Fail(){
         // right customerId wrong productId
-        int custId = db.get("Customers").selectId("Name = ?", "Baloteli");
+        long custId = db.get("Customers").selectId("Name = ?", "Baloteli");
         int prodId = 99999;
 
         try{
-            int id = db.get("Orders").insertInto("Quantity", "CustomerId", "ProductId").val(10, custId, prodId).query();
+            long id = db.get("Orders").insertInto("Quantity", "CustomerId", "ProductId").val(10, custId, prodId).query();
             assertTrue(id < 0);
             assertTrue("Should throw error", false);
         }

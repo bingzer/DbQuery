@@ -8,7 +8,7 @@ import com.bingzer.android.dbv.IEntity;
  */
 public class Person implements IEntity{
 
-    private int id = -1;
+    private long id = -1;
     private String name;
     private int age;
     private byte[] addressBytes;
@@ -39,7 +39,7 @@ public class Person implements IEntity{
         this.age = age;
     }
 
-    public void setId(int id){
+    public void setId(long id){
         this.id = id;
     }
 
@@ -52,7 +52,7 @@ public class Person implements IEntity{
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -107,16 +107,10 @@ public class Person implements IEntity{
             }
         });
 
-        mapper.mapId(new Delegate.TypeInteger(){
-
+        mapper.mapId(new Delegate.TypeId(this){
             @Override
-            public void set(Integer value) {
-                setId(value);
-            }
-
-            @Override
-            public Integer get() {
-                return getId();
+            public void set(Long id) {
+                setId(id);
             }
         });
 

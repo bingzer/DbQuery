@@ -33,7 +33,7 @@ public class InsertImpl extends com.bingzer.android.dbv.internal.queries.InsertI
     }
 
     @Override
-    public Integer query(){
+    public Long query(){
         return UriUtils.parseIdFromUri(uri);
     }
 

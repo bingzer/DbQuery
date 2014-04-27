@@ -35,8 +35,6 @@ class TestUsage {
         IDatabase db = DbQuery.getDatabase("Test");
         db.open(version, new SQLiteBuilder.WithoutModeling(null));
 
-
-
         version++;
     }
 
@@ -56,7 +54,7 @@ class TestUsage {
 
 
     static class Person implements IEntity{
-        private int id;
+        private long id;
         private String name;
         private int age;
 
@@ -67,7 +65,7 @@ class TestUsage {
          * @return the id
          */
         @Override
-        public int getId() {
+        public long getId() {
             return id;
         }
 
@@ -97,7 +95,7 @@ class TestUsage {
             mapper.mapId(new Delegate.TypeId(this){
 
                 @Override
-                public void set(Integer value) {
+                public void set(Long value) {
                     id = value;
                 }
             });

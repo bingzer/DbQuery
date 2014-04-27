@@ -24,5 +24,5 @@ package com.bingzer.android.dbv.queries;
  *
  * @see InsertInto
  */
-public interface Insert extends IQuery<Integer> {
+public interface Insert extends IQuery<Long> {
 }

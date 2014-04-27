@@ -62,7 +62,7 @@ public abstract class DataProvider extends ContentProvider implements IDataProvi
 
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        int id = getTable(uri).insert(contentValues).query();
+        long id = getTable(uri).insert(contentValues).query();
         return Uri.withAppendedPath(uri, String.valueOf(id));
     }
 

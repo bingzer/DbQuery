@@ -57,13 +57,13 @@ public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoi
     }
 
     @Override
-    public Select select(int id) {
+    public Select select(long id) {
         consume(table.select(id));
         return this;
     }
 
     @Override
-    public Select select(int... ids) {
+    public Select select(long... ids) {
         consume(table.select(ids));
         return this;
     }

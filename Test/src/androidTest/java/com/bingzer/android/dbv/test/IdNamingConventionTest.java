@@ -59,7 +59,7 @@ public class IdNamingConventionTest extends AndroidTestCase {
     public void testUpdate(){
         Person person = new Person();
         db.get("Person").select("Name = ?", "John").query(person);  // john
-        int id = person.getId();
+        long id = person.getId();
         // modify
         person.setName("MOD");
         person.setAge(20);

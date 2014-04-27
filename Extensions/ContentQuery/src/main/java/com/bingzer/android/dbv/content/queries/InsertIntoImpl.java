@@ -27,11 +27,11 @@ import com.bingzer.android.dbv.utils.ContentValuesUtils;
 /**
  * Created by Ricky on 8/20/13.
  */
-public class InsertIntoImpl extends QueryImpl<Integer> implements InsertInto {
+public class InsertIntoImpl extends QueryImpl<Long> implements InsertInto {
 
-    Uri value;
-    ContentSet query;
-    String[] columnNames;
+    private Uri value;
+    private ContentSet query;
+    private String[] columnNames;
 
     public InsertIntoImpl(ContentSet query, String... columnNames){
         this.query = query;
@@ -39,7 +39,7 @@ public class InsertIntoImpl extends QueryImpl<Integer> implements InsertInto {
     }
 
     @Override
-    public IQuery<Integer> val(Object... values) {
+    public IQuery<Long> val(Object... values) {
         ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columnNames.length; i++){
             ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);
@@ -51,7 +51,7 @@ public class InsertIntoImpl extends QueryImpl<Integer> implements InsertInto {
     }
 
     @Override
-    public Integer query() {
+    public Long query() {
         return UriUtils.parseIdFromUri(value);
     }
 

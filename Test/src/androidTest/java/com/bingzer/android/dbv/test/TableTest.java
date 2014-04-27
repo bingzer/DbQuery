@@ -123,7 +123,7 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     // ----------------- HAS() ------------------//
     public void testHas_Id(){
-        int id = getCustomerId("Lionel Messi");
+        long id = getCustomerId("Lionel Messi");
         assertTrue(db.get("Customers").has(id));
 
         assertFalse(db.get("Customers").has(-1));
@@ -177,7 +177,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelect_Id(){
-        int messiId = getCustomerId("Lionel Messi");
+        long messiId = getCustomerId("Lionel Messi");
 
         Cursor c = customerTable.select(messiId).query();
         c.moveToFirst();
@@ -187,8 +187,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelect_Ids(){
-        int messiId = getCustomerId("Lionel Messi");
-        int crId = getCustomerId("Christiano Ronaldo");
+        long messiId = getCustomerId("Lionel Messi");
+        long crId = getCustomerId("Christiano Ronaldo");
         Cursor c = customerTable.select(messiId, crId).query();
         assertTrue(c.getCount() == 2);
         while(c.moveToNext()){
@@ -215,8 +215,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelect_EnumerableCursor(){
-        int kakaId = getCustomerId("Kaka");
-        int pirloId = getCustomerId("Andrea Pirlo");
+        long kakaId = getCustomerId("Kaka");
+        long pirloId = getCustomerId("Andrea Pirlo");
 
         customerTable.select(kakaId, pirloId).orderBy("Name").query(new IEnumerable<Cursor>() {
             int counter = 0;
@@ -278,7 +278,7 @@ public class TableTest extends AndroidTestCase{
 
     public void testSelect_Top_Condition(){
         int top = 3;
-        int customerId = getCustomerId("Christiano Ronaldo");
+        long customerId = getCustomerId("Christiano Ronaldo");
         Cursor c = db.get("Orders")
                 .select(3, "CustomerId = " + customerId).query();
         c.moveToFirst();
@@ -288,7 +288,7 @@ public class TableTest extends AndroidTestCase{
 
     public void testSelect_Top_WhereClause(){
         int top = 2;
-        int customerId = getCustomerId("Christiano Ronaldo");
+        long customerId = getCustomerId("Christiano Ronaldo");
         Cursor c = db.get("Orders")
                 .select(top, "CustomerId = ?", customerId).query();
         c.moveToFirst();
@@ -306,8 +306,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_Condition(){
-        int pirloId = getCustomerId("Andrea Pirlo");
-        int kakaId = getCustomerId("Kaka");
+        long pirloId = getCustomerId("Andrea Pirlo");
+        long kakaId = getCustomerId("Kaka");
         Cursor cursor = db.get("Orders")
                 .selectDistinct("CustomerId = " + kakaId + " OR CustomerId = " + pirloId)
                 .columns("CustomerId")
@@ -318,8 +318,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_WhereClause(){
-        int pirloId = getCustomerId("Andrea Pirlo");
-        int baloteliId = getCustomerId("Mario Baloteli");
+        long pirloId = getCustomerId("Andrea Pirlo");
+        long baloteliId = getCustomerId("Mario Baloteli");
         Cursor cursor = db.get("Orders")
                 .selectDistinct("CustomerId IN (?,?)", pirloId, baloteliId)
                 .columns("CustomerId")
@@ -339,8 +339,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_TopCondition(){
-        int pirloId = getCustomerId("Andrea Pirlo");
-        int kakaId = getCustomerId("Kaka");
+        long pirloId = getCustomerId("Andrea Pirlo");
+        long kakaId = getCustomerId("Kaka");
         Cursor cursor = db.get("Orders")
                 .selectDistinct(1, "CustomerId = " + kakaId + " OR CustomerId = " + pirloId)
                 .columns("CustomerId")
@@ -359,8 +359,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_TopWhereClause(){
-        int pirloId = getCustomerId("Andrea Pirlo");
-        int baloteliId = getCustomerId("Mario Baloteli");
+        long pirloId = getCustomerId("Andrea Pirlo");
+        long baloteliId = getCustomerId("Mario Baloteli");
         Cursor cursor = db.get("Orders")
                 .selectDistinct(1, "CustomerId IN (?,?)", pirloId, baloteliId)
                 .columns("CustomerId")
@@ -438,7 +438,7 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     // ---------Insert And Delete ----------------//
 
-    int dodolId = -1;
+    long dodolId = -1;
     public void testInsert_Columns(){
         dodolId = db.get("Products")
                 .insertInto("Name", "Price")
@@ -476,7 +476,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testUpdate_Id(){
-        int ronaldoId = getCustomerId("Christiano Ronaldo");
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
 
         int updated = db.get("Customers").update(ronaldoId).columns("PostalCode").val(123).query();
         assertTrue(1 == updated);
@@ -509,8 +509,8 @@ public class TableTest extends AndroidTestCase{
         v.put("Country", "US");
         v.put("City", "City");
 
-        int ronaldoId = getCustomerId("Christiano Ronaldo");
-        int messiId = getCustomerId("Lionel Messi");
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+        long messiId = getCustomerId("Lionel Messi");
 
         // update 2 countries customers
         assertEquals(2, (int) db.get("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").val(v).query());
@@ -528,8 +528,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testUpdate_Ints(){
-        int ronaldoId = getCustomerId("Christiano Ronaldo");
-        int messiId = getCustomerId("Lionel Messi");
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+        long messiId = getCustomerId("Lionel Messi");
 
         assertEquals(2, (int) db.get("Customers").update(ronaldoId, messiId).columns("Country").val("US").query());
 
@@ -543,20 +543,20 @@ public class TableTest extends AndroidTestCase{
         contentValues.put("PostalCode", 123456);
         contentValues.put("Address", "Whatever Street");
 
-        int crId = db.get("Customers").selectId("Name = ?", "Christiano Ronaldo");
-        int updateId = db.get("Customers").update(contentValues, "Name = ?", "Christiano Ronaldo").query();
-        assertTrue(updateId > 0);
+        long crId = db.get("Customers").selectId("Name = ?", "Christiano Ronaldo");
+        int numUpdated = db.get("Customers").update(contentValues, "Name = ?", "Christiano Ronaldo").query();
+        assertTrue(numUpdated > 0);
     }
 
     public void testUpdate_SingleColumns(){
-        int ronaldoId = getCustomerId("Christiano Ronaldo");
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
 
         assertEquals(1, (int) db.get("Customers").update(ronaldoId).val("Country", "US").query());
         assertEquals(0, (int) db.get("Customers").update(-1).val("Country", "US").query());
     }
 
     public void testUpdate_MultipleColumns(){
-        int ronaldoId = getCustomerId("Christiano Ronaldo");
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
 
         assertEquals(1, (int) db.get("Customers").update(ronaldoId).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
         assertEquals(0, (int) db.get("Customers").update(-1).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
@@ -589,7 +589,7 @@ public class TableTest extends AndroidTestCase{
         testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is ?", "%player%", null).query());
 
 
-        int rowNullId = db.get("Customers").insertInto("Name", "Address").val("TestNull", null).query();
+        long rowNullId = db.get("Customers").insertInto("Name", "Address").val("TestNull", null).query();
         assertTrue(rowNullId > 0);
         assertTrue(db.get("Customers").delete("Name = ? AND Address is ?", "TestNull", null).query() > 0);
         assertFalse(db.get("Customers").has(rowNullId));
@@ -1258,11 +1258,11 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ Helper methods ----------------//
-    private int getCustomerId(String name){
+    private long getCustomerId(String name){
         return db.get("Customers").selectId("Name = ?", name);
     }
 
-    private int getProductId(String name){
+    private long getProductId(String name){
         return db.get("Products").selectId("Name = ?", name);
     }
 

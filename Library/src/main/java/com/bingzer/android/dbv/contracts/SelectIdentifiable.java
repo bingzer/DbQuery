@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.contracts;
 
 /**
@@ -32,7 +31,7 @@ public interface SelectIdentifiable {
      * @param condition the condition
      * @return the id that matches the <code>condition</code>
      */
-    int selectId(String condition);
+    long selectId(String condition);
 
     /**
      * Returns id with specified condition
@@ -40,6 +39,6 @@ public interface SelectIdentifiable {
      * @param args arguments
      * @return the id that matches the condition
      */
-    int selectId(String whereClause, Object... args);
+    long selectId(String whereClause, Object... args);
 
 }

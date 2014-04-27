@@ -36,14 +36,14 @@ public final class StrictResolver extends BaseResolver implements IStrictResolve
     }
 
     @Override
-    public int selectId(String whereClause, Object... args) {
-        int id = -1;
+    public long selectId(String whereClause, Object... args) {
+        long id = -1;
         Cursor cursor = null;
         try{
             cursor = select(whereClause, args).query();
             if(cursor.moveToNext()){
                 int index = cursor.getColumnIndex(getPrimaryKeyColumn());
-                id = cursor.getInt(index);
+                id = cursor.getLong(index);
             }
         }
         finally {
@@ -84,7 +84,7 @@ public final class StrictResolver extends BaseResolver implements IStrictResolve
     ///////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Select select(int id) {
+    public Select select(long id) {
         return select(generateParamId(id));
     }
 
@@ -94,7 +94,7 @@ public final class StrictResolver extends BaseResolver implements IStrictResolve
     }
 
     @Override
-    public Select select(int... ids) {
+    public Select select(long... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(getPrimaryKeyColumn()).append(" ");

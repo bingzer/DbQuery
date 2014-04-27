@@ -14,7 +14,7 @@ import com.bingzer.android.dbv.queries.Paging;
 public class ContentPagingTest extends AndroidTestCase {
 
     IResolver resolver;
-    int baloteliId, pirloId, kakaId, messiId, ronaldoId;
+    long baloteliId, pirloId, kakaId, messiId, ronaldoId;
 
     @Override
     public void setUp(){
@@ -30,8 +30,8 @@ public class ContentPagingTest extends AndroidTestCase {
         ronaldoId = insertToDictionary("Ronaldo");
     }
 
-    int insertToDictionary(String word){
-        int id = resolver.insert("word", word).query();
+    long insertToDictionary(String word){
+        long id = resolver.insert("word", word).query();
         assertTrue(id > 0);
         return id;
     }

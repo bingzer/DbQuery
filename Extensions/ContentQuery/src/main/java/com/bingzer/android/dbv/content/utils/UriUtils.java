@@ -22,11 +22,11 @@ import android.net.Uri;
  */
 public class UriUtils {
 
-    public static int parseIdFromUri(Uri uri){
+    public static long parseIdFromUri(Uri uri){
         String uriString = uri.toString();
         String valueString = uriString.substring(uriString.lastIndexOf("/") + 1, uriString.length());
         try{
-            return Integer.parseInt(valueString);
+            return Long.parseLong(valueString);
         }
         catch (NumberFormatException e){
             return -1;

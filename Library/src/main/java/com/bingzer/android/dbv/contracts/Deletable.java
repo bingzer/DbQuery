@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -33,21 +33,21 @@ public interface Deletable {
      * @param id the id to delete
      * @return Delete object
      */
-    Delete delete(int id);
+    Delete delete(long id);
 
     /**
      * Bulk-remove by multiple ids
      * @param ids array of ids to delete
      * @return Delete object
      */
-    Delete delete(int... ids);
+    Delete delete(long... ids);
 
     /**
      * Bulk-remove by multiple ids
      * @param ids collection of ids to delete
      * @return Delete object
      */
-    Delete delete(Collection<Integer> ids);
+    Delete delete(Collection<Long> ids);
 
     //////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////

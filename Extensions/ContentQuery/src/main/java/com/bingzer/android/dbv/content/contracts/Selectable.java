@@ -48,14 +48,14 @@ public interface Selectable {
      * @see com.bingzer.android.dbv.IConfig#setIdNamingConvention(String)
      * @return {@link com.bingzer.android.dbv.queries.Select}
      */
-    Select select(int id);
+    Select select(long id);
 
     /**
      * Select multiple ids
      * @param ids array id
      * @return {@link com.bingzer.android.dbv.queries.Select}
      */
-    Select select(int... ids);
+    Select select(long... ids);
 
     /**
      * Select along with whereClause
@@ -88,7 +88,7 @@ public interface Selectable {
          * @param columns column names
          * @return {@link com.bingzer.android.dbv.queries.Select}
          */
-        Selectable.Select columns(String... columns);
+        Select columns(String... columns);
 
         /**
          * Order by. To create multiple orderBy ASC or DESC or both,
@@ -101,7 +101,7 @@ public interface Selectable {
          * @param columns column names
          * @return {@link com.bingzer.android.dbv.queries.Select}
          */
-        Selectable.Select.OrderBy orderBy(String... columns);
+        OrderBy orderBy(String... columns);
 
         /**
          * Order By

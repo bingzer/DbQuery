@@ -153,9 +153,9 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Ids(){
-        int messiId = db.getView("CustomerView").selectId("Name = ?", "Messi");
-        int pirloId = db.getView("CustomerView").selectId("Name = ?", "Pirlo");
-        int[] ids = new int[]{messiId, pirloId};
+        long messiId = db.getView("CustomerView").selectId("Name = ?", "Messi");
+        long pirloId = db.getView("CustomerView").selectId("Name = ?", "Pirlo");
+        long[] ids = new long[]{messiId, pirloId};
 
         Cursor c = db.getView("CustomerView").select(ids).orderBy("Name").query();
         assertEquals(c.getCount(), 2);
@@ -376,7 +376,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testHas_Id(){
-        int id = db.getView("OrderView").selectId("CustomerName = ?", "Ronaldo");
+        long id = db.getView("OrderView").selectId("CustomerName = ?", "Ronaldo");
         assertTrue(id > 0);
         assertTrue(db.getView("OrderView").has(id));
     }

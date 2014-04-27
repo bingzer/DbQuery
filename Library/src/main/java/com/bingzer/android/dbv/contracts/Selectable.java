@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.contracts;
 
 import com.bingzer.android.dbv.queries.Select;
@@ -45,14 +44,14 @@ public interface Selectable {
      * @see com.bingzer.android.dbv.IConfig#setIdNamingConvention(String)
      * @return {@link com.bingzer.android.dbv.queries.Select}
      */
-    Select select(int id);
+    Select select(long id);
 
     /**
      * Select multiple ids
      * @param ids array id
      * @return {@link com.bingzer.android.dbv.queries.Select}
      */
-    Select select(int... ids);
+    Select select(long... ids);
 
     /**
      * Select along with whereClause

@@ -121,10 +121,10 @@ public class UnionTest extends AndroidTestCase {
     }
 
     static class TinyPerson implements IEntity{
-        private int id;
+        private long id;
         private String name;
 
-        public void setId(int id) {
+        public void setId(long id) {
             this.id = id;
         }
 
@@ -137,7 +137,7 @@ public class UnionTest extends AndroidTestCase {
         }
 
         @Override
-        public int getId() {
+        public long getId() {
             return id;
         }
 
@@ -145,7 +145,7 @@ public class UnionTest extends AndroidTestCase {
         public void map(Mapper mapper) {
             mapper.mapId(new Delegate.TypeId(this) {
                 @Override
-                public void set(Integer value) {
+                public void set(Long value) {
                     setId(value);
                 }
             });

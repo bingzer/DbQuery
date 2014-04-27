@@ -45,7 +45,7 @@ public class EntityTest extends AndroidTestCase {
 
 
     public void testPerson(){
-        int messId = db.get("Person").selectId("Name = ?", "Messi");
+        long messId = db.get("Person").selectId("Name = ?", "Messi");
 
         Person person = new Person();
         db.get("Person").select(messId).query(person);
@@ -61,7 +61,7 @@ public class EntityTest extends AndroidTestCase {
         person.setAge(100);
         person.setAddressBytes("Turin".getBytes());
 
-        int pirloId = db.get("Person").insert(person).query();
+        long pirloId = db.get("Person").insert(person).query();
         assertTrue(pirloId == person.getId());
         assertTrue(db.get("Person").count("Name = ?", "Andrea Pirlo") > 0);
     }

@@ -57,13 +57,13 @@ public abstract class UnionImpl extends SelectImpl implements Union, Distinguish
     }
 
     @Override
-    public Select select(int id) {
+    public Select select(long id) {
         secondSelect = table.select(id);
         return this;
     }
 
     @Override
-    public Select select(int... ids) {
+    public Select select(long... ids) {
         secondSelect = table.select(ids);
         return this;
     }

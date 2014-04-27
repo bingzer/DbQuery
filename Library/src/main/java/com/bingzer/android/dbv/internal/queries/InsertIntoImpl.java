@@ -35,7 +35,7 @@ public class InsertIntoImpl extends InsertImpl implements InsertInto {
     }
 
     @Override
-    public IQuery<Integer> val(Object... values) {
+    public IQuery<Long> val(Object... values) {
         ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columnNames.length; i++){
             ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columnNames[i], values[i]);

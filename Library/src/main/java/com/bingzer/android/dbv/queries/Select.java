@@ -38,7 +38,7 @@ public interface Select
      * @param columns column names
      * @return {@link com.bingzer.android.dbv.queries.Select}
      */
-    com.bingzer.android.dbv.queries.Select columns(String... columns);
+    Select columns(String... columns);
 
     /**
      * Order by. To create multiple orderBy ASC or DESC or both,

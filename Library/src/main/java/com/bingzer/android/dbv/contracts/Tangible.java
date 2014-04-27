@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.contracts;
 
 /**
@@ -33,7 +32,7 @@ public interface Tangible {
      * @param id id
      * @return true if it returns any row false otherwise
      */
-    boolean has(int id);
+    boolean has(long id);
 
     /**
      * Check to see if this table has row add the specified clause and condition

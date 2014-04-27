@@ -29,7 +29,7 @@ public interface IEntity {
      * Returns the id
      * @return the id
      */
-    int getId();
+    long getId();
 
     /**
      * Determines how to map column and the class variable.
@@ -56,7 +56,7 @@ public interface IEntity {
          * Maps id
          * @param delegate the action to map
          */
-        void mapId(Delegate<Integer> delegate);
+        void mapId(Delegate<Long> delegate);
 
         ///////////////////////////////////////////////////////////////////
 

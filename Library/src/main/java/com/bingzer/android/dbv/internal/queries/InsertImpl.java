@@ -20,10 +20,10 @@ import com.bingzer.android.dbv.queries.Insert;
 /**
 * Created by Ricky on 4/26/2014.
 */
-public class InsertImpl extends QueryImpl<Integer> implements Insert {
+public class InsertImpl extends QueryImpl<Long> implements Insert {
     public InsertImpl(){
         // default if any error.
         // -1 should be returned
-        this.value = -1;
+        this.value = -1l;
     }
 }

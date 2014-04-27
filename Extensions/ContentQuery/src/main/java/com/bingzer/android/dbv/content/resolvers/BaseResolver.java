@@ -87,25 +87,25 @@ abstract class BaseResolver implements IBaseResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public int selectId(String condition) {
+    public long selectId(String condition) {
         return selectId(condition, (Object)null);
     }
 
     @Override
-    public abstract int selectId(String whereClause, Object... args);
+    public abstract long selectId(String whereClause, Object... args);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Delete delete(int id) {
+    public Delete delete(long id) {
         return delete(generateParamId(id));
     }
 
     @Override
-    public Delete delete(Collection<Integer> ids) {
-        int[] idz = new int[ids.size()];
+    public Delete delete(Collection<Long> ids) {
+        long[] idz = new long[ids.size()];
         int counter = 0;
-        for (Integer id : ids) {
+        for (long id : ids) {
             idz[counter++] = id;
         }
 
@@ -113,7 +113,7 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public Delete delete(int... ids) {
+    public Delete delete(long... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
 
@@ -157,7 +157,7 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
-        int[] ids = new int[entityList.getEntityList().size()];
+        long[] ids = new long[entityList.getEntityList().size()];
         for(int i = 0; i < ids.length; i++){
             ids[i] = entityList.getEntityList().get(i).getId();
         }
@@ -209,7 +209,7 @@ abstract class BaseResolver implements IBaseResolver {
 
         Iterator<String> keys = mapper.keySet().iterator();
         String idString = getPrimaryKeyColumn();
-        Delegate<Integer> idSetter = null;
+        Delegate<Long> idSetter = null;
         while(keys.hasNext()){
             String key = keys.next();
             Delegate delegate = mapper.get(key);
@@ -286,8 +286,8 @@ abstract class BaseResolver implements IBaseResolver {
         return new InsertImpl(){
 
             @Override
-            public Integer query(){
-                return uriStrings.length;
+            public Long query(){
+                return (long) uriStrings.length;
             }
 
             @Override
@@ -300,12 +300,12 @@ abstract class BaseResolver implements IBaseResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Update update(int id) {
+    public Update update(long id) {
         return update(generateParamId(id));
     }
 
     @Override
-    public Update update(int... ids) {
+    public Update update(long... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(getPrimaryKeyColumn()).append(" ");
@@ -342,7 +342,7 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public Update update(ContentValues contents, int id) {
+    public Update update(ContentValues contents, long id) {
         return update(contents, generateParamId(id), (Object)null);
     }
 
@@ -427,7 +427,7 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public boolean has(int id) {
+    public boolean has(long id) {
         return has(generateParamId(id));
     }
 
@@ -454,7 +454,7 @@ abstract class BaseResolver implements IBaseResolver {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    String generateParamId(int id){
+    String generateParamId(long id){
         return getPrimaryKeyColumn() + " = " + id;
     }
 

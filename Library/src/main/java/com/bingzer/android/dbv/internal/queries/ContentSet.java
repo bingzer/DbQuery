@@ -22,7 +22,7 @@ import com.bingzer.android.dbv.queries.IQuery;
 /**
 * Created by Ricky on 4/26/2014.
 */
-public interface ContentSet<E extends IQuery<Integer>> {
+public interface ContentSet<E extends IQuery> {
 
     void onContentValuesSet(E query, ContentValues contentValues);
 

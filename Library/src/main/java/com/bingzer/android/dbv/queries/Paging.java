@@ -58,14 +58,14 @@ public interface Paging extends IQuery<Cursor>, EntitySelectable, CursorEnumerab
      * Go to the next page
      * @return this
      */
-    com.bingzer.android.dbv.queries.Paging next();
+    Paging next();
 
     /**
      * Go to the previous page.
      * If the previous page is < 0. It will return page 0 (first page)
      * @return this
      */
-    com.bingzer.android.dbv.queries.Paging previous();
+    Paging previous();
 
     /**
      * Returns the number of page available.

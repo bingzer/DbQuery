@@ -122,16 +122,16 @@ public class Table implements ITable {
     }
 
     @Override
-    public int selectId(String condition) {
+    public long selectId(String condition) {
         return selectId(condition, (Object) null);
     }
 
     @Override
-    public int selectId(String whereClause, Object... args) {
-        int id = -1;
+    public long selectId(String whereClause, Object... args) {
+        long id = -1;
         Cursor cursor = select(whereClause, args).columns(getPrimaryKeyColumn()).query();
         if(cursor.moveToNext()){
-            id = cursor.getInt(0);
+            id = cursor.getLong(0);
         }
         cursor.close();
         return id;
@@ -143,12 +143,12 @@ public class Table implements ITable {
     }
 
     @Override
-    public Select select(int id) {
+    public Select select(long id) {
         return select(generateParamId(id));
     }
 
     @Override
-    public Select select(int... ids) {
+    public Select select(long... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(getPrimaryKeyColumn()).append(" ");
@@ -224,7 +224,7 @@ public class Table implements ITable {
     @Override
     public Insert insert(final ContentValues contents) {
         InsertImpl query = new InsertImpl();
-        query.setValue( (int) db.sqLiteDb.insertOrThrow(getName(), null, contents) );
+        query.setValue( db.sqLiteDb.insertOrThrow(getName(), null, contents) );
 
         return query;
     }
@@ -252,7 +252,7 @@ public class Table implements ITable {
         return new InsertIntoImpl(new ContentSet<InsertIntoImpl>() {
             @Override
             public void onContentValuesSet(InsertIntoImpl query, ContentValues contentValues) {
-                query.setValue( (int) db.sqLiteDb.insertOrThrow(getName(), null, contentValues) );
+                query.setValue( db.sqLiteDb.insertOrThrow(getName(), null, contentValues) );
             }
         }, columns);
     }
@@ -267,7 +267,7 @@ public class Table implements ITable {
 
         Iterator<String> keys = mapper.keySet().iterator();
         String idString = getPrimaryKeyColumn();
-        Delegate<Integer> idSetter = null;
+        Delegate<Long> idSetter = null;
         while(keys.hasNext()){
             String key = keys.next();
             Delegate delegate = mapper.get(key);
@@ -293,7 +293,7 @@ public class Table implements ITable {
     @Override
     public <E extends IEntity> Insert insert(final IEntityList<E> entityList) {
         final InsertImpl query = new InsertImpl();
-        query.setValue(0);
+        query.setValue(0l);
 
         db.begin(new IDatabase.Batch() {
             @Override
@@ -311,12 +311,12 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Update update(int id) {
+    public Update update(long id) {
         return update(generateParamId(id));
     }
 
     @Override
-    public Update update(int... ids) {
+    public Update update(long... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(getPrimaryKeyColumn()).append(" ");
@@ -390,7 +390,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public Update update(ContentValues contents, int id) {
+    public Update update(ContentValues contents, long id) {
         return update(contents, generateParamId(id));
     }
 
@@ -409,12 +409,12 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Delete delete(final int id) {
+    public Delete delete(final long id) {
         return delete(generateParamId(id));
     }
 
     @Override
-    public Delete delete(int... ids) {
+    public Delete delete(long... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
 
@@ -437,10 +437,10 @@ public class Table implements ITable {
     }
 
     @Override
-    public Delete delete(Collection<Integer> ids) {
-        int[] idz = new int[ids.size()];
+    public Delete delete(Collection<Long> ids) {
+        long[] idz = new long[ids.size()];
         int counter = 0;
-        for (Integer id : ids) {
+        for (long id : ids) {
             idz[counter++] = id;
         }
 
@@ -467,7 +467,7 @@ public class Table implements ITable {
 
     @Override
     public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
-        int[] ids = new int[entityList.getEntityList().size()];
+        long[] ids = new long[entityList.getEntityList().size()];
         for(int i = 0; i < ids.length; i++){
             ids[i] = entityList.getEntityList().get(i).getId();
         }
@@ -482,7 +482,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public boolean has(int id) {
+    public boolean has(long id) {
         return has(generateParamId(id));
     }
 
@@ -797,7 +797,7 @@ public class Table implements ITable {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    String generateParamId(int id){
+    String generateParamId(long id){
         return getPrimaryKeyColumn() + " = " + id;
     }
 

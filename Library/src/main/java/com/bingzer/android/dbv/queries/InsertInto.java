@@ -28,5 +28,5 @@ public interface InsertInto {
      * Values to set
      * @return {@link com.bingzer.android.dbv.queries.IQuery}
      */
-    IQuery<Integer> val(Object... values);
+    IQuery<Long> val(Object... values);
 }
