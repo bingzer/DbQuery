@@ -3,9 +3,9 @@
 DbQuery
 ==============
 
-`DbQuery` is a lightweight and flexible SQLite Query API for Android. See code for concept. The API provides a new and simpler way to query data by minimizing the need to write SQL string inside the code.
+`DbQuery` is a lightweight and fluent SQLite Query API for Android. The API provides a new and simpler way to query data by minimizing the need to write SQL string inside the code.
 
-* See complete wiki and documentation here: 
+See complete **wiki** and **documentation** here: 
 [https://github.com/bingzer/DbQuery/wiki](https://github.com/bingzer/DbQuery/wiki)
 
 Download
@@ -18,11 +18,11 @@ repositories {
 }
 
 dependencies {
-    compile 'com.bingzer.android.dbv:dbquery:1.0.0'
+    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'1.0.0')
 }
 ```
 
-Download snapshots (Dev branch)
+Download snapshots (Dev branch).
 ```groovy
 
 repositories {
@@ -32,11 +32,14 @@ repositories {
 }
 
 dependencies {
-    compile 'com.bingzer.android.dbv:dbquery:1.1.0-SNAPSHOT'
+    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'1.0.0-SNAPSHOT', changing: true)
 }
 ```
 
-#Why
+**IMPORTANT** Major refactoring is currently being done in the Dev branch
+
+Why
+===
 Sometimes we are stuck using the following code in Android development.
 ``` java
 Cursor cursor = db.query("Customers", // table name
@@ -57,8 +60,7 @@ Cursor cursor = db.get("Customers")
 ```
 `DbQuery` **will _change_** the way you write query.
 
-Database Creation
---------------
+# Database Creation
 ``` java
 int dbVersion = 1;
 ...
