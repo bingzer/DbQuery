@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv;
 
 import com.bingzer.android.dbv.contracts.Alterable;
+import com.bingzer.android.dbv.contracts.ColumnIdentifier;
 import com.bingzer.android.dbv.contracts.Countable;
 import com.bingzer.android.dbv.contracts.Deletable;
 import com.bingzer.android.dbv.contracts.Distinguishable;
@@ -54,6 +54,7 @@ import java.util.List;
  * @author Ricky Tobing
  */
 public interface ITable extends
+        ColumnIdentifier,
         Selectable, SelectIdentifiable, Distinguishable,
         Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,
@@ -91,13 +92,6 @@ public interface ITable extends
      */
     int getColumnCount();
 
-    /**
-     * Returns the Column Id string for this table
-     * @return the string
-     */
-    String getColumnIdName();
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -272,8 +266,7 @@ public interface ITable extends
         Model addBlob(String columnName, String columnDefinition);
     }
 
-    /////////////////////////////////////////////////
-    /////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Handles all alteration (renaming table, add columns, etc...)
@@ -313,9 +306,6 @@ public interface ITable extends
          */
         Alter removeColumn(String columnName);
 
-        ////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////
     }
-
 
 }

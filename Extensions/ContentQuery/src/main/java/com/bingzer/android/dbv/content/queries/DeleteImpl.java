@@ -13,33 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
-
-import android.net.Uri;
-
-import com.bingzer.android.dbv.internal.queries.InsertImpl;
+package com.bingzer.android.dbv.content.queries;
 
 /**
  * Created by Ricky on 8/20/13.
  */
-public class ContentInsertImpl extends InsertImpl {
+public class DeleteImpl extends com.bingzer.android.dbv.internal.queries.DeleteImpl {
 
-    Uri uri;
-
-    public ContentInsertImpl setUri(Uri value){
-        this.uri = value;
-        this.value = UriUtil.parseIdFromUri(uri);
+    public DeleteImpl val(int value){
+        this.value = value;
         return this;
     }
 
-    @Override
-    public Integer query(){
-        return UriUtil.parseIdFromUri(uri);
-    }
-
-    @Override
-    public String toString(){
-        return uri.toString();
+    public int value(){
+        return value;
     }
 
 }

@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.content.queries;
 
 import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.content.contracts.Selectable;
 import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.utils.DbUtils;
-import com.bingzer.android.dbv.content.IBaseResolver;
-import com.bingzer.android.dbv.contracts.ContentSelectable;
+import com.bingzer.android.dbv.content.resolvers.IBaseResolver;
 import com.bingzer.android.dbv.queries.Paging;
 
 /**
  * Created by Ricky on 8/20/13.
  */
-public abstract class ContentSelectImpl implements ContentSelectable.Select, ContentSelectable.Select.OrderBy {
+public abstract class SelectImpl implements Selectable.Select, Selectable.Select.OrderBy {
     final IBaseResolver resolver;
     StringBuilder columnString;
     StringBuilder limitString;
@@ -37,7 +37,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
     String whereString;
     Object[] whereArgs;
 
-    public ContentSelectImpl(IBaseResolver resolver, int top){
+    public SelectImpl(IBaseResolver resolver, int top){
         this.resolver = resolver;
         this.columnString = new StringBuilder();
         this.columnString.append(DbUtils.join(", ", generateDefaultProjections()));
@@ -49,7 +49,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
     }
 
     @Override
-    public ContentSelectImpl columns(String... columns) {
+    public SelectImpl columns(String... columns) {
         columnString.delete(0, columnString.length());
         if(columns != null){
             columnString.append(DbUtils.join(", ", columns));
@@ -72,7 +72,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
         return new PagingImpl(resolver, this, row);
     }
 
-    public ContentSelectImpl where(String whereClause, Object... args){
+    public SelectImpl where(String whereClause, Object... args){
         this.whereString = whereClause;
         this.whereArgs = args;
         return this;
@@ -118,7 +118,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
 
         // add limit
         if(limitString != null && limitString.length() > 0){
-            if(orderByString == null) sortingOrder.append(resolver.generateIdString());
+            if(orderByString == null) sortingOrder.append(resolver.getColumnIdName());
             sortingOrder.append(" ").append(limitString);
         }
 
@@ -130,7 +130,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
         String[] projections = resolver.getConfig().getDefaultProjections();
         for(int i = 0; i < projections.length; i++){
             if(projections[i].equals(resolver.getConfig().getIdNamingConvention())){
-                projections[i] = resolver.generateIdString();
+                projections[i] = resolver.getColumnIdName();
             }
         }
 
@@ -141,10 +141,10 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
     static class PagingImpl implements Paging, IQuery<Cursor> {
         final IBaseResolver resolver;
         final int rowLimit;
-        private final ContentSelectImpl select;
+        private final SelectImpl select;
         private int pageNumber = 0;
 
-        PagingImpl(IBaseResolver resolver, ContentSelectImpl select, int rowLimit){
+        PagingImpl(IBaseResolver resolver, SelectImpl select, int rowLimit){
             this.resolver = resolver;
             this.select = select;
             this.rowLimit = rowLimit;
@@ -235,7 +235,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
             this.pageNumber = pageNumber;
         }
 
-        ContentSelectImpl fixSelect(){
+        SelectImpl fixSelect(){
             select.limitString = new StringBuilder();
             select.limitString.append(" LIMIT ").append(rowLimit).append(" OFFSET ").append(getOffset());
             return select;

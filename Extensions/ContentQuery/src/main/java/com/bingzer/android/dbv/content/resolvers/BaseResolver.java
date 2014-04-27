@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-package com.bingzer.android.dbv.content;
+ */package com.bingzer.android.dbv.content.resolvers;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -25,15 +24,15 @@ import android.net.Uri;
 import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.content.queries.Config;
+import com.bingzer.android.dbv.content.queries.DeleteImpl;
+import com.bingzer.android.dbv.content.queries.InsertImpl;
+import com.bingzer.android.dbv.content.queries.InsertWithImpl;
+import com.bingzer.android.dbv.content.queries.UpdateImpl;
+import com.bingzer.android.dbv.content.utils.UriUtils;
 import com.bingzer.android.dbv.queries.Delete;
+import com.bingzer.android.dbv.utils.ContentValuesUtils;
 import com.bingzer.android.dbv.utils.DbUtils;
-import com.bingzer.android.dbv.internal.ContentConfig;
-import com.bingzer.android.dbv.internal.ContentDeleteImpl;
-import com.bingzer.android.dbv.internal.ContentInsertImpl;
-import com.bingzer.android.dbv.internal.ContentInsertWithImpl;
-import com.bingzer.android.dbv.internal.ContentUpdateImpl;
-import com.bingzer.android.dbv.internal.ContentUtils;
-import com.bingzer.android.dbv.internal.UriUtil;
 import com.bingzer.android.dbv.queries.Insert;
 import com.bingzer.android.dbv.queries.InsertWith;
 import com.bingzer.android.dbv.queries.Update;
@@ -49,11 +48,11 @@ import java.util.regex.Pattern;
  */
 abstract class BaseResolver implements IBaseResolver {
 
-    final ContentConfig config;
+    final Config config;
     final Uri uri;
     final ContentResolver contentResolver;
 
-    BaseResolver(ContentConfig config, Uri uri, Context context){
+    BaseResolver(Config config, Uri uri, Context context){
         this.contentResolver = context.getContentResolver();
         this.uri = uri;
         this.config = config;
@@ -67,8 +66,21 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public ContentConfig getConfig() {
+    public Config getConfig() {
         return config;
+    }
+
+    @Override
+    public String getColumnIdName(){
+        if(config.getAppendTableNameForId()){
+            String tableName = "";
+            Matcher m = getUriPattern().matcher(uri.toString());
+            if(m.find()){
+                tableName = m.group(3);
+            }
+            return tableName + config.getIdNamingConvention();
+        }
+        return config.getIdNamingConvention();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +116,7 @@ abstract class BaseResolver implements IBaseResolver {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
 
-            whereClause.append(generateIdString()).append(" ");
+            whereClause.append(getColumnIdName()).append(" ");
             whereClause.append("IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
@@ -129,7 +141,7 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public Delete delete(String whereClause, Object... whereArgs) {
-        return new ContentDeleteImpl() {
+        return new DeleteImpl() {
             @Override
             public Integer query() {
                 return value();
@@ -157,7 +169,7 @@ abstract class BaseResolver implements IBaseResolver {
     public Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
-            ContentUtils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
+            ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
         }
 
         return insert(contentValues);
@@ -165,9 +177,9 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public InsertWith insert(String... columns) {
-        return new ContentInsertWithImpl(new ContentInsertWithImpl.ContentSet() {
+        return new InsertWithImpl(new InsertWithImpl.ContentSet() {
             @Override
-            public void onContentValuesSet(ContentInsertWithImpl query, ContentValues contentValues) {
+            public void onContentValuesSet(InsertWithImpl query, ContentValues contentValues) {
                 query.setUri(contentResolver.insert(uri, contentValues));
             }
         }, columns);
@@ -175,19 +187,19 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public Insert insert(ContentValues contents) {
-        return new ContentInsertImpl().setUri(contentResolver.insert(uri, contents));
+        return new InsertImpl().setUri(contentResolver.insert(uri, contents));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Insert insert(IEntity entity) {
         // build content values..
-        final EntityMapper mapper = new EntityMapper(this);
+        final Delegate.Mapper mapper = new Delegate.Mapper(this);
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
         Iterator<String> keys = mapper.keySet().iterator();
-        String idString = generateIdString();
+        String idString = getColumnIdName();
         Delegate<Integer> idSetter = null;
         while(keys.hasNext()){
             String key = keys.next();
@@ -198,7 +210,7 @@ abstract class BaseResolver implements IBaseResolver {
                 idSetter = delegate;
             }
             else if(delegate != null){
-                ContentUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
             }
         }
 
@@ -224,12 +236,12 @@ abstract class BaseResolver implements IBaseResolver {
         for(int i = 0; i < entityList.getEntityList().size(); i++){
             final IEntity entity = entityList.getEntityList().get(i);
             // build content values..
-            final EntityMapper mapper = new EntityMapper(this);
+            final Delegate.Mapper mapper = new Delegate.Mapper(this);
             final ContentValues contentValues = new ContentValues();
             entity.map(mapper);
 
             Iterator<String> keys = mapper.keySet().iterator();
-            String idString = generateIdString();
+            String idString = getColumnIdName();
             while(keys.hasNext()){
                 String key = keys.next();
                 Delegate delegate = mapper.get(key);
@@ -239,7 +251,7 @@ abstract class BaseResolver implements IBaseResolver {
                     idSetters[i] = delegate;
                 }
                 else if(delegate != null){
-                    ContentUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                    ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
                 }
             }
 
@@ -254,7 +266,7 @@ abstract class BaseResolver implements IBaseResolver {
             ContentProviderResult[] results =
                     contentResolver.applyBatch(getConfig().getDefaultAuthority(), operationList);
             for(int i = 0; i < results.length; i++){
-                idSetters[i].set(UriUtil.parseIdFromUri(results[i].uri));
+                idSetters[i].set(UriUtils.parseIdFromUri(results[i].uri));
                 uriStrings[i] = results[i].uri.toString();
             }
         }
@@ -262,7 +274,7 @@ abstract class BaseResolver implements IBaseResolver {
             throw new Error(e);
         }
 
-        return new ContentInsertImpl(){
+        return new InsertImpl(){
 
             @Override
             public Integer query(){
@@ -287,7 +299,7 @@ abstract class BaseResolver implements IBaseResolver {
     public Update update(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
-            whereClause.append(generateIdString()).append(" ");
+            whereClause.append(getColumnIdName()).append(" ");
             whereClause.append(" IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
@@ -312,9 +324,9 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public Update update(final String whereClause, final Object... whereArgs) {
-        return new ContentUpdateImpl(new ContentUpdateImpl.ContentSet(){
+        return new UpdateImpl(new UpdateImpl.ContentSet(){
             @Override
-            public void onContentValuesSet(ContentUpdateImpl query, ContentValues contentValues) {
+            public void onContentValuesSet(UpdateImpl query, ContentValues contentValues) {
                 query.setValue(update(contentValues, whereClause, whereArgs).query());
             }
         });
@@ -327,7 +339,7 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public Update update(ContentValues contents, String whereClause, Object... whereArgs) {
-        ContentUpdateImpl query = new ContentUpdateImpl();
+        UpdateImpl query = new UpdateImpl();
         String[] args = DbUtils.toStringArray(whereArgs);
         query.setValue(contentResolver.update(uri, contents, whereClause, args));
         return query;
@@ -337,17 +349,17 @@ abstract class BaseResolver implements IBaseResolver {
     public Update update(IEntity entity) {
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
 
-        final EntityMapper mapper = new EntityMapper(this);
+        final Delegate.Mapper mapper = new Delegate.Mapper(this);
         final ContentValues contentValues = new ContentValues();
         entity.map(mapper);
 
         for (String key : mapper.keySet()) {
             // ignore if "Id"
-            if (key.equalsIgnoreCase(generateIdString())) continue;
+            if (key.equalsIgnoreCase(getColumnIdName())) continue;
 
             Delegate delegate = mapper.get(key);
             if (delegate != null) {
-                ContentUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
             }
         }
 
@@ -359,25 +371,25 @@ abstract class BaseResolver implements IBaseResolver {
         if(getConfig().getDefaultAuthority() == null)
             throw new IllegalArgumentException("Authority has not been set. Use IResolver.setDefaultAuthority() to set");
 
-        final ContentUpdateImpl query = new ContentUpdateImpl();
+        final UpdateImpl query = new UpdateImpl();
         final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
 
         for(int i = 0; i < entityList.getEntityList().size(); i++){
             final IEntity entity = entityList.getEntityList().get(i);
             // build content values..
-            final EntityMapper mapper = new EntityMapper(this);
+            final Delegate.Mapper mapper = new Delegate.Mapper(this);
             final ContentValues contentValues = new ContentValues();
             entity.map(mapper);
 
             Iterator<String> keys = mapper.keySet().iterator();
-            String idString = generateIdString();
+            String idString = getColumnIdName();
             while(keys.hasNext()){
                 String key = keys.next();
                 Delegate delegate = mapper.get(key);
 
                 // ignore if column = "Id"
                 if(!key.equalsIgnoreCase(idString)) {
-                    ContentUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                    ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
                 }
             }
 
@@ -431,23 +443,10 @@ abstract class BaseResolver implements IBaseResolver {
     @Override
     public abstract int count(String whereClause, Object... whereArgs);
 
-    @Override
-    public String generateIdString(){
-        if(config.getAppendTableNameForId()){
-            String tableName = "";
-            Matcher m = getUriPattern().matcher(uri.toString());
-            if(m.find()){
-                tableName = m.group(3);
-            }
-            return tableName + config.getIdNamingConvention();
-        }
-        return config.getIdNamingConvention();
-    }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     String generateParamId(int id){
-        return generateIdString() + " = " + id;
+        return getColumnIdName() + " = " + id;
     }
 
     Pattern getUriPattern(){

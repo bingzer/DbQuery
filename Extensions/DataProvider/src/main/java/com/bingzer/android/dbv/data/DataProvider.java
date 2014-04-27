@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,16 @@ import com.bingzer.android.dbv.ITable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-abstract class DataProvider extends ContentProvider implements IDataProvider{
+/**
+ * Provides a very "basic" data provider implementation.
+ * This provider will expose all tables in the specified
+ * {@link IDatabase} defined in {@link com.bingzer.android.dbv.data.DataProvider#openDatabase()}
+ *
+ * @see {@link IDatabase}
+ */
+public abstract class DataProvider extends ContentProvider implements IDataProvider{
 
-    IDatabase db;
+    protected IDatabase db;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 

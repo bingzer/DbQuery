@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,23 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-package com.bingzer.android.dbv.content;
+ */package com.bingzer.android.dbv.content.resolvers;
 
 import android.net.Uri;
 
+import com.bingzer.android.dbv.content.queries.Config;
+import com.bingzer.android.dbv.contracts.ColumnIdentifier;
 import com.bingzer.android.dbv.contracts.Countable;
 import com.bingzer.android.dbv.contracts.Deletable;
 import com.bingzer.android.dbv.contracts.Insertable;
 import com.bingzer.android.dbv.contracts.SelectIdentifiable;
 import com.bingzer.android.dbv.contracts.Tangible;
 import com.bingzer.android.dbv.contracts.Updatable;
-import com.bingzer.android.dbv.internal.ContentConfig;
 
 /**
  * Created by Ricky Tobing on 8/23/13.
  */
-public interface IBaseResolver extends SelectIdentifiable, Insertable, Updatable, Deletable, Tangible, Countable {
+public interface IBaseResolver extends
+        ColumnIdentifier,
+        SelectIdentifiable, Insertable, Updatable, Deletable, Tangible, Countable {
 
     /**
      * Returns the URI
@@ -40,7 +42,6 @@ public interface IBaseResolver extends SelectIdentifiable, Insertable, Updatable
      * Returns the default config
      * @return the config
      */
-    ContentConfig getConfig();
+    Config getConfig();
 
-    String generateIdString();
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.content.queries;
 
 /**
  * Created by Ricky on 8/22/13.
  */
-public class ContentConfig extends Config {
+public class Config extends com.bingzer.android.dbv.internal.Config {
 
-    String[] defaultProjections;
-    String authority;
+    private String[] defaultProjections;
+    private String authority;
 
-    public ContentConfig(){
+    public Config(){
         setIdNamingConvention("_id");
         setDefaultProjections();
     }
@@ -38,7 +38,7 @@ public class ContentConfig extends Config {
      */
     public void setDefaultProjections(String... columns){
         if(columns == null || columns.length == 0)
-            defaultProjections = new String[] { idNamingConvention };
+            defaultProjections = new String[] { getIdNamingConvention() };
         else {
             for (String column : columns) {
                 if (column.equalsIgnoreCase(getIdNamingConvention())) {

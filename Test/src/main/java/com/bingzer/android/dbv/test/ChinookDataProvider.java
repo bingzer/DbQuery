@@ -4,16 +4,13 @@ import android.content.Context;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.data.BasicDataProvider;
 import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.data.DataProvider;
 
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by Ricky Tobing on 8/28/13.
- */
-public class ChinookDataProvider extends BasicDataProvider {
+public class ChinookDataProvider extends DataProvider {
 
     @Override
     public IDatabase openDatabase() {

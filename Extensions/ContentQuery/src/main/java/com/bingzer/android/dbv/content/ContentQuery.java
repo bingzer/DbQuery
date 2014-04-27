@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package com.bingzer.android.dbv.content;
 import android.content.Context;
 import android.net.Uri;
 
-import com.bingzer.android.dbv.internal.ContentConfig;
+import com.bingzer.android.dbv.content.queries.Config;
+import com.bingzer.android.dbv.content.resolvers.Resolver;
+import com.bingzer.android.dbv.content.resolvers.StrictResolver;
 
 /**
  * ContentQuery allows DbQuery style while
@@ -49,7 +51,7 @@ public final class ContentQuery {
      * @return {@link IResolver}
      */
     public static IResolver resolve(Uri uri, Context context){
-        return new Resolver(new ContentConfig(), uri, context);
+        return new Resolver(new Config(), uri, context);
     }
 
     /**
@@ -69,7 +71,7 @@ public final class ContentQuery {
      * @return {@link IStrictResolver}
      */
     public static IStrictResolver strictlyResolve(Uri uri, Context context){
-        return new StrictResolver(new ContentConfig(), uri, context);
+        return new StrictResolver(new Config(), uri, context);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////

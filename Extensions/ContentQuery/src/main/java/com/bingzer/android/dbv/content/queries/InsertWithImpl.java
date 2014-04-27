@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.content.queries;
 
 import android.content.ContentValues;
 import android.net.Uri;
 
+import com.bingzer.android.dbv.content.utils.UriUtils;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.queries.InsertWith;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
@@ -25,13 +26,13 @@ import com.bingzer.android.dbv.utils.ContentValuesUtils;
 /**
  * Created by Ricky on 8/20/13.
  */
-public class ContentInsertWithImpl implements InsertWith {
+public class InsertWithImpl implements InsertWith {
 
     Uri value;
     ContentSet query;
     String[] columnNames;
 
-    public ContentInsertWithImpl(ContentSet query, String... columnNames){
+    public InsertWithImpl(ContentSet query, String... columnNames){
         this.query = query;
         this.columnNames = columnNames;
     }
@@ -50,7 +51,7 @@ public class ContentInsertWithImpl implements InsertWith {
 
     @Override
     public Integer query() {
-        return UriUtil.parseIdFromUri(value);
+        return UriUtils.parseIdFromUri(value);
     }
 
     public void setUri(Uri value){
@@ -59,7 +60,7 @@ public class ContentInsertWithImpl implements InsertWith {
 
     public static interface ContentSet {
 
-        void onContentValuesSet(ContentInsertWithImpl query, ContentValues contentValues);
+        void onContentValuesSet(InsertWithImpl query, ContentValues contentValues);
 
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.data;
-
-import com.bingzer.android.dbv.IDatabase;
+package com.bingzer.android.dbv.contracts;
 
 /**
- * Provides a very "basic" data provider implementation.
- * This provider will expose all tables in the specified
- * {@link IDatabase} defined in {@link com.bingzer.android.dbv.data.BasicDataProvider#openDatabase()}
- *
- * @see {@link IDatabase}
+ * Created by Ricky on 4/26/2014.
  */
-public abstract class BasicDataProvider extends DataProvider {
-    // ---------------------------------------------------- //
+public interface ColumnIdentifier {
+
+    /**
+     * Returns the Column Id string for this table
+     * @return the string
+     */
+    String getColumnIdName();
 }

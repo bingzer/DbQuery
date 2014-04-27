@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.content.queries;
 
 import android.content.ContentValues;
 
@@ -24,16 +24,16 @@ import com.bingzer.android.dbv.utils.ContentValuesUtils;
 /**
  * Created by Ricky on 8/20/13.
  */
-public class ContentUpdateImpl implements Update {
+public class UpdateImpl implements Update {
     int value = 0;
     private ContentSet query;
     protected ContentValues contentValues;
 
-    public ContentUpdateImpl(){
+    public UpdateImpl(){
         this(null);
     }
 
-    public ContentUpdateImpl(ContentSet query){
+    public UpdateImpl(ContentSet query){
         this.query = query;
     }
 
@@ -46,7 +46,7 @@ public class ContentUpdateImpl implements Update {
         return new Columns() {
             @Override
             public IQuery<Integer> val(Object... values) {
-                return ContentUpdateImpl.this.val(columns, values);
+                return UpdateImpl.this.val(columns, values);
             }
         };
     }
@@ -91,7 +91,7 @@ public class ContentUpdateImpl implements Update {
 
     public static interface ContentSet {
 
-        void onContentValuesSet(ContentUpdateImpl query, ContentValues contentValues);
+        void onContentValuesSet(UpdateImpl query, ContentValues contentValues);
 
     }
 }

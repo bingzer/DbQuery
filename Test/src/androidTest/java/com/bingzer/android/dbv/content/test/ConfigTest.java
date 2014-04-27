@@ -8,7 +8,7 @@ import com.bingzer.android.dbv.test.Helper;
 /**
  * Created by Ricky on 8/22/13.
  */
-public class ContentConfigTest extends AndroidTestCase{
+public class ConfigTest extends AndroidTestCase{
 
     IResolver resolver;
 

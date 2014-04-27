@@ -35,5 +35,6 @@ class TestUsage {
         IResolver resolver = ContentQuery.resolve(uri, context);
 
         IStrictResolver strictResolver = ContentQuery.strictlyResolve(uri, context);
+
     }
 }

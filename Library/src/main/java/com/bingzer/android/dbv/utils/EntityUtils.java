@@ -20,7 +20,7 @@ import android.database.Cursor;
 import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.ITable;
+import com.bingzer.android.dbv.contracts.ColumnIdentifier;
 
 /**
  * Created by Ricky on 4/26/2014.
@@ -28,12 +28,12 @@ import com.bingzer.android.dbv.ITable;
 public final class EntityUtils {
     /**
      * Maps an entity from a cursor. Cursor will be automatically close
-     * @param table the table
+     * @param identifier the table
      * @param entity the entity to map
      * @param cursor the cursor
      */
-    public static void mapEntityFromCursor(ITable table, IEntity entity, Cursor cursor){
-        Delegate.Mapper mapper = new Delegate.Mapper(table);
+    public static void mapEntityFromCursor(ColumnIdentifier identifier, IEntity entity, Cursor cursor){
+        Delegate.Mapper mapper = new Delegate.Mapper(identifier);
         entity.map(mapper);
         if(cursor.moveToNext()){
             for(int i = 0; i < cursor.getColumnCount(); i++){
@@ -50,16 +50,16 @@ public final class EntityUtils {
 
     /**
      * Maps an entity list from cursor. Cursor will be automatically close
-     * @param table the table
+     * @param identifier the table
      * @param entityList the list to map
      * @param cursor the cursor
      * @param <E> type of IEntity
      */
     @SuppressWarnings("unchecked")
-    public static <E extends IEntity> void mapEntityListFromCursor(ITable table, IEntityList<E> entityList, Cursor cursor){
-        Delegate.Mapper mapper = new Delegate.Mapper(table);
+    public static <E extends IEntity> void mapEntityListFromCursor(ColumnIdentifier identifier, IEntityList<E> entityList, Cursor cursor){
+        Delegate.Mapper mapper = new Delegate.Mapper(identifier);
         while(cursor.moveToNext()){
-            int columnIdIndex = cursor.getColumnIndex(table.getColumnIdName());
+            int columnIdIndex = cursor.getColumnIndex(identifier.getColumnIdName());
             int id = -1;
             if(columnIdIndex >= 0) id = cursor.getInt(columnIdIndex);
 

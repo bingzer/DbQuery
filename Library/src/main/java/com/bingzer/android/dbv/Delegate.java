@@ -15,6 +15,8 @@
  */
 package com.bingzer.android.dbv;
 
+import com.bingzer.android.dbv.contracts.ColumnIdentifier;
+
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Objects;
@@ -214,15 +216,15 @@ public abstract class Delegate<T> {
      * Created by Ricky Tobing on 8/9/13.
      */
     public static class Mapper extends HashMap<String, Delegate> implements IEntity.Mapper {
-        private final ITable table;
+        private final ColumnIdentifier identifier;
 
-        public Mapper(ITable table){
-            this.table = table;
+        public Mapper(ColumnIdentifier identifier){
+            this.identifier = identifier;
         }
 
         @Override
         public void mapId(Delegate<Integer> delegate) {
-            map(table.getColumnIdName(), delegate);
+            map(identifier.getColumnIdName(), delegate);
         }
 
         @Override

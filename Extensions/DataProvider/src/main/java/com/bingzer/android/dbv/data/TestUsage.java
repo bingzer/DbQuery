@@ -30,7 +30,7 @@ class TestUsage {
 
     }
 
-    static class BasicProvider extends BasicDataProvider {
+    static class BasicProvider extends DataProvider {
 
         @Override
         public IDatabase openDatabase() {

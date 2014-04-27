@@ -15,10 +15,11 @@
  */
 package com.bingzer.android.dbv.content;
 
-import com.bingzer.android.dbv.contracts.ContentSelectable;
+import com.bingzer.android.dbv.content.contracts.Selectable;
+import com.bingzer.android.dbv.content.resolvers.IBaseResolver;
 
 /**
  * Created by Ricky Tobing on 8/20/13.
  */
-public interface IResolver extends IBaseResolver, ContentSelectable{
+public interface IResolver extends IBaseResolver, Selectable {
 }

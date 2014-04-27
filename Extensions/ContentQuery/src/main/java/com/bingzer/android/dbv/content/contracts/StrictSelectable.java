@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.contracts;
+package com.bingzer.android.dbv.content.contracts;
 
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.contracts.EntitySelectable;
 import com.bingzer.android.dbv.queries.IQuery;
 
 /**
- * Created by Ricky on 8/22/13.
+ * Created by Ricky Tobing on 8/23/13.
  */
-public interface ContentSelectable {
-
-    /**
-     * Select top (x) add the specified condition
-     * @param top number to return
-     * @param condition the condition
-     * @return {@link com.bingzer.android.dbv.queries.Select}
-     */
-    Select select(int top, String condition);
+public interface StrictSelectable {
 
     /**
      * Select some condition
@@ -64,21 +57,13 @@ public interface ContentSelectable {
     Select select(String whereClause, Object... args);
 
     /**
-     * Select
-     * @param whereClause 'where' clause
-     * @param args arguments
-     * @return {@link com.bingzer.android.dbv.queries.Select}
-     */
-    Select select(int top, String whereClause, Object... args);
-
-    /**
      * For select statement
      * <p>
      *     Find a complete <code>Wiki</code> and documentation here:<br/>
      *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
      * </p>
      */
-    public static interface Select extends IQuery<Cursor>, EntitySelectable, Pagination  {
+    public static interface Select extends IQuery<Cursor>, EntitySelectable {
 
         /**
          * Specified the column to return.
@@ -86,7 +71,7 @@ public interface ContentSelectable {
          * @param columns column names
          * @return {@link com.bingzer.android.dbv.queries.Select}
          */
-        ContentSelectable.Select columns(String... columns);
+        StrictSelectable.Select columns(String... columns);
 
         /**
          * Order by. To create multiple orderBy ASC or DESC or both,
@@ -99,12 +84,12 @@ public interface ContentSelectable {
          * @param columns column names
          * @return {@link com.bingzer.android.dbv.queries.Select}
          */
-        ContentSelectable.Select.OrderBy orderBy(String... columns);
+        StrictSelectable.Select.OrderBy orderBy(String... columns);
 
         /**
          * Order By
          */
-        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable, Pagination {
+        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable {
 
         }
 

@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.content.queries;
 
 import android.net.Uri;
 
-/**
- * Created by Ricky on 8/21/13.
- */
-public class UriUtil {
+import com.bingzer.android.dbv.content.utils.UriUtils;
 
-    public static int parseIdFromUri(Uri uri){
-        String uriString = uri.toString();
-        String valueString = uriString.substring(uriString.lastIndexOf("/") + 1, uriString.length());
-        try{
-            return Integer.parseInt(valueString);
-        }
-        catch (NumberFormatException e){
-            return -1;
-        }
+/**
+ * Created by Ricky on 8/20/13.
+ */
+public class InsertImpl extends com.bingzer.android.dbv.internal.queries.InsertImpl {
+
+    Uri uri;
+
+    public InsertImpl setUri(Uri value){
+        this.uri = value;
+        this.value = UriUtils.parseIdFromUri(uri);
+        return this;
+    }
+
+    @Override
+    public Integer query(){
+        return UriUtils.parseIdFromUri(uri);
+    }
+
+    @Override
+    public String toString(){
+        return uri.toString();
     }
 
 }

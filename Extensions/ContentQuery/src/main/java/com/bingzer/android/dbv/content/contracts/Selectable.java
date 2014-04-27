@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.contracts;
+package com.bingzer.android.dbv.content.contracts;
 
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.contracts.EntitySelectable;
+import com.bingzer.android.dbv.contracts.Pagination;
 import com.bingzer.android.dbv.queries.IQuery;
 
 /**
- * Created by Ricky Tobing on 8/23/13.
+ * Created by Ricky on 8/22/13.
  */
-public interface ContentStrictSelectable {
+public interface Selectable {
+
+    /**
+     * Select top (x) add the specified condition
+     * @param top number to return
+     * @param condition the condition
+     * @return {@link com.bingzer.android.dbv.queries.Select}
+     */
+    Select select(int top, String condition);
 
     /**
      * Select some condition
@@ -56,13 +66,21 @@ public interface ContentStrictSelectable {
     Select select(String whereClause, Object... args);
 
     /**
+     * Select
+     * @param whereClause 'where' clause
+     * @param args arguments
+     * @return {@link com.bingzer.android.dbv.queries.Select}
+     */
+    Select select(int top, String whereClause, Object... args);
+
+    /**
      * For select statement
      * <p>
      *     Find a complete <code>Wiki</code> and documentation here:<br/>
      *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
      * </p>
      */
-    public static interface Select extends IQuery<Cursor>, EntitySelectable  {
+    public static interface Select extends IQuery<Cursor>, EntitySelectable, Pagination {
 
         /**
          * Specified the column to return.
@@ -70,7 +88,7 @@ public interface ContentStrictSelectable {
          * @param columns column names
          * @return {@link com.bingzer.android.dbv.queries.Select}
          */
-        ContentStrictSelectable.Select columns(String... columns);
+        Selectable.Select columns(String... columns);
 
         /**
          * Order by. To create multiple orderBy ASC or DESC or both,
@@ -83,12 +101,12 @@ public interface ContentStrictSelectable {
          * @param columns column names
          * @return {@link com.bingzer.android.dbv.queries.Select}
          */
-        ContentStrictSelectable.Select.OrderBy orderBy(String... columns);
+        Selectable.Select.OrderBy orderBy(String... columns);
 
         /**
          * Order By
          */
-        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable {
+        public static interface OrderBy extends IQuery<Cursor>, EntitySelectable, Pagination {
 
         }
 

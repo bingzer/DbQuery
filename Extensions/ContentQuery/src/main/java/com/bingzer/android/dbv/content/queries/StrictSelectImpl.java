@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.content.queries;
 
+import com.bingzer.android.dbv.content.contracts.StrictSelectable;
 import com.bingzer.android.dbv.utils.DbUtils;
-import com.bingzer.android.dbv.content.IBaseResolver;
-import com.bingzer.android.dbv.contracts.ContentStrictSelectable;
+import com.bingzer.android.dbv.content.resolvers.IBaseResolver;
 
 /**
  * Created by Ricky Tobing on 8/23/13.
  */
-public abstract class ContentStrictSelectImpl implements ContentStrictSelectable.Select, ContentStrictSelectable.Select.OrderBy{
+public abstract class StrictSelectImpl implements StrictSelectable.Select, StrictSelectable.Select.OrderBy{
 
     final IBaseResolver resolver;
     StringBuilder columnString;
@@ -30,14 +30,14 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
     String whereString;
     Object[] whereArgs;
 
-    public ContentStrictSelectImpl(IBaseResolver resolver){
+    public StrictSelectImpl(IBaseResolver resolver){
         this.resolver = resolver;
         this.columnString = new StringBuilder();
         this.columnString.append(DbUtils.join(", ", generateDefaultProjections()));
     }
 
     @Override
-    public ContentStrictSelectImpl columns(String... columns) {
+    public StrictSelectImpl columns(String... columns) {
         columnString.delete(0, columnString.length());
         if(columns != null){
             columnString.append(DbUtils.join(", ", columns));
@@ -55,7 +55,7 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
         return this;
     }
 
-    public ContentStrictSelectImpl where(String whereClause, Object... args){
+    public StrictSelectImpl where(String whereClause, Object... args){
         this.whereString = whereClause;
         this.whereArgs = args;
         return this;
@@ -101,7 +101,7 @@ public abstract class ContentStrictSelectImpl implements ContentStrictSelectable
         String[] projections = resolver.getConfig().getDefaultProjections();
         for(int i = 0; i < projections.length; i++){
             if(projections[i].equals(resolver.getConfig().getIdNamingConvention())){
-                projections[i] = resolver.generateIdString();
+                projections[i] = resolver.getColumnIdName();
             }
         }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.content;
+package com.bingzer.android.dbv.content.resolvers;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -21,17 +21,18 @@ import android.net.Uri;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.internal.ContentConfig;
-import com.bingzer.android.dbv.internal.ContentSelectImpl;
-import com.bingzer.android.dbv.internal.ContentUtils;
+import com.bingzer.android.dbv.content.IResolver;
+import com.bingzer.android.dbv.content.queries.Config;
+import com.bingzer.android.dbv.content.queries.SelectImpl;
+import com.bingzer.android.dbv.utils.EntityUtils;
 
 /**
  *
  * Created by Ricky on 8/20/13.
  */
-class Resolver extends BaseResolver implements IResolver {
+public final class Resolver extends BaseResolver implements IResolver {
 
-    Resolver(ContentConfig config, Uri uri, Context context){
+    public Resolver(Config config, Uri uri, Context context){
         super(config, uri, context);
     }
 
@@ -42,7 +43,7 @@ class Resolver extends BaseResolver implements IResolver {
         try{
             cursor = select(whereClause, args).query();
             if(cursor.moveToNext()){
-                int index = cursor.getColumnIndex(generateIdString());
+                int index = cursor.getColumnIndex(getColumnIdName());
                 id = cursor.getInt(index);
             }
         }
@@ -57,7 +58,7 @@ class Resolver extends BaseResolver implements IResolver {
     public boolean has(String whereClause, Object... whereArgs) {
         Cursor cursor = null;
         try{
-            cursor = select(whereClause, whereArgs).columns(generateIdString()).query();
+            cursor = select(whereClause, whereArgs).columns(getColumnIdName()).query();
             return cursor.getCount() > 0;
         }
         finally {
@@ -70,7 +71,7 @@ class Resolver extends BaseResolver implements IResolver {
         int count = -1;
         Cursor cursor = null;
         try{
-            cursor = select(whereClause, whereArgs).columns(generateIdString()).query();
+            cursor = select(whereClause, whereArgs).columns(getColumnIdName()).query();
             count = cursor.getCount();
         }
         finally {
@@ -107,7 +108,7 @@ class Resolver extends BaseResolver implements IResolver {
     public Select select(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
-            whereClause.append(generateIdString()).append(" ");
+            whereClause.append(getColumnIdName()).append(" ");
             whereClause.append(" IN (");
             for(int i = 0; i < ids.length; i++){
                 whereClause.append(ids[i]);
@@ -127,7 +128,7 @@ class Resolver extends BaseResolver implements IResolver {
 
     @Override
     public Select select(final int top, final String whereClause, final Object... args) {
-        return new ContentSelectImpl(this, top) {
+        return new SelectImpl(this, top) {
             @Override
             public Cursor query() {
                 String[] projections = getProjections();
@@ -140,9 +141,8 @@ class Resolver extends BaseResolver implements IResolver {
             @Override
             public void query(IEntity entity) {
                 final Cursor cursor = query();
-                final EntityMapper mapper = new EntityMapper(Resolver.this);
 
-                ContentUtils.mapEntityFromCursor(mapper, entity, cursor);
+                EntityUtils.mapEntityFromCursor(Resolver.this, entity, cursor);
 
                 cursor.close();
             }
@@ -151,9 +151,8 @@ class Resolver extends BaseResolver implements IResolver {
             @SuppressWarnings("unchecked")
             public <E extends IEntity> void query(IEntityList<E> entityList) {
                 final Cursor cursor = query();
-                final EntityMapper mapper = new EntityMapper(Resolver.this);
 
-                ContentUtils.mapEntityListFromCursor(mapper, entityList, cursor, generateIdString());
+                EntityUtils.mapEntityListFromCursor(Resolver.this, entityList, cursor);
 
                 cursor.close();
             }

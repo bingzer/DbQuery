@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.content.utils;
 
-import com.bingzer.android.dbv.internal.queries.DeleteImpl;
+import android.net.Uri;
 
 /**
- * Created by Ricky on 8/20/13.
+ * Created by Ricky on 8/21/13.
  */
-public class ContentDeleteImpl extends DeleteImpl {
+public class UriUtils {
 
-    public ContentDeleteImpl val(int value){
-        this.value = value;
-        return this;
-    }
-
-    public int value(){
-        return value;
+    public static int parseIdFromUri(Uri uri){
+        String uriString = uri.toString();
+        String valueString = uriString.substring(uriString.lastIndexOf("/") + 1, uriString.length());
+        try{
+            return Integer.parseInt(valueString);
+        }
+        catch (NumberFormatException e){
+            return -1;
+        }
     }
 
 }

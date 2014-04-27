@@ -28,11 +28,11 @@ import com.bingzer.android.dbv.IConfig;
  * Created by Ricky Tobing on 7/19/13.
  */
 public class Config implements IConfig {
-    String idNamingConvention;
-    boolean appendTableName;
-    boolean foreignKeySupport;
-    boolean debug;
-    boolean readOnly;
+    private String idNamingConvention;
+    private boolean appendTableName;
+    private boolean foreignKeySupport;
+    private boolean debug;
+    private boolean readOnly;
 
     public Config(){
         this.idNamingConvention = "Id";
