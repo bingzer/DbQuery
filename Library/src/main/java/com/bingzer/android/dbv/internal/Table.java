@@ -24,6 +24,8 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.ITable;
+import com.bingzer.android.dbv.internal.queries.InsertIntoImpl;
+import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.internal.queries.AverageImpl;
 import com.bingzer.android.dbv.internal.queries.ContentSet;
@@ -31,7 +33,6 @@ import com.bingzer.android.dbv.internal.queries.DeleteImpl;
 import com.bingzer.android.dbv.internal.queries.DropImpl;
 import com.bingzer.android.dbv.internal.queries.InnerJoinImpl;
 import com.bingzer.android.dbv.internal.queries.InsertImpl;
-import com.bingzer.android.dbv.internal.queries.InsertWithImpl;
 import com.bingzer.android.dbv.internal.queries.MaxImpl;
 import com.bingzer.android.dbv.internal.queries.MinImpl;
 import com.bingzer.android.dbv.internal.queries.OuterJoinImpl;
@@ -46,7 +47,6 @@ import com.bingzer.android.dbv.queries.Delete;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.queries.InnerJoin;
 import com.bingzer.android.dbv.queries.Insert;
-import com.bingzer.android.dbv.queries.InsertWith;
 import com.bingzer.android.dbv.queries.Max;
 import com.bingzer.android.dbv.queries.Min;
 import com.bingzer.android.dbv.queries.OuterJoin;
@@ -240,10 +240,18 @@ public class Table implements ITable {
     }
 
     @Override
-    public InsertWith insert(String... columns) {
-        return new InsertWithImpl(new ContentSet<InsertWithImpl>() {
+    public Insert insert(String column, Object value) {
+        final ContentValues contentValues = new ContentValues();
+        ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, column, value);
+
+        return insert(contentValues);
+    }
+
+    @Override
+    public InsertInto insertInto(String... columns) {
+        return new InsertIntoImpl(new ContentSet<InsertIntoImpl>() {
             @Override
-            public void onContentValuesSet(InsertWithImpl query, ContentValues contentValues) {
+            public void onContentValuesSet(InsertIntoImpl query, ContentValues contentValues) {
                 query.setValue( (int) db.sqLiteDb.insertOrThrow(getName(), null, contentValues) );
             }
         }, columns);

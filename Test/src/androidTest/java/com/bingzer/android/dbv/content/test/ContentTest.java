@@ -36,7 +36,7 @@ public class ContentTest extends AndroidTestCase {
     }
 
     int insertToDictionary(String word){
-        int id = resolver.insert("word").val(word).query();
+        int id = resolver.insert("word", word).query();
         assertTrue(id > 0);
         return id;
     }
@@ -356,7 +356,7 @@ public class ContentTest extends AndroidTestCase {
     }
 
     public void testInsertWith_Columns(){
-        assertTrue(resolver.insert("word").val("ABCDEFG").query() > 0);
+        assertTrue(resolver.insertInto("word").val("ABCDEFG").query() > 0);
         assertTrue(resolver.has("word = ?", "ABCDEFG"));
 
         assertTrue(resolver.delete("word = ? ", "ABCDEFG").query() > 0);

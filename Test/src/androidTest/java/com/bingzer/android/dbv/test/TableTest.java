@@ -26,7 +26,7 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.SQLiteBuilder;
-import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.InsertInto;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,7 +45,7 @@ public class TableTest extends AndroidTestCase{
 
     @Override
     public void setUp(){
-        db = DbQuery.getDatabase("TestDb");
+        db = DbQuery.getDatabase("TableTest");
         db.open(1, new SQLiteBuilder() {
             @Override
             public Context getContext() {
@@ -441,7 +441,7 @@ public class TableTest extends AndroidTestCase{
     int dodolId = -1;
     public void testInsert_Columns(){
         dodolId = db.get("Products")
-                .insert("Name", "Price")
+                .insertInto("Name", "Price")
                 .val("Dodol", 22)
                 .query();
         assertTrue(dodolId > 0);
@@ -589,7 +589,7 @@ public class TableTest extends AndroidTestCase{
         testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is ?", "%player%", null).query());
 
 
-        int rowNullId = db.get("Customers").insert("Name", "Address").val("TestNull", null).query();
+        int rowNullId = db.get("Customers").insertInto("Name", "Address").val("TestNull", null).query();
         assertTrue(rowNullId > 0);
         assertTrue(db.get("Customers").delete("Name = ? AND Address is ?", "TestNull", null).query() > 0);
         assertFalse(db.get("Customers").has(rowNullId));
@@ -1200,7 +1200,7 @@ public class TableTest extends AndroidTestCase{
 
 
     private void populateData(){
-        InsertWith insert = db.get("Customers").insert("Name", "Address", "City", "PostalCode", "Country");
+        InsertInto insert = db.get("Customers").insertInto("Name", "Address", "City", "PostalCode", "Country");
 
         insert.val("Wayne Rooney", "10 Manchester United", "Manchester", 9812, "UK");
         insert.val("Lionel Messi", "10 Barcelona st.", "Barcelona", 70, "Spain");
@@ -1211,7 +1211,7 @@ public class TableTest extends AndroidTestCase{
         insert.val("Null Player", null, null, 22111, "US");
 
 
-        insert = db.get("Products").insert("Name", "Price");
+        insert = db.get("Products").insertInto("Name", "Price");
         insert.val("Car", 20000);
         insert.val("Motorcycle", 5000);
         insert.val("Computer", 1000);
@@ -1223,7 +1223,7 @@ public class TableTest extends AndroidTestCase{
         insert.val("Lamp", 20);
         insert.val("Candy", 1);
 
-        insert = db.get("Orders").insert("CustomerId", "ProductId", "Date");
+        insert = db.get("Orders").insertInto("CustomerId", "ProductId", "Date");
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Computer"), getRandomDate());
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Monitor"), getRandomDate());
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Cellphone"), getRandomDate());

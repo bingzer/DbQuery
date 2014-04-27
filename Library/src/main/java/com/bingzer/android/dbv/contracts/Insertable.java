@@ -21,7 +21,7 @@ import android.content.ContentValues;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.Insert;
-import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.InsertInto;
 
 /**
  * Created by Ricky Tobing on 7/17/13.
@@ -44,12 +44,20 @@ public interface Insertable {
     Insert insert(String[] columns, Object[] values);
 
     /**
+     * Insert a single column and object
+     * @param column column to insert
+     * @param value object value
+     * @return Insert object
+     */
+    Insert insert(String column, Object value);
+
+    /**
      * InsertWith follows by <code>val(Object... values)</code>
      * to specify the values
      * @param columns column names
      * @return an InsertWith object
      */
-    InsertWith insert(String... columns);
+    InsertInto insertInto(String... columns);
 
     /////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////

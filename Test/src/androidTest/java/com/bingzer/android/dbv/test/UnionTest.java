@@ -50,17 +50,20 @@ public class UnionTest extends AndroidTestCase {
         db.get("Employee").delete();
 
         // bulk insert
-        db.get("Student").insert("Name").val("Student 1");
-        db.get("Student").insert("Name").val("Student 2");
-        db.get("Student").insert("Name").val("Student 3");
-        db.get("Student").insert("Name").val("John");
-        db.get("Student").insert("Name").val("Dave");
+        db.get("Student").insert("Name","Student 1");
+        db.get("Student").insert("Name","Student 2");
+        db.get("Student").insert("Name","Student 3");
+        db.get("Student").insert("Name","John");
+        db.get("Student").insert("Name","Dave");
         // employee
-        db.get("Employee").insert("Name").val("Employee 1");
-        db.get("Employee").insert("Name").val("Employee 2");
-        db.get("Employee").insert("Name").val("Employee 3");
-        db.get("Student").insert("Name").val("John");
-        db.get("Student").insert("Name").val("Dave");
+        db.get("Employee").insert("Name","Employee 1");
+        db.get("Employee").insert("Name","Employee 2");
+        db.get("Employee").insert("Name","Employee 3");
+
+        // duplicate john and dave
+        // this is for testing purpose do not modify
+        db.get("Student").insert("Name","John");
+        db.get("Student").insert("Name","Dave");
     }
 
     public void testUnion_Simple(){

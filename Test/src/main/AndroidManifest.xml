@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bingzer.android.dbv.test"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.bingzer.android.dbv.test">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY"/>
-
-
-    <uses-sdk
-        android:minSdkVersion="7"
-        android:targetSdkVersion="17" />
 
     <application
         android:allowBackup="true"
@@ -31,7 +25,8 @@
         <provider
                 android:authorities="com.bingzer.android.dbv.data.test"
                 android:name="com.bingzer.android.dbv.test.ChinookDataProvider"
-                android:exported="true"/>
+                android:exported="true"
+                tools:ignore="ExportedContentProvider" />
     </application>
 
 </manifest>

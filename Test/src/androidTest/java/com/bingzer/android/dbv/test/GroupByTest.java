@@ -7,7 +7,7 @@ import android.test.AndroidTestCase;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.SQLiteBuilder;
-import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.queries.Paging;
 
 /**
@@ -50,7 +50,7 @@ public class GroupByTest extends AndroidTestCase {
         db.get("company").delete();
         db.get("employee").delete();
 
-        InsertWith insert = db.get("employee").insert("name", "position");
+        InsertInto insert = db.get("employee").insertInto("name", "position");
         insert.val("Paul", "Guard");
         insert.val("Allen", "Manager");
         insert.val("Teddy", "Janitor");
@@ -61,7 +61,7 @@ public class GroupByTest extends AndroidTestCase {
 
         // schema from: http://www.tutorialspoint.com/sqlite/sqlite_group_by.htm
         // insert
-        insert = db.get("company").insert("name", "age", "address", "salary");
+        insert = db.get("company").insertInto("name", "age", "address", "salary");
         insert.val("Paul", 32, "California", 20000f);
         insert.val("Allen", 25, "Texas", 15000f);
         insert.val("Teddy", 23, "Norway", 20000f);
@@ -355,7 +355,7 @@ Mark        65000.0     Watch
 Paul        20000.0     Guard
 Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
          */
-        db.get("Company").insert("name", "salary").val("Teddy", 20000);
+        db.get("Company").insertInto("name", "salary").val("Teddy", 20000);
         assertTrue(db.get("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
 
         Cursor cursor = db.get("company c")
@@ -398,7 +398,7 @@ Mark        65000.0     Watch
 Paul        20000.0     Guard
 Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
          */
-        db.get("Company").insert("name", "salary").val("Teddy", 20000);
+        db.get("Company").insertInto("name", "salary").val("Teddy", 20000);
         assertTrue(db.get("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
 
         Paging paging = db.get("company c")

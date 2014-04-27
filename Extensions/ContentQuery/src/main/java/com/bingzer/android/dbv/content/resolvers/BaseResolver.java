@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package com.bingzer.android.dbv.content.resolvers;
+ */
+package com.bingzer.android.dbv.content.resolvers;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -27,14 +28,14 @@ import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.content.queries.Config;
 import com.bingzer.android.dbv.content.queries.DeleteImpl;
 import com.bingzer.android.dbv.content.queries.InsertImpl;
-import com.bingzer.android.dbv.content.queries.InsertWithImpl;
+import com.bingzer.android.dbv.content.queries.InsertIntoImpl;
 import com.bingzer.android.dbv.content.queries.UpdateImpl;
 import com.bingzer.android.dbv.content.utils.UriUtils;
 import com.bingzer.android.dbv.queries.Delete;
+import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
 import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.queries.Insert;
-import com.bingzer.android.dbv.queries.InsertWith;
 import com.bingzer.android.dbv.queries.Update;
 
 import java.util.ArrayList;
@@ -176,10 +177,18 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public InsertWith insert(String... columns) {
-        return new InsertWithImpl(new InsertWithImpl.ContentSet() {
+    public Insert insert(String columns, Object values) {
+        final ContentValues contentValues = new ContentValues();
+        ContentValuesUtils.mapContentValuesFromGenericObject(contentValues, columns, values);
+
+        return insert(contentValues);
+    }
+
+    @Override
+    public InsertInto insertInto(String... columns) {
+        return new InsertIntoImpl(new InsertIntoImpl.ContentSet() {
             @Override
-            public void onContentValuesSet(InsertWithImpl query, ContentValues contentValues) {
+            public void onContentValuesSet(InsertIntoImpl query, ContentValues contentValues) {
                 query.setUri(contentResolver.insert(uri, contentValues));
             }
         }, columns);

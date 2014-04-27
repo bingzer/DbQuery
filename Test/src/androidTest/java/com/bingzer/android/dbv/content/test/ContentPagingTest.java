@@ -31,7 +31,7 @@ public class ContentPagingTest extends AndroidTestCase {
     }
 
     int insertToDictionary(String word){
-        int id = resolver.insert("word").val(word).query();
+        int id = resolver.insert("word", word).query();
         assertTrue(id > 0);
         return id;
     }

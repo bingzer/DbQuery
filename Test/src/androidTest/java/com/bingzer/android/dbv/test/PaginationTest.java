@@ -10,7 +10,7 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.SQLiteBuilder;
-import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.queries.Paging;
 
 import java.util.LinkedList;
@@ -53,13 +53,13 @@ public class PaginationTest extends AndroidTestCase {
         db.get("Person").delete();
         db.get("Jobs").delete();
 
-        InsertWith insert = db.get("Jobs").insert("Position");
+        InsertInto insert = db.get("Jobs").insertInto("Position");
         managerId = insert.val("Manager").query();
         janitorId = insert.val("Janitor").query();
         guardId = insert.val("Guard").query();
         supervisorId = insert.val("Supervisor").query();
 
-        insert = db.get("Person").insert("Name", "Age", "Address", "JobId");
+        insert = db.get("Person").insertInto("Name", "Age", "Address", "JobId");
         // must be 6 individuals for test to be a ok
         insert.val("John", 23, "Washington DC".getBytes(), managerId);
         insert.val("Ronaldo", 40, "Madrid".getBytes(), guardId);
@@ -282,7 +282,7 @@ public class PaginationTest extends AndroidTestCase {
         assertTrue(paging.getTotalPage() == 3);
 
         // insert one so now row count should be 7
-        db.get("Person").insert("Name", "Age", "Address").val("S", 22, "Bytes".getBytes());
+        db.get("Person").insertInto("Name", "Age", "Address").val("S", 22, "Bytes".getBytes());
 
         // recheck
         paging = db.get("Person").select().orderBy("Id").paging(2);

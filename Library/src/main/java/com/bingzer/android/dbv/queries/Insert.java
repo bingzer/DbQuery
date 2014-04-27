@@ -22,7 +22,7 @@ package com.bingzer.android.dbv.queries;
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  *
- * @see InsertWith
+ * @see InsertInto
  */
 public interface Insert extends IQuery<Integer> {
 }

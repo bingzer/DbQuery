@@ -9,7 +9,7 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.queries.Average;
 import com.bingzer.android.dbv.IView;
 import com.bingzer.android.dbv.SQLiteBuilder;
-import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.queries.Max;
 import com.bingzer.android.dbv.queries.Min;
 import com.bingzer.android.dbv.queries.Sum;
@@ -73,20 +73,20 @@ public class ViewTest extends AndroidTestCase {
             db.get("Customers").delete();
 
             // initial value
-            InsertWith insert = db.get("Customers").insert("Name", "Address");
+            InsertInto insert = db.get("Customers").insertInto("Name", "Address");
             insert.val("Baloteli", "Italy");
             insert.val("Pirlo", "Italy");
             insert.val("Ronaldo", "Portugal");
             insert.val("Messi", "Argentina");
 
-            insert = db.get("Products").insert("Name", "Price");
+            insert = db.get("Products").insertInto("Name", "Price");
             insert.val("Computer", 600);
             insert.val("Smartphone", 450);
             insert.val("Car", 20000);
             insert.val("House", 500000);
             insert.val("Monitor", 120);
 
-            insert = db.get("Orders").insert("Quantity", "ProductId", "CustomerId");
+            insert = db.get("Orders").insertInto("Quantity", "ProductId", "CustomerId");
             insert.val(2, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Baloteli"));
             insert.val(1, db.get("Products").selectId("Name = ?", "House"), db.get("Customers").selectId("Name = ?", "Ronaldo"));
             insert.val(5, db.get("Products").selectId("Name = ?", "Monitor"), db.get("Customers").selectId("Name = ?", "Messi"));

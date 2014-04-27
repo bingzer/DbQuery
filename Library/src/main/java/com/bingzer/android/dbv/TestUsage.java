@@ -35,56 +35,6 @@ class TestUsage {
         IDatabase db = DbQuery.getDatabase("Test");
         db.open(version, new SQLiteBuilder.WithoutModeling(null));
 
-        //db.get("")
-
-        Person person = new Person();
-        db.get("Person").select().query(person);
-
-        Select select = db.get("Person").select();
-
-
-        PersonList list = new PersonList();
-        db.get("").update(list);
-
-        db.get("").insert("S").query();
-
-
-        db.begin(new IDatabase.Batch() {
-            @Override
-            public void exec(IDatabase database) {
-
-            }
-        });
-
-        // -- transaction
-        db.begin(new IDatabase.Batch() {
-            @Override
-            public void exec(IDatabase database) {
-
-            }
-        }).commit();
-
-        db.begin(new IDatabase.Batch() {
-            @Override
-            public void exec(IDatabase database) {
-
-            }
-        }).execute();
-        db.get("Person").select().orderBy("Name").paging(10).query(list);
-
-        // --- groupable
-        db.get("").select().groupBy("","").having("","").query();
-        db.get("").select().groupBy("").query();
-
-
-        db.get("").update("", "").columns("Name", "age").val("Ricky", 11).query();
-
-        db.get("").update().val(null).query();
-
-        String[] columns = {"",""};
-        Object[] values = {0, ""};
-
-        db.get("").update(1).columns(columns).val(values).query();
 
 
         version++;

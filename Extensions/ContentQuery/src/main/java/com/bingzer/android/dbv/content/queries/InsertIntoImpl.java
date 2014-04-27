@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Ricky Tobing
+ * Copyright 2013 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.queries;
+package com.bingzer.android.dbv.content.queries;
 
 import android.content.ContentValues;
+import android.net.Uri;
 
+import com.bingzer.android.dbv.content.utils.UriUtils;
+import com.bingzer.android.dbv.internal.queries.QueryImpl;
 import com.bingzer.android.dbv.queries.IQuery;
-import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
 
 /**
-* Created by Ricky on 4/26/2014.
-*/
-public class InsertWithImpl extends InsertImpl implements InsertWith {
+ * Created by Ricky on 8/20/13.
+ */
+public class InsertIntoImpl extends QueryImpl<Integer> implements InsertInto {
 
-    private ContentSet<InsertWithImpl> query;
-    private String[] columnNames;
+    Uri value;
+    ContentSet query;
+    String[] columnNames;
 
-    public InsertWithImpl(ContentSet<InsertWithImpl> query, String... columnNames){
+    public InsertIntoImpl(ContentSet query, String... columnNames){
         this.query = query;
         this.columnNames = columnNames;
     }
@@ -44,5 +48,20 @@ public class InsertWithImpl extends InsertImpl implements InsertWith {
         query.onContentValuesSet(this, contentValues);
 
         return this;
+    }
+
+    @Override
+    public Integer query() {
+        return UriUtils.parseIdFromUri(value);
+    }
+
+    public void setUri(Uri value){
+        this.value = value;
+    }
+
+    public static interface ContentSet {
+
+        void onContentValuesSet(InsertIntoImpl query, ContentValues contentValues);
+
     }
 }

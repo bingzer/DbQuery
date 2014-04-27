@@ -16,13 +16,13 @@
 package com.bingzer.android.dbv.queries;
 
 /**
- * Represents an insert "with" statement
+ * Represents an InsertInto statement
  * <p>
  *     Find a complete <code>Wiki</code> and documentation here:<br/>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  */
-public interface InsertWith extends IQuery<Integer> {
+public interface InsertInto {
 
     /**
      * Values to set

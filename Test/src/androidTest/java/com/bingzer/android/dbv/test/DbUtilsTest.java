@@ -1,5 +1,6 @@
 package com.bingzer.android.dbv.test;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
@@ -51,8 +52,22 @@ public class DbUtilsTest extends AndroidTestCase{
     ////////////////////////////////////////////////////////////////////////////////
 
     public void testArguments(){
-        IDatabase db = DbQuery.getDatabase("TestDb");
-        db.open(1, new SQLiteBuilder.WithoutModeling(getContext()));
+        IDatabase db = DbQuery.getDatabase("DbUtilsTest");
+        db.open(1, new SQLiteBuilder(){
+
+            @Override
+            public Context getContext() {
+                return DbUtilsTest.this.getContext();
+            }
+
+            @Override
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
+                modeling.add("Customers")
+                        .addPrimaryKey("Id")
+                        .addText("Name")
+                        .ifNotExists();
+            }
+        });
 
         Cursor cursor = db.get("Customers")
                 .select("Name = ?", "$Yo$")
