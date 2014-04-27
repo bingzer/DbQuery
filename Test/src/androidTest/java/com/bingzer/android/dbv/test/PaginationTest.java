@@ -8,9 +8,10 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IEnumerable;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.Paging;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class PaginationTest extends AndroidTestCase {
         db.get("Person").delete();
         db.get("Jobs").delete();
 
-        IQuery.InsertWith insert = db.get("Jobs").insert("Position");
+        InsertWith insert = db.get("Jobs").insert("Position");
         managerId = insert.val("Manager").query();
         janitorId = insert.val("Janitor").query();
         guardId = insert.val("Guard").query();
@@ -69,7 +70,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_Simple(){
-        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -126,7 +127,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_Query_Enumerable(){
-        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
 
         paging.query(new IEnumerable<Cursor>() {
             int counter = 0;
@@ -144,7 +145,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_Query_PageNumber(){
-        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -162,7 +163,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_Query_PageNumber_IEntityList(){
-        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -177,7 +178,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_SetPageNumber(){
-        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(3);
+        Paging paging = db.get("Person").select().orderBy("Id").paging(3);
         assertTrue(paging.getRowLimit() == 3);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -196,7 +197,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_SetPageNumber2(){
-        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -215,7 +216,7 @@ public class PaginationTest extends AndroidTestCase {
 
 
     public void testPaging_WithJoin(){
-        IQuery.Paging paging = db.get("Person P")
+        Paging paging = db.get("Person P")
                 .join("Jobs J", "J.Id = P.JobId")
                 .select()
                 .columns("P.*", "J.Position")
@@ -269,14 +270,14 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testGetTotalPage(){
-        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getPageNumber() == 0);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getTotalPage() == 3);
     }
 
     public void testGetTotalPage_2(){
-        IQuery.Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getTotalPage() == 3);
 

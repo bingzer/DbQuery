@@ -18,12 +18,13 @@ package com.bingzer.android.dbv.internal;
 import android.content.ContentValues;
 import android.net.Uri;
 
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IQuery;
+import com.bingzer.android.dbv.queries.InsertWith;
 
 /**
  * Created by Ricky on 8/20/13.
  */
-public class ContentInsertWithImpl implements IQuery.InsertWith{
+public class ContentInsertWithImpl implements InsertWith {
 
     Uri value;
     ContentSet query;

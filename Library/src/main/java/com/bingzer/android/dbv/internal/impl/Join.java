@@ -15,16 +15,18 @@
  */
 package com.bingzer.android.dbv.internal.impl;
 
-import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.internal.Table;
-import com.bingzer.android.dbv.queries.Distinguishable;
-import com.bingzer.android.dbv.queries.Selectable;
+import com.bingzer.android.dbv.contracts.Distinguishable;
+import com.bingzer.android.dbv.contracts.Selectable;
+import com.bingzer.android.dbv.queries.InnerJoin;
+import com.bingzer.android.dbv.queries.OuterJoin;
+import com.bingzer.android.dbv.queries.Select;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public abstract class Join extends SelectImpl implements IQuery.InnerJoin, IQuery.OuterJoin, Selectable, Distinguishable {
+public abstract class Join extends SelectImpl implements InnerJoin, OuterJoin, Selectable, Distinguishable {
 
     protected final Table table;
     protected StringBuilder joinBuilder;

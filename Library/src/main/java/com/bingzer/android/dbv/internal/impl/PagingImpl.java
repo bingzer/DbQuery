@@ -17,18 +17,17 @@ package com.bingzer.android.dbv.internal.impl;
 
 import android.database.Cursor;
 
-import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IEnumerable;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.internal.MappingUtil;
+import com.bingzer.android.dbv.queries.Paging;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public class PagingImpl extends QueryImpl<Cursor> implements IQuery.Paging {
+public class PagingImpl extends QueryImpl<Cursor> implements Paging {
 
     private final int rowLimit;
     private final SelectImpl select;

@@ -6,9 +6,9 @@ import android.net.Uri;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
 
-import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.content.ContentQuery;
 import com.bingzer.android.dbv.content.IStrictResolver;
+import com.bingzer.android.dbv.queries.Insert;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -296,7 +296,7 @@ public class ContentStrictTest extends AndroidTestCase {
         ContentValues values = new ContentValues();
         values.put("word", "OLA");
 
-        IQuery.Insert insert = resolver.insert(values);
+        Insert insert = resolver.insert(values);
         assertTrue(insert.query() > 0);
 
         Uri actual = Uri.parse(insert.toString());
@@ -310,7 +310,7 @@ public class ContentStrictTest extends AndroidTestCase {
         Word word = new Word();
         word.setWord("M&M");
 
-        IQuery.Insert insert = resolver.insert(word);
+        Insert insert = resolver.insert(word);
         assertTrue(insert.query() > 0);
 
         Uri actual = Uri.parse(insert.toString());
@@ -327,7 +327,7 @@ public class ContentStrictTest extends AndroidTestCase {
         list.add(new Word("Sweeth Yo"));
 
 
-        IQuery.Insert insert = resolver.insert(list);
+        Insert insert = resolver.insert(list);
         assertTrue(insert.query() == 3); // 3 got inserted
 
         for(Word w : list){

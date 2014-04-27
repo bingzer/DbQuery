@@ -8,8 +8,8 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.Select;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class UnionTest extends AndroidTestCase {
     }
 
     public void testUnion_Simple(){
-        IQuery.Select select = db.get("Student").select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
         Cursor cursor = db.get("Employee")
                             .union(select)
                             .select().columns("Name").query();
@@ -74,7 +74,7 @@ public class UnionTest extends AndroidTestCase {
     public void testUnion_Simple_Entity(){
         TinyPersonList list = new TinyPersonList();
 
-        IQuery.Select select = db.get("Student").select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
         db.get("Employee")
                 .union(select)
                 .select().columns("Name").query(list);
@@ -83,7 +83,7 @@ public class UnionTest extends AndroidTestCase {
     }
 
     public void testUnionAll_Simple(){
-        IQuery.Select select = db.get("Student").select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
         Cursor cursor = db.get("Employee")
                 .unionAll(select)
                 .select().columns("Name").query();
@@ -94,7 +94,7 @@ public class UnionTest extends AndroidTestCase {
     public void testUnionAll_Simple_Entity(){
         TinyPersonList list = new TinyPersonList();
 
-        IQuery.Select select = db.get("Student").select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
         db.get("Employee")
                 .unionAll(select)
                 .select().columns("Name").query(list);

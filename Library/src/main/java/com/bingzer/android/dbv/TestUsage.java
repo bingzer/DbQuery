@@ -17,6 +17,7 @@
 package com.bingzer.android.dbv;
 
 import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.Select;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +43,7 @@ class TestUsage {
         db.get("Person").select().query(person);
         //db.get("Person").insert(person).query();
 
-        IQuery.Select select = db.get("Person").select();
+        Select select = db.get("Person").select();
 
 
         PersonList list = new PersonList();

@@ -17,7 +17,7 @@ package com.bingzer.android.dbv.internal;
 
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.content.IBaseResolver;
-import com.bingzer.android.dbv.queries.ContentStrictSelectable;
+import com.bingzer.android.dbv.contracts.ContentStrictSelectable;
 
 /**
  * Created by Ricky Tobing on 8/23/13.

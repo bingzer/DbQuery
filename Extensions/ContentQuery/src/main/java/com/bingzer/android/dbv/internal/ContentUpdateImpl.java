@@ -17,12 +17,13 @@ package com.bingzer.android.dbv.internal;
 
 import android.content.ContentValues;
 
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IQuery;
+import com.bingzer.android.dbv.queries.Update;
 
 /**
  * Created by Ricky on 8/20/13.
  */
-public class ContentUpdateImpl implements IQuery.Update {
+public class ContentUpdateImpl implements Update {
     int value = 0;
     private ContentSet query;
     protected ContentValues contentValues;

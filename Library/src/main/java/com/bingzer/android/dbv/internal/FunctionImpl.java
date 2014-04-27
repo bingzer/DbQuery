@@ -16,7 +16,12 @@
 
 package com.bingzer.android.dbv.internal;
 
-import com.bingzer.android.dbv.IFunction;
+import com.bingzer.android.dbv.queries.Average;
+import com.bingzer.android.dbv.queries.IFunction;
+import com.bingzer.android.dbv.queries.Max;
+import com.bingzer.android.dbv.queries.Min;
+import com.bingzer.android.dbv.queries.Sum;
+import com.bingzer.android.dbv.queries.Total;
 
 /**
  * Created by Ricky Tobing on 7/20/13.

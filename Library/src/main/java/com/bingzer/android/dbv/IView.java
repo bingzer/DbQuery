@@ -15,14 +15,14 @@
  */
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.queries.Countable;
-import com.bingzer.android.dbv.queries.Distinguishable;
-import com.bingzer.android.dbv.queries.Droppable;
-import com.bingzer.android.dbv.queries.Function;
-import com.bingzer.android.dbv.queries.RawQueryable;
-import com.bingzer.android.dbv.queries.SelectIdentifiable;
-import com.bingzer.android.dbv.queries.Selectable;
-import com.bingzer.android.dbv.queries.Tangible;
+import com.bingzer.android.dbv.contracts.Countable;
+import com.bingzer.android.dbv.contracts.Distinguishable;
+import com.bingzer.android.dbv.contracts.Droppable;
+import com.bingzer.android.dbv.contracts.Function;
+import com.bingzer.android.dbv.contracts.RawQueryable;
+import com.bingzer.android.dbv.contracts.SelectIdentifiable;
+import com.bingzer.android.dbv.contracts.Selectable;
+import com.bingzer.android.dbv.contracts.Tangible;
 
 /**
  * Represents a <code>View</code>.

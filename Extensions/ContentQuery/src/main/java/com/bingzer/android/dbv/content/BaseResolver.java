@@ -24,7 +24,7 @@ import android.net.Uri;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.Delete;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.internal.ContentConfig;
 import com.bingzer.android.dbv.internal.ContentDeleteImpl;
@@ -33,6 +33,9 @@ import com.bingzer.android.dbv.internal.ContentInsertWithImpl;
 import com.bingzer.android.dbv.internal.ContentUpdateImpl;
 import com.bingzer.android.dbv.internal.ContentUtils;
 import com.bingzer.android.dbv.internal.UriUtil;
+import com.bingzer.android.dbv.queries.Insert;
+import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.Update;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,12 +83,12 @@ abstract class BaseResolver implements IBaseResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Delete delete(int id) {
+    public Delete delete(int id) {
         return delete(generateParamId(id));
     }
 
     @Override
-    public IQuery.Delete delete(Collection<Integer> ids) {
+    public Delete delete(Collection<Integer> ids) {
         int[] idz = new int[ids.size()];
         int counter = 0;
         for (Integer id : ids) {
@@ -96,7 +99,7 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public IQuery.Delete delete(int... ids) {
+    public Delete delete(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
 
@@ -119,12 +122,12 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public IQuery.Delete delete(String condition) {
+    public Delete delete(String condition) {
         return delete(condition, (Object)null);
     }
 
     @Override
-    public IQuery.Delete delete(String whereClause, Object... whereArgs) {
+    public Delete delete(String whereClause, Object... whereArgs) {
         return new ContentDeleteImpl() {
             @Override
             public Integer query() {
@@ -134,12 +137,12 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public IQuery.Delete delete(IEntity entity) {
+    public Delete delete(IEntity entity) {
         return delete(entity.getId());
     }
 
     @Override
-    public <E extends IEntity> IQuery.Delete delete(IEntityList<E> entityList) {
+    public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
         int[] ids = new int[entityList.getEntityList().size()];
         for(int i = 0; i < ids.length; i++){
             ids[i] = entityList.getEntityList().get(i).getId();
@@ -150,7 +153,7 @@ abstract class BaseResolver implements IBaseResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Insert insert(String[] columns, Object[] values) {
+    public Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
             ContentUtils.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
@@ -160,7 +163,7 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public IQuery.InsertWith insert(String... columns) {
+    public InsertWith insert(String... columns) {
         return new ContentInsertWithImpl(new ContentInsertWithImpl.ContentSet() {
             @Override
             public void onContentValuesSet(ContentInsertWithImpl query, ContentValues contentValues) {
@@ -170,13 +173,13 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public IQuery.Insert insert(ContentValues contents) {
+    public Insert insert(ContentValues contents) {
         return new ContentInsertImpl().setUri(contentResolver.insert(uri, contents));
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public IQuery.Insert insert(IEntity entity) {
+    public Insert insert(IEntity entity) {
         // build content values..
         final EntityMapper mapper = new EntityMapper(this);
         final ContentValues contentValues = new ContentValues();
@@ -198,7 +201,7 @@ abstract class BaseResolver implements IBaseResolver {
             }
         }
 
-        IQuery.Insert insert = insert(contentValues);
+        Insert insert = insert(contentValues);
         // assign the newly inserted id
         if(idSetter != null){
             idSetter.set(insert.query());
@@ -209,7 +212,7 @@ abstract class BaseResolver implements IBaseResolver {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <E extends IEntity> IQuery.Insert insert(IEntityList<E> entityList) {
+    public <E extends IEntity> Insert insert(IEntityList<E> entityList) {
         if(config.getDefaultAuthority() == null)
             throw new IllegalArgumentException("Authority has not been set. Use ContentConfig.setDefaultAuthority() to set");
 
@@ -275,12 +278,12 @@ abstract class BaseResolver implements IBaseResolver {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Update update(int id) {
+    public Update update(int id) {
         return update(generateParamId(id));
     }
 
     @Override
-    public IQuery.Update update(int... ids) {
+    public Update update(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(generateIdString()).append(" ");
@@ -302,12 +305,12 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public IQuery.Update update(String condition) {
+    public Update update(String condition) {
         return update(condition, (Object) null);
     }
 
     @Override
-    public IQuery.Update update(final String whereClause, final Object... whereArgs) {
+    public Update update(final String whereClause, final Object... whereArgs) {
         return new ContentUpdateImpl(new ContentUpdateImpl.ContentSet(){
             @Override
             public void onContentValuesSet(ContentUpdateImpl query, ContentValues contentValues) {
@@ -317,12 +320,12 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public IQuery.Update update(ContentValues contents, int id) {
+    public Update update(ContentValues contents, int id) {
         return update(contents, generateParamId(id), (Object)null);
     }
 
     @Override
-    public IQuery.Update update(ContentValues contents, String whereClause, Object... whereArgs) {
+    public Update update(ContentValues contents, String whereClause, Object... whereArgs) {
         ContentUpdateImpl query = new ContentUpdateImpl();
         String[] args = Util.toStringArray(whereArgs);
         query.setValue(contentResolver.update(uri, contents, whereClause, args));
@@ -330,7 +333,7 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public IQuery.Update update(IEntity entity) {
+    public Update update(IEntity entity) {
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
 
         final EntityMapper mapper = new EntityMapper(this);
@@ -351,7 +354,7 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public <E extends IEntity> IQuery.Update update(IEntityList<E> entityList) {
+    public <E extends IEntity> Update update(IEntityList<E> entityList) {
         if(getConfig().getDefaultAuthority() == null)
             throw new IllegalArgumentException("Authority has not been set. Use IResolver.setDefaultAuthority() to set");
 

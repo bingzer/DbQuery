@@ -23,7 +23,7 @@ import android.util.Log;
 
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.IView;
 import com.bingzer.android.dbv.Util;

@@ -16,20 +16,20 @@
 
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.queries.Alterable;
-import com.bingzer.android.dbv.queries.Countable;
-import com.bingzer.android.dbv.queries.Deletable;
-import com.bingzer.android.dbv.queries.Distinguishable;
-import com.bingzer.android.dbv.queries.Droppable;
-import com.bingzer.android.dbv.queries.Function;
-import com.bingzer.android.dbv.queries.SelectIdentifiable;
-import com.bingzer.android.dbv.queries.Insertable;
-import com.bingzer.android.dbv.queries.Joinable;
-import com.bingzer.android.dbv.queries.RawQueryable;
-import com.bingzer.android.dbv.queries.Selectable;
-import com.bingzer.android.dbv.queries.Tangible;
-import com.bingzer.android.dbv.queries.Unionable;
-import com.bingzer.android.dbv.queries.Updatable;
+import com.bingzer.android.dbv.contracts.Alterable;
+import com.bingzer.android.dbv.contracts.Countable;
+import com.bingzer.android.dbv.contracts.Deletable;
+import com.bingzer.android.dbv.contracts.Distinguishable;
+import com.bingzer.android.dbv.contracts.Droppable;
+import com.bingzer.android.dbv.contracts.Function;
+import com.bingzer.android.dbv.contracts.SelectIdentifiable;
+import com.bingzer.android.dbv.contracts.Insertable;
+import com.bingzer.android.dbv.contracts.Joinable;
+import com.bingzer.android.dbv.contracts.RawQueryable;
+import com.bingzer.android.dbv.contracts.Selectable;
+import com.bingzer.android.dbv.contracts.Tangible;
+import com.bingzer.android.dbv.contracts.Unionable;
+import com.bingzer.android.dbv.contracts.Updatable;
 
 import java.util.List;
 

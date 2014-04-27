@@ -8,9 +8,9 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IEnumerable;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertWith;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class EntityJoinTest extends AndroidTestCase {
             db.get("Customers").delete();
 
             // initial value
-            IQuery.InsertWith insert = db.get("Customers").insert("Name", "Address");
+            InsertWith insert = db.get("Customers").insert("Name", "Address");
             insert.val("Baloteli", "Italy");
             insert.val("Pirlo", "Italy");
             insert.val("Ronaldo", "Portugal");

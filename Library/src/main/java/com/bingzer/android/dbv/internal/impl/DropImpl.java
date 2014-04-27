@@ -15,7 +15,7 @@
  */
 package com.bingzer.android.dbv.internal.impl;
 
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IQuery;
 
 /**
 * Created by Ricky on 4/26/2014.

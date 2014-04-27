@@ -16,8 +16,8 @@
 
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.queries.RawQueryable;
-import com.bingzer.android.dbv.queries.SqlExecutable;
+import com.bingzer.android.dbv.contracts.RawQueryable;
+import com.bingzer.android.dbv.contracts.SqlExecutable;
 
 import java.util.List;
 

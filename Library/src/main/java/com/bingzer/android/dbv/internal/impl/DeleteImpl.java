@@ -15,10 +15,10 @@
  */
 package com.bingzer.android.dbv.internal.impl;
 
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.Delete;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public class DeleteImpl extends QueryImpl<Integer> implements IQuery.Delete {
+public class DeleteImpl extends QueryImpl<Integer> implements Delete {
 }

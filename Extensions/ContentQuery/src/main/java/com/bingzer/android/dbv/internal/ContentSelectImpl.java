@@ -19,11 +19,12 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IEnumerable;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.content.IBaseResolver;
-import com.bingzer.android.dbv.queries.ContentSelectable;
+import com.bingzer.android.dbv.contracts.ContentSelectable;
+import com.bingzer.android.dbv.queries.Paging;
 
 /**
  * Created by Ricky on 8/20/13.
@@ -137,7 +138,7 @@ public abstract class ContentSelectImpl implements ContentSelectable.Select, Con
     }
 
 
-    static class PagingImpl implements IQuery.Paging, IQuery<Cursor> {
+    static class PagingImpl implements Paging, IQuery<Cursor> {
         final IBaseResolver resolver;
         final int rowLimit;
         private final ContentSelectImpl select;

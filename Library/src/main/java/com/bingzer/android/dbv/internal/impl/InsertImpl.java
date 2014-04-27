@@ -15,12 +15,12 @@
  */
 package com.bingzer.android.dbv.internal.impl;
 
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.Insert;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public class InsertImpl extends QueryImpl<Integer> implements IQuery.Insert {
+public class InsertImpl extends QueryImpl<Integer> implements Insert {
     public InsertImpl(){
         this.value = 0;
     }

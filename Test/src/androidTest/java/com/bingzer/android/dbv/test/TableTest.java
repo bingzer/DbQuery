@@ -23,10 +23,10 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IEnumerable;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertWith;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -1200,7 +1200,7 @@ public class TableTest extends AndroidTestCase{
 
 
     private void populateData(){
-        IQuery.InsertWith insert = db.get("Customers").insert("Name", "Address", "City", "PostalCode", "Country");
+        InsertWith insert = db.get("Customers").insert("Name", "Address", "City", "PostalCode", "Country");
 
         insert.val("Wayne Rooney", "10 Manchester United", "Manchester", 9812, "UK");
         insert.val("Lionel Messi", "10 Barcelona st.", "Barcelona", 70, "Spain");

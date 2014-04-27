@@ -23,7 +23,7 @@ import java.lang.reflect.ParameterizedType;
  *
  * Created by Ricky Tobing on 8/9/13.
  *
- * @see com.bingzer.android.dbv.IQuery.Select#query(IEntity)
+ * @see com.bingzer.android.dbv.queries.Select#query(IEntity)
  * @see com.bingzer.android.dbv.ITable#insert(IEntity)
  */
 public interface IEntity {

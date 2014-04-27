@@ -15,7 +15,7 @@
  */
 package com.bingzer.android.dbv.content;
 
-import com.bingzer.android.dbv.queries.ContentStrictSelectable;
+import com.bingzer.android.dbv.contracts.ContentStrictSelectable;
 
 /**
  * Created by Ricky Tobing on 8/23/13.

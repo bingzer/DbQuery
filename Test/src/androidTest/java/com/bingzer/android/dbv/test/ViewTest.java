@@ -6,10 +6,14 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IFunction;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.Average;
 import com.bingzer.android.dbv.IView;
 import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.Max;
+import com.bingzer.android.dbv.queries.Min;
+import com.bingzer.android.dbv.queries.Sum;
+import com.bingzer.android.dbv.queries.Total;
 
 /**
  * Created by Ricky Tobing on 8/19/13.
@@ -69,7 +73,7 @@ public class ViewTest extends AndroidTestCase {
             db.get("Customers").delete();
 
             // initial value
-            IQuery.InsertWith insert = db.get("Customers").insert("Name", "Address");
+            InsertWith insert = db.get("Customers").insert("Name", "Address");
             insert.val("Baloteli", "Italy");
             insert.val("Pirlo", "Italy");
             insert.val("Ronaldo", "Portugal");
@@ -412,7 +416,7 @@ public class ViewTest extends AndroidTestCase {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // functiosn
     public void testAvg(){
-        IFunction.Average avg = db.getView("OrderView").avg("ProductPrice");
+        Average avg = db.getView("OrderView").avg("ProductPrice");
         assertEquals(125330, avg.value());
 
         avg = db.get("OrderView").avg("ProductPrice", "ProductName = 'Computer'");
@@ -423,7 +427,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSum(){
-        IFunction.Sum sum = db.getView("OrderView").sum("ProductPrice");
+        Sum sum = db.getView("OrderView").sum("ProductPrice");
         assertEquals(501320, sum.value());
 
         sum = db.get("OrderView").sum("ProductPrice", "ProductName IN ('Car', 'Computer')");
@@ -434,7 +438,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testTotal(){
-        IFunction.Total total = db.getView("OrderView").total("ProductPrice");
+        Total total = db.getView("OrderView").total("ProductPrice");
         assertEquals(501320, total.value());
 
         total = db.get("OrderView").total("ProductPrice", "ProductName IN ('Car', 'Computer')");
@@ -445,7 +449,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testMax(){
-        IFunction.Max max = db.getView("OrderView").max("ProductPrice");
+        Max max = db.getView("OrderView").max("ProductPrice");
         assertEquals(500000, max.value());
 
         max = db.getView("OrderView").max("ProductPrice", "ProductName Like 'M%' Or ProductName Like 'C%'");
@@ -456,7 +460,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testMin(){
-        IFunction.Min min = db.getView("OrderView").min("ProductPrice");
+        Min min = db.getView("OrderView").min("ProductPrice");
         assertEquals(120, min.value());
 
         min = db.getView("OrderView").min("ProductPrice", "ProductPrice > 450");

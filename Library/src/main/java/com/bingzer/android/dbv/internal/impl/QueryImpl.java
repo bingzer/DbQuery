@@ -1,6 +1,6 @@
 package com.bingzer.android.dbv.internal.impl;
 
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IQuery;
 
 public class QueryImpl<T> implements IQuery<T> {
     protected T value;

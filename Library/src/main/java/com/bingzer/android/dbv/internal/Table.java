@@ -22,8 +22,9 @@ import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IFunction;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.Average;
+import com.bingzer.android.dbv.queries.Delete;
+import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.internal.impl.ContentSet;
@@ -37,6 +38,17 @@ import com.bingzer.android.dbv.internal.impl.QueryImpl;
 import com.bingzer.android.dbv.internal.impl.SelectImpl;
 import com.bingzer.android.dbv.internal.impl.UnionImpl;
 import com.bingzer.android.dbv.internal.impl.UpdateImpl;
+import com.bingzer.android.dbv.queries.InnerJoin;
+import com.bingzer.android.dbv.queries.Insert;
+import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.Max;
+import com.bingzer.android.dbv.queries.Min;
+import com.bingzer.android.dbv.queries.OuterJoin;
+import com.bingzer.android.dbv.queries.Select;
+import com.bingzer.android.dbv.queries.Sum;
+import com.bingzer.android.dbv.queries.Total;
+import com.bingzer.android.dbv.queries.Union;
+import com.bingzer.android.dbv.queries.Update;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -90,7 +102,7 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Select select(String condition) {
+    public Select select(String condition) {
         return select(condition, (Object) null);
     }
 
@@ -111,17 +123,17 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.Select select(int top, String condition) {
+    public Select select(int top, String condition) {
         return select(top, condition, (Object) null);
     }
 
     @Override
-    public IQuery.Select select(int id) {
+    public Select select(int id) {
         return select(generateParamId(id));
     }
 
     @Override
-    public IQuery.Select select(int... ids) {
+    public Select select(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(generateIdString()).append(" ");
@@ -143,12 +155,12 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.Select select(String whereClause, Object... args) {
+    public Select select(String whereClause, Object... args) {
         return select(-1, whereClause, args);
     }
 
     @Override
-    public IQuery.Select select(int top, String whereClause, Object... args) {
+    public Select select(int top, String whereClause, Object... args) {
         return new SelectImpl(this, top, false){
             @Override public Cursor query(){
                 return db.sqLiteDb.rawQuery(toString(), null);
@@ -159,32 +171,32 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Select selectDistinct() {
+    public Select selectDistinct() {
         return selectDistinct(null);
     }
 
     @Override
-    public IQuery.Select selectDistinct(String condition) {
+    public Select selectDistinct(String condition) {
         return selectDistinct(condition, (Object) null);
     }
 
     @Override
-    public IQuery.Select selectDistinct(String whereClause, Object... args) {
+    public Select selectDistinct(String whereClause, Object... args) {
         return selectDistinct(-1, whereClause, args);
     }
 
     @Override
-    public IQuery.Select selectDistinct(int top) {
+    public Select selectDistinct(int top) {
         return selectDistinct(top, null);
     }
 
     @Override
-    public IQuery.Select selectDistinct(int top, String condition) {
+    public Select selectDistinct(int top, String condition) {
         return selectDistinct(top, condition, (Object) null);
     }
 
     @Override
-    public IQuery.Select selectDistinct(int top, String whereClause, Object... args) {
+    public Select selectDistinct(int top, String whereClause, Object... args) {
         return new SelectImpl(this, top, true){
             @Override public Cursor query(){
                 return db.sqLiteDb.rawQuery(toString(), null);
@@ -195,7 +207,7 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Insert insert(final ContentValues contents) {
+    public Insert insert(final ContentValues contents) {
         InsertImpl query = new InsertImpl();
         query.setValue( (int) db.sqLiteDb.insertOrThrow(getName(), null, contents) );
 
@@ -203,7 +215,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.Insert insert(String[] columns, Object[] values) {
+    public Insert insert(String[] columns, Object[] values) {
         final ContentValues contentValues = new ContentValues();
         for(int i = 0; i < columns.length; i++){
             MappingUtil.mapContentValuesFromGenericObject(contentValues, columns[i], values[i]);
@@ -213,7 +225,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.InsertWith insert(String... columns) {
+    public InsertWith insert(String... columns) {
         return new InsertWithImpl(new ContentSet<InsertWithImpl>() {
             @Override
             public void onContentValuesSet(InsertWithImpl query, ContentValues contentValues) {
@@ -224,7 +236,7 @@ public class Table implements ITable {
 
     @Override
     @SuppressWarnings("unchecked")
-    public IQuery.Insert insert(IEntity entity) {
+    public Insert insert(IEntity entity) {
         // build content values..
         final EntityMapper mapper = new EntityMapper(this);
         final ContentValues contentValues = new ContentValues();
@@ -246,7 +258,7 @@ public class Table implements ITable {
             }
         }
 
-        IQuery.Insert insert = insert(contentValues);
+        Insert insert = insert(contentValues);
         // assign the newly inserted id
         if(idSetter != null){
             idSetter.set(insert.query());
@@ -256,7 +268,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public <E extends IEntity> IQuery.Insert insert(final IEntityList<E> entityList) {
+    public <E extends IEntity> Insert insert(final IEntityList<E> entityList) {
         final InsertImpl query = new InsertImpl();
 
         db.begin(new IDatabase.Batch() {
@@ -275,12 +287,12 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Update update(int id) {
+    public Update update(int id) {
         return update(generateParamId(id));
     }
 
     @Override
-    public IQuery.Update update(int... ids) {
+    public Update update(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
             whereClause.append(generateIdString()).append(" ");
@@ -302,22 +314,22 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.Update update(String condition) {
+    public Update update(String condition) {
         return update(condition, (Object) null);
     }
 
     @Override
-    public IQuery.Update update(final String whereClause, final Object... whereArgs) {
+    public Update update(final String whereClause, final Object... whereArgs) {
         return new UpdateImpl(new ContentSet<UpdateImpl>() {
             @Override
             public void onContentValuesSet(UpdateImpl query, ContentValues contentValues) {
-                query.setValue( update(contentValues, whereClause, whereArgs).query() );
+                query.setValue(update(contentValues, whereClause, whereArgs).query());
             }
         });
     }
 
     @Override
-    public IQuery.Update update(IEntity entity) {
+    public Update update(IEntity entity) {
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
 
         final EntityMapper mapper = new EntityMapper(this);
@@ -338,7 +350,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public <E extends IEntity> IQuery.Update update(final IEntityList<E> entityList) {
+    public <E extends IEntity> Update update(final IEntityList<E> entityList) {
         final UpdateImpl query = new UpdateImpl();
 
         db.begin(new IDatabase.Batch() {
@@ -354,12 +366,12 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.Update update(ContentValues contents, int id) {
+    public Update update(ContentValues contents, int id) {
         return update(contents, generateParamId(id));
     }
 
     @Override
-    public IQuery.Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
+    public Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
         UpdateImpl query = new UpdateImpl();
         String[] args = Util.toStringArray(whereArgs);
 
@@ -373,12 +385,12 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Delete delete(final int id) {
+    public Delete delete(final int id) {
         return delete(generateParamId(id));
     }
 
     @Override
-    public IQuery.Delete delete(int... ids) {
+    public Delete delete(int... ids) {
         if(ids != null && ids.length > 0){
             StringBuilder whereClause = new StringBuilder();
 
@@ -401,7 +413,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.Delete delete(Collection<Integer> ids) {
+    public Delete delete(Collection<Integer> ids) {
         int[] idz = new int[ids.size()];
         int counter = 0;
         for (Integer id : ids) {
@@ -412,25 +424,25 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.Delete delete(final String condition) {
+    public Delete delete(final String condition) {
         return delete(condition, (Object)null);
     }
 
     @Override
-    public IQuery.Delete delete(final String whereClause, final Object... whereArgs) {
+    public Delete delete(final String whereClause, final Object... whereArgs) {
         DeleteImpl query = new DeleteImpl();
-        query.setValue( db.sqLiteDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs)) );
+        query.setValue(db.sqLiteDb.delete(getName(), whereClause, Util.toStringArray((Object[]) whereArgs)));
 
         return query;
     }
 
     @Override
-    public IQuery.Delete delete(IEntity entity) {
+    public Delete delete(IEntity entity) {
         return delete(entity.getId());
     }
 
     @Override
-    public <E extends IEntity> IQuery.Delete delete(IEntityList<E> entityList) {
+    public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
         int[] ids = new int[entityList.getEntityList().size()];
         for(int i = 0; i < ids.length; i++){
             ids[i] = entityList.getEntityList().get(i).getId();
@@ -539,7 +551,7 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.InnerJoin join(String tableName, String onClause) {
+    public InnerJoin join(String tableName, String onClause) {
         return new InnerJoinImpl(this, tableName, onClause){
             @Override public Cursor query(){
                 return db.sqLiteDb.rawQuery(toString(), null);
@@ -548,12 +560,12 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.InnerJoin join(String tableName, String column1, String column2) {
+    public InnerJoin join(String tableName, String column1, String column2) {
         return join(tableName, name + "." + column1 + "=" + tableName + "." + column2);
     }
 
     @Override
-    public IQuery.OuterJoin outerJoin(String tableName, String onClause) {
+    public OuterJoin outerJoin(String tableName, String onClause) {
         return new OuterJoinImpl(this, tableName, onClause){
             @Override public Cursor query(){
                 return db.sqLiteDb.rawQuery(toString(), null);
@@ -562,14 +574,14 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.OuterJoin outerJoin(String tableName, String column1, String column2) {
+    public OuterJoin outerJoin(String tableName, String column1, String column2) {
         return outerJoin(tableName, name + "." + column1 + "=" + tableName + "." + column2);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IQuery.Union union(IQuery.Select select) {
+    public Union union(Select select) {
         return new UnionImpl(select, this) {
             @Override
             public Cursor query() {
@@ -579,7 +591,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public IQuery.Union unionAll(IQuery.Select select) {
+    public Union unionAll(Select select) {
         return new UnionImpl(select, this, true) {
             @Override
             public Cursor query() {
@@ -591,12 +603,12 @@ public class Table implements ITable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public IFunction.Average avg(String columnName) {
+    public Average avg(String columnName) {
         return avg(columnName, null);
     }
 
     @Override
-    public IFunction.Average avg(String columnName, String condition) {
+    public Average avg(String columnName, String condition) {
         FunctionImpl.AverageImpl fn = new FunctionImpl.AverageImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
@@ -607,17 +619,17 @@ public class Table implements ITable {
     }
 
     @Override
-    public IFunction.Average avg(String columnName, String whereClause, Object... args) {
+    public Average avg(String columnName, String whereClause, Object... args) {
         return avg(columnName, Util.bindArgs(whereClause, args));
     }
 
     @Override
-    public IFunction.Sum sum(String columnName) {
+    public Sum sum(String columnName) {
         return sum(columnName, null);
     }
 
     @Override
-    public IFunction.Sum sum(String columnName, String condition) {
+    public Sum sum(String columnName, String condition) {
         FunctionImpl.SumImpl fn = new FunctionImpl.SumImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
@@ -628,17 +640,17 @@ public class Table implements ITable {
     }
 
     @Override
-    public IFunction.Sum sum(String columnName, String whereClause, Object... args) {
+    public Sum sum(String columnName, String whereClause, Object... args) {
         return sum(columnName, Util.bindArgs(whereClause, args));
     }
 
     @Override
-    public IFunction.Total total(String columnName) {
+    public Total total(String columnName) {
         return total(columnName, null);
     }
 
     @Override
-    public IFunction.Total total(String columnName, String condition) {
+    public Total total(String columnName, String condition) {
         FunctionImpl.TotalImpl fn = new FunctionImpl.TotalImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
@@ -649,17 +661,17 @@ public class Table implements ITable {
     }
 
     @Override
-    public IFunction.Total total(String columnName, String whereClause, Object... args) {
+    public Total total(String columnName, String whereClause, Object... args) {
         return total(columnName, Util.bindArgs(whereClause, args));
     }
 
     @Override
-    public IFunction.Max max(String columnName) {
+    public Max max(String columnName) {
         return max(columnName, null);
     }
 
     @Override
-    public IFunction.Max max(String columnName, String condition) {
+    public Max max(String columnName, String condition) {
         FunctionImpl.MaxImpl fn = new FunctionImpl.MaxImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
@@ -670,17 +682,17 @@ public class Table implements ITable {
     }
 
     @Override
-    public IFunction.Max max(String columnName, String whereClause, Object... args) {
+    public Max max(String columnName, String whereClause, Object... args) {
         return max(columnName, Util.bindArgs(whereClause, args));
     }
 
     @Override
-    public IFunction.Min min(String columnName) {
+    public Min min(String columnName) {
         return min(columnName, null);
     }
 
     @Override
-    public IFunction.Min min(String columnName, String condition) {
+    public Min min(String columnName, String condition) {
         FunctionImpl.MinImpl fn = new FunctionImpl.MinImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
@@ -691,7 +703,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public IFunction.Min min(String columnName, String whereClause, Object... args) {
+    public Min min(String columnName, String whereClause, Object... args) {
         return min(columnName, Util.bindArgs(whereClause, args));
     }
 

@@ -17,13 +17,14 @@ package com.bingzer.android.dbv.internal.impl;
 
 import android.content.ContentValues;
 
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.internal.MappingUtil;
+import com.bingzer.android.dbv.queries.InsertWith;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public class InsertWithImpl extends InsertImpl implements IQuery.InsertWith {
+public class InsertWithImpl extends InsertImpl implements InsertWith {
 
     ContentSet<InsertWithImpl> query;
     String[] columnNames;

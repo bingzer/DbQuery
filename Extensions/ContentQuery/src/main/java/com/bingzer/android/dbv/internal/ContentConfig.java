@@ -30,7 +30,7 @@ public class ContentConfig extends Config {
 
     /**
      * Sets the default projections (columns) unless if otherwise
-     * specified with {@link com.bingzer.android.dbv.IQuery.Select#columns(String...)}
+     * specified with {@link com.bingzer.android.dbv.queries.Select#columns(String...)}
      * in a select statement.
      * By default the default projections is
      * {@link com.bingzer.android.dbv.IConfig#getIdNamingConvention()}

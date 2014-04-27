@@ -6,8 +6,9 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertWith;
+import com.bingzer.android.dbv.queries.Paging;
 
 /**
  * Created by Ricky Tobing on 8/15/13.
@@ -49,7 +50,7 @@ public class GroupByTest extends AndroidTestCase {
         db.get("company").delete();
         db.get("employee").delete();
 
-        IQuery.InsertWith insert = db.get("employee").insert("name", "position");
+        InsertWith insert = db.get("employee").insert("name", "position");
         insert.val("Paul", "Guard");
         insert.val("Allen", "Manager");
         insert.val("Teddy", "Janitor");
@@ -155,7 +156,7 @@ Teddy       20000.0     Janitor
 
 
     public void testSelectGroupBy_WithJoin_Paging(){
-        IQuery.Paging paging = db.get("company c")
+        Paging paging = db.get("company c")
                 .join("employee e", "e.name = c.name")
                 .select()
                 .columns("e.name", "sum(c.salary)", "e.position")
@@ -400,7 +401,7 @@ Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
         db.get("Company").insert("name", "salary").val("Teddy", 20000);
         assertTrue(db.get("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
 
-        IQuery.Paging paging = db.get("company c")
+        Paging paging = db.get("company c")
                 .join("employee e", "e.name = c.name")
                 .select()
                 .columns("e.name", "sum(c.salary)", "e.position")

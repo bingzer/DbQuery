@@ -15,14 +15,15 @@
  */
 package com.bingzer.android.dbv.internal.impl;
 
-import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.internal.Table;
-import com.bingzer.android.dbv.queries.Distinguishable;
+import com.bingzer.android.dbv.contracts.Distinguishable;
+import com.bingzer.android.dbv.queries.Select;
+import com.bingzer.android.dbv.queries.Union;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public abstract class UnionImpl extends SelectImpl implements IQuery.Union, Distinguishable {
+public abstract class UnionImpl extends SelectImpl implements Union, Distinguishable {
     Select firstSelect;
     Select secondSelect;
     boolean unionAll;

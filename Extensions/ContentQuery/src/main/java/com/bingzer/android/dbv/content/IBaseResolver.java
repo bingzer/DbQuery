@@ -17,12 +17,12 @@ package com.bingzer.android.dbv.content;
 
 import android.net.Uri;
 
-import com.bingzer.android.dbv.queries.Countable;
-import com.bingzer.android.dbv.queries.Deletable;
-import com.bingzer.android.dbv.queries.Insertable;
-import com.bingzer.android.dbv.queries.SelectIdentifiable;
-import com.bingzer.android.dbv.queries.Tangible;
-import com.bingzer.android.dbv.queries.Updatable;
+import com.bingzer.android.dbv.contracts.Countable;
+import com.bingzer.android.dbv.contracts.Deletable;
+import com.bingzer.android.dbv.contracts.Insertable;
+import com.bingzer.android.dbv.contracts.SelectIdentifiable;
+import com.bingzer.android.dbv.contracts.Tangible;
+import com.bingzer.android.dbv.contracts.Updatable;
 import com.bingzer.android.dbv.internal.ContentConfig;
 
 /**

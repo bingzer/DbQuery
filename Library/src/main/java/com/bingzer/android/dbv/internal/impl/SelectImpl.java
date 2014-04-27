@@ -19,17 +19,20 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IEnumerable;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.GroupBy;
+import com.bingzer.android.dbv.queries.Having;
 import com.bingzer.android.dbv.Util;
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.internal.MappingUtil;
 import com.bingzer.android.dbv.internal.Table;
+import com.bingzer.android.dbv.queries.Paging;
+import com.bingzer.android.dbv.queries.Select;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public abstract class SelectImpl extends QueryImpl<Cursor> implements IQuery.Select, IQuery.Select.OrderBy, IQuery.GroupBy, IQuery.Having {
+public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Select.OrderBy, GroupBy, Having {
 
     final Table table;
     StringBuilder selectString;
