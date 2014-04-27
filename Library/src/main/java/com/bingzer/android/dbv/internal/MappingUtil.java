@@ -132,7 +132,7 @@ public class MappingUtil {
     public static <E extends IEntity> void mapEntityListFromCursor(ITable table, IEntityList<E> entityList, Cursor cursor){
         EntityMapper mapper = new EntityMapper(table);
         while(cursor.moveToNext()){
-            int columnIdIndex = cursor.getColumnIndex(table.generateIdString());
+            int columnIdIndex = cursor.getColumnIndex(table.getColumnIdName());
             int id = -1;
             if(columnIdIndex >= 0) id = cursor.getInt(columnIdIndex);
 

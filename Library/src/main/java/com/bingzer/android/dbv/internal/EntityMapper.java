@@ -32,7 +32,7 @@ public class EntityMapper extends HashMap<String, IEntity.Action> implements IEn
 
     @Override
     public void mapId(IEntity.Action<Integer> action) {
-        map(table.generateIdString(), action);
+        map(table.getColumnIdName(), action);
     }
 
     @Override
