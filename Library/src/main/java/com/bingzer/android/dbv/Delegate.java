@@ -17,6 +17,7 @@ package com.bingzer.android.dbv;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * An action used to set/get variables. A delegate is
@@ -66,7 +67,7 @@ public abstract class Delegate<T> {
     ///////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Action type for Id.
+     * Delegate type for Id.
      * Helper class for {@link com.bingzer.android.dbv.IEntity.Mapper#mapId(Delegate)}
      * <code>
      * <pre>
@@ -98,7 +99,7 @@ public abstract class Delegate<T> {
     }
 
     /**
-     * Action type for <code>String</code>
+     * Delegate type for <code>String</code>
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
@@ -109,7 +110,7 @@ public abstract class Delegate<T> {
     }
 
     /**
-     * Action type for <code>Integer</code>
+     * Delegate type for <code>Integer</code>
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
@@ -120,7 +121,7 @@ public abstract class Delegate<T> {
     }
 
     /**
-     * Action type for <code>Long</code>
+     * Delegate type for <code>Long</code>
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
@@ -131,7 +132,7 @@ public abstract class Delegate<T> {
     }
 
     /**
-     * Action type for <code>Short</code>
+     * Delegate type for <code>Short</code>
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
@@ -142,7 +143,7 @@ public abstract class Delegate<T> {
     }
 
     /**
-     * Action type for <code>Float</code>
+     * Delegate type for <code>Float</code>
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
@@ -153,7 +154,7 @@ public abstract class Delegate<T> {
     }
 
     /**
-     * Action type for <code>Boolean</code>
+     * Delegate type for <code>Boolean</code>
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
@@ -164,7 +165,7 @@ public abstract class Delegate<T> {
     }
 
     /**
-     * Action type for <code>Double</code>
+     * Delegate type for <code>Double</code>
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
@@ -175,7 +176,7 @@ public abstract class Delegate<T> {
     }
 
     /**
-     * Action type for <code>byte[]</code>
+     * Delegate type for <code>byte[]</code>
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate
      */
@@ -185,6 +186,29 @@ public abstract class Delegate<T> {
         }
     }
 
+    /**
+     * Delegate type for <code>Object</code>
+     * @see com.bingzer.android.dbv.IEntity.Mapper
+     * @see Delegate
+     */
+    public static abstract class TypeObject extends Delegate<Object> {
+        public TypeObject() {
+            super(Object.class);
+        }
+    }
+
+    /**
+     * Delegate type for <code>Object</code>
+     * @see com.bingzer.android.dbv.IEntity.Mapper
+     * @see Delegate
+     */
+    public static abstract class Type<T> extends Delegate<T> {
+        public Type(Class<?> clazz) {
+            super(clazz);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Created by Ricky Tobing on 8/9/13.

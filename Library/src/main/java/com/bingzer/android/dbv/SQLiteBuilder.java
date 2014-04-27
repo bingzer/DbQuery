@@ -54,11 +54,6 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
     @Override
     public abstract void onModelCreate(IDatabase database, IDatabase.Modeling modeling);
 
-    /////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////
-
-
     /**
      * Called when upgrade from oldVersion to newVersion
      *
@@ -123,7 +118,7 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
      */
     public static final class WithoutModeling extends SQLiteBuilder {
 
-        Context context;
+        private Context context;
 
         /**
          * Supply the context here.

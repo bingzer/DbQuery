@@ -12,22 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * ----------------------------------------------------------------------------
- *
- * Copyright (C) 2006 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 package com.bingzer.android.dbv.utils;
 
@@ -57,9 +41,32 @@ public final class DelegateUtils {
         else if(delegate.getType() == Short.class) delegate.set(cursor.getShort(index));
         else if(delegate.getType() == Float.class) delegate.set(cursor.getFloat(index));
         else if(delegate.getType() == byte[].class) delegate.set(cursor.getBlob(index));
+        else if(delegate.getType() == Object.class) delegate.set(getObjectFromCursor(cursor, index));
 
         // TODO: Fix the exception message
         else throw new IllegalArgumentException("Unmapped");
+    }
+
+    /**
+     * Try to get an 'object' from a cursor
+     * @param cursor the target cursor
+     * @param index the index in the cursor
+     * @return an object
+     */
+    private static Object getObjectFromCursor(Cursor cursor, int index){
+        switch (cursor.getType(index)){
+            case Cursor.FIELD_TYPE_BLOB:
+                return cursor.getBlob(index);
+            case Cursor.FIELD_TYPE_FLOAT:
+                return cursor.getDouble(index);
+            case Cursor.FIELD_TYPE_INTEGER:
+                return cursor.getLong(index);
+            case Cursor.FIELD_TYPE_STRING:
+                return cursor.getString(index);
+            default:
+            case Cursor.FIELD_TYPE_NULL:
+                return null;
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

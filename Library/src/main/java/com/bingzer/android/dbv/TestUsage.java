@@ -16,6 +16,8 @@
 
 package com.bingzer.android.dbv;
 
+import android.text.format.DateFormat;
+
 import com.bingzer.android.dbv.queries.Select;
 
 import java.util.LinkedList;
@@ -125,7 +127,6 @@ class TestUsage {
         @Override
         public void map(Mapper mapper) {
             //mapper.reflect(this);
-
             mapper.map("Name", new Delegate.TypeString(){
                 @Override public void set(String value) {
                     name = value;
