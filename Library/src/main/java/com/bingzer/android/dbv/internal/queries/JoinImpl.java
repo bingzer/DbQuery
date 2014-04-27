@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.internal.Table;
@@ -26,12 +26,12 @@ import com.bingzer.android.dbv.queries.Select;
 /**
 * Created by Ricky on 4/26/2014.
 */
-public abstract class Join extends SelectImpl implements InnerJoin, OuterJoin, Selectable, Distinguishable {
+public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoin, Selectable, Distinguishable {
 
     protected final Table table;
     protected StringBuilder joinBuilder;
 
-    public Join(Table table, String joinType, String tableNameToJoin, String onClause){
+    public JoinImpl(Table table, String joinType, String tableNameToJoin, String onClause){
         super( table);
         this.table = table;
         this.joinBuilder = new StringBuilder();

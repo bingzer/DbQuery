@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
-import com.bingzer.android.dbv.queries.IQuery;
+import com.bingzer.android.dbv.queries.Max;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public class DropImpl extends QueryImpl<Boolean> implements IQuery<Boolean> {
+public class MaxImpl extends FunctionImpl implements Max {
+    public MaxImpl(String tableName, String columnName, String condition){
+        super("MAX", tableName, columnName, condition);
+    }
 }

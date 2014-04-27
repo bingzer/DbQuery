@@ -1,4 +1,4 @@
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
 import com.bingzer.android.dbv.queries.IQuery;
 

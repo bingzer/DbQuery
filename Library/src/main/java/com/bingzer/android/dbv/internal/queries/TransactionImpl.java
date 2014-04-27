@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.internal.queries;
 
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.internal.Database;
 
 /**
  * Implements of {@link IDatabase.Transaction}
  *
  * Created by Ricky Tobing on 8/12/13.
  */
-class TransactionImpl implements IDatabase.Transaction {
+public class TransactionImpl implements IDatabase.Transaction {
 
     final Database database;
     final IDatabase.Batch batch;
 
-    TransactionImpl(Database database, IDatabase.Batch batch){
+    public TransactionImpl(Database database, IDatabase.Batch batch){
         this.database = database;
         this.batch = batch;
     }

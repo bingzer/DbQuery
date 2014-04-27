@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
-import android.content.ContentValues;
-
-import com.bingzer.android.dbv.queries.IQuery;
+import com.bingzer.android.dbv.queries.Delete;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public interface ContentSet<E extends IQuery<Integer>> {
-
-    void onContentValuesSet(E query, ContentValues contentValues);
-
+public class DeleteImpl extends QueryImpl<Integer> implements Delete {
 }

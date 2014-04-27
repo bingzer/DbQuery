@@ -1,8 +1,8 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance insert the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.internal;
 
 import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.ITable;
 
 import java.util.HashMap;
 
 /**
  * Created by Ricky Tobing on 8/9/13.
  */
-class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
-    final Table table;
+public class EntityMapper extends HashMap<String, IEntity.Action> implements IEntity.Mapper{
+    private final ITable table;
 
-    EntityMapper(Table table){
+    public EntityMapper(ITable table){
         this.table = table;
     }
 

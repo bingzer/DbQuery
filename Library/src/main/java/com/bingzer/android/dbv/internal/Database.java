@@ -23,6 +23,8 @@ import android.util.Log;
 
 import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.internal.queries.TransactionImpl;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.IView;
@@ -289,22 +291,22 @@ public class Database implements IDatabase {
             throw new IllegalArgumentException("You must call IDatabase.open() first");
     }
 
-    void begin(){
+    public void begin(){
         ensureDbHelperIsReady();
         sqLiteDb.beginTransaction();
     }
 
-    void commit(){
+    public void commit(){
         ensureDbHelperIsReady();
         sqLiteDb.setTransactionSuccessful();
     }
 
-    void rollback(){
+    public void rollback(){
         ensureDbHelperIsReady();
         // absolutely don't do anything
     }
 
-    void end(){
+    public void end(){
         ensureDbHelperIsReady();
         sqLiteDb.endTransaction();
     }

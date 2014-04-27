@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.internal;
 
 import com.bingzer.android.dbv.IConfig;
@@ -28,14 +27,14 @@ import com.bingzer.android.dbv.IConfig;
  *
  * Created by Ricky Tobing on 7/19/13.
  */
-class Config implements IConfig {
+public class Config implements IConfig {
     String idNamingConvention;
     boolean appendTableName;
     boolean foreignKeySupport;
     boolean debug;
     boolean readOnly;
 
-    Config(){
+    public Config(){
         this.idNamingConvention = "Id";
         this.appendTableName = false;
         this.foreignKeySupport = false;

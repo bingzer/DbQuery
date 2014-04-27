@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
-import com.bingzer.android.dbv.internal.Table;
-import com.bingzer.android.dbv.queries.OuterJoin;
+import com.bingzer.android.dbv.queries.Insert;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public abstract class OuterJoinImpl extends Join implements OuterJoin {
-    public OuterJoinImpl(Table table, String tableNameToJoin, String onClause) {
-        super(table, "OUTER JOIN", tableNameToJoin, onClause);
+public class InsertImpl extends QueryImpl<Integer> implements Insert {
+    public InsertImpl(){
+        this.value = 0;
     }
 }

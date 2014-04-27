@@ -106,7 +106,7 @@ public class MappingUtil {
      * @param cursor the cursor
      */
     public static void mapEntityFromCursor(ITable table, IEntity entity, Cursor cursor){
-        EntityMapper mapper = new EntityMapper((Table) table);
+        EntityMapper mapper = new EntityMapper(table);
         entity.map(mapper);
         if(cursor.moveToNext()){
             for(int i = 0; i < cursor.getColumnCount(); i++){
@@ -130,9 +130,9 @@ public class MappingUtil {
      */
     @SuppressWarnings("unchecked")
     public static <E extends IEntity> void mapEntityListFromCursor(ITable table, IEntityList<E> entityList, Cursor cursor){
-        EntityMapper mapper = new EntityMapper((Table) table);
+        EntityMapper mapper = new EntityMapper(table);
         while(cursor.moveToNext()){
-            int columnIdIndex = cursor.getColumnIndex(mapper.table.generateIdString());
+            int columnIdIndex = cursor.getColumnIndex(table.generateIdString());
             int id = -1;
             if(columnIdIndex >= 0) id = cursor.getInt(columnIdIndex);
 

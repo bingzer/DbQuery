@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
-import com.bingzer.android.dbv.queries.Delete;
+import com.bingzer.android.dbv.queries.Min;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public class DeleteImpl extends QueryImpl<Integer> implements Delete {
+public class MinImpl extends FunctionImpl implements Min {
+    public MinImpl(String tableName, String columnName, String condition){
+        super("MIN", tableName, columnName, condition);
+    }
 }

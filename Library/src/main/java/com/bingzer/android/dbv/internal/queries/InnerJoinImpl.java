@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
 import com.bingzer.android.dbv.internal.Table;
 import com.bingzer.android.dbv.queries.InnerJoin;
@@ -21,7 +21,7 @@ import com.bingzer.android.dbv.queries.InnerJoin;
 /**
 * Created by Ricky on 4/26/2014.
 */
-public abstract class InnerJoinImpl extends Join implements InnerJoin {
+public abstract class InnerJoinImpl extends JoinImpl implements InnerJoin {
     public InnerJoinImpl(Table table, String tableNameToJoin, String onClause) {
         super(table, "INNER JOIN", tableNameToJoin, onClause);
     }

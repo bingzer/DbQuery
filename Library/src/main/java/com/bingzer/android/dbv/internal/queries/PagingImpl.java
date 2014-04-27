@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
 import android.database.Cursor;
 
@@ -142,8 +142,8 @@ public class PagingImpl extends QueryImpl<Cursor> implements Paging {
         // from
         sql.append(select.fromString).append(Database.SPACE);
         // join builder
-        if(select instanceof Join){
-            sql.append(((Join)select).joinBuilder).append(Database.SPACE);
+        if(select instanceof JoinImpl){
+            sql.append(((JoinImpl)select).joinBuilder).append(Database.SPACE);
         }
         // where
         sql.append(Database.SPACE).append(select.whereString);

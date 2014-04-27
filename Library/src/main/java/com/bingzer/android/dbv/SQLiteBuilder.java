@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv;
 
 import android.content.Context;
-
-import com.bingzer.android.dbv.IDatabase;
 
 /**
  * <code>IDatabase.Builder</code> implementations.

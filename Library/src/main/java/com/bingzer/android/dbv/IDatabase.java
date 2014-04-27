@@ -72,7 +72,7 @@ import java.util.List;
  * @see ITable
  * @see Modeling
  * @see Builder
- * @see com.bingzer.android.dbv.internal.SQLiteBuilder
+ * @see SQLiteBuilder
  * @author Ricky Tobing
  */
 public interface IDatabase extends RawQueryable, SqlExecutable {

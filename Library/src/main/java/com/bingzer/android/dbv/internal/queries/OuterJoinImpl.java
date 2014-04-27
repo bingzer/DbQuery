@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.internal.queries;
 
-import android.net.Uri;
-
-import com.bingzer.android.dbv.internal.queries.InsertImpl;
+import com.bingzer.android.dbv.internal.Table;
+import com.bingzer.android.dbv.queries.OuterJoin;
 
 /**
- * Created by Ricky on 8/20/13.
- */
-public class ContentInsertImpl extends InsertImpl {
-
-    Uri uri;
-
-    public ContentInsertImpl setUri(Uri value){
-        this.uri = value;
-        this.value = UriUtil.parseIdFromUri(uri);
-        return this;
+* Created by Ricky on 4/26/2014.
+*/
+public abstract class OuterJoinImpl extends JoinImpl implements OuterJoin {
+    public OuterJoinImpl(Table table, String tableNameToJoin, String onClause) {
+        super(table, "OUTER JOIN", tableNameToJoin, onClause);
     }
-
-    @Override
-    public Integer query(){
-        return UriUtil.parseIdFromUri(uri);
-    }
-
-    @Override
-    public String toString(){
-        return uri.toString();
-    }
-
 }

@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal.impl;
+package com.bingzer.android.dbv.internal.queries;
 
-import com.bingzer.android.dbv.queries.Insert;
+import com.bingzer.android.dbv.queries.Average;
 
 /**
 * Created by Ricky on 4/26/2014.
 */
-public class InsertImpl extends QueryImpl<Integer> implements Insert {
-    public InsertImpl(){
-        this.value = 0;
+public class AverageImpl extends FunctionImpl implements Average {
+    public AverageImpl(String tableName, String columnName, String condition){
+        super("AVG", tableName, columnName, condition);
     }
 }

@@ -8,7 +8,7 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.queries.Average;
 import com.bingzer.android.dbv.IView;
-import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
 import com.bingzer.android.dbv.queries.InsertWith;
 import com.bingzer.android.dbv.queries.Max;
 import com.bingzer.android.dbv.queries.Min;
@@ -417,56 +417,56 @@ public class ViewTest extends AndroidTestCase {
     // functiosn
     public void testAvg(){
         Average avg = db.getView("OrderView").avg("ProductPrice");
-        assertEquals(125330, avg.value());
+        assertEquals(125330, (Double) avg.value(), 0.01);
 
         avg = db.get("OrderView").avg("ProductPrice", "ProductName = 'Computer'");
-        assertEquals(600, avg.value());
+        assertEquals(600, (Double) avg.value(), 0.1);
 
         avg = db.get("OrderView").avg("ProductPrice", "ProductName = ?", "Computer");
-        assertEquals(600, avg.value());
+        assertEquals(600, (Double)avg.value(), 0.1);
     }
 
     public void testSum(){
         Sum sum = db.getView("OrderView").sum("ProductPrice");
-        assertEquals(501320, sum.value());
+        assertEquals(501320.0, (Double) sum.value(), 0.01);
 
         sum = db.get("OrderView").sum("ProductPrice", "ProductName IN ('Car', 'Computer')");
-        assertEquals(1200, sum.value());
+        assertEquals(1200.0, (Double) sum.value(), 0.1);
 
         sum = db.get("OrderView").sum("ProductPrice", "ProductName IN (?,?)", "Car", "Computer");
-        assertEquals(1200, sum.value());
+        assertEquals(1200.0, (Double) sum.value(), 0.1);
     }
 
     public void testTotal(){
         Total total = db.getView("OrderView").total("ProductPrice");
-        assertEquals(501320, total.value());
+        assertEquals(501320.0, (Double) total.value(), 0.1);
 
         total = db.get("OrderView").total("ProductPrice", "ProductName IN ('Car', 'Computer')");
-        assertEquals(1200, total.value());
+        assertEquals(1200.0, (Double) total.value(), 0.1);
 
         total = db.get("OrderView").total("ProductPrice", "ProductName IN (?,?)", "Car", "Computer");
-        assertEquals(1200, total.value());
+        assertEquals(1200.0, (Double) total.value(), 0.1);
     }
 
     public void testMax(){
         Max max = db.getView("OrderView").max("ProductPrice");
-        assertEquals(500000, max.value());
+        assertEquals(500000.0, (Double) max.value(), 0.1);
 
         max = db.getView("OrderView").max("ProductPrice", "ProductName Like 'M%' Or ProductName Like 'C%'");
-        assertEquals(600, max.value());
+        assertEquals(600.0, (Double) max.value(), 0.1);
 
         max = db.getView("OrderView").max("ProductPrice", "ProductName Like ? Or ProductName Like ?", "M%", "C%");
-        assertEquals(600, max.value());
+        assertEquals(600.0, (Double) max.value(), 0.1);
     }
 
     public void testMin(){
         Min min = db.getView("OrderView").min("ProductPrice");
-        assertEquals(120, min.value());
+        assertEquals(120.0,(Double) min.value(), 0.1);
 
         min = db.getView("OrderView").min("ProductPrice", "ProductPrice > 450");
-        assertEquals(600, min.value());
+        assertEquals(600.0, (Double) min.value(), 0.1);
 
         min = db.getView("OrderView").min("ProductPrice", "ProductPrice > ?", 450);
-        assertEquals(600, min.value());
+        assertEquals(600.0, (Double) min.value(), 0.1);
     }
 }

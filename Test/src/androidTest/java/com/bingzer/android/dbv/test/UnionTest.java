@@ -8,7 +8,7 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
 import com.bingzer.android.dbv.queries.Select;
 
 import java.util.LinkedList;

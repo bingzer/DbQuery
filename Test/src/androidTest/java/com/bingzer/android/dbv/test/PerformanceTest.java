@@ -8,7 +8,7 @@ import android.test.AndroidTestCase;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.internal.Database;
-import com.bingzer.android.dbv.internal.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
 
 import java.io.File;
 import java.io.IOException;

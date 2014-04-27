@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.internal;
+package com.bingzer.android.dbv.internal.queries;
 
-import com.bingzer.android.dbv.internal.queries.DeleteImpl;
+import com.bingzer.android.dbv.queries.IQuery;
 
 /**
- * Created by Ricky on 8/20/13.
- */
-public class ContentDeleteImpl extends DeleteImpl {
-
-    public ContentDeleteImpl val(int value){
-        this.value = value;
-        return this;
-    }
-
-    public int value(){
-        return value;
-    }
-
+* Created by Ricky on 4/26/2014.
+*/
+public class DropImpl extends QueryImpl<Boolean> implements IQuery<Boolean> {
 }

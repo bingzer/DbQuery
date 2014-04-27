@@ -22,22 +22,27 @@ import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.ITable;
+import com.bingzer.android.dbv.Util;
+import com.bingzer.android.dbv.internal.queries.AverageImpl;
+import com.bingzer.android.dbv.internal.queries.ContentSet;
+import com.bingzer.android.dbv.internal.queries.DeleteImpl;
+import com.bingzer.android.dbv.internal.queries.DropImpl;
+import com.bingzer.android.dbv.internal.queries.InnerJoinImpl;
+import com.bingzer.android.dbv.internal.queries.InsertImpl;
+import com.bingzer.android.dbv.internal.queries.InsertWithImpl;
+import com.bingzer.android.dbv.internal.queries.MaxImpl;
+import com.bingzer.android.dbv.internal.queries.MinImpl;
+import com.bingzer.android.dbv.internal.queries.OuterJoinImpl;
+import com.bingzer.android.dbv.internal.queries.QueryImpl;
+import com.bingzer.android.dbv.internal.queries.SelectImpl;
+import com.bingzer.android.dbv.internal.queries.SumImpl;
+import com.bingzer.android.dbv.internal.queries.TotalImpl;
+import com.bingzer.android.dbv.internal.queries.UnionImpl;
+import com.bingzer.android.dbv.internal.queries.UpdateImpl;
 import com.bingzer.android.dbv.queries.Average;
 import com.bingzer.android.dbv.queries.Delete;
 import com.bingzer.android.dbv.queries.IQuery;
-import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.Util;
-import com.bingzer.android.dbv.internal.impl.ContentSet;
-import com.bingzer.android.dbv.internal.impl.DeleteImpl;
-import com.bingzer.android.dbv.internal.impl.DropImpl;
-import com.bingzer.android.dbv.internal.impl.InnerJoinImpl;
-import com.bingzer.android.dbv.internal.impl.InsertImpl;
-import com.bingzer.android.dbv.internal.impl.InsertWithImpl;
-import com.bingzer.android.dbv.internal.impl.OuterJoinImpl;
-import com.bingzer.android.dbv.internal.impl.QueryImpl;
-import com.bingzer.android.dbv.internal.impl.SelectImpl;
-import com.bingzer.android.dbv.internal.impl.UnionImpl;
-import com.bingzer.android.dbv.internal.impl.UpdateImpl;
 import com.bingzer.android.dbv.queries.InnerJoin;
 import com.bingzer.android.dbv.queries.Insert;
 import com.bingzer.android.dbv.queries.InsertWith;
@@ -97,6 +102,14 @@ public class Table implements ITable {
     @Override
     public int getColumnCount() {
         return columns.size();
+    }
+
+    @Override
+    public String generateIdString(){
+        if(db.getConfig().getAppendTableNameForId()){
+            return getName() + db.getConfig().getIdNamingConvention();
+        }
+        return db.getConfig().getIdNamingConvention();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -609,10 +622,10 @@ public class Table implements ITable {
 
     @Override
     public Average avg(String columnName, String condition) {
-        FunctionImpl.AverageImpl fn = new FunctionImpl.AverageImpl(toString(), columnName, condition);
+        AverageImpl fn = new AverageImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
-            fn.value = cursor.getInt(0);
+            fn.setValue(cursor.getDouble(0));
         }
         cursor.close();
         return fn;
@@ -630,10 +643,10 @@ public class Table implements ITable {
 
     @Override
     public Sum sum(String columnName, String condition) {
-        FunctionImpl.SumImpl fn = new FunctionImpl.SumImpl(toString(), columnName, condition);
+        SumImpl fn = new SumImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
-            fn.value = cursor.getInt(0);
+            fn.setValue(cursor.getDouble(0));
         }
         cursor.close();
         return fn;
@@ -651,10 +664,10 @@ public class Table implements ITable {
 
     @Override
     public Total total(String columnName, String condition) {
-        FunctionImpl.TotalImpl fn = new FunctionImpl.TotalImpl(toString(), columnName, condition);
+        TotalImpl fn = new TotalImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
-            fn.value = cursor.getInt(0);
+            fn.setValue(cursor.getDouble(0));
         }
         cursor.close();
         return fn;
@@ -672,10 +685,10 @@ public class Table implements ITable {
 
     @Override
     public Max max(String columnName, String condition) {
-        FunctionImpl.MaxImpl fn = new FunctionImpl.MaxImpl(toString(), columnName, condition);
+        MaxImpl fn = new MaxImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
-            fn.value = cursor.getInt(0);
+            fn.setValue(cursor.getDouble(0));
         }
         cursor.close();
         return fn;
@@ -693,10 +706,10 @@ public class Table implements ITable {
 
     @Override
     public Min min(String columnName, String condition) {
-        FunctionImpl.MinImpl fn = new FunctionImpl.MinImpl(toString(), columnName, condition);
+        MinImpl fn = new MinImpl(toString(), columnName, condition);
         Cursor cursor = raw(fn.toString()).query();
         if(cursor.moveToNext()){
-            fn.value = cursor.getInt(0);
+            fn.setValue(cursor.getDouble(0));
         }
         cursor.close();
         return fn;
@@ -775,13 +788,6 @@ public class Table implements ITable {
 
     String generateParamId(int id){
         return generateIdString() + " = " + id;
-    }
-
-    String generateIdString(){
-        if(db.getConfig().getAppendTableNameForId()){
-            return getName() + db.getConfig().getIdNamingConvention();
-        }
-        return db.getConfig().getIdNamingConvention();
     }
 
     void queryColumns(){
