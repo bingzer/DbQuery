@@ -15,6 +15,8 @@
  */
 package com.bingzer.android.dbv;
 
+import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
+
 /**
  * Represents an entity. {@link IEntity} can be serialized.
  *

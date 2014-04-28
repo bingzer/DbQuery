@@ -18,6 +18,10 @@ package com.bingzer.android.dbv.utils;
 import android.content.ContentValues;
 
 import com.bingzer.android.dbv.Delegate;
+import com.bingzer.android.dbv.IEntity;
+import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
+
+import java.util.Iterator;
 
 /**
  * Created by Ricky on 4/26/2014.
@@ -70,6 +74,47 @@ public final class ContentValuesUtils {
 
         // TODO: Fix the exception message
         else throw new IllegalArgumentException("Unmapped");
+    }
+
+    /**
+     * Map ContentValues from an entity
+     * @param contentValues the content values
+     * @param entity the entity to map from
+     */
+    @SuppressWarnings("unchecked")
+    public static Delegate.Mapper mapContentValuesFromEntity(ContentValues contentValues, PrimaryKeyIdentifier identifier, IEntity entity){
+        // build content values..
+        final Delegate.Mapper mapper = new Delegate.Mapper(identifier);
+        entity.map(mapper);
+
+        ContentValuesUtils.mapContentValuesFromMapper(contentValues, mapper);
+
+        return mapper;
+    }
+
+    /**
+     * Map ContentValues from a mapper
+     * @param contentValues the content values
+     * @param mapper the mapper
+     */
+    public static void mapContentValuesFromMapper(ContentValues contentValues, Delegate.Mapper mapper){
+        for(String key : mapper.keySet()){
+            Delegate delegate = mapper.get(key);
+            ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
+        }
+    }
+
+    /**
+     * generate content values from an IEntity
+     * @param identifier primary key identifier (i.e: ITable)
+     * @param entity the entity
+     * @return ContentValues
+     */
+    public static ContentValues generateContentValuesFromEntity(PrimaryKeyIdentifier identifier, IEntity entity){
+        final ContentValues contentValues = new ContentValues();
+        mapContentValuesFromEntity(contentValues, identifier, entity);
+
+        return contentValues;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

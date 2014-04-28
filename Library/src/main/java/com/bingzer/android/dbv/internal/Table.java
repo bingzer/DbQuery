@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -257,30 +257,17 @@ public class Table implements ITable {
         db.enforceReadOnly();
 
         // build content values..
-        final Delegate.Mapper mapper = new Delegate.Mapper(this);
         final ContentValues contentValues = new ContentValues();
-        entity.map(mapper);
+        final Delegate.Mapper mapper = ContentValuesUtils.mapContentValuesFromEntity(contentValues, this, entity);
 
-        Iterator<String> keys = mapper.keySet().iterator();
-        String idString = getPrimaryKeyColumn();
-        Delegate<Long> idSetter = null;
-        while(keys.hasNext()){
-            String key = keys.next();
-            Delegate delegate = mapper.get(key);
-
-            // ignore if column = "Id"
-            if(key.equalsIgnoreCase(idString)) {
-                idSetter = delegate;
-            }
-            else if(delegate != null){
-                ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
-            }
-        }
-
+        // do not insert the primary column
+        contentValues.remove(getPrimaryKeyColumn());
         Insert insert = insert(contentValues);
+
         // assign the newly inserted id
-        if(idSetter != null){
-            idSetter.set(insert.query());
+        Delegate<Long> pkDelegate = mapper.get(getPrimaryKeyColumn());
+        if(pkDelegate != null){
+            pkDelegate.set(insert.query());
         }
 
         return insert;
@@ -347,19 +334,8 @@ public class Table implements ITable {
 
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
 
-        final Delegate.Mapper mapper = new Delegate.Mapper(this);
-        final ContentValues contentValues = new ContentValues();
-        entity.map(mapper);
-
-        for (String key : mapper.keySet()) {
-            // ignore if "Id"
-            if (key.equalsIgnoreCase(getPrimaryKeyColumn())) continue;
-
-            Delegate delegate = mapper.get(key);
-            if (delegate != null) {
-                ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
-            }
-        }
+        final ContentValues contentValues = ContentValuesUtils.generateContentValuesFromEntity(this, entity);
+        contentValues.remove(getPrimaryKeyColumn());
 
         return update(contentValues, entity.getId());
     }
