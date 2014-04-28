@@ -117,11 +117,6 @@ public class EntityJoinTest extends AndroidTestCase {
     static class OrderList extends LinkedList<Order> implements IEntityList<Order>{
 
         @Override
-        public List<Order> getEntityList() {
-            return this;
-        }
-
-        @Override
         public Order newEntity() {
             return new Order();
         }

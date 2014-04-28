@@ -157,9 +157,10 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
-        long[] ids = new long[entityList.getEntityList().size()];
-        for(int i = 0; i < ids.length; i++){
-            ids[i] = entityList.getEntityList().get(i).getId();
+        long[] ids = new long[entityList.size()];
+        int counter = 0;
+        for(E entity : entityList){
+            ids[counter++] = entity.getId();
         }
         return delete(ids);
     }
@@ -239,11 +240,11 @@ abstract class BaseResolver implements IBaseResolver {
             throw new IllegalArgumentException("Authority has not been set. Use ContentConfig.setDefaultAuthority() to set");
 
         final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
-        final Delegate[] idSetters = new Delegate[entityList.getEntityList().size()];
-        final String[] uriStrings = new String[entityList.getEntityList().size()];
+        final Delegate[] idSetters = new Delegate[entityList.size()];
+        final String[] uriStrings = new String[entityList.size()];
 
-        for(int i = 0; i < entityList.getEntityList().size(); i++){
-            final IEntity entity = entityList.getEntityList().get(i);
+        int counter = 0;
+        for(E entity : entityList){
             // build content values..
             final Delegate.Mapper mapper = new Delegate.Mapper(this);
             final ContentValues contentValues = new ContentValues();
@@ -257,7 +258,7 @@ abstract class BaseResolver implements IBaseResolver {
 
                 // ignore if column = "Id"
                 if(key.equalsIgnoreCase(idString)) {
-                    idSetters[i] = delegate;
+                    idSetters[counter++] = delegate;
                 }
                 else if(delegate != null){
                     ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
@@ -383,8 +384,7 @@ abstract class BaseResolver implements IBaseResolver {
         final UpdateImpl query = new UpdateImpl();
         final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
 
-        for(int i = 0; i < entityList.getEntityList().size(); i++){
-            final IEntity entity = entityList.getEntityList().get(i);
+        for(E entity : entityList){
             // build content values..
             final Delegate.Mapper mapper = new Delegate.Mapper(this);
             final ContentValues contentValues = new ContentValues();

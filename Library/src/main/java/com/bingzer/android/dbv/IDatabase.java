@@ -19,6 +19,7 @@ package com.bingzer.android.dbv;
 import com.bingzer.android.dbv.contracts.RawQueryable;
 import com.bingzer.android.dbv.contracts.SqlExecutable;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -96,7 +97,7 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @return all tables exists in the database
      */
-    List<ITable> getTables();
+    Collection<ITable> getTables();
 
     /**
      * Returns table by its <code>tableName</code>. If the table

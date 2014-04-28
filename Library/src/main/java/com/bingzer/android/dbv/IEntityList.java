@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -16,23 +16,17 @@
 
 package com.bingzer.android.dbv;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by Ricky on 8/9/13.
  */
-public interface IEntityList<T extends IEntity> {
-
-    /**
-     * Returns the list
-     * @return list
-     */
-    public List<T> getEntityList();
+public interface IEntityList<T extends IEntity> extends Collection<T>{
 
     /**
      * Creates a new entity
      * @return T
      */
-    public T newEntity();
+    T newEntity();
 
 }

@@ -64,7 +64,7 @@ public final class EntityUtils {
             if(columnIdIndex >= 0) id = cursor.getInt(columnIdIndex);
 
             E entity = null;
-            for(IEntity e : entityList.getEntityList()){
+            for(IEntity e : entityList){
                 if(e.getId() == id){
                     entity = (E)e;
                     break;
@@ -74,7 +74,7 @@ public final class EntityUtils {
                 // creates new generic entity
                 entity = entityList.newEntity();
                 // add to the collection
-                entityList.getEntityList().add(entity);
+                entityList.add(entity);
             }
 
             // clear the mapper

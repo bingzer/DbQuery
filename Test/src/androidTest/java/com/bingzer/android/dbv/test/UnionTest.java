@@ -110,11 +110,6 @@ public class UnionTest extends AndroidTestCase {
     static class TinyPersonList extends LinkedList<TinyPerson> implements IEntityList<TinyPerson>{
 
         @Override
-        public List<TinyPerson> getEntityList() {
-            return this;
-        }
-
-        @Override
         public TinyPerson newEntity() {
             return new TinyPerson();
         }

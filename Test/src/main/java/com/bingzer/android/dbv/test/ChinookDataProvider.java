@@ -44,6 +44,6 @@ public class ChinookDataProvider extends DataProvider {
 
     @Override
     public String getAuthority() {
-        return "com.bingzer.android.dbv.data.test";
+        return "com.bingzer.android.dbv.providers.test";
     }
 }

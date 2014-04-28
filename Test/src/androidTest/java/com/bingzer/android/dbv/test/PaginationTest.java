@@ -335,11 +335,6 @@ public class PaginationTest extends AndroidTestCase {
     static class PersonWithJobList extends LinkedList<PersonWithJob> implements IEntityList<PersonWithJob> {
 
         @Override
-        public List<PersonWithJob> getEntityList() {
-            return this;
-        }
-
-        @Override
         public PersonWithJob newEntity() {
             return new PersonWithJob();
         }

@@ -31,6 +31,7 @@ import com.bingzer.android.dbv.contracts.Tangible;
 import com.bingzer.android.dbv.contracts.Unionable;
 import com.bingzer.android.dbv.contracts.Updatable;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -83,7 +84,7 @@ public interface ITable extends
      * Returns the column name
      * @return the list of columns
      */
-    List<String> getColumns();
+    Collection<String> getColumns();
 
     /**
      * Returns the column count

@@ -11,11 +11,6 @@ import java.util.List;
 public class WordList extends LinkedList<Word> implements IEntityList<Word>{
 
     @Override
-    public List<Word> getEntityList() {
-        return this;
-    }
-
-    @Override
     public Word newEntity() {
         return new Word();
     }

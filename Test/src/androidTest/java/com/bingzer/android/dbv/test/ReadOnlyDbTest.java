@@ -61,7 +61,7 @@ public class ReadOnlyDbTest extends AndroidTestCase{
 
     public void testUpdate_Throw(){
         try{
-            db.get("Person").update("Name = ? ", "Ricky").columns("Name").val(null).query();
+            db.get("Person").update("Name = ? ", "Ricky").columns("Name").val().query();
             fail("Should throw error");
         }
         catch (IllegalAccessError e){

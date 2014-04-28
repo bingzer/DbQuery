@@ -35,15 +35,15 @@ class TestUsage {
         IDatabase db = DbQuery.getDatabase("Test");
         db.open(version, new SQLiteBuilder.WithoutModeling(null));
 
+        for(ITable table : db.getTables()){
+            for(String str : table.getColumns()){
+            }
+        }
+
         version++;
     }
 
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {
-
-        @Override
-        public List<Person> getEntityList() {
-            return this;
-        }
 
         @Override
         public Person newEntity() {

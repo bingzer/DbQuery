@@ -27,15 +27,17 @@ public class MigrationTest extends AndroidTestCase {
 
             @Override
             public boolean onDowngrade(IDatabase database, int oldVersion, int newVersion) {
-                for(int i = 0; i < database.getTables().size(); i++)
-                    database.getTables().get(i).drop();
+                for(ITable table : database.getTables()){
+                    table.drop();
+                }
                 return true;
             }
 
             @Override
             public boolean onUpgrade(IDatabase database, int oldVersion, int newVersion) {
-                for(int i = 0; i < database.getTables().size(); i++)
-                    database.getTables().get(i).drop();
+                for(ITable table : database.getTables()){
+                    table.drop();
+                }
                 return true;
             }
 

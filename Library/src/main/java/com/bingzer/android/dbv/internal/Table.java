@@ -310,7 +310,7 @@ public class Table implements ITable {
         db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
-                for(IEntity entity : entityList.getEntityList()){
+                for(IEntity entity : entityList){
                     insert(entity).query();
                     query.setValue(query.query() + 1);
                 }
@@ -404,7 +404,7 @@ public class Table implements ITable {
         db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
-                for(IEntity entity : entityList.getEntityList()){
+                for(IEntity entity : entityList){
                     query.setValue( query.query() + update(entity).query() );
                 }
             }
@@ -509,11 +509,12 @@ public class Table implements ITable {
     public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
         db.enforceReadOnly();
 
-        long[] ids = new long[entityList.getEntityList().size()];
-        for(int i = 0; i < ids.length; i++){
-            ids[i] = entityList.getEntityList().get(i).getId();
+        long[] ids = new long[entityList.size()];
+        int counter = 0;
+        for(E entity : entityList){
+            ids[counter++] = entity.getId();
         }
-        return  delete(ids);
+        return delete(ids);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
