@@ -31,6 +31,13 @@ repositories {
     }
 }
 
+// Force Gradle to get the latest SNAPSHOT everytime
+configurations.all {
+    // check for updates every build
+    // change as needed
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 dependencies {
     compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'1.0.0-SNAPSHOT', changing: true)
 }
