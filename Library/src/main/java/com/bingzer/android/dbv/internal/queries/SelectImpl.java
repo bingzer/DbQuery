@@ -44,6 +44,8 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
     protected StringBuilder havingString;
     protected StringBuilder whereString;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     public SelectImpl(Table table){
         this(table, false);
     }
@@ -67,7 +69,9 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         }
     }
 
-    public SelectImpl where(String whereClause, Object... args){
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Select where(String whereClause, Object... args){
         if(whereClause != null){
             // append where if necessary
             if(!whereClause.toLowerCase().startsWith("where"))
@@ -77,6 +81,8 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         }
         return this;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public Select columns(String... columns) {
