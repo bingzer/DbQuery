@@ -5,7 +5,7 @@ import android.content.Context;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.SQLiteBuilder;
-import com.bingzer.android.dbv.data.DataProvider;
+import com.bingzer.android.dbv.providers.DataProvider;
 
 import java.io.File;
 import java.io.IOException;

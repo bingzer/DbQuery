@@ -23,7 +23,7 @@
         </activity>
 
         <provider
-                android:authorities="com.bingzer.android.dbv.data.test"
+                android:authorities="com.bingzer.android.dbv.providers.test"
                 android:name="com.bingzer.android.dbv.test.ChinookDataProvider"
                 android:exported="true"
                 tools:ignore="ExportedContentProvider" />

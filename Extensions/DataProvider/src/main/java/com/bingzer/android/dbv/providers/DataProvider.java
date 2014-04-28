@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.data;
+package com.bingzer.android.dbv.providers;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * Provides a very "basic" data provider implementation.
  * This provider will expose all tables in the specified
- * {@link IDatabase} defined in {@link com.bingzer.android.dbv.data.DataProvider#openDatabase()}
+ * {@link IDatabase} defined in {@link com.bingzer.android.dbv.providers.DataProvider#openDatabase()}
  *
  * @see {@link IDatabase}
  */
