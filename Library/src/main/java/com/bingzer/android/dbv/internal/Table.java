@@ -19,7 +19,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.bingzer.android.dbv.Delegate;
-import com.bingzer.android.dbv.IConfig;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
@@ -129,7 +128,11 @@ public class Table implements ITable {
     @Override
     public long selectId(String whereClause, Object... args) {
         long id = -1;
-        Cursor cursor = select(whereClause, args).columns(getPrimaryKeyColumn()).query();
+        Cursor cursor =
+                select(whereClause, args)
+                .columns(getPrimaryKeyColumn())
+                .query();
+
         if(cursor.moveToNext()){
             id = cursor.getLong(0);
         }
@@ -149,24 +152,7 @@ public class Table implements ITable {
 
     @Override
     public Select select(long... ids) {
-        if(ids != null && ids.length > 0){
-            StringBuilder whereClause = new StringBuilder();
-            whereClause.append(getPrimaryKeyColumn()).append(" ");
-            whereClause.append(" IN (");
-            for(int i = 0; i < ids.length; i++){
-                whereClause.append(ids[i]);
-                if(i < ids.length - 1){
-                    whereClause.append(",");
-                }
-            }
-            whereClause.append(")");
-
-            return select(whereClause.toString());
-        }
-        else{
-            // select all
-            return select((String)null);
-        }
+        return select(generateParamInIds(ids));
     }
 
     @Override
@@ -287,7 +273,7 @@ public class Table implements ITable {
                 idSetter = delegate;
             }
             else if(delegate != null){
-                ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
             }
         }
 
@@ -333,24 +319,7 @@ public class Table implements ITable {
     public Update update(long... ids) {
         db.enforceReadOnly();
 
-        if(ids != null && ids.length > 0){
-            StringBuilder whereClause = new StringBuilder();
-            whereClause.append(getPrimaryKeyColumn()).append(" ");
-            whereClause.append(" IN (");
-            for(int i = 0; i < ids.length; i++){
-                whereClause.append(ids[i]);
-                if(i < ids.length - 1){
-                    whereClause.append(",");
-                }
-            }
-            whereClause.append(")");
-
-            return update(whereClause.toString());
-        }
-        else{
-            // select all
-            return update((String) null);
-        }
+        return update(generateParamInIds(ids));
     }
 
     @Override
@@ -388,7 +357,7 @@ public class Table implements ITable {
 
             Delegate delegate = mapper.get(key);
             if (delegate != null) {
-                ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
             }
         }
 
@@ -447,25 +416,7 @@ public class Table implements ITable {
     public Delete delete(long... ids) {
         db.enforceReadOnly();
 
-        if(ids != null && ids.length > 0){
-            StringBuilder whereClause = new StringBuilder();
-
-            whereClause.append(getPrimaryKeyColumn()).append(" ");
-            whereClause.append("IN (");
-            for(int i = 0; i < ids.length; i++){
-                whereClause.append(ids[i]);
-                if(i < ids.length - 1){
-                    whereClause.append(",");
-                }
-            }
-            whereClause.append(")");
-
-            return delete(whereClause.toString(), (Object)null);
-        }
-        else{
-            // delete all
-            return delete("1 = 1");
-        }
+        return delete(generateParamInIds(ids));
     }
 
     @Override
@@ -858,5 +809,31 @@ public class Table implements ITable {
             cursor.close();
         }
     }
-    
+
+    /**
+     * Generate IN(ID,ID,ID) params. if ids is empty or null
+     * then it will return null
+     * @param ids ids to generate params with
+     * @return string rep of IN(...) statements, null if ids is empty or null
+     */
+    private String generateParamInIds(long... ids){
+        if(ids != null && ids.length > 0) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(getPrimaryKeyColumn())
+                    .append(" IN (");
+            for (int i = 0; i < ids.length; i++) {
+                builder.append(ids[i]);
+                if (i < ids.length - 1) {
+                    builder.append(",");
+                }
+            }
+            builder.append(")");
+
+            return builder.toString();
+        }
+
+        return null;
+    }
+
 }

@@ -56,7 +56,7 @@ public final class ContentValuesUtils {
      * @param key the key
      * @param delegate the action
      */
-    public static void mapContentValuesFromAction(ContentValues contentValues, String key, Delegate delegate){
+    public static void mapContentValuesFromDelegate(ContentValues contentValues, String key, Delegate delegate){
         if(delegate.get() == null) contentValues.putNull(key);
         else if(delegate.getType() == String.class) contentValues.put(key, (String) delegate.get());
         else if(delegate.getType() == Integer.class) contentValues.put(key, (Integer) delegate.get());

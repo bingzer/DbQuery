@@ -220,7 +220,7 @@ abstract class BaseResolver implements IBaseResolver {
                 idSetter = delegate;
             }
             else if(delegate != null){
-                ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
             }
         }
 
@@ -261,7 +261,7 @@ abstract class BaseResolver implements IBaseResolver {
                     idSetters[counter++] = delegate;
                 }
                 else if(delegate != null){
-                    ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                    ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
                 }
             }
 
@@ -369,7 +369,7 @@ abstract class BaseResolver implements IBaseResolver {
 
             Delegate delegate = mapper.get(key);
             if (delegate != null) {
-                ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
             }
         }
 
@@ -398,7 +398,7 @@ abstract class BaseResolver implements IBaseResolver {
 
                 // ignore if column = "Id"
                 if(!key.equalsIgnoreCase(idString)) {
-                    ContentValuesUtils.mapContentValuesFromAction(contentValues, key, delegate);
+                    ContentValuesUtils.mapContentValuesFromDelegate(contentValues, key, delegate);
                 }
             }
 

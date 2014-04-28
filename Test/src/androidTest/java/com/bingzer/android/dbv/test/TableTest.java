@@ -562,6 +562,22 @@ public class TableTest extends AndroidTestCase{
         assertEquals(0, (int) db.get("Customers").update(-1).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
     }
 
+    public void testDelete_All(){
+        assertTrue(db.get("Customers").count() > 0);
+        assertTrue(db.get("Products").count() > 0);
+        assertTrue(db.get("Orders").count() > 0);
+
+        db.get("Customers").delete();
+        db.get("Products").delete();
+        db.get("Orders").delete();
+
+        assertEquals(0, db.get("Customers").count());
+        assertEquals(0, db.get("Products").count());
+        assertEquals(0, db.get("Orders").count());
+
+        populated = false;  // repopulated
+    }
+
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ Null tests ----------------//
