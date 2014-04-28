@@ -118,13 +118,19 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
 
     @Override
     public void query(IEntity entity) {
-        EntityUtils.mapEntityFromCursor(table, entity, query());
+        final Cursor cursor = query();
+        EntityUtils.mapEntityFromCursor(table, entity, cursor);
+
+        cursor.close();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <E extends IEntity> void query(IEntityList<E> entityList) {
+        final Cursor cursor = query();
         EntityUtils.mapEntityListFromCursor(table, entityList, query());
+
+        cursor.close();
     }
 
     @Override

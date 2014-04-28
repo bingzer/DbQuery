@@ -27,7 +27,8 @@ import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
  */
 public final class EntityUtils {
     /**
-     * Maps an entity from a cursor. Cursor will be automatically close
+     * Maps an entity from a cursor. Cursor will NOT be automatically closed.
+     * It's important for you to close it after calling this method.
      * @param identifier the table
      * @param entity the entity to map
      * @param cursor the cursor
@@ -44,12 +45,11 @@ public final class EntityUtils {
                 }
             }
         }
-
-        cursor.close();
     }
 
     /**
-     * Maps an entity list from cursor. Cursor will be automatically close
+     * Maps an entity list from cursor. Cursor will NOT be automatically closed.
+     * It's important for you to close it after calling this method.
      * @param identifier the table
      * @param entityList the list to map
      * @param cursor the cursor
@@ -89,8 +89,6 @@ public final class EntityUtils {
                 }
             }
         }// end while
-
-        cursor.close();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
