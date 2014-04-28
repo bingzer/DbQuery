@@ -20,7 +20,6 @@ import com.bingzer.android.dbv.contracts.RawQueryable;
 import com.bingzer.android.dbv.contracts.SqlExecutable;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Represents a database. Provides access to {@link ITable} to achieve common <code>CRUD</code>
