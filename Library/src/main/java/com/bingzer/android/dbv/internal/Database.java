@@ -30,7 +30,7 @@ import com.bingzer.android.dbv.internal.queries.TransactionImpl;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.utils.DbUtils;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,8 +42,8 @@ public class Database implements IDatabase {
 
     private final String name;
     private final DbModel dbModel = new DbModel();
-    private final List<ITable> tables = new LinkedList<ITable>();
-    private final List<IView> views = new LinkedList<IView>();
+    private final List<ITable> tables = new ArrayList<ITable>();
+    private final List<IView> views = new ArrayList<IView>();
     private final IConfig config;
 
     private int version;
@@ -80,10 +80,10 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public ITable get(String tableName) {
+    public ITable from(String tableName) {
         String alias = null;
         if(tableName.contains(SPACE)){
-            // split and get alias..
+            // split and from alias..
             int index = tableName.indexOf(SPACE);
             alias = tableName.substring(index).trim();
             tableName = tableName.substring(0, index).trim();
@@ -111,10 +111,10 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public IView getView(String viewName) {
+    public IView fromView(String viewName) {
         String alias = null;
         if(viewName.contains(SPACE)){
-            // split and get alias..
+            // split and from alias..
             int index = viewName.indexOf(SPACE);
             alias = viewName.substring(index).trim();
             viewName = viewName.substring(0, index).trim();
@@ -241,7 +241,7 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Convenient method to get SQLiteOpenHelper object.
+     * Convenient method to from SQLiteOpenHelper object.
      * {@link IDatabase} must be opened first by calling
      * {@link IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
      *
@@ -255,7 +255,7 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Convenient method to get SQLiteDatabase object
+     * Convenient method to from SQLiteDatabase object
      * {@link IDatabase} must be opened first by calling
      * {@link IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
      *
@@ -333,9 +333,9 @@ public class Database implements IDatabase {
 
     static class TableModel implements ITable.Model {
         private final String tableName;
-        private final List<ColumnModel> columnModels = new LinkedList<ColumnModel>();
-        private final List<String> columnIndexNames = new LinkedList<String>();
-        private final List<String> foreignKeyModelList = new LinkedList<String>();
+        private final List<ColumnModel> columnModels = new ArrayList<ColumnModel>();
+        private final List<String> columnIndexNames = new ArrayList<String>();
+        private final List<String> foreignKeyModelList = new ArrayList<String>();
         private boolean ifNotExists;
 
         TableModel(String tableName){
@@ -592,8 +592,8 @@ public class Database implements IDatabase {
 
     static class DbModel implements Modeling {
 
-        final List<Database.TableModel> tableModels = new LinkedList<Database.TableModel>();
-        final List<Database.ViewModel> viewModels = new LinkedList<Database.ViewModel>();
+        final List<Database.TableModel> tableModels = new ArrayList<TableModel>();
+        final List<Database.ViewModel> viewModels = new ArrayList<ViewModel>();
 
         @Override
         public ITable.Model add(String tableName) {

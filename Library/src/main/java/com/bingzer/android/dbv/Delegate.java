@@ -21,7 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 
 /**
- * An action used to set/get variables. A delegate is
+ * An action used to set/from variables. A delegate is
  * basically a reference to a method. Since Java does not support
  * reference to a method, we need this to map methods
  */

@@ -57,9 +57,8 @@ import com.bingzer.android.dbv.utils.CollectionUtils;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
 import com.bingzer.android.dbv.utils.DbUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Ricky Tobing on 7/16/13.
@@ -67,14 +66,14 @@ import java.util.List;
 public class Table implements ITable {
     private String alias;
     private String name;
-    private final List<String> columns;
+    private final Collection<String> columns;
 
     protected final Database db;
 
     public Table (Database db, String name){
         this.name = name;
         this.db = db;
-        this.columns = new LinkedList<String>();
+        this.columns = new ArrayList<String>();
         queryColumns();
     }
 
@@ -96,7 +95,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public List<String> getColumns() {
+    public Iterable<String> getColumns() {
         return columns;
     }
 
@@ -396,10 +395,10 @@ public class Table implements ITable {
     }
 
     @Override
-    public Delete delete(Collection<Long> ids) {
+    public Delete delete(Iterable<Long> ids) {
         db.enforceReadOnly();
 
-        long[] idz = new long[ids.size()];
+        long[] idz = new long[CollectionUtils.size(ids)];
         int counter = 0;
         for (long id : ids) {
             idz[counter++] = id;

@@ -52,7 +52,7 @@ public interface IEntity {
         /**
          *
          * @param column the column name
-         * @param delegate the action used to set/get
+         * @param delegate the action used to set/from
          */
         void map(String column, Delegate delegate);
 

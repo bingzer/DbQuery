@@ -31,7 +31,7 @@ public class CreateTableIfNotExistsTest extends AndroidTestCase{
         });
 
         // table 2 must be null since we're dropping every tear down()
-        assertNull(db.get("Table2"));
+        assertNull(db.from("Table2"));
 
         db.close();
     }
@@ -48,7 +48,7 @@ public class CreateTableIfNotExistsTest extends AndroidTestCase{
 
         // check version
         assertTrue(db.getVersion() == 1);
-        assertNotNull(db.get("Table1"));
+        assertNotNull(db.from("Table1"));
 
         db.open(2, new SQLiteBuilder() {
             @Override
@@ -78,8 +78,8 @@ public class CreateTableIfNotExistsTest extends AndroidTestCase{
         });
 
         assertTrue(db.getVersion() == 2);
-        assertNotNull(db.get("Table1"));
-        assertNotNull(db.get("Table2"));
+        assertNotNull(db.from("Table1"));
+        assertNotNull(db.from("Table2"));
 
         db.close();
     }
@@ -90,7 +90,7 @@ public class CreateTableIfNotExistsTest extends AndroidTestCase{
 
         // check version
         assertTrue(db.getVersion() == 1);
-        assertNotNull(db.get("Table1"));
+        assertNotNull(db.from("Table1"));
 
         db.open(2, new SQLiteBuilder() {
             @Override

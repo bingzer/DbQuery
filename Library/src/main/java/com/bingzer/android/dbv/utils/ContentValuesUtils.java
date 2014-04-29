@@ -54,7 +54,7 @@ public final class ContentValuesUtils {
 
     /**
      * Map {@link com.bingzer.android.dbv.Delegate} to ContentValues.
-     * The value will be retrieved from action.get()
+     * The value will be retrieved from action.from()
      *
      * @param contentValues the content values to map
      * @param key the key

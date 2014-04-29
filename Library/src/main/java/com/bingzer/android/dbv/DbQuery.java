@@ -17,8 +17,8 @@ package com.bingzer.android.dbv;
 
 import com.bingzer.android.dbv.internal.Database;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * DbQuery provides access to {@link IDatabase}. To use <code>DbQuery</code>,
@@ -49,7 +49,7 @@ import java.util.LinkedList;
  */
 public final class DbQuery {
 
-    private static Collection<IDatabase> databaseList = new LinkedList<IDatabase>();
+    private static Collection<IDatabase> databaseList = new ArrayList<IDatabase>();
 
     /**
      * Returns the {@link IDatabase} object with the specified name.

@@ -49,7 +49,7 @@ public final class DelegateUtils {
     }
 
     /**
-     * Try to get an 'object' from a cursor
+     * Try to from an 'object' from a cursor
      * @param cursor the target cursor
      * @param index the index in the cursor
      * @return an object

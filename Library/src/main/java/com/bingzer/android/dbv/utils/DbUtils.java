@@ -98,7 +98,7 @@ public final class DbUtils {
      * if it's a String/Integer/null/Character or custom.
      * If it's String/Character or customer, the string will be
      * sanitized by calling {@link #sqlEscapeString(String)}.
-     * If it's a <code>Number</code>, it's not going to get sanitized.
+     * If it's a <code>Number</code>, it's not going to from sanitized.
      * @param obj any object (maybe null)
      * @return sanitized <code>String</code>
      */

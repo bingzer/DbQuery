@@ -95,7 +95,7 @@ public interface Selectable {
          * this is possible
          * <code>
          * <pre>
-         *   db.get("Table").select().orderBy("Id", "Name", "Price DESC");
+         *   db.from("Table").select().orderBy("Id", "Name", "Price DESC");
          * </pre>
          * </code>
          * @param columns column names

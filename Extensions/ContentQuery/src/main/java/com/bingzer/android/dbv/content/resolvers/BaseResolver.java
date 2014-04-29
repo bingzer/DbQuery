@@ -103,8 +103,8 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public Delete delete(Collection<Long> ids) {
-        long[] idz = new long[ids.size()];
+    public Delete delete(Iterable<Long> ids) {
+        long[] idz = new long[CollectionUtils.size(ids)];
         int counter = 0;
         for (long id : ids) {
             idz[counter++] = id;

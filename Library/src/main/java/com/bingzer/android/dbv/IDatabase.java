@@ -54,7 +54,7 @@ import com.bingzer.android.dbv.contracts.SqlExecutable;
  * use this code snippet:
  * <code>
  * <pre>
- * ITable table = db.get("<table-name>");
+ * ITable table = db.from("<table-name>");
  * </pre>
  * </code>
  * </p>
@@ -102,11 +102,11 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * Note: you must first <code>open</code> the database
      *
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
-     * @see #getView(String)
+     * @see #fromView(String)
      * @param tableName the table
      * @return null if table does not exists
      */
-    ITable get(String tableName);
+    ITable from(String tableName);
 
     /**
      * Returns view by its <code>viewName</code>.
@@ -114,11 +114,11 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * Note: you must first <code>open</code> the database
      *
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
-     * @see #get(String)
+     * @see #from(String)
      * @param viewName the view name
      * @return null if view does nto exists
      */
-    IView getView(String viewName);
+    IView fromView(String viewName);
 
     /**
      * Open the connection the database. This is one of the main method
@@ -128,7 +128,7 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      *     You should only call this once in the entire of you application
      *     lifecycle. After that, to access the database, other code in
      *     your application can simply call {@link DbQuery#getDatabase(String)}
-     *     to get the same object as this one
+     *     to from the same object as this one
      * </p>
      *
      * @see #close()
