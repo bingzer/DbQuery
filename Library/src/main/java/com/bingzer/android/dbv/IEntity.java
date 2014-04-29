@@ -15,13 +15,15 @@
  */
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
-
 /**
  * Represents an entity. {@link IEntity} can be serialized.
+ * An entity uses {@link com.bingzer.android.dbv.IEntity.Mapper}
+ * to map column names and its value.
  *
- * Created by Ricky Tobing on 8/9/13.
+ * The default implementation of this mapper can be found
+ * in {@link com.bingzer.android.dbv.Delegate.Mapper}
  *
+ * @see com.bingzer.android.dbv.IEntityList
  * @see com.bingzer.android.dbv.queries.Select#query(IEntity)
  * @see com.bingzer.android.dbv.ITable#insert(IEntity)
  */

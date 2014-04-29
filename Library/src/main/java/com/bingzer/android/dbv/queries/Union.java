@@ -17,6 +17,7 @@ package com.bingzer.android.dbv.queries;
 
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.contracts.ColumnSelectable;
 import com.bingzer.android.dbv.contracts.EntitySelectable;
 import com.bingzer.android.dbv.contracts.Selectable;
 
@@ -27,6 +28,8 @@ import com.bingzer.android.dbv.contracts.Selectable;
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  */
-public interface Union extends IQuery<Cursor>, EntitySelectable, Selectable {
+public interface Union extends IQuery<Cursor>,
+                                    EntitySelectable, ColumnSelectable,
+                                    Selectable {
 
 }

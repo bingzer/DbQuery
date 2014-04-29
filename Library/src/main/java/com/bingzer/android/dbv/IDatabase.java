@@ -235,6 +235,7 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      *
      * @see IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)
      */
+    @SuppressWarnings("unused")
     public static interface Builder {
 
         /**

@@ -17,6 +17,7 @@ package com.bingzer.android.dbv.queries;
 
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.contracts.ColumnSelectable;
 import com.bingzer.android.dbv.contracts.CursorEnumerable;
 import com.bingzer.android.dbv.contracts.EntitySelectable;
 import com.bingzer.android.dbv.contracts.Pagination;
@@ -30,7 +31,9 @@ import com.bingzer.android.dbv.contracts.Pagination;
  *
  * @see Having
  */
-public interface GroupBy extends IQuery<Cursor>, EntitySelectable, Pagination, CursorEnumerable {
+public interface GroupBy extends IQuery<Cursor>,
+                                    EntitySelectable, ColumnSelectable,
+                                    Pagination, CursorEnumerable {
 
     /**
      * Adds a <code>HAVING</code> statement

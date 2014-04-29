@@ -19,6 +19,7 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.contracts.ColumnSelectable;
 import com.bingzer.android.dbv.contracts.CursorEnumerable;
 import com.bingzer.android.dbv.contracts.EntitySelectable;
 

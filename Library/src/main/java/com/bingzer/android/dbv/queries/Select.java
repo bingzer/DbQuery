@@ -17,6 +17,7 @@ package com.bingzer.android.dbv.queries;
 
 import android.database.Cursor;
 
+import com.bingzer.android.dbv.contracts.ColumnSelectable;
 import com.bingzer.android.dbv.contracts.CursorEnumerable;
 import com.bingzer.android.dbv.contracts.EntitySelectable;
 import com.bingzer.android.dbv.contracts.Groupable;
@@ -29,8 +30,9 @@ import com.bingzer.android.dbv.contracts.Pagination;
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  */
-public interface Select
-        extends IQuery<Cursor>, EntitySelectable, CursorEnumerable, Pagination, Groupable /*,Unionable*/ {
+public interface Select extends IQuery<Cursor>, EntitySelectable,
+                                    CursorEnumerable, ColumnSelectable,
+                                    Pagination, Groupable /*,Unionable*/ {
 
     /**
      * Specified the column to return.
@@ -53,10 +55,14 @@ public interface Select
      */
     OrderBy orderBy(String... columns);
 
+    /////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Order By
      */
-    public static interface OrderBy extends IQuery<Cursor>, CursorEnumerable, EntitySelectable, Pagination, Groupable {
+    public static interface OrderBy extends IQuery<Cursor>, EntitySelectable,
+                                                CursorEnumerable, ColumnSelectable,
+                                                Pagination, Groupable {
 
     }
 

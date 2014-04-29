@@ -7,6 +7,7 @@ import android.test.AndroidTestCase;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.contracts.ColumnSelectable;
 import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.queries.Paging;
 
@@ -100,6 +101,20 @@ Teddy       20000.0
         assertTrue(cursor.getFloat(1) == 10000f);
     }
 
+    public void testSelectGroupBy_Query_ColumnIndex(){
+        ColumnSelectable col = db.get("company").select().columns("name", "sum(salary)").groupBy("name");
+
+        assertEquals("Allen", col.query(0));
+        assertEquals((double) 15000, (Double) col.query(1), 0.01);
+    }
+
+    public void testSelectGroupBy_Query_ColumnName(){
+        ColumnSelectable col = db.get("company").select().columns("name", "sum(salary)").groupBy("name");
+
+        assertEquals("Allen", col.query("name"));
+        assertEquals((double) 15000, (Double) col.query("sum(salary)"), 0.01);
+    }
+
     public void testSelectGroupBy_WithJoin(){
         Cursor cursor = db.get("company c")
                             .join("employee e", "e.name = c.name")
@@ -154,6 +169,44 @@ Teddy       20000.0     Janitor
         assertTrue(cursor.getString(2).equals("Guard"));
     }
 
+    public void testSelectGroupBy_WIthJoin_Query_ColumnIndex(){
+        /*
+        Result:
+        assertTrue(cursor.getString(0).equals("Allen"));
+        assertTrue(cursor.getFloat(1) == 15000f);
+        assertTrue(cursor.getString(2).equals("Manager"));
+         */
+        ColumnSelectable col = db.get("company c")
+                .join("employee e", "e.name = c.name")
+                .select()
+                .columns("e.name", "sum(c.salary)", "e.position")
+                .orderBy("e.name")
+                .groupBy("e.name");
+
+        assertEquals("Allen", col.query(0));
+        assertEquals(15000, (Double) col.query(1), 0.01);
+        assertEquals("Manager", col.query(2));
+    }
+
+    public void testSelectGroupBy_WIthJoin_Query_ColumnName(){
+        /*
+        Result:
+        assertTrue(cursor.getString(0).equals("Allen"));
+        assertTrue(cursor.getFloat(1) == 15000f);
+        assertTrue(cursor.getString(2).equals("Manager"));
+         */
+        ColumnSelectable col = db.get("company c")
+                .join("employee e", "e.name = c.name")
+                .select()
+                .columns("e.name", "sum(c.salary) as salary_total", "e.position")
+                .orderBy("e.name")
+                .groupBy("e.name");
+
+        assertEquals("Allen", col.query("e.name"));
+        assertEquals(15000, (Double) col.query("salary_total"), 0.01);
+        assertEquals("Manager", col.query("e.position"));
+    }
+
 
     public void testSelectGroupBy_WithJoin_Paging(){
         Paging paging = db.get("company c")
@@ -177,7 +230,6 @@ Paul        20000.0     Guard
 Teddy       20000.0     Janitor
 
          */
-
 
         //////////////////////////////
         // page #1
@@ -262,6 +314,38 @@ Teddy       20000.0     Janitor
         assertTrue(cursor.getFloat(1) == 65000f);
 
         cursor.close();
+    }
+
+    public void testHaving_Query_ColumnIndex(){
+        /*
+        assertTrue(cursor.getString(0).equals("David"));
+        assertTrue(cursor.getFloat(1) == 85000f);
+         */
+        ColumnSelectable col = db.get("company")
+                .select()
+                .columns("name", "sum(salary)")
+                .orderBy("name")
+                .groupBy("name")
+                .having("sum(salary) > ?", 30000);
+
+        assertEquals("David", col.query(0));
+        assertEquals(85000, (Double) col.query(1), 0.1);
+    }
+
+    public void testHaving_Query_ColumnName(){
+        /*
+        assertTrue(cursor.getString(0).equals("David"));
+        assertTrue(cursor.getFloat(1) == 85000f);
+         */
+        ColumnSelectable col = db.get("company")
+                .select()
+                .columns("name", "sum(salary)")
+                .orderBy("name")
+                .groupBy("name")
+                .having("sum(salary) > ?", 30000);
+
+        assertEquals("David", col.query("name"));
+        assertEquals(85000, (Double) col.query("sum(salary)"), 0.1);
     }
 
     public void testHaving_Simple2(){

@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.bingzer.android.dbv;
-
-import java.util.Collection;
+package com.bingzer.android.dbv.contracts;
 
 /**
- * Represents a collection of {@link com.bingzer.android.dbv.IEntity}.
- *
- * @see com.bingzer.android.dbv.IEntity
- * @see com.bingzer.android.dbv.queries.Select#query(IEntity)
- * @see com.bingzer.android.dbv.ITable#insert(IEntity)
+ * Created by Ricky on 4/28/2014.
  */
-public interface IEntityList<T extends IEntity> extends Collection<T>{
+public interface ColumnSelectable {
 
     /**
-     * Creates a new entity
-     * @return T
+     * Single query columns
+     * @param columnIndex the column index
+     * @param <T> any type to return
+     * @return any type
      */
-    T newEntity();
+    <T> T query(int columnIndex);
+
+    /**
+     * Single query columns
+     * @param columnName the column name
+     * @param <T> any type to return
+     * @return any type
+     */
+    <T> T query(String columnName);
 
 }

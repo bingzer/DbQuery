@@ -15,6 +15,7 @@
  */
 package com.bingzer.android.dbv.utils;
 
+import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
 
 import com.bingzer.android.dbv.Delegate;
@@ -53,7 +54,7 @@ public final class DelegateUtils {
      * @param index the index in the cursor
      * @return an object
      */
-    private static Object getObjectFromCursor(Cursor cursor, int index){
+    protected static Object getObjectFromCursor(Cursor cursor, int index){
         switch (cursor.getType(index)){
             case Cursor.FIELD_TYPE_BLOB:
                 return cursor.getBlob(index);

@@ -378,6 +378,24 @@ public class TableTest extends AndroidTestCase{
         cursor.close();
     }
 
+    public void testSelect_Query_Column(){
+        String name = db.get("Customers").select("Name = ?", "Mario Baloteli").columns("Name").query(0);
+        assertEquals("Mario Baloteli", name);
+
+        long baloteliId = db.get("Customers").select("Name = ?", "Mario Baloteli").query("Id");
+        assertEquals(baloteliId, getCustomerId("Mario Baloteli"));
+    }
+
+    public void testSelect_Query_Column_Error(){
+        try{
+            int id = db.get("Customers").select("Name = ?", "Mario Baloteli").columns("Name").query(0);
+            fail("Should throw error");
+        }
+        catch (ClassCastException e){
+            assertTrue(true);
+        }
+    }
+
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ---------Insert And Delete ----------------//

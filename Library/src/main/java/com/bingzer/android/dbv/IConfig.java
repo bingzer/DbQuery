@@ -44,7 +44,7 @@ package com.bingzer.android.dbv;
  *     as their "Id" column.
  *     If there's a table or two that doesn't follow this convention,
  *     some methods will not work. Especially, the one that uses "Id"
- *     (i.e: {@link ITable#select(int)},{@link ITable#update(android.content.ContentValues, int)},
+ *     (i.e: {@link ITable#select(long)} ,{@link ITable#update(android.content.ContentValues, long)},
  *     and many more
  * </p>
  *
@@ -67,7 +67,7 @@ public interface IConfig {
     /**
      * Sets append table name as prefix in front of the "Id".
      * The Id is defined by {@link #setIdNamingConvention(String)}.
-     * The default is <code>false</code>
+     * The default is <code>false</code>.
      * @param appendTableName true to append
      */
     void setAppendTableNameForId(boolean appendTableName);

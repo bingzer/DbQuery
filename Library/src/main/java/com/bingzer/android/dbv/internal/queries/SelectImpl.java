@@ -22,6 +22,7 @@ import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.queries.GroupBy;
 import com.bingzer.android.dbv.queries.Having;
+import com.bingzer.android.dbv.utils.CursorUtils;
 import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.internal.Table;
@@ -169,6 +170,30 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         }
 
         return this;
+    }
+
+    @Override
+    public <T> T query(int columnIndex) {
+        T value = null;
+        final Cursor cursor = query();
+        if(cursor.moveToNext()) {
+            value = CursorUtils.getValueFromCursor(cursor, columnIndex);
+        }
+        cursor.close();
+
+        return value;
+    }
+
+    @Override
+    public <T> T query(String columnName) {
+        T value = null;
+        final Cursor cursor = query();
+        if(cursor.moveToNext()) {
+            value = CursorUtils.getValueFromCursor(cursor, columnName);
+        }
+        cursor.close();
+
+        return value;
     }
 
     @Override

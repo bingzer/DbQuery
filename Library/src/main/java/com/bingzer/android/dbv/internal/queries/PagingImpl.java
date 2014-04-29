@@ -179,4 +179,5 @@ public class PagingImpl extends QueryImpl<Cursor> implements Paging {
             throw new IllegalArgumentException("PageNumber must be over 0");
         this.pageNumber = pageNumber;
     }
+
 }

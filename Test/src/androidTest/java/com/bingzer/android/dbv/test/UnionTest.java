@@ -10,6 +10,7 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.contracts.ColumnSelectable;
 import com.bingzer.android.dbv.queries.Select;
 
 import java.util.LinkedList;
@@ -73,6 +74,20 @@ public class UnionTest extends AndroidTestCase {
                             .select().columns("Name").query();
 
         assertEquals(cursor.getCount(),8);
+    }
+
+    public void testUnion_Query_ColumnIndex(){
+        Select select = db.get("Student").select().columns("Name");
+        ColumnSelectable col = db.get("Employee").union(select).select().columns("Name");
+
+        assertEquals("Dave", col.query(0));
+    }
+
+    public void testUnion_Query_ColumnName(){
+        Select select = db.get("Student").select().columns("Name");
+        ColumnSelectable col = db.get("Employee").union(select).select().columns("Name");
+
+        assertEquals("Dave", col.query("Name"));
     }
 
     public void testUnion_Simple_Entity(){

@@ -16,6 +16,9 @@
 
 package com.bingzer.android.dbv;
 
+import android.database.Cursor;
+
+import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.queries.Select;
 
 import java.util.LinkedList;
@@ -25,6 +28,7 @@ import java.util.List;
  * This will be removed
  * Created by Ricky Tobing on 7/16/13.
  */
+@SuppressWarnings("all")
 class TestUsage {
 
     void init(){
