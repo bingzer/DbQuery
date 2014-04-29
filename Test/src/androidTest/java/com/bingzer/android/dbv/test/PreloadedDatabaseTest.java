@@ -6,6 +6,7 @@ import android.test.AndroidTestCase;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.utils.CollectionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class PreloadedDatabaseTest extends AndroidTestCase {
     }
 
     public void testDatabaseContent(){
-        assertTrue(db.getTables().size() > 0);
+        assertTrue(CollectionUtils.size(db.getTables()) > 0);
         assertTrue(db.getVersion() == 1);
     }
 

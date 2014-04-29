@@ -53,6 +53,7 @@ import com.bingzer.android.dbv.queries.Sum;
 import com.bingzer.android.dbv.queries.Total;
 import com.bingzer.android.dbv.queries.Union;
 import com.bingzer.android.dbv.queries.Update;
+import com.bingzer.android.dbv.utils.CollectionUtils;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
 import com.bingzer.android.dbv.utils.DbUtils;
 
@@ -435,7 +436,7 @@ public class Table implements ITable {
     public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
         db.enforceReadOnly();
 
-        long[] ids = new long[entityList.size()];
+        long[] ids = new long[CollectionUtils.size(entityList)];
         int counter = 0;
         for(E entity : entityList){
             ids[counter++] = entity.getId();

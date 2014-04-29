@@ -27,6 +27,7 @@ import com.bingzer.android.dbv.queries.IEnumerable;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.SQLiteBuilder;
 import com.bingzer.android.dbv.queries.InsertInto;
+import com.bingzer.android.dbv.utils.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -108,7 +109,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testGetColumns(){
-        assertTrue(customerTable.getColumns().size() > 0);
+        assertTrue(CollectionUtils.size(customerTable.getColumns()) > 0);
         for(String s : customerTable.getColumns()){
             assertTrue(s != null);
         }
@@ -116,7 +117,7 @@ public class TableTest extends AndroidTestCase{
 
     public void testGetColumnCount() {
         assertTrue(customerTable.getColumnCount() > 0);
-        assertTrue(customerTable.getColumnCount() == customerTable.getColumns().size());
+        assertTrue(customerTable.getColumnCount() == CollectionUtils.size(customerTable.getColumns()));
         assertTrue(db.get("Customers C").count() > 0);
     }
 
@@ -224,7 +225,7 @@ public class TableTest extends AndroidTestCase{
             @Override
             public void next(Cursor cursor) {
                 // pirlo goes first
-                if(counter == 0)
+                if (counter == 0)
                     assertEquals("Andrea Pirlo", cursor.getString(cursor.getColumnIndex("Name")));
                 else
                     assertEquals("Kaka", cursor.getString(cursor.getColumnIndex("Name")));

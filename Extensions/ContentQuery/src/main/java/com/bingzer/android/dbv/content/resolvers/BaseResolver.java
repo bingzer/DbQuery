@@ -33,6 +33,7 @@ import com.bingzer.android.dbv.content.queries.UpdateImpl;
 import com.bingzer.android.dbv.content.utils.UriUtils;
 import com.bingzer.android.dbv.queries.Delete;
 import com.bingzer.android.dbv.queries.InsertInto;
+import com.bingzer.android.dbv.utils.CollectionUtils;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
 import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.queries.Insert;
@@ -157,7 +158,7 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public <E extends IEntity> Delete delete(IEntityList<E> entityList) {
-        long[] ids = new long[entityList.size()];
+        long[] ids = new long[CollectionUtils.size(entityList)];
         int counter = 0;
         for(E entity : entityList){
             ids[counter++] = entity.getId();
@@ -239,9 +240,10 @@ abstract class BaseResolver implements IBaseResolver {
         if(config.getDefaultAuthority() == null)
             throw new IllegalArgumentException("Authority has not been set. Use ContentConfig.setDefaultAuthority() to set");
 
+        final int listSize = CollectionUtils.size(entityList);
         final ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
-        final Delegate[] idSetters = new Delegate[entityList.size()];
-        final String[] uriStrings = new String[entityList.size()];
+        final Delegate[] idSetters = new Delegate[listSize];
+        final String[] uriStrings = new String[listSize];
 
         int counter = 0;
         for(E entity : entityList){

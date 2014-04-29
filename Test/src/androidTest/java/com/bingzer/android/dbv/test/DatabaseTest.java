@@ -24,6 +24,7 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.utils.CollectionUtils;
 
 import java.io.File;
 
@@ -69,7 +70,7 @@ public class DatabaseTest extends AndroidTestCase {
 
     public void testGetTables(){
         assertTrue(db.getTables() != null);
-        assertTrue(db.getTables().size() >= 2);
+        assertTrue(CollectionUtils.size(db.getTables()) >= 2);
     }
 
     public void testRaw(){

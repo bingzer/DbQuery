@@ -16,8 +16,6 @@
 
 package com.bingzer.android.dbv;
 
-import java.util.Collection;
-
 /**
  * Represents a collection of {@link com.bingzer.android.dbv.IEntity}.
  *
@@ -25,7 +23,14 @@ import java.util.Collection;
  * @see com.bingzer.android.dbv.queries.Select#query(IEntity)
  * @see com.bingzer.android.dbv.ITable#insert(IEntity)
  */
-public interface IEntityList<T extends IEntity> extends Collection<T>{
+public interface IEntityList<T extends IEntity> extends Iterable<T>{
+
+    /**
+     * Adds an entity
+     * @param entity entity to add
+     * @return true if added, false otherwise
+     */
+    boolean add(T entity);
 
     /**
      * Creates a new entity
