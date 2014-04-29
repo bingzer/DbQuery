@@ -21,7 +21,7 @@ import java.util.Iterator;
 /**
  * Provides a collection utility tools
  */
-public class CollectionUtils {
+public final class CollectionUtils {
 
     /**
      * Count the 'size' of base iterable
@@ -77,6 +77,12 @@ public class CollectionUtils {
         }
 
         return false;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    private CollectionUtils(){
+        // nothing
     }
 
 }
