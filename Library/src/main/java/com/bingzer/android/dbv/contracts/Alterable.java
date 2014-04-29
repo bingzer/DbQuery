@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv.contracts;
 
 import com.bingzer.android.dbv.ITable;
 
 /**
- * Created by Ricky Tobing on 8/16/13.
+ * Alter the content
  */
 public interface Alterable {
 
     /**
-     * Alter
+     * Alter the content of a table (i.e: rename columns, modify column definition, etc...)
      * @return {@link ITable.Alter} object
      */
     ITable.Alter alter();

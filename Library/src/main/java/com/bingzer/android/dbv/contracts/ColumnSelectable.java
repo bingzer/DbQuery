@@ -21,7 +21,23 @@ package com.bingzer.android.dbv.contracts;
 public interface ColumnSelectable {
 
     /**
-     * Single query columns
+     * Single query a column value.
+     * This is a convenient method to get a value of a single column
+     * specified by its column index.
+     *
+     * <p>
+     * Sample code to get the customer name from a customer table
+     * <pre><code>
+     * String customerName = db.from("customers").select().columns("Name", "Age").query(0);
+     * </code>
+     * </pre>
+     *
+     * Sample code to get the customer's age from a customer table
+     * <pre><code>
+     * int customerAge = db.from("customers").select().columns("Name", "Age").query(1);
+     * </code>
+     * </pre>
+     * </p>
      * @param columnIndex the column index
      * @param <T> any type to return
      * @return any type
@@ -29,7 +45,22 @@ public interface ColumnSelectable {
     <T> T query(int columnIndex);
 
     /**
-     * Single query columns
+     * Single query a column value.
+     * This is a convenient method to get a value of a single column
+     * specified by its column name.
+     *
+     * <p>
+     * Sample code to get the customer name from a customer table
+     * <pre><code>
+     * String customerName = db.from("customers").select().columns("Name", "Age").query("Name");
+     * </code>
+     * </pre>
+     * Sample code to get the customer's age from a customer table
+     * <pre><code>
+     * int customerAge = db.from("customers").select().columns("Name", "Age").query("Age");
+     * </code>
+     * </pre>
+     * </p>
      * @param columnName the column name
      * @param <T> any type to return
      * @return any type

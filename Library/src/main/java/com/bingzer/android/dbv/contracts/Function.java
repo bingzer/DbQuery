@@ -23,7 +23,7 @@ import com.bingzer.android.dbv.queries.Sum;
 import com.bingzer.android.dbv.queries.Total;
 
 /**
- * Created by Ricky Tobing on 7/20/13.
+ * Provides a basic contract commonly known function found in SQL
  */
 public interface Function {
 

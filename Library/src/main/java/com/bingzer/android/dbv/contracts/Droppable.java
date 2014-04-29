@@ -24,7 +24,14 @@ import com.bingzer.android.dbv.queries.IQuery;
 public interface Droppable {
 
     /**
-     * Drop
+     * Drop this table.
+     * <p>
+     * Sample Code: To drop a table
+     * <pre>
+     * <code>db.from("TableName").drop().query();
+     * </code>
+     * </pre>
+     * </p>
      * @return true if success, false if otherwise.
      */
     IQuery<Boolean> drop();

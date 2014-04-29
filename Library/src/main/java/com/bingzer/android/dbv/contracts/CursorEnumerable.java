@@ -24,9 +24,23 @@ import com.bingzer.android.dbv.queries.IEnumerable;
 public interface CursorEnumerable {
 
     /**
-     * Enumerate cursor.
+     * A convenient method iterate through cursor.
      * The provider will call this method as long as
-     * <code>cursor.moveNext()</code> is true
+     * <code>cursor.moveNext()</code> is true. Cursor will be open and closed
+     * automatically after this method returns
+     * <p>
+     * Sample code: Print and LOG all customers names in the customers table
+     * <pre>
+     * <code>db.from("Customers")
+     *       .select().columns("Name")
+     *       .query(new IEnumerable&lt;Cursor&gt;(){
+     *           public void next(Cursor cursor){
+     *               Log.i("TAG", "Name: " + cursor.getString(0));
+     *           }
+     *       });
+     * </code>
+     * </pre>
+     * </p>
      * @param cursor the cursor
      */
     void query(IEnumerable<Cursor> cursor);

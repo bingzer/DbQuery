@@ -20,8 +20,6 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.Delete;
 
-import java.util.Collection;
-
 /**
  * Created by Ricky Tobing on 7/17/13.
  */
@@ -60,7 +58,7 @@ public interface Deletable {
     Delete delete(String condition);
 
     /**
-     * Delete add sepcified where clause
+     * Delete add specified where clause
      * @param whereClause where clause
      * @param whereArgs arguments
      * @return Delete object

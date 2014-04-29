@@ -28,6 +28,15 @@ public interface EntitySelectable {
 
     /**
      * Query and store the result to an {@link com.bingzer.android.dbv.IEntity}
+     * <p>
+     * Sample Code: Populate customer data whose name is John into a Customer object
+     * <pre>
+     * <code>Customer customer = new Customer();
+     * ...
+     * db.from("TableName").select("Name = ?", "John").query(customer);
+     * </code>
+     * </pre>
+     * </p>
      * @see IEntity
      * @param entity the IEntity object
      */
@@ -35,6 +44,15 @@ public interface EntitySelectable {
 
     /**
      * Query and store the result to an {@link com.bingzer.android.dbv.IEntityList}
+     * <p>
+     * Sample Code: Populate a customer list whose country is US
+     * <pre>
+     * <code>CustomerList customerList = new CustomerList();
+     * ...
+     * db.from("TableName").select("Country = ?", "US").query(customerList);
+     * </code>
+     * </pre>
+     * </p>
      * @see IEntityList
      * @param entityList the IEntityList object
      * @param <E> IEntity

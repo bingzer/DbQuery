@@ -26,7 +26,9 @@ public interface Groupable {
     /**
      * Group by columns.
      * It's possible to put function as the column's name:
+     * <pre>
      * <code>groupBy("SUM(Price) AS TotalPrice", "Name",...)</code>
+     * </pre>
      * @param columns column names.
      * @return GroupBy object
      * @see com.bingzer.android.dbv.queries.GroupBy
