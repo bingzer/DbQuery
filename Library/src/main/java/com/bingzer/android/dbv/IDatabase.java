@@ -53,7 +53,7 @@ import com.bingzer.android.dbv.contracts.SqlExecutable;
  * use this code snippet:
  * <code>
  * <pre>
- * ITable table = db.from("<table-name>");
+ * ITable table = db.get("<table-name>");
  * </pre>
  * </code>
  * </p>
@@ -105,17 +105,17 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * Example Code
      * <pre><code>
      * IDatabase db = ...
-     * ITable table = db.from("table-name");
+     * ITable table = db.get("table-name");
      * </code></pre>
      * </p>
      *
      * @see com.bingzer.android.dbv.ITable
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
-     * @see #fromView(String)
+     * @see #getView(String)
      * @param tableName the table
      * @return null if table does not exists
      */
-    ITable from(String tableName);
+    ITable get(String tableName);
 
     /**
      * Returns view by its <code>viewName</code>.
@@ -125,17 +125,17 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * Example Code
      * <pre><code>
      * IDatabase db = ...
-     * IView view = db.fromView("view-name");
+     * IView view = db.getView("view-name");
      * </code></pre>
      * </p>
      *
      * @see com.bingzer.android.dbv.IView
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
-     * @see #from(String)
+     * @see #get(String)
      * @param viewName the view name
      * @return null if view does nto exists
      */
-    IView fromView(String viewName);
+    IView getView(String viewName);
 
     /**
      * Open the connection the database. This is one of the main method
@@ -145,7 +145,7 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      *     You should only call this once in the entire of you application
      *     lifecycle. After that, to access the database, other code in
      *     your application can simply call {@link DbQuery#getDatabase(String)}
-     *     to from the same object as this one
+     *     to get the same object as this one
      * </p>
      *
      * @see #close()

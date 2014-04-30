@@ -94,7 +94,7 @@ public abstract class DataProvider extends ContentProvider implements IDataProvi
         ensureDbIsOpen();
         Matcher m = getUriPattern().matcher(uri.toString());
         if(m.find()){
-            return db.from(m.group(3));
+            return db.get(m.group(3));
         }
         return null;
     }

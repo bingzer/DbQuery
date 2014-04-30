@@ -147,7 +147,7 @@ public class PagingImpl extends QueryImpl<Cursor> implements Paging {
         // columns
         if(asRowCount) sql.append(" COUNT(*) AS FN ");
         else sql.append(select.columnString).append(Database.SPACE);
-        // from
+        // get
         sql.append(select.fromString).append(Database.SPACE);
         // join builder
         if(select instanceof JoinImpl){

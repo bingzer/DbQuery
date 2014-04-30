@@ -68,13 +68,13 @@ public class MainActivity extends Activity {
         Cursor cursor;
 
         if(!filtered)
-            cursor = db.from("Artist")
+            cursor = db.get("Artist")
                     .select()
                     .columns("*", "rowid as _id")
                     .orderBy("Name")
                     .query();
         else
-            cursor = db.from("Artist A")
+            cursor = db.get("Artist A")
                 .join("Album B", "A.ArtistId = B.ArtistId")
                 .select("B.Title is not null")
                 .columns("A.Name", "A.ArtistId as _id")

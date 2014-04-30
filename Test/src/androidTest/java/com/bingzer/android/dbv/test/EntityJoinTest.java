@@ -52,29 +52,29 @@ public class EntityJoinTest extends AndroidTestCase {
         });
 
         if(!populated){
-            db.from("Orders").delete();
-            db.from("Products").delete();
-            db.from("Customers").delete();
+            db.get("Orders").delete();
+            db.get("Products").delete();
+            db.get("Customers").delete();
 
             // initial value
-            InsertInto insert = db.from("Customers").insertInto("Name", "Address");
+            InsertInto insert = db.get("Customers").insertInto("Name", "Address");
             insert.val("Baloteli", "Italy");
             insert.val("Pirlo", "Italy");
             insert.val("Ronaldo", "Portugal");
             insert.val("Messi", "Argentina");
 
-            insert = db.from("Products").insertInto("Name", "Price");
+            insert = db.get("Products").insertInto("Name", "Price");
             insert.val("Computer", 600);
             insert.val("Smartphone", 450);
             insert.val("Car", 20000);
             insert.val("House", 500000);
             insert.val("Monitor", 120);
 
-            insert = db.from("Orders").insertInto("Quantity", "ProductId", "CustomerId");
-            insert.val(2, db.from("Products").selectId("Name = ?", "Computer"), db.from("Customers").selectId("Name = ?", "Baloteli"));
-            insert.val(1, db.from("Products").selectId("Name = ?", "House"), db.from("Customers").selectId("Name = ?", "Ronaldo"));
-            insert.val(5, db.from("Products").selectId("Name = ?", "Monitor"), db.from("Customers").selectId("Name = ?", "Messi"));
-            insert.val(1, db.from("Products").selectId("Name = ?", "Computer"), db.from("Customers").selectId("Name = ?", "Messi"));
+            insert = db.get("Orders").insertInto("Quantity", "ProductId", "CustomerId");
+            insert.val(2, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Baloteli"));
+            insert.val(1, db.get("Products").selectId("Name = ?", "House"), db.get("Customers").selectId("Name = ?", "Ronaldo"));
+            insert.val(5, db.get("Products").selectId("Name = ?", "Monitor"), db.get("Customers").selectId("Name = ?", "Messi"));
+            insert.val(1, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Messi"));
 
             populated = true;
         }
@@ -82,7 +82,7 @@ public class EntityJoinTest extends AndroidTestCase {
 
     public void testEntityJoin(){
         Order order = new Order();
-        db.from("Orders O")
+        db.get("Orders O")
                 .join("Products P", "P.Id = O.ProductId")
                 .join("Customers C", "C.Id = O.CustomerId")
                 .select("C.Name = ? AND P.Name = ?", "Messi", "Monitor")
@@ -96,7 +96,7 @@ public class EntityJoinTest extends AndroidTestCase {
     }
 
     public void testEntityJoin_Enumerable(){
-        db.from("Orders O")
+        db.get("Orders O")
                 .join("Products P", "P.Id = O.ProductId")
                 .join("Customers C", "C.Id = O.CustomerId")
                 .select("C.Name = ? AND P.Name = ?", "Messi", "Monitor")
@@ -125,9 +125,9 @@ public class EntityJoinTest extends AndroidTestCase {
     static class Order implements IEntity {
         long id = -1;
         int quantity;
-        // from product customerTable
+        // get product customerTable
         String productName;
-        // from customer customerTable
+        // get customer customerTable
         String customerName;
 
         /////////////////////////////

@@ -36,10 +36,10 @@ public class IdNamingConventionTest extends AndroidTestCase {
             }
         });
 
-        db.from("Person").delete();
+        db.get("Person").delete();
 
 
-        InsertInto insert = db.from("Person").insertInto("Name", "Age", "Address");
+        InsertInto insert = db.get("Person").insertInto("Name", "Age", "Address");
         insert.val("John", 23, "Washington DC".getBytes());
         insert.val("Ronaldo", 40, "Madrid".getBytes());
         insert.val("Messi", 25, "Barcelona".getBytes());
@@ -48,24 +48,24 @@ public class IdNamingConventionTest extends AndroidTestCase {
     public void testSelect(){
         Person person = new Person();
 
-        db.from("Person").select("Name = ?", "John").query(person);
+        db.get("Person").select("Name = ?", "John").query(person);
         assertTrue(person.getId() > 0);
         assertTrue(person.getName().equals("John"));
-        db.from("Person").select("Name = ?", "Messi").query(person);
+        db.get("Person").select("Name = ?", "Messi").query(person);
         assertTrue(person.getId() > 0);
         assertTrue(new String(person.getAddressBytes()).equals("Barcelona"));
     }
 
     public void testUpdate(){
         Person person = new Person();
-        db.from("Person").select("Name = ?", "John").query(person);  // john
+        db.get("Person").select("Name = ?", "John").query(person);  // john
         long id = person.getId();
         // modify
         person.setName("MOD");
         person.setAge(20);
-        db.from("Person").update(person);
+        db.get("Person").update(person);
         // reget
-        db.from("Person").select(id).query(person);
+        db.get("Person").select(id).query(person);
         assertTrue(person.getName().equals("MOD"));
         assertTrue(person.getAge() == 20);
     }

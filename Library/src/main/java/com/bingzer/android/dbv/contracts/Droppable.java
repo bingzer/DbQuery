@@ -28,7 +28,7 @@ public interface Droppable {
      * <p>
      * Sample Code: To drop a table
      * <pre>
-     * <code>db.from("TableName").drop().query();
+     * <code>db.get("TableName").drop().query();
      * </code>
      * </pre>
      * </p>

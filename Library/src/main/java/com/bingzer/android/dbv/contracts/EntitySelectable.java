@@ -33,7 +33,7 @@ public interface EntitySelectable {
      * <pre>
      * <code>Customer customer = new Customer();
      * ...
-     * db.from("TableName").select("Name = ?", "John").query(customer);
+     * db.get("TableName").select("Name = ?", "John").query(customer);
      * </code>
      * </pre>
      * </p>
@@ -49,7 +49,7 @@ public interface EntitySelectable {
      * <pre>
      * <code>CustomerList customerList = new CustomerList();
      * ...
-     * db.from("TableName").select("Country = ?", "US").query(customerList);
+     * db.get("TableName").select("Country = ?", "US").query(customerList);
      * </code>
      * </pre>
      * </p>

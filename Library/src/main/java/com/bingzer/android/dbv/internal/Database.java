@@ -80,10 +80,10 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public ITable from(String tableName) {
+    public ITable get(String tableName) {
         String alias = null;
         if(tableName.contains(SPACE)){
-            // split and from alias..
+            // split and get alias..
             int index = tableName.indexOf(SPACE);
             alias = tableName.substring(index).trim();
             tableName = tableName.substring(0, index).trim();
@@ -111,10 +111,10 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public IView fromView(String viewName) {
+    public IView getView(String viewName) {
         String alias = null;
         if(viewName.contains(SPACE)){
-            // split and from alias..
+            // split and get alias..
             int index = viewName.indexOf(SPACE);
             alias = viewName.substring(index).trim();
             viewName = viewName.substring(0, index).trim();
@@ -241,7 +241,7 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Convenient method to from SQLiteOpenHelper object.
+     * Convenient method to get SQLiteOpenHelper object.
      * {@link IDatabase} must be opened first by calling
      * {@link IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
      *
@@ -255,7 +255,7 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Convenient method to from SQLiteDatabase object
+     * Convenient method to get SQLiteDatabase object
      * {@link IDatabase} must be opened first by calling
      * {@link IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
      *

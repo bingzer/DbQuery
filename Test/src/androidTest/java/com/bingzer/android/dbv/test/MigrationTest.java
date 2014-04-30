@@ -51,8 +51,8 @@ public class MigrationTest extends AndroidTestCase {
         });
 
         assertTrue(db.getVersion() == 5);
-        assertNotNull(db.from("Table1"));
-        assertNull(db.from("Table2"));
+        assertNotNull(db.get("Table1"));
+        assertNull(db.get("Table2"));
 
         //readonlyDb.close();
     }
@@ -70,10 +70,10 @@ public class MigrationTest extends AndroidTestCase {
             public boolean onUpgrade(IDatabase database, int oldVersion, int newVersion) {
                 super.onUpgrade(database, oldVersion, newVersion);
 
-                ITable table = database.from("Table1");
+                ITable table = database.get("Table1");
                 table.drop();
 
-                assertNull(database.from("Table1"));
+                assertNull(database.get("Table1"));
 
                 return true;
             }
@@ -88,8 +88,8 @@ public class MigrationTest extends AndroidTestCase {
         });
 
         assertTrue(db.getVersion() == 10);
-        assertNull(db.from("Table1"));
-        assertNotNull(db.from("Table2"));
+        assertNull(db.get("Table1"));
+        assertNotNull(db.get("Table2"));
 
         db.close();
     }
@@ -106,10 +106,10 @@ public class MigrationTest extends AndroidTestCase {
 
             @Override
             public boolean onDowngrade(IDatabase database, int oldVersion, int newVersion) {
-                ITable table = database.from("Table1");
+                ITable table = database.get("Table1");
                 table.drop();
 
-                assertNull(database.from("Table1"));
+                assertNull(database.get("Table1"));
 
                 return true;
             }
@@ -124,8 +124,8 @@ public class MigrationTest extends AndroidTestCase {
         });
 
         assertTrue(db.getVersion() == 1);
-        assertNull(db.from("Table1"));
-        assertNotNull(db.from("Table2"));
+        assertNull(db.get("Table1"));
+        assertNotNull(db.get("Table2"));
 
         db.close();
     }

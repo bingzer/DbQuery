@@ -90,7 +90,7 @@ public class Helper {
     }
 
     /**
-     * Returns a random value from
+     * Returns a random value get
      * collection <code>any</code>
      *
      * @param <T>
@@ -102,7 +102,7 @@ public class Helper {
     }
 
     /**
-     * Gets random value from param <code>any</code>
+     * Gets random value get param <code>any</code>
      *
      * @param <T>
      * @param any
@@ -113,7 +113,7 @@ public class Helper {
     }
 
     /**
-     * Returns random from to to
+     * Returns random get to to
      *
      * @param from
      * @param to
@@ -124,7 +124,7 @@ public class Helper {
     }
 
     /**
-     * Returns random from to to
+     * Returns random get to to
      *
      * @param from
      * @param to
@@ -267,7 +267,7 @@ public class Helper {
                 if (pattern != null)
                     return new SimpleDateFormat(pattern).parse(input.toString());
                 else {
-                    // -- this is the default pattern from new Date().toString()
+                    // -- this is the default pattern get new Date().toString()
                     // example: Sun Nov 18 19:53:29 EST 2012
                     return new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(input.toString());
                 }
@@ -370,7 +370,7 @@ public class Helper {
     }
 
     /**
-     * Returns the string value from base64encoded
+     * Returns the string value get base64encoded
      *
      * @param base64Encoded
      * @return
@@ -380,7 +380,7 @@ public class Helper {
     }
 
     /**
-     * Returns the decoded bytes from the base64encoded
+     * Returns the decoded bytes get the base64encoded
      *
      * @param base64Encoded
      * @return

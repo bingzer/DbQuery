@@ -25,8 +25,8 @@ import com.bingzer.android.dbv.Delegate;
  */
 public final class DelegateUtils {
     /**
-     * Map action from a cursor. Based on what type of an action is, this method will
-     * map the value from cursor.getXXX() where XXX is a type.
+     * Map action get a cursor. Based on what type of an action is, this method will
+     * map the value get cursor.getXXX() where XXX is a type.
      *
      * @param delegate the action to map
      * @param cursor the target cursor
@@ -49,7 +49,7 @@ public final class DelegateUtils {
     }
 
     /**
-     * Try to from an 'object' from a cursor
+     * Try to get an 'object' get a cursor
      * @param cursor the target cursor
      * @param index the index in the cursor
      * @return an object

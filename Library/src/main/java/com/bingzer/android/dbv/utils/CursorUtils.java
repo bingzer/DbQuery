@@ -23,7 +23,7 @@ import android.database.Cursor;
 public final class CursorUtils {
 
     /**
-     * Try to return value from cursor
+     * Try to return value get cursor
      * @param cursor the target cursor
      * @param columnName the column index
      * @param <T> any type
@@ -34,7 +34,7 @@ public final class CursorUtils {
     }
 
     /**
-     * Try to return values from cursor
+     * Try to return values get cursor
      * @param cursor the target cursor
      * @param columnIndex the column index
      * @param <T> any type

@@ -54,7 +54,7 @@ public final class ContentValuesUtils {
 
     /**
      * Map {@link com.bingzer.android.dbv.Delegate} to ContentValues.
-     * The value will be retrieved from action.from()
+     * The value will be retrieved get action.get()
      *
      * @param contentValues the content values to map
      * @param key the key
@@ -77,9 +77,9 @@ public final class ContentValuesUtils {
     }
 
     /**
-     * Map ContentValues from an entity
+     * Map ContentValues get an entity
      * @param contentValues the content values
-     * @param entity the entity to map from
+     * @param entity the entity to map get
      */
     @SuppressWarnings("unchecked")
     public static Delegate.Mapper mapContentValuesFromEntity(ContentValues contentValues, PrimaryKeyIdentifier identifier, IEntity entity){
@@ -93,7 +93,7 @@ public final class ContentValuesUtils {
     }
 
     /**
-     * Map ContentValues from a mapper
+     * Map ContentValues get a mapper
      * @param contentValues the content values
      * @param mapper the mapper
      */
@@ -105,7 +105,7 @@ public final class ContentValuesUtils {
     }
 
     /**
-     * generate content values from an IEntity
+     * generate content values get an IEntity
      * @param identifier primary key identifier (i.e: ITable)
      * @param entity the entity
      * @return ContentValues

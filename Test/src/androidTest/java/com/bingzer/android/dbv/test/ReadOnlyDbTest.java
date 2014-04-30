@@ -46,12 +46,12 @@ public class ReadOnlyDbTest extends AndroidTestCase{
     }
 
     public void testQuery_ColumnCount(){
-        assertTrue(db.from("Person").getColumnCount() == 4);
+        assertTrue(db.get("Person").getColumnCount() == 4);
     }
 
     public void testInsert_Throw(){
         try{
-            db.from("Person").insert("Name", "Ricky").query();
+            db.get("Person").insert("Name", "Ricky").query();
             fail("Should throw error");
         }
         catch (IllegalAccessError e){
@@ -61,7 +61,7 @@ public class ReadOnlyDbTest extends AndroidTestCase{
 
     public void testUpdate_Throw(){
         try{
-            db.from("Person").update("Name = ? ", "Ricky").columns("Name").val().query();
+            db.get("Person").update("Name = ? ", "Ricky").columns("Name").val().query();
             fail("Should throw error");
         }
         catch (IllegalAccessError e){
@@ -71,7 +71,7 @@ public class ReadOnlyDbTest extends AndroidTestCase{
 
     public void testDelete_Throw(){
         try{
-            db.from("Person").delete();
+            db.get("Person").delete();
             fail("Should throw error");
         }
         catch (IllegalAccessError e){
@@ -81,7 +81,7 @@ public class ReadOnlyDbTest extends AndroidTestCase{
 
     public void testDrop_Throw(){
         try{
-            db.from("Person").drop();
+            db.get("Person").drop();
             fail("Should throw error");
         }
         catch (IllegalAccessError e){
@@ -94,16 +94,16 @@ public class ReadOnlyDbTest extends AndroidTestCase{
         db.getConfig().setReadOnly(false);
 
         try{
-            long id = db.from("Person").insert("Name", "Ricky").query();
-            assertTrue(db.from("Person").has(id));
+            long id = db.get("Person").insert("Name", "Ricky").query();
+            assertTrue(db.get("Person").has(id));
 
-            int numUpdated = db.from("Person").update("Name = ? ", "Ricky").columns("Name").val("Edited").query();
+            int numUpdated = db.get("Person").update("Name = ? ", "Ricky").columns("Name").val("Edited").query();
             assertTrue(numUpdated > 0);
-            assertTrue(db.from("Person").has("Name = ?", "Edited"));
+            assertTrue(db.get("Person").has("Name = ?", "Edited"));
 
-            int numDeleted = db.from("Person").delete("Name = ?", "Edited").query();
+            int numDeleted = db.get("Person").delete("Name = ?", "Edited").query();
             assertTrue(numDeleted > 0);
-            assertFalse(db.from("Person").has("Name = ?", "Edited"));
+            assertFalse(db.get("Person").has("Name = ?", "Edited"));
         }
         catch (IllegalAccessError e){
             fail("Should NOT throw error");
@@ -112,9 +112,9 @@ public class ReadOnlyDbTest extends AndroidTestCase{
 
     public void testInsert_OK(){
         db.getConfig().setReadOnly(false);
-        long newId = db.from("Person").insert("Name", "Ricky").query();
+        long newId = db.get("Person").insert("Name", "Ricky").query();
         assertTrue(newId > 0);
-        newId = db.from("Person").insert("Name", "Ricky").query();
+        newId = db.get("Person").insert("Name", "Ricky").query();
         assertTrue(newId > 0);
 
         db.close();

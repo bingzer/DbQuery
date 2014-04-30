@@ -34,9 +34,9 @@ public class EntityTest extends AndroidTestCase {
             }
         });
 
-        db.from("Person").delete();
+        db.get("Person").delete();
 
-        InsertInto insert = db.from("Person").insertInto("Name", "Age", "Address");
+        InsertInto insert = db.get("Person").insertInto("Name", "Age", "Address");
         insert.val("John", 23, "Washington DC".getBytes());
         insert.val("Ronaldo", 40, "Madrid".getBytes());
         insert.val("Messi", 25, "Barcelona".getBytes());
@@ -45,10 +45,10 @@ public class EntityTest extends AndroidTestCase {
 
 
     public void testPerson(){
-        long messId = db.from("Person").selectId("Name = ?", "Messi");
+        long messId = db.get("Person").selectId("Name = ?", "Messi");
 
         Person person = new Person();
-        db.from("Person").select(messId).query(person);
+        db.get("Person").select(messId).query(person);
         assertTrue(person.getName().equals("Messi"));
         assertTrue(person.getAge() == 25);
         assertTrue(new String(person.getAddressBytes()).equalsIgnoreCase("Barcelona"));
@@ -61,9 +61,9 @@ public class EntityTest extends AndroidTestCase {
         person.setAge(100);
         person.setAddressBytes("Turin".getBytes());
 
-        long pirloId = db.from("Person").insert(person).query();
+        long pirloId = db.get("Person").insert(person).query();
         assertTrue(pirloId == person.getId());
-        assertTrue(db.from("Person").count("Name = ?", "Andrea Pirlo") > 0);
+        assertTrue(db.get("Person").count("Name = ?", "Andrea Pirlo") > 0);
     }
 
 
@@ -71,13 +71,13 @@ public class EntityTest extends AndroidTestCase {
         Person person = new Person();
         person.setName("Messi");
         person.setAge(10000);
-        person.setId(db.from("Person").selectId("Name = ?", "Messi"));
+        person.setId(db.get("Person").selectId("Name = ?", "Messi"));
         person.setAddressBytes("Barcelona Updated".getBytes());
 
-        db.from("Person").update(person);
+        db.get("Person").update(person);
 
         Person p2 = new Person();
-        db.from("Person").select("Name = ?", "Messi").query(p2);
+        db.get("Person").select("Name = ?", "Messi").query(p2);
 
         assertTrue(p2.getName().equals("Messi"));
         assertTrue(p2.getAge() == 10000);
@@ -87,7 +87,7 @@ public class EntityTest extends AndroidTestCase {
     public void testEntity_Collection(){
 
         PersonList personList = new PersonList();
-        db.from("Person").select().query(personList);
+        db.get("Person").select().query(personList);
 
         assertTrue(personList.size() > 0);
     }

@@ -39,7 +39,7 @@ import com.bingzer.android.dbv.contracts.Updatable;
  * {@link com.bingzer.android.dbv.ITable} object, once created, is automatically
  * cached inside the {@link com.bingzer.android.dbv.IDatabase}.
  * Therefore there's no need to reference it outside. Most of the time
- * <code>db.from("tableName").<someMethod>()</code> is more preferable to use.
+ * <code>db.get("tableName").<someMethod>()</code> is more preferable to use.
  * </p>
  *
  * <p>
@@ -179,24 +179,24 @@ public interface ITable extends
         Model ifNotExists();
 
         /**
-         * Foreign key. Create a foreign key references from a column from this current table
+         * Foreign key. Create a foreign key references get a column get this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
          * <code>targetColumn</code> must be defined as <code>[TableName].[ColumnName]</code>
          *
-         * @param columnName the referencing column name (from this table)
-         * @param targetColumn the referenced column name (from the referenced table)
+         * @param columnName the referencing column name (get this table)
+         * @param targetColumn the referenced column name (get the referenced table)
          */
         Model foreignKey(String columnName, String targetColumn);
 
         /**
-         * Foreign key. Create a foreign key references from a column from this current table
+         * Foreign key. Create a foreign key references get a column get this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
          * <code>targetColumn</code> must be defined as <code>[TableName].[ColumnName]</code>
          *
-         * @param columnName the referencing column name (from this table)
-         * @param targetColumn the referenced column name (from the referenced table)
+         * @param columnName the referencing column name (get this table)
+         * @param targetColumn the referenced column name (get the referenced table)
          * @param actionClause additional clause any of these
          *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"
          *                     null means "NO ACTION"
@@ -205,13 +205,13 @@ public interface ITable extends
         Model foreignKey(String columnName, String targetColumn, String actionClause);
 
         /**
-         * Foreign key. Create a foreign key references from a column from this current table
+         * Foreign key. Create a foreign key references get a column get this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
          *
-         * @param columnName the referencing column name (from this table)
+         * @param columnName the referencing column name (get this table)
          * @param targetTable the referenced table
-         * @param targetColumn the referenced column name (from the referenced table)
+         * @param targetColumn the referenced column name (get the referenced table)
          * @param actionClause additional clause any of these
          *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"
          *                     null means "NO ACTION"

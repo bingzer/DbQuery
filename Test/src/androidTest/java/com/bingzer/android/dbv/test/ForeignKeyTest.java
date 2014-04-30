@@ -58,26 +58,26 @@ public class ForeignKeyTest extends AndroidTestCase {
         });
 
         db.getConfig().setForeignKeySupport(true);
-        db.from("Orders").delete();
-        db.from("Products").delete();
-        db.from("Customers").delete();
+        db.get("Orders").delete();
+        db.get("Products").delete();
+        db.get("Customers").delete();
 
         // two customers
-        db.from("Customers").insertInto("Name", "Address").val("Baloteli", "Italy");
-        db.from("Customers").insertInto("Name", "Address").val("Pirlo", "Italy");
+        db.get("Customers").insertInto("Name", "Address").val("Baloteli", "Italy");
+        db.get("Customers").insertInto("Name", "Address").val("Pirlo", "Italy");
         // two products
-        db.from("Products").insertInto("Name", "Price").val("Computer", 1000);
-        db.from("Products").insertInto("Name", "Price").val("Cellphone", 500);
+        db.get("Products").insertInto("Name", "Price").val("Computer", 1000);
+        db.get("Products").insertInto("Name", "Price").val("Cellphone", 500);
     }
 
     // test away..
     public void testInsertOrder_Fail(){
         // right customerId wrong productId
-        long custId = db.from("Customers").selectId("Name = ?", "Baloteli");
+        long custId = db.get("Customers").selectId("Name = ?", "Baloteli");
         int prodId = 99999;
 
         try{
-            long id = db.from("Orders").insertInto("Quantity", "CustomerId", "ProductId").val(10, custId, prodId).query();
+            long id = db.get("Orders").insertInto("Quantity", "CustomerId", "ProductId").val(10, custId, prodId).query();
             assertTrue(id < 0);
             assertTrue("Should throw error", false);
         }

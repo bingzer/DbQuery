@@ -31,7 +31,7 @@ public interface CursorEnumerable {
      * <p>
      * Sample code: Print and LOG all customers names in the customers table
      * <pre>
-     * <code>db.from("Customers")
+     * <code>db.get("Customers")
      *       .select().columns("Name")
      *       .query(new IEnumerable&lt;Cursor&gt;(){
      *           public void next(Cursor cursor){

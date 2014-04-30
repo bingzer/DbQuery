@@ -16,7 +16,7 @@
 package com.bingzer.android.dbv.queries;
 
 /**
- * Represents <code>AVG</code>
+ * Represents <code>AVG</code> functions.
  */
 public interface Average extends IFunction{
 

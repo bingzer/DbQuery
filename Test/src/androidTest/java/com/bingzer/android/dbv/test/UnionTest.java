@@ -46,29 +46,29 @@ public class UnionTest extends AndroidTestCase {
         });
 
         // delete all
-        db.from("Student").delete();
-        db.from("Employee").delete();
+        db.get("Student").delete();
+        db.get("Employee").delete();
 
         // bulk insert
-        db.from("Student").insert("Name","Student 1");
-        db.from("Student").insert("Name","Student 2");
-        db.from("Student").insert("Name","Student 3");
-        db.from("Student").insert("Name","John");
-        db.from("Student").insert("Name","Dave");
+        db.get("Student").insert("Name","Student 1");
+        db.get("Student").insert("Name","Student 2");
+        db.get("Student").insert("Name","Student 3");
+        db.get("Student").insert("Name","John");
+        db.get("Student").insert("Name","Dave");
         // employee
-        db.from("Employee").insert("Name","Employee 1");
-        db.from("Employee").insert("Name","Employee 2");
-        db.from("Employee").insert("Name","Employee 3");
+        db.get("Employee").insert("Name","Employee 1");
+        db.get("Employee").insert("Name","Employee 2");
+        db.get("Employee").insert("Name","Employee 3");
 
         // duplicate john and dave
         // this is for testing purpose do not modify
-        db.from("Student").insert("Name","John");
-        db.from("Student").insert("Name","Dave");
+        db.get("Student").insert("Name","John");
+        db.get("Student").insert("Name","Dave");
     }
 
     public void testUnion_Simple(){
-        Select select = db.from("Student").select().columns("Name");
-        Cursor cursor = db.from("Employee")
+        Select select = db.get("Student").select().columns("Name");
+        Cursor cursor = db.get("Employee")
                             .union(select)
                             .select().columns("Name").query();
 
@@ -76,15 +76,15 @@ public class UnionTest extends AndroidTestCase {
     }
 
     public void testUnion_Query_ColumnIndex(){
-        Select select = db.from("Student").select().columns("Name");
-        ColumnSelectable col = db.from("Employee").union(select).select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
+        ColumnSelectable col = db.get("Employee").union(select).select().columns("Name");
 
         assertEquals("Dave", col.query(0));
     }
 
     public void testUnion_Query_ColumnName(){
-        Select select = db.from("Student").select().columns("Name");
-        ColumnSelectable col = db.from("Employee").union(select).select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
+        ColumnSelectable col = db.get("Employee").union(select).select().columns("Name");
 
         assertEquals("Dave", col.query("Name"));
     }
@@ -92,8 +92,8 @@ public class UnionTest extends AndroidTestCase {
     public void testUnion_Simple_Entity(){
         TinyPersonList list = new TinyPersonList();
 
-        Select select = db.from("Student").select().columns("Name");
-        db.from("Employee")
+        Select select = db.get("Student").select().columns("Name");
+        db.get("Employee")
                 .union(select)
                 .select().columns("Name").query(list);
 
@@ -101,8 +101,8 @@ public class UnionTest extends AndroidTestCase {
     }
 
     public void testUnionAll_Simple(){
-        Select select = db.from("Student").select().columns("Name");
-        Cursor cursor = db.from("Employee")
+        Select select = db.get("Student").select().columns("Name");
+        Cursor cursor = db.get("Employee")
                 .unionAll(select)
                 .select().columns("Name").query();
 
@@ -112,8 +112,8 @@ public class UnionTest extends AndroidTestCase {
     public void testUnionAll_Simple_Entity(){
         TinyPersonList list = new TinyPersonList();
 
-        Select select = db.from("Student").select().columns("Name");
-        db.from("Employee")
+        Select select = db.get("Student").select().columns("Name");
+        db.get("Employee")
                 .unionAll(select)
                 .select().columns("Name").query(list);
 

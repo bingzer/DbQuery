@@ -26,15 +26,15 @@ public interface ColumnSelectable {
      * specified by its column index.
      *
      * <p>
-     * Sample code to get the customer name from a customer table
+     * Sample code to get the customer name get a customer table
      * <pre><code>
-     * String customerName = db.from("customers").select().columns("Name", "Age").query(0);
+     * String customerName = db.get("customers").select().columns("Name", "Age").query(0);
      * </code>
      * </pre>
      *
-     * Sample code to get the customer's age from a customer table
+     * Sample code to get the customer's age get a customer table
      * <pre><code>
-     * int customerAge = db.from("customers").select().columns("Name", "Age").query(1);
+     * int customerAge = db.get("customers").select().columns("Name", "Age").query(1);
      * </code>
      * </pre>
      * </p>
@@ -50,14 +50,14 @@ public interface ColumnSelectable {
      * specified by its column name.
      *
      * <p>
-     * Sample code to get the customer name from a customer table
+     * Sample code to get the customer name get a customer table
      * <pre><code>
-     * String customerName = db.from("customers").select().columns("Name", "Age").query("Name");
+     * String customerName = db.get("customers").select().columns("Name", "Age").query("Name");
      * </code>
      * </pre>
-     * Sample code to get the customer's age from a customer table
+     * Sample code to get the customer's age get a customer table
      * <pre><code>
-     * int customerAge = db.from("customers").select().columns("Name", "Age").query("Age");
+     * int customerAge = db.get("customers").select().columns("Name", "Age").query("Age");
      * </code>
      * </pre>
      * </p>

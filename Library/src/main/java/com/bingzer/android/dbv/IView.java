@@ -31,7 +31,7 @@ import com.bingzer.android.dbv.contracts.Tangible;
  * {@link com.bingzer.android.dbv.IView} object, once created,
  * is automatically cached inside the {@link com.bingzer.android.dbv.IView}
  * So there's no need to reference it outside. Most of the time
- * <code>db.fromView("tableName").<someMethod>()</code> is more preferable to use.
+ * <code>db.getView("tableName").<someMethod>()</code> is more preferable to use.
  * </p>
  *
  * <p>

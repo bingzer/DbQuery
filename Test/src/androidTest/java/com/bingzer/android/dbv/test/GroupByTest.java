@@ -48,10 +48,10 @@ public class GroupByTest extends AndroidTestCase {
             }
         });
 
-        db.from("company").delete();
-        db.from("employee").delete();
+        db.get("company").delete();
+        db.get("employee").delete();
 
-        InsertInto insert = db.from("employee").insertInto("name", "position");
+        InsertInto insert = db.get("employee").insertInto("name", "position");
         insert.val("Paul", "Guard");
         insert.val("Allen", "Manager");
         insert.val("Teddy", "Janitor");
@@ -60,9 +60,9 @@ public class GroupByTest extends AndroidTestCase {
         insert.val("Kim", "Guard");
         insert.val("James", "CEO");
 
-        // schema from: http://www.tutorialspoint.com/sqlite/sqlite_group_by.htm
+        // schema get: http://www.tutorialspoint.com/sqlite/sqlite_group_by.htm
         // insert
-        insert = db.from("company").insertInto("name", "age", "address", "salary");
+        insert = db.get("company").insertInto("name", "age", "address", "salary");
         insert.val("Paul", 32, "California", 20000f);
         insert.val("Allen", 25, "Texas", 15000f);
         insert.val("Teddy", 23, "Norway", 20000f);
@@ -73,7 +73,7 @@ public class GroupByTest extends AndroidTestCase {
     }
 
     public void testSelectGroupBy(){
-        Cursor cursor = db.from("company").select().columns("name", "sum(salary)").groupBy("name").query();
+        Cursor cursor = db.get("company").select().columns("name", "sum(salary)").groupBy("name").query();
         /*
         Should produce
         NAME        SUM(SALARY)
@@ -102,21 +102,21 @@ Teddy       20000.0
     }
 
     public void testSelectGroupBy_Query_ColumnIndex(){
-        ColumnSelectable col = db.from("company").select().columns("name", "sum(salary)").groupBy("name");
+        ColumnSelectable col = db.get("company").select().columns("name", "sum(salary)").groupBy("name");
 
         assertEquals("Allen", col.query(0));
         assertEquals((double) 15000, (Double) col.query(1), 0.01);
     }
 
     public void testSelectGroupBy_Query_ColumnName(){
-        ColumnSelectable col = db.from("company").select().columns("name", "sum(salary)").groupBy("name");
+        ColumnSelectable col = db.get("company").select().columns("name", "sum(salary)").groupBy("name");
 
         assertEquals("Allen", col.query("name"));
         assertEquals((double) 15000, (Double) col.query("sum(salary)"), 0.01);
     }
 
     public void testSelectGroupBy_WithJoin(){
-        Cursor cursor = db.from("company c")
+        Cursor cursor = db.get("company c")
                             .join("employee e", "e.name = c.name")
                             .select()
                             .columns("e.name", "sum(c.salary)", "e.position")
@@ -176,7 +176,7 @@ Teddy       20000.0     Janitor
         assertTrue(cursor.getFloat(1) == 15000f);
         assertTrue(cursor.getString(2).equals("Manager"));
          */
-        ColumnSelectable col = db.from("company c")
+        ColumnSelectable col = db.get("company c")
                 .join("employee e", "e.name = c.name")
                 .select()
                 .columns("e.name", "sum(c.salary)", "e.position")
@@ -195,7 +195,7 @@ Teddy       20000.0     Janitor
         assertTrue(cursor.getFloat(1) == 15000f);
         assertTrue(cursor.getString(2).equals("Manager"));
          */
-        ColumnSelectable col = db.from("company c")
+        ColumnSelectable col = db.get("company c")
                 .join("employee e", "e.name = c.name")
                 .select()
                 .columns("e.name", "sum(c.salary) as salary_total", "e.position")
@@ -209,7 +209,7 @@ Teddy       20000.0     Janitor
 
 
     public void testSelectGroupBy_WithJoin_Paging(){
-        Paging paging = db.from("company c")
+        Paging paging = db.get("company c")
                 .join("employee e", "e.name = c.name")
                 .select()
                 .columns("e.name", "sum(c.salary)", "e.position")
@@ -290,7 +290,7 @@ Paul        20000.0     Guard
 Teddy       20000.0     Janitor
 
          */
-        Cursor cursor = db.from("company")
+        Cursor cursor = db.get("company")
                 .select()
                 .columns("name", "sum(salary)")
                 .orderBy("name")
@@ -321,7 +321,7 @@ Teddy       20000.0     Janitor
         assertTrue(cursor.getString(0).equals("David"));
         assertTrue(cursor.getFloat(1) == 85000f);
          */
-        ColumnSelectable col = db.from("company")
+        ColumnSelectable col = db.get("company")
                 .select()
                 .columns("name", "sum(salary)")
                 .orderBy("name")
@@ -337,7 +337,7 @@ Teddy       20000.0     Janitor
         assertTrue(cursor.getString(0).equals("David"));
         assertTrue(cursor.getFloat(1) == 85000f);
          */
-        ColumnSelectable col = db.from("company")
+        ColumnSelectable col = db.get("company")
                 .select()
                 .columns("name", "sum(salary)")
                 .orderBy("name")
@@ -362,7 +362,7 @@ Paul        20000.0     Guard
 Teddy       20000.0     Janitor
 
          */
-        Cursor cursor = db.from("company")
+        Cursor cursor = db.get("company")
                 .select()
                 .columns("name", "sum(salary)")
                 .orderBy("name")
@@ -402,7 +402,7 @@ Paul        20000.0     Guard
 Teddy       20000.0     Janitor
 
          */
-        Cursor cursor = db.from("company c")
+        Cursor cursor = db.get("company c")
                 .join("employee e", "e.name = c.name")
                 .select()
                 .columns("e.name", "sum(c.salary)", "e.position")
@@ -439,10 +439,10 @@ Mark        65000.0     Watch
 Paul        20000.0     Guard
 Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
          */
-        db.from("Company").insertInto("name", "salary").val("Teddy", 20000);
-        assertTrue(db.from("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
+        db.get("Company").insertInto("name", "salary").val("Teddy", 20000);
+        assertTrue(db.get("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
 
-        Cursor cursor = db.from("company c")
+        Cursor cursor = db.get("company c")
                 .join("employee e", "e.name = c.name")
                 .select()
                 .columns("e.name", "sum(c.salary)", "e.position")
@@ -482,10 +482,10 @@ Mark        65000.0     Watch
 Paul        20000.0     Guard
 Teddy       20000.0     Janitor  (ADDED 20000) TOTAL = 40000
          */
-        db.from("Company").insertInto("name", "salary").val("Teddy", 20000);
-        assertTrue(db.from("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
+        db.get("Company").insertInto("name", "salary").val("Teddy", 20000);
+        assertTrue(db.get("Company").count("name = ?", "Teddy") == 2);  // 2 records with Teddy
 
-        Paging paging = db.from("company c")
+        Paging paging = db.get("company c")
                 .join("employee e", "e.name = c.name")
                 .select()
                 .columns("e.name", "sum(c.salary)", "e.position")

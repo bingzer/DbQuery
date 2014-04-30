@@ -32,17 +32,17 @@ public class TransactionTest extends AndroidTestCase {
             }
         });
 
-        db.from("Person").delete();
+        db.get("Person").delete();
     }
 
     public void testRollback(){
         IDatabase.Transaction transaction =db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
-                database.from("Person").insertInto("Name", "Age", "Address").val("NewPersonRollback", 100, "Batlimore".getBytes());
+                database.get("Person").insertInto("Name", "Age", "Address").val("NewPersonRollback", 100, "Batlimore".getBytes());
 
                 Person p = new Person();
-                database.from("Person").select("Name = ?", "NewPersonRollback").query(p);
+                database.get("Person").select("Name = ?", "NewPersonRollback").query(p);
                 assertTrue(p.getId() > 0);
                 assertTrue(p.getName().equals("NewPersonRollback"));
                 assertTrue(p.getAge() == 100);
@@ -60,7 +60,7 @@ public class TransactionTest extends AndroidTestCase {
         }
 
         Person p = new Person();
-        db.from("Person").select("Name = ?", "NewPersonRollback").query(p);
+        db.get("Person").select("Name = ?", "NewPersonRollback").query(p);
         assertFalse(p.getId() > 0);
         assertTrue(p.getName() == null);
         assertFalse(p.getAge() == 100);
@@ -70,10 +70,10 @@ public class TransactionTest extends AndroidTestCase {
         IDatabase.Transaction transaction = db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
-                database.from("Person").insertInto("Name", "Age", "Address").val("NewPersonCommit", 100, "Batlimore".getBytes());
+                database.get("Person").insertInto("Name", "Age", "Address").val("NewPersonCommit", 100, "Batlimore".getBytes());
 
                 Person p = new Person();
-                database.from("Person").select("Name = ?", "NewPersonCommit").query(p);
+                database.get("Person").select("Name = ?", "NewPersonCommit").query(p);
                 assertTrue(p.getId() > 0);
                 assertTrue(p.getName().equals("NewPersonCommit"));
                 assertTrue(p.getAge() == 100);
@@ -91,7 +91,7 @@ public class TransactionTest extends AndroidTestCase {
         }
 
         Person p = new Person();
-        db.from("Person").select("Name = ?", "NewPersonCommit").query(p);
+        db.get("Person").select("Name = ?", "NewPersonCommit").query(p);
         assertTrue(p.getId() > 0);
         assertTrue(p.getName().equals("NewPersonCommit"));
         assertTrue(p.getAge() == 100);
@@ -101,10 +101,10 @@ public class TransactionTest extends AndroidTestCase {
         IDatabase.Transaction transaction = db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
-                database.from("Person").insertInto("Name", "Age", "Address").val("NewPersonExecute", 100, "Batlimore".getBytes());
+                database.get("Person").insertInto("Name", "Age", "Address").val("NewPersonExecute", 100, "Batlimore".getBytes());
 
                 Person p = new Person();
-                database.from("Person").select("Name = ?", "NewPersonExecute").query(p);
+                database.get("Person").select("Name = ?", "NewPersonExecute").query(p);
                 assertTrue(p.getId() > 0);
                 assertTrue(p.getName().equals("NewPersonExecute"));
                 assertTrue(p.getAge() == 100);
@@ -114,7 +114,7 @@ public class TransactionTest extends AndroidTestCase {
         assertTrue(transaction.execute());
 
         Person p = new Person();
-        db.from("Person").select("Name = ?", "NewPersonExecute").query(p);
+        db.get("Person").select("Name = ?", "NewPersonExecute").query(p);
         assertTrue(p.getId() > 0);
         assertTrue(p.getName().equals("NewPersonExecute"));
         assertTrue(p.getAge() == 100);

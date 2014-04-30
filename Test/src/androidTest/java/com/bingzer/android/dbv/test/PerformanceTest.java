@@ -67,7 +67,7 @@ public class PerformanceTest extends AndroidTestCase{
         rawNano = System.nanoTime() - rawNano;
 
         long rawDbQuery = System.nanoTime();
-        inspectCursor(db.from("Track").select().query());
+        inspectCursor(db.get("Track").select().query());
         rawDbQuery = System.nanoTime() - rawDbQuery;
 
         long diff = rawDbQuery - rawNano;
@@ -92,7 +92,7 @@ public class PerformanceTest extends AndroidTestCase{
         rawNano = System.nanoTime() - rawNano;
 
         long rawDbQuery = System.nanoTime();
-        inspectCursor(db.from("Track")
+        inspectCursor(db.get("Track")
                 .join("Album", "Album.AlbumId = Track.AlbumId")
                 .join("Artist", "Album.ArtistId = Artist.ArtistId")
                 .select()
