@@ -223,7 +223,7 @@ public class TableTest extends AndroidTestCase{
             int counter = 0;
 
             @Override
-            public void next(Cursor cursor) {
+            public boolean next(Cursor cursor) {
                 // pirlo goes first
                 if (counter == 0)
                     assertEquals("Andrea Pirlo", cursor.getString(cursor.getColumnIndex("Name")));
@@ -231,6 +231,26 @@ public class TableTest extends AndroidTestCase{
                     assertEquals("Kaka", cursor.getString(cursor.getColumnIndex("Name")));
 
                 counter++;
+
+                return true;
+            }
+        });
+
+
+        customerTable.select(kakaId, pirloId).orderBy("Name").query(new ISequence<Cursor>() {
+            int counter = 0;
+
+            @Override
+            public boolean next(Cursor cursor) {
+                try {
+                    counter++;
+                    return false;
+                }
+                finally {
+                    // we have two records but since we
+                    // return false, the enumerable should stop enumerating
+                    assertEquals(1, counter);
+                }
             }
         });
     }

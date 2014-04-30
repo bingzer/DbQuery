@@ -131,14 +131,15 @@ public class PaginationTest extends AndroidTestCase {
         paging.query(new ISequence<Cursor>() {
             int counter = 0;
             @Override
-            public void next(Cursor object) {
+            public boolean next(Cursor object) {
                 if(counter == 0)
                     assertEquals("John", object.getString(object.getColumnIndex("Name")));
                 else
                     assertEquals("Ronaldo", object.getString(object.getColumnIndex("Name")));
 
-
                 counter++;
+
+                return true;
             }
         });
     }

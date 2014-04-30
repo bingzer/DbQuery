@@ -103,11 +103,12 @@ public class EntityJoinTest extends AndroidTestCase {
                 .columns("O.Id AS Id", "Quantity", "P.Name AS ProductName", "C.Name AS CustomerName")
                 .query(new ISequence<Cursor>() {
                     @Override
-                    public void next(Cursor cursor) {
+                    public boolean next(Cursor cursor) {
                         assertEquals("Messi", cursor.getString(cursor.getColumnIndex("CustomerName")));
                         assertEquals("Monitor", cursor.getString(cursor.getColumnIndex("ProductName")));
                         assertTrue(cursor.getInt(cursor.getColumnIndex("Id")) > 0);
                         assertEquals(5, cursor.getInt(cursor.getColumnIndex("Quantity")));
+                        return true;
                     }
                 });
     }
