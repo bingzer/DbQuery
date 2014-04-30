@@ -35,12 +35,11 @@ import com.bingzer.android.dbv.queries.Delete;
 import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.utils.CollectionUtils;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
-import com.bingzer.android.dbv.utils.DbUtils;
+import com.bingzer.android.dbv.utils.Utils;
 import com.bingzer.android.dbv.queries.Insert;
 import com.bingzer.android.dbv.queries.Update;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -148,7 +147,7 @@ abstract class BaseResolver implements IBaseResolver {
             public Integer query() {
                 return value();
             }
-        }.val(contentResolver.delete(uri, whereClause, DbUtils.toStringArray(whereArgs)));
+        }.val(contentResolver.delete(uri, whereClause, Utils.toStringArray(whereArgs)));
     }
 
     @Override
@@ -295,7 +294,7 @@ abstract class BaseResolver implements IBaseResolver {
 
             @Override
             public String toString(){
-                return DbUtils.join(";", uriStrings);
+                return Utils.join(";", uriStrings);
             }
         };
     }
@@ -352,7 +351,7 @@ abstract class BaseResolver implements IBaseResolver {
     @Override
     public Update update(ContentValues contents, String whereClause, Object... whereArgs) {
         UpdateImpl query = new UpdateImpl();
-        String[] args = DbUtils.toStringArray(whereArgs);
+        String[] args = Utils.toStringArray(whereArgs);
         query.setValue(contentResolver.update(uri, contents, whereClause, args));
         return query;
     }

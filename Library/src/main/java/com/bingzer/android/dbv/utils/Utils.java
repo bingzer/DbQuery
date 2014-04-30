@@ -34,7 +34,7 @@ package com.bingzer.android.dbv.utils;
 /**
  * Utility methods
  */
-public final class DbUtils {
+public final class Utils {
 
     private static final String QUESTION_MARK = "\\?";
     private static final char QUESTION_MARK_CHAR = QUESTION_MARK.charAt(1);
@@ -164,7 +164,7 @@ public final class DbUtils {
 
     //////////////////////////////////////////////////////////////////////////////
 
-    private DbUtils(){
+    private Utils(){
         // nothing
     }
 }

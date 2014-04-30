@@ -23,7 +23,7 @@ import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.queries.GroupBy;
 import com.bingzer.android.dbv.queries.Having;
 import com.bingzer.android.dbv.utils.CursorUtils;
-import com.bingzer.android.dbv.utils.DbUtils;
+import com.bingzer.android.dbv.utils.Utils;
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.internal.Table;
 import com.bingzer.android.dbv.queries.Paging;
@@ -78,7 +78,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
             if(!whereClause.toLowerCase().startsWith("where"))
                 whereString.append(" WHERE ");
             // safely prepare the where part
-            whereString.append(DbUtils.bindArgs(whereClause, args));
+            whereString.append(Utils.bindArgs(whereClause, args));
         }
         return this;
     }
@@ -89,7 +89,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
     public Select columns(String... columns) {
         columnString.delete(0, columnString.length());
         if(columns != null){
-            columnString.append(DbUtils.join(", ", columns));
+            columnString.append(Utils.join(", ", columns));
         }
         else{
             columnString.append("*");
@@ -104,9 +104,9 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         else orderByString.delete(0, orderByString.length());
 
         if(columns != null){
-            String joined = DbUtils.join(",", columns);
+            String joined = Utils.join(",", columns);
             if(joined.length() > 0){
-                orderByString.append("ORDER BY ").append(DbUtils.join(",", columns));
+                orderByString.append("ORDER BY ").append(Utils.join(",", columns));
             }
         }
         return this;
@@ -151,7 +151,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         if(groupByString == null) groupByString = new StringBuilder();
         else groupByString.delete(0, groupByString.length());
         if(columns != null){
-            groupByString.append("GROUP BY ").append(DbUtils.join(",", columns));
+            groupByString.append("GROUP BY ").append(Utils.join(",", columns));
         }
 
         return this;
@@ -167,7 +167,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
         if(havingString == null) havingString = new StringBuilder();
         else havingString.delete(0, havingString.length());
         if(clause != null){
-            havingString.append("HAVING ").append(DbUtils.bindArgs(clause, args));
+            havingString.append("HAVING ").append(Utils.bindArgs(clause, args));
         }
 
         return this;

@@ -55,7 +55,7 @@ import com.bingzer.android.dbv.queries.Union;
 import com.bingzer.android.dbv.queries.Update;
 import com.bingzer.android.dbv.utils.CollectionUtils;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
-import com.bingzer.android.dbv.utils.DbUtils;
+import com.bingzer.android.dbv.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -369,7 +369,7 @@ public class Table implements ITable {
         db.enforceReadOnly();
 
         UpdateImpl query = new UpdateImpl();
-        String[] args = DbUtils.toStringArray(whereArgs);
+        String[] args = Utils.toStringArray(whereArgs);
 
         // only update when content has something
         if(contents != null && contents.size() > 0)
@@ -419,7 +419,7 @@ public class Table implements ITable {
         db.enforceReadOnly();
 
         DeleteImpl query = new DeleteImpl();
-        query.setValue(db.sqLiteDb.delete(getName(), whereClause, DbUtils.toStringArray((Object[]) whereArgs)));
+        query.setValue(db.sqLiteDb.delete(getName(), whereClause, Utils.toStringArray((Object[]) whereArgs)));
 
         return query;
     }
@@ -458,7 +458,7 @@ public class Table implements ITable {
     @Override
     public boolean has(String whereClause, Object... whereArgs) {
         StringBuilder sql = new StringBuilder("SELECT 1 FROM ").append(getName())
-                            .append(" WHERE ").append(DbUtils.bindArgs(whereClause, whereArgs));
+                            .append(" WHERE ").append(Utils.bindArgs(whereClause, whereArgs));
         Cursor cursor = null;
         try{
             cursor = raw(sql.toString()).query();
@@ -486,7 +486,7 @@ public class Table implements ITable {
         StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM " + toString());
         if(whereClause != null){
             builder.append(" WHERE ");
-            builder.append(DbUtils.bindArgs(whereClause, whereArgs));
+            builder.append(Utils.bindArgs(whereClause, whereArgs));
         }
 
         Cursor cursor = db.sqLiteDb.rawQuery(builder.toString(), null);
@@ -519,7 +519,7 @@ public class Table implements ITable {
             @Override public Cursor query(){
                 if(args == null || args.length == 0)
                     return db.sqLiteDb.rawQuery(sql, null);
-                else return db.sqLiteDb.rawQuery(sql, DbUtils.toStringArray(args));
+                else return db.sqLiteDb.rawQuery(sql, Utils.toStringArray(args));
             }
         };
     }
@@ -615,7 +615,7 @@ public class Table implements ITable {
 
     @Override
     public Average avg(String columnName, String whereClause, Object... args) {
-        return avg(columnName, DbUtils.bindArgs(whereClause, args));
+        return avg(columnName, Utils.bindArgs(whereClause, args));
     }
 
     @Override
@@ -636,7 +636,7 @@ public class Table implements ITable {
 
     @Override
     public Sum sum(String columnName, String whereClause, Object... args) {
-        return sum(columnName, DbUtils.bindArgs(whereClause, args));
+        return sum(columnName, Utils.bindArgs(whereClause, args));
     }
 
     @Override
@@ -657,7 +657,7 @@ public class Table implements ITable {
 
     @Override
     public Total total(String columnName, String whereClause, Object... args) {
-        return total(columnName, DbUtils.bindArgs(whereClause, args));
+        return total(columnName, Utils.bindArgs(whereClause, args));
     }
 
     @Override
@@ -678,7 +678,7 @@ public class Table implements ITable {
 
     @Override
     public Max max(String columnName, String whereClause, Object... args) {
-        return max(columnName, DbUtils.bindArgs(whereClause, args));
+        return max(columnName, Utils.bindArgs(whereClause, args));
     }
 
     @Override
@@ -699,7 +699,7 @@ public class Table implements ITable {
 
     @Override
     public Min min(String columnName, String whereClause, Object... args) {
-        return min(columnName, DbUtils.bindArgs(whereClause, args));
+        return min(columnName, Utils.bindArgs(whereClause, args));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -770,7 +770,7 @@ public class Table implements ITable {
 
     private void queryColumns(){
         columns.clear();
-        String pragmaSql = DbUtils.bindArgs("PRAGMA table_info(?)", name);
+        String pragmaSql = Utils.bindArgs("PRAGMA table_info(?)", name);
         Cursor cursor = db.sqLiteDb.rawQuery(pragmaSql, null);
         try{
             // this will throw IllegalArgumentException if not found

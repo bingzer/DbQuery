@@ -22,7 +22,7 @@ import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.content.contracts.Selectable;
 import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.queries.IQuery;
-import com.bingzer.android.dbv.utils.DbUtils;
+import com.bingzer.android.dbv.utils.Utils;
 import com.bingzer.android.dbv.content.resolvers.IBaseResolver;
 import com.bingzer.android.dbv.queries.Paging;
 
@@ -40,7 +40,7 @@ public abstract class SelectImpl implements Selectable.Select, Selectable.Select
     public SelectImpl(IBaseResolver resolver, int top){
         this.resolver = resolver;
         this.columnString = new StringBuilder();
-        this.columnString.append(DbUtils.join(", ", generateDefaultProjections()));
+        this.columnString.append(Utils.join(", ", generateDefaultProjections()));
 
         if(top > 0) {
             limitString = new StringBuilder();
@@ -52,10 +52,10 @@ public abstract class SelectImpl implements Selectable.Select, Selectable.Select
     public SelectImpl columns(String... columns) {
         columnString.delete(0, columnString.length());
         if(columns != null){
-            columnString.append(DbUtils.join(", ", columns));
+            columnString.append(Utils.join(", ", columns));
         }
         else{
-            columnString.append(DbUtils.join(", ", generateDefaultProjections()));
+            columnString.append(Utils.join(", ", generateDefaultProjections()));
         }
 
         return this;
@@ -63,7 +63,7 @@ public abstract class SelectImpl implements Selectable.Select, Selectable.Select
 
     @Override
     public OrderBy orderBy(String... columns) {
-        orderByString = DbUtils.join(",", columns).trim();
+        orderByString = Utils.join(",", columns).trim();
         return this;
     }
 
@@ -103,7 +103,7 @@ public abstract class SelectImpl implements Selectable.Select, Selectable.Select
      * @return selection args
      */
     public String[] getSelectionArgs(){
-        return DbUtils.toStringArray(whereArgs);
+        return Utils.toStringArray(whereArgs);
     }
 
     /**

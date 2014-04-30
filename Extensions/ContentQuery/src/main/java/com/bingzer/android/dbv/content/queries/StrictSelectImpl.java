@@ -16,7 +16,7 @@
 package com.bingzer.android.dbv.content.queries;
 
 import com.bingzer.android.dbv.content.contracts.StrictSelectable;
-import com.bingzer.android.dbv.utils.DbUtils;
+import com.bingzer.android.dbv.utils.Utils;
 import com.bingzer.android.dbv.content.resolvers.IBaseResolver;
 
 /**
@@ -33,17 +33,17 @@ public abstract class StrictSelectImpl implements StrictSelectable.Select, Stric
     public StrictSelectImpl(IBaseResolver resolver){
         this.resolver = resolver;
         this.columnString = new StringBuilder();
-        this.columnString.append(DbUtils.join(", ", generateDefaultProjections()));
+        this.columnString.append(Utils.join(", ", generateDefaultProjections()));
     }
 
     @Override
     public StrictSelectImpl columns(String... columns) {
         columnString.delete(0, columnString.length());
         if(columns != null){
-            columnString.append(DbUtils.join(", ", columns));
+            columnString.append(Utils.join(", ", columns));
         }
         else{
-            columnString.append(DbUtils.join(", ", generateDefaultProjections()));
+            columnString.append(Utils.join(", ", generateDefaultProjections()));
         }
 
         return this;
@@ -51,7 +51,7 @@ public abstract class StrictSelectImpl implements StrictSelectable.Select, Stric
 
     @Override
     public OrderBy orderBy(String... columns) {
-        orderByString = DbUtils.join(",", columns);
+        orderByString = Utils.join(",", columns);
         return this;
     }
 
@@ -86,7 +86,7 @@ public abstract class StrictSelectImpl implements StrictSelectable.Select, Stric
      * @return selection args
      */
     public String[] getSelectionArgs(){
-        return DbUtils.toStringArray(whereArgs);
+        return Utils.toStringArray(whereArgs);
     }
 
     /**
