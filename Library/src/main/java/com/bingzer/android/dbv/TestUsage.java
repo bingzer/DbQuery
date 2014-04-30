@@ -16,6 +16,8 @@
 
 package com.bingzer.android.dbv;
 
+import android.content.Context;
+
 import java.util.LinkedList;
 
 /**
@@ -31,7 +33,17 @@ class TestUsage {
         version++;
 
         IDatabase db = DbQuery.getDatabase("Test");
-        db.open(version, new SQLiteBuilder.WithoutModeling(null));
+        db.open(version, new SQLiteBuilder(){
+
+            @Override
+            public Context getContext() {
+                return null;
+            }
+
+            @Override
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
+            }
+        });
 
         for(ITable table : db.getTables()){
             for(String str : table.getColumns()){

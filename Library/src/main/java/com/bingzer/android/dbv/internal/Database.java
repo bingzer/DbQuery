@@ -384,18 +384,28 @@ public class Database implements IDatabase {
 
         @Override
         public ITable.Model foreignKey(String columnName, String targetColumn) {
+            return foreignKey(columnName, targetColumn, null);
+        }
+
+        @Override
+        public ITable.Model foreignKey(String columnName, String targetColumn, String actionClause) {
             if(!targetColumn.contains("."))
                 throw new IllegalArgumentException("Must use format: [TABLE].[COLUMN] for targetColumn");
 
             String targetTable = targetColumn.substring(0, targetColumn.indexOf("."));
             targetColumn = targetColumn.substring(targetColumn.indexOf(".") + 1, targetColumn.length());
-            return foreignKey(columnName, targetTable, targetColumn);
+            return foreignKey(columnName, targetTable, targetColumn, actionClause);
         }
 
         @Override
-        public ITable.Model foreignKey(String columnName, String targetTable, String targetColumn) {
+        public ITable.Model foreignKey(String columnName, String targetTable, String targetColumn, String actionClause) {
             String sql = "FOREIGN KEY (" + columnName + ") " + "REFERENCES " + targetTable + "(" + targetColumn + ")";
-            if(!foreignKeyModelList.contains(sql)){
+
+            if (actionClause != null){
+                sql += " " + actionClause;
+            }
+
+            if (!foreignKeyModelList.contains(sql)){
                 foreignKeyModelList.add(sql);
             }
 

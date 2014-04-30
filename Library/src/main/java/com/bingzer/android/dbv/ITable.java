@@ -158,12 +158,30 @@ public interface ITable extends
          * Foreign key. Create a foreign key references from a column from this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
+         * <code>targetColumn</code> must be defined as <code>[TableName].[ColumnName]</code>
+         *
+         * @param columnName the referencing column name (from this table)
+         * @param targetColumn the referenced column name (from the referenced table)
+         * @param actionClause additional clause any of these
+         *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"
+         *                     null means "NO ACTION"
+         *
+         */
+        Model foreignKey(String columnName, String targetColumn, String actionClause);
+
+        /**
+         * Foreign key. Create a foreign key references from a column from this current table
+         * to another column on another table. Note that when you call this method,
+         * the referenced table and column needs to exists.
          *
          * @param columnName the referencing column name (from this table)
          * @param targetTable the referenced table
          * @param targetColumn the referenced column name (from the referenced table)
+         * @param actionClause additional clause any of these
+         *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"
+         *                     null means "NO ACTION"
          */
-        Model foreignKey(String columnName, String targetTable, String targetColumn);
+        Model foreignKey(String columnName, String targetTable, String targetColumn, String actionClause);
 
         //////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////
