@@ -32,8 +32,42 @@ import com.bingzer.android.dbv.contracts.Unionable;
 import com.bingzer.android.dbv.contracts.Updatable;
 
 /**
- * Represents a table. <code>ITable</code> provides full access to achieve
- * common <code>CRUD</code> tasks.
+ * Represents a table. {@link com.bingzer.android.dbv.ITable} provides full
+ * access to achieve common <code>CRUD</code> tasks.
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.ITable} object, once created, is automatically
+ * cached inside the {@link com.bingzer.android.dbv.IDatabase}.
+ * Therefore there's no need to reference it outside. Most of the time
+ * <code>db.from("tableName").<someMethod>()</code> is more preferable to use.
+ * </p>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.ITable} does not store any table structure
+ * or any data whatsoever. It only stores its name, alias (if any) and column names.
+ * So it's easy on the memory usage.
+ * </p>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.ITable} provides common methods to perform many
+ * <code>CRUD</code> and other common tasks such as (functions, count, etc...).
+ * This is the object that you will reference to access and manipulate the data with.
+ * </p>
+ *
+ * <p>
+ * <b>Related operations:</b>
+ * <ul>
+ *     <li>{@link com.bingzer.android.dbv.queries.Select Select}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Insert Insert}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Update Update}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Delete Delete}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.InnerJoin InnerJoin}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.OuterJoin OuterJoin}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Union Union}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.GroupBy GroupBy}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Having Having}</li>
+ * </ul>
+ * </p>
  * <p>
  *     Find a complete <code>Wiki</code> and documentation here:<br/>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
@@ -46,8 +80,9 @@ import com.bingzer.android.dbv.contracts.Updatable;
  *     automatically. For more information see {@link IConfig}
  * </p>
  *
- * @version 1.0
+ * @version 2.0
  * @see IDatabase
+ * @see IConfig
  * @author Ricky Tobing
  */
 public interface ITable extends

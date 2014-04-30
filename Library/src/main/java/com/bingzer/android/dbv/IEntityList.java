@@ -18,7 +18,33 @@ package com.bingzer.android.dbv;
 
 /**
  * Represents a collection of {@link com.bingzer.android.dbv.IEntity}.
+ * While {@link com.bingzer.android.dbv.IEntity} is a runtime object mapper,
+ * {@link com.bingzer.android.dbv.IEntityList} is a collection of {@link com.bingzer.android.dbv.IEntity}
  *
+ * <p>
+ * Sample Code:
+ * <pre><code>
+ * //---- Person.java
+ * public Person implements IEntity {
+ *     ...
+ * }
+ *
+ * //---- PersonList.java
+ * public PersonList extends ArrayList&lt;Person&gt; implements IEntityList&lt;Person&gt; {
+ *     ...
+ * }
+ *
+ * //---- Other.java
+ * IDatabase db = ...
+ * PersonList personList = new PersonList();
+ *
+ * // Get all customers from US
+ * db.from("Customers").select("Country = ?", "US").query(personList);
+ *
+ * </code></pre>
+ * </p>
+ *
+ * @version 2.0
  * @see com.bingzer.android.dbv.IEntity
  * @see com.bingzer.android.dbv.queries.Select#query(IEntity)
  * @see com.bingzer.android.dbv.ITable#insert(IEntity)

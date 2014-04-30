@@ -19,12 +19,75 @@ package com.bingzer.android.dbv;
 import android.content.Context;
 
 /**
- * <code>IDatabase.Builder</code> implementations.
- * Always, always, always use this as your <code>IDatabase.Builder</code>
+ * The de-facto and default <code>IDatabase.Builder</code> implementations.
+ * Always, always, always use this as your <code>IDatabase.Builder</code>.
+ * {@linkplain android.content.Context} is needed.
  *
- * @since 1.0
- * @author Ricky Tobing
+ * <p>
+ * A <code>Builder</code> is a contract for {@link com.bingzer.android.dbv.IDatabase}
+ * to follow when creating/upgrading/downgrading your database. These are the sets
+ * of rules to follow when first opening up the database for the very first time.
+ * When {@link com.bingzer.android.dbv.IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
+ * is invoked, the <code>Builder</code> will do its magic to properly create/upgrade/downgrade
+ * as needed.
+ * </p>
+ *
+ * <p>
+ * When referring to upgrade or downgrade, the <code>newVersion</code> and <code>oldVersion</code>
+ * are always provided in the method.
+ * <ul>
+ *   <li><code>newVersion</code> is the value found in {@linkplain IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}</li>
+ *   <li><code>oldVersion</code> is the current version of the database that's about to be opened</li>
+ * </ul>
+ * If upgrade is needed: {@link #onUpgrade(IDatabase, int, int)} will be called.
+ * When downgrade is needed {@link #onDowngrade(IDatabase, int, int)} will be called.
+ * When no database is found (fresh) {@link #onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
+ * <br/>
+ * Sample Code:
+ * <pre><code>
+ * int version = 1;
+ * IDatabase db = DbQuery.open("Database-Name");
+ *
+ * db.open(version, new SQLiteBuilder(){
+ *     public void onModelCreate(IDatabase database, Modeling modeling){
+ *         ...
+ *     }
+ *
+ *     public void onUpgrade(IDatabase database, int oldVersion, int newVersion){
+ *         ...
+ *     }
+ *
+ *     public void onDowngrade(IDatabase database, int oldVersion, int newVersion){
+ *
+ *     }
+ *
+ *     // optionally implement these methods
+ *     public void onReady(IDatabase database);
+ *     public void onError(Throwable error);
+ * });
+ * </code></pre>
+ * </p>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.SQLiteBuilder.WithoutModeling} is another implementation
+ * of {@link com.bingzer.android.dbv.SQLiteBuilder} that can be used to open a pre-existing
+ * SQLite file in the file system.<br/>
+ * Sample Code:
+ * <pre><code>
+ * int version = 1;
+ * String dbFile = "/sdcard/temp/dbFile.sqlite";
+ * IDatabase db = DbQuery.open("pre-existing");
+ *
+ * db.open(version, dbFile, new SQLiteBuilder.WithoutModeling(getContext());
+ * </code></pre>
+ * </p>
+ *
  * @see IDatabase.Builder
+ * @see com.bingzer.android.dbv.SQLiteBuilder.WithoutModeling
+ * @see com.bingzer.android.dbv.IDatabase.Modeling
+ * @since 1.0
+ * @version 2.0
+ * @author Ricky Tobing
  */
 public abstract class SQLiteBuilder implements IDatabase.Builder {
 

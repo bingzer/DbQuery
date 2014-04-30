@@ -16,13 +16,51 @@
 package com.bingzer.android.dbv;
 
 /**
- * Represents an entity. {@link IEntity} can be serialized.
+ * Represents an entity. {@link com.bingzer.android.dbv.IEntity} is a runtime object
+ * mapper from a record stored in the database to java objects and/ vice versa.
+ * For example, if you have a table person with a simple columns
+ * (Id,Name,Age and Person), using IEntity you could easily map their
+ * values to your Person object. Everything is done during runtime.
+ * <p>
+ * Because of <b>no reflections</b> taken place, we need to do a manual labor.
+ * The implementation of {@link com.bingzer.android.dbv.IEntity} needs to tell
+ * {@link com.bingzer.android.dbv.IEntity.Mapper} what to map to what value so that
+ * {@link IEntity} can be properly serialized during runtime.
  * An entity uses {@link com.bingzer.android.dbv.IEntity.Mapper}
  * to map column names and its value.
- *
- * The default implementation of this mapper can be found
+ * </p>
+ * <p>
+ * The default implementation of {@link com.bingzer.android.dbv.IEntity.Mapper} can be found
  * in {@link com.bingzer.android.dbv.Delegate.Mapper}
+ * </p>
+ * <p>
+ * <pre><code>
+ * // Person.java
+ * public class Person implements IEntity {
+ *     ...
+ *     public void map(Mapper mapper){
+ *         mapper.map("Name", new Delegate.TypeString(){
+ *             public void set(String value){
+ *                 setName(value);
+ *             }
+ *             public String get(){
+ *                 return getName();
+ *             }
+ *         });
+ *     }
+ * }
  *
+ * // Other.java
+ * IDatabase db = ...
+ * Person john = new Person();
+ * db.from("Persons").select("Name = ?", "John Doe").query(person);
+ *
+ * assertEquals("John Doe", person.getName());
+ *
+ * </code></pre>
+ * </p>
+ *
+ * @version 2.0
  * @see com.bingzer.android.dbv.IEntityList
  * @see com.bingzer.android.dbv.queries.Select#query(IEntity)
  * @see com.bingzer.android.dbv.ITable#insert(IEntity)

@@ -24,6 +24,48 @@ import java.util.HashMap;
  * An action used to set/from variables. A delegate is
  * basically a reference to a method. Since Java does not support
  * reference to a method, we need this to map methods
+ *
+ * <ul>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeBoolean Delegate.TypeBoolean} for <code>Boolean</code> getter/setter</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeBytes Delegate.TypeBytes} for <code>Boolean</code> getter/setter</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeDouble Delegate.TypeDouble} for <code>Double</code> getter/setter</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeFloat Delegate.TypeFloat} for <code>Float</code> getter/setter</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeId Delegate.TypeId} for <code>Primary Key</code> column</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeInteger Delegate.TypeInteger} for <code>Integer</code> getter/setter</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeLong Delegate.TypeLong} for <code>Long</code> getter/setter</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeObject Delegate.TypeObject} for <code>any object</code> getter/setter</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeShort Delegate.TypeShort} for <code>Short</code> getter/setter</li>
+ *   <li>{@link com.bingzer.android.dbv.Delegate.TypeString Delegate.TypeString} for <code>String</code> getter/setter</li>
+ * </ul>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.Delegate} is used inside the
+ * {@link com.bingzer.android.dbv.IEntity#map(com.bingzer.android.dbv.IEntity.Mapper)}
+ * implementations.
+ * <br/>
+ * Sample code:
+ * <pre><code>
+ * public class Person implements IEntity {
+ *     ...
+ *     public void map(IEntity.Mapper mapper){
+ *         mapper.mapId(Delegate.TypeId(){
+ *             ...
+ *         }
+ *
+ *         mapper.map("Name", Delegate.TypeString(){
+ *             ...
+ *         }
+ *
+ *         mapper.map("Age", Delegate, TypeInteger(){
+ *             ...
+ *         }
+ *     }
+ * }
+ * </code></pre>
+ *
+ * @version 2.0
+ * @see com.bingzer.android.dbv.IEntity
+ * @see com.bingzer.android.dbv.IEntity.Mapper
  */
 @SuppressWarnings("ALL")
 public abstract class Delegate<T> {

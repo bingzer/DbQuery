@@ -26,9 +26,30 @@ import com.bingzer.android.dbv.contracts.Tangible;
 
 /**
  * Represents a <code>View</code>.
- * <code>View</code> is a "read-only" table. You cannot perform
- * <code>DELETE</code>, <code>INSERT</code> or
- * <code>UPDATE</code> operations in a <code>View</code>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.IView} object, once created,
+ * is automatically cached inside the {@link com.bingzer.android.dbv.IView}
+ * So there's no need to reference it outside. Most of the time
+ * <code>db.fromView("tableName").<someMethod>()</code> is more preferable to use.
+ * </p>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.IView} does not store any view structure or
+ * any data whatsoever. It only stores its name, alias (if any) and column names.
+ * So it's easy on the memory usage.
+ * </p>
+ *
+ * <p>
+ * <b>Supported operations:</b>
+ * <ul>
+ *     <li>{@link com.bingzer.android.dbv.queries.Select Select}</li>
+ * </ul>
+ * </p>
+ *
+ * @version 2.0
+ * @see com.bingzer.android.dbv.IDatabase
+ * @see com.bingzer.android.dbv.queries.Select
  */
 public interface IView extends
         Selectable, Distinguishable,

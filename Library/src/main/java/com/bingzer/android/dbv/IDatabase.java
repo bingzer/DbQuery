@@ -20,8 +20,8 @@ import com.bingzer.android.dbv.contracts.RawQueryable;
 import com.bingzer.android.dbv.contracts.SqlExecutable;
 
 /**
- * Represents a database. Provides access to {@link ITable} to achieve common <code>CRUD</code>
- * tasks.
+ * Represents a database. {@linkplain IDatabase} provides access
+ * to {@link ITable} to achieve common <code>CRUD</code> tasks.
  * <p>
  *     Find a complete <code>Wiki</code> and documentation here:<br/>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
@@ -66,7 +66,7 @@ import com.bingzer.android.dbv.contracts.SqlExecutable;
  *     automatically. For more information see {@link IConfig}
  * </p>
  *
- * @version 1.0
+ * @version 2.0
  * @see ITable
  * @see Modeling
  * @see Builder
@@ -99,8 +99,18 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     /**
      * Returns table by its <code>tableName</code>. If the table
      * does not exists, this will returns null.
-     * Note: you must first <code>open</code> the database
+     * The {@link com.bingzer.android.dbv.ITable} provides access to
+     * common CRUD operations.
+     * Note: you must first <code>open</code> the database.
+     * <p>
+     * Example Code
+     * <pre><code>
+     * IDatabase db = ...
+     * ITable table = db.from("table-name");
+     * </code></pre>
+     * </p>
      *
+     * @see com.bingzer.android.dbv.ITable
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @see #fromView(String)
      * @param tableName the table
@@ -112,7 +122,15 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * Returns view by its <code>viewName</code>.
      * If the view does not exists, this will returns null.
      * Note: you must first <code>open</code> the database
+     * <p>
+     * Example Code
+     * <pre><code>
+     * IDatabase db = ...
+     * IView view = db.fromView("view-name");
+     * </code></pre>
+     * </p>
      *
+     * @see com.bingzer.android.dbv.IView
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @see #from(String)
      * @param viewName the view name
@@ -219,6 +237,9 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
 
     /**
      * Returns the absolute path where this database file exists
+     * Note: you must first <code>open</code> the database
+     *
+     * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @return the absolute path
      */
     String getPath();

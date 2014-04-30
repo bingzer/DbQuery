@@ -48,7 +48,9 @@ package com.bingzer.android.dbv;
  *     and many more
  * </p>
  *
- * Created by Ricky Tobing on 7/19/13.
+ * @author Ricky
+ * @version 2.0
+ * @see com.bingzer.android.dbv.IDatabase
  */
 public interface IConfig {
 
@@ -119,7 +121,7 @@ public interface IConfig {
     void setReadOnly(boolean readOnly);
 
     /**
-     * Trus if this database is a read-only database
+     * True if this database is a read-only database
      * @return true if read-only, false otherwise
      */
     boolean isReadOnly();

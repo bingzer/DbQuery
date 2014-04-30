@@ -43,6 +43,7 @@ import java.util.Collection;
  * Complete documentation and Wiki:
  * <a href="http://github.com/bingzer/DbQuery/wiki">http://github.com/bingzer/DbQuery/wiki</a>
  *
+ * @version 2.0
  * @see IConfig
  * @see IDatabase
  * @author Ricky Tobing
