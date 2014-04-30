@@ -9,7 +9,7 @@ import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.SQLiteBuilder;
 import com.bingzer.android.dbv.queries.InsertInto;
 
@@ -101,7 +101,7 @@ public class EntityJoinTest extends AndroidTestCase {
                 .join("Customers C", "C.Id = O.CustomerId")
                 .select("C.Name = ? AND P.Name = ?", "Messi", "Monitor")
                 .columns("O.Id AS Id", "Quantity", "P.Name AS ProductName", "C.Name AS CustomerName")
-                .query(new IEnumerable<Cursor>() {
+                .query(new ISequence<Cursor>() {
                     @Override
                     public void next(Cursor cursor) {
                         assertEquals("Messi", cursor.getString(cursor.getColumnIndex("CustomerName")));

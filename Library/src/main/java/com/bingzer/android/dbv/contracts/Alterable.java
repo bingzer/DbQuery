@@ -24,7 +24,7 @@ public interface Alterable {
 
     /**
      * Alter the content of a table (i.e: rename columns, modify column definition, etc...)
-     * @return {@link ITable.Alter} object
+     * @return {@link com.bingzer.android.dbv.ITable.Alter} object
      */
     ITable.Alter alter();
 }

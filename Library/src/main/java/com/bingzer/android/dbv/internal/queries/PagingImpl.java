@@ -19,7 +19,7 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.internal.Database;
 import com.bingzer.android.dbv.queries.Paging;
 import com.bingzer.android.dbv.utils.EntityUtils;
@@ -96,10 +96,11 @@ public class PagingImpl extends QueryImpl<Cursor> implements Paging {
     }
 
     @Override
-    public void query(IEnumerable<Cursor> enumerable) {
+    public void query(ISequence<Cursor> sequence) {
         final Cursor cursor = query();
         while(cursor.moveToNext()){
-            enumerable.next(cursor);
+            if(!sequence.next(cursor))
+                break;
         }
         cursor.close();
     }

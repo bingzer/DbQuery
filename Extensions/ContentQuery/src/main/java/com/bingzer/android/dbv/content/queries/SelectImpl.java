@@ -20,7 +20,7 @@ import android.database.Cursor;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.content.contracts.Selectable;
-import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.utils.DbUtils;
 import com.bingzer.android.dbv.content.resolvers.IBaseResolver;
@@ -193,11 +193,12 @@ public abstract class SelectImpl implements Selectable.Select, Selectable.Select
         }
 
         @Override
-        public void query(IEnumerable<Cursor> enumerable) {
+        public void query(ISequence<Cursor> sequence) {
             final Cursor cursor = query();
 
             while(cursor.moveToNext()){
-                enumerable.next(cursor);
+                if(!sequence.next(cursor))
+                    break;
             }
 
             cursor.close();

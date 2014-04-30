@@ -8,7 +8,7 @@ import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.SQLiteBuilder;
 import com.bingzer.android.dbv.queries.InsertInto;
 import com.bingzer.android.dbv.queries.Paging;
@@ -128,7 +128,7 @@ public class PaginationTest extends AndroidTestCase {
     public void testPaging_Query_Enumerable(){
         Paging paging = db.from("Person").select().orderBy("Id").paging(2);
 
-        paging.query(new IEnumerable<Cursor>() {
+        paging.query(new ISequence<Cursor>() {
             int counter = 0;
             @Override
             public void next(Cursor object) {

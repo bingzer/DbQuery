@@ -19,7 +19,7 @@ import android.database.Cursor;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.queries.GroupBy;
 import com.bingzer.android.dbv.queries.Having;
 import com.bingzer.android.dbv.utils.CursorUtils;
@@ -113,11 +113,12 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
     }
 
     @Override
-    public void query(IEnumerable<Cursor> enumerable) {
+    public void query(ISequence<Cursor> sequence) {
         final Cursor cursor = query();
 
         while(cursor.moveToNext()){
-            enumerable.next(cursor);
+            if(!sequence.next(cursor))
+                break;
         }
 
         cursor.close();

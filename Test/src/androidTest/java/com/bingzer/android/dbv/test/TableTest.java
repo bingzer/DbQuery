@@ -23,7 +23,7 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.SQLiteBuilder;
 import com.bingzer.android.dbv.queries.InsertInto;
@@ -219,7 +219,7 @@ public class TableTest extends AndroidTestCase{
         long kakaId = getCustomerId("Kaka");
         long pirloId = getCustomerId("Andrea Pirlo");
 
-        customerTable.select(kakaId, pirloId).orderBy("Name").query(new IEnumerable<Cursor>() {
+        customerTable.select(kakaId, pirloId).orderBy("Name").query(new ISequence<Cursor>() {
             int counter = 0;
 
             @Override

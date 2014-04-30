@@ -30,14 +30,14 @@ public interface Selectable {
      * Select top (x) add the specified condition
      * @param top number to return
      * @param condition the condition
-     * @return {@link com.bingzer.android.dbv.queries.Select}
+     * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
      */
     Select select(int top, String condition);
 
     /**
      * Select some condition
      * @param condition the condition
-     * @return {@link com.bingzer.android.dbv.queries.Select}
+     * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
      */
     Select select(String condition);
 
@@ -46,14 +46,14 @@ public interface Selectable {
      * specified in {@link com.bingzer.android.dbv.IConfig}
      * @param id id to search
      * @see com.bingzer.android.dbv.IConfig#setIdNamingConvention(String)
-     * @return {@link com.bingzer.android.dbv.queries.Select}
+     * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
      */
     Select select(long id);
 
     /**
      * Select multiple ids
      * @param ids array id
-     * @return {@link com.bingzer.android.dbv.queries.Select}
+     * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
      */
     Select select(long... ids);
 
@@ -61,7 +61,7 @@ public interface Selectable {
      * Select along with whereClause
      * @param whereClause 'where' clause
      * @param args arguments
-     * @return {@link com.bingzer.android.dbv.queries.Select}
+     * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
      */
     Select select(String whereClause, Object... args);
 
@@ -69,7 +69,7 @@ public interface Selectable {
      * Select
      * @param whereClause 'where' clause
      * @param args arguments
-     * @return {@link com.bingzer.android.dbv.queries.Select}
+     * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
      */
     Select select(int top, String whereClause, Object... args);
 
@@ -86,7 +86,7 @@ public interface Selectable {
          * Specified the column to return.
          * default or null will produce SELECT * FROM
          * @param columns column names
-         * @return {@link com.bingzer.android.dbv.queries.Select}
+         * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
          */
         Select columns(String... columns);
 
@@ -99,7 +99,7 @@ public interface Selectable {
          * </pre>
          * </code>
          * @param columns column names
-         * @return {@link com.bingzer.android.dbv.queries.Select}
+         * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
          */
         OrderBy orderBy(String... columns);
 

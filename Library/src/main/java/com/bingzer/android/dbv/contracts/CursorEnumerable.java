@@ -16,7 +16,7 @@
 
 import android.database.Cursor;
 
-import com.bingzer.android.dbv.queries.IEnumerable;
+import com.bingzer.android.dbv.queries.ISequence;
 
 /**
  * Cursor enumerable.
@@ -43,6 +43,6 @@ public interface CursorEnumerable {
      * </p>
      * @param cursor the cursor
      */
-    void query(IEnumerable<Cursor> cursor);
+    void query(ISequence<Cursor> cursor);
 
 }

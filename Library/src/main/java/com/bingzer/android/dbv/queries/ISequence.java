@@ -16,16 +16,18 @@
 package com.bingzer.android.dbv.queries;
 
 /**
- * Provides a pseudo-read-only enumerable of a
- * type.
+ * Provides a pseudo-read-only sequence of a
+ * given type.
  * @param <T> the type
  */
-public interface IEnumerable<T> {
+public interface ISequence<T> {
 
     /**
-     * The enumerator will enumerate and invoke this method
-     * while passing the current object of T
-     * @param object the object
+     * Provides the next sequence of type T. The enumerator/provider
+     * will continuously enumerate until the it finishes enumeration
+     * or until the method return false.
+     *
+     * @param sequence the sequence
      */
-    void next(T object);
+    boolean next(T sequence);
 }

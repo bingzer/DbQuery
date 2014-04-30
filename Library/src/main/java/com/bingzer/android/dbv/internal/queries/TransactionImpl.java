@@ -20,7 +20,7 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.internal.Database;
 
 /**
- * Implements of {@link IDatabase.Transaction}
+ * Implements of {@link com.bingzer.android.dbv.IDatabase.Transaction}
  *
  * Created by Ricky Tobing on 8/12/13.
  */
