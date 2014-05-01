@@ -23,6 +23,8 @@ import com.bingzer.android.dbv.queries.InnerJoin;
 import com.bingzer.android.dbv.queries.OuterJoin;
 import com.bingzer.android.dbv.queries.Select;
 
+import java.util.Locale;
+
 /**
 * Created by Ricky on 4/26/2014.
 */
@@ -36,7 +38,7 @@ public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoi
         this.table = table;
         this.joinBuilder = new StringBuilder();
 
-        if(onClause.toLowerCase().startsWith("on "))
+        if(onClause.toLowerCase(Locale.getDefault()).startsWith("on "))
             this.joinBuilder.append(Database.SPACE).append(joinType).append(Database.SPACE)
                     .append(tableNameToJoin).append(Database.SPACE).append(onClause);
         else
@@ -140,7 +142,7 @@ public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoi
 
     @Override
     public InnerJoin join(String tableName, String onClause) {
-        if(onClause.toLowerCase().startsWith("on "))
+        if(onClause.toLowerCase(Locale.getDefault()).startsWith("on "))
             this.joinBuilder.append(Database.SPACE).append("INNER JOIN").append(Database.SPACE)
                     .append(tableName).append(Database.SPACE).append(onClause);
         else
@@ -156,7 +158,7 @@ public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoi
 
     @Override
     public OuterJoin outerJoin(String tableName, String onClause) {
-        if(onClause.toLowerCase().startsWith("on "))
+        if(onClause.toLowerCase(Locale.getDefault()).startsWith("on "))
             this.joinBuilder.append(Database.SPACE).append("OUTER JOIN").append(Database.SPACE)
                     .append(tableName).append(Database.SPACE).append(onClause);
         else

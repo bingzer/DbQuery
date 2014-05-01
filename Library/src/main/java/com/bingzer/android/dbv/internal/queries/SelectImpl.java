@@ -30,6 +30,8 @@ import com.bingzer.android.dbv.queries.Paging;
 import com.bingzer.android.dbv.queries.Select;
 import com.bingzer.android.dbv.utils.EntityUtils;
 
+import java.util.Locale;
+
 /**
 * Created by Ricky on 4/26/2014.
 */
@@ -75,7 +77,7 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
     public Select where(String whereClause, Object... args){
         if(whereClause != null){
             // append where if necessary
-            if(!whereClause.toLowerCase().startsWith("where"))
+            if(!whereClause.toLowerCase(Locale.getDefault()).startsWith("where"))
                 whereString.append(" WHERE ");
             // safely prepare the where part
             whereString.append(Utils.bindArgs(whereClause, args));

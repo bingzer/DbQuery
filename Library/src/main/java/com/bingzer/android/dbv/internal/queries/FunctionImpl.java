@@ -17,6 +17,8 @@ package com.bingzer.android.dbv.internal.queries;
 
 import com.bingzer.android.dbv.queries.IFunction;
 
+import java.util.Locale;
+
 /**
  * Created by Ricky Tobing on 7/20/13.
  */
@@ -32,7 +34,7 @@ public class FunctionImpl implements IFunction {
 
         if(condition != null){
             // append where if necessary
-            if(!condition.toLowerCase().startsWith("where"))
+            if(!condition.toLowerCase(Locale.getDefault()).startsWith("where"))
                 builder.append(" WHERE ");
             // safely prepare the where part
             builder.append(condition);
