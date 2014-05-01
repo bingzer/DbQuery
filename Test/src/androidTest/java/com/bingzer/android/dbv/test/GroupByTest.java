@@ -44,7 +44,7 @@ public class GroupByTest extends AndroidTestCase {
                         .add("address", "string")
                         .add("salary", "float")
                         .index("name")
-                        .foreignKey("name", "employee", "name");
+                        .foreignKey("name", "employee", "name", null);
             }
         });
 

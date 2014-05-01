@@ -25,7 +25,7 @@ public class PaginationTest extends AndroidTestCase {
 
     @Override
     public void setUp(){
-        db = DbQuery.getDatabase("PaginationDb");
+        db = DbQuery.getDatabase("PaginationTest");
         db.getConfig().setForeignKeySupport(true);
         db.open(1, new SQLiteBuilder() {
             @Override
@@ -45,7 +45,7 @@ public class PaginationTest extends AndroidTestCase {
                         .add("Age", "Integer")
                         .add("Address", "Blob")
                         .add("JobId", "integer")
-                        .foreignKey("JobId", "Jobs", "Id");
+                        .foreignKey("JobId", "Jobs", "Id", null);
             }
         });
 

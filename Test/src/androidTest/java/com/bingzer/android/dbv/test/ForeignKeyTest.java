@@ -47,7 +47,7 @@ public class ForeignKeyTest extends AndroidTestCase {
                         .index("CustomerId")
                         .index("ProductId")
                         .foreignKey("CustomerId", "Customers.Id")
-                        .foreignKey("ProductId", "Products", "Id");
+                        .foreignKey("ProductId", "Products", "Id", null);
             }
 
             @Override
