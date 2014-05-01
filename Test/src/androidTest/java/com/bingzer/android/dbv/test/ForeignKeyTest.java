@@ -5,7 +5,7 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
 
 /**
  * Created by Ricky Tobing on 8/15/13.
@@ -47,7 +47,7 @@ public class ForeignKeyTest extends AndroidTestCase {
                         .index("CustomerId")
                         .index("ProductId")
                         .foreignKey("CustomerId", "Customers.Id")
-                        .foreignKey("ProductId", "Products", "Id");
+                        .foreignKey("ProductId", "Products", "Id", null);
             }
 
             @Override
@@ -63,21 +63,21 @@ public class ForeignKeyTest extends AndroidTestCase {
         db.get("Customers").delete();
 
         // two customers
-        db.get("Customers").insert("Name", "Address").val("Baloteli", "Italy");
-        db.get("Customers").insert("Name", "Address").val("Pirlo", "Italy");
+        db.get("Customers").insertInto("Name", "Address").val("Baloteli", "Italy");
+        db.get("Customers").insertInto("Name", "Address").val("Pirlo", "Italy");
         // two products
-        db.get("Products").insert("Name", "Price").val("Computer", 1000);
-        db.get("Products").insert("Name", "Price").val("Cellphone", 500);
+        db.get("Products").insertInto("Name", "Price").val("Computer", 1000);
+        db.get("Products").insertInto("Name", "Price").val("Cellphone", 500);
     }
 
     // test away..
     public void testInsertOrder_Fail(){
         // right customerId wrong productId
-        int custId = db.get("Customers").selectId("Name = ?", "Baloteli");
+        long custId = db.get("Customers").selectId("Name = ?", "Baloteli");
         int prodId = 99999;
 
         try{
-            int id = db.get("Orders").insert("Quantity", "CustomerId", "ProductId").val(10, custId, prodId).query();
+            long id = db.get("Orders").insertInto("Quantity", "CustomerId", "ProductId").val(10, custId, prodId).query();
             assertTrue(id < 0);
             assertTrue("Should throw error", false);
         }

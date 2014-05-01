@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv;
 
 /**
@@ -44,11 +43,13 @@ package com.bingzer.android.dbv;
  *     as their "Id" column.
  *     If there's a table or two that doesn't follow this convention,
  *     some methods will not work. Especially, the one that uses "Id"
- *     (i.e: {@link ITable#select(int)},{@link ITable#update(android.content.ContentValues, int)},
+ *     (i.e: {@link ITable#select(long)} ,{@link ITable#update(android.content.ContentValues, long)},
  *     and many more
  * </p>
  *
- * Created by Ricky Tobing on 7/19/13.
+ * @author Ricky
+ * @version 2.0
+ * @see com.bingzer.android.dbv.IDatabase
  */
 public interface IConfig {
 
@@ -67,7 +68,7 @@ public interface IConfig {
     /**
      * Sets append table name as prefix in front of the "Id".
      * The Id is defined by {@link #setIdNamingConvention(String)}.
-     * The default is <code>false</code>
+     * The default is <code>false</code>.
      * @param appendTableName true to append
      */
     void setAppendTableNameForId(boolean appendTableName);
@@ -119,7 +120,7 @@ public interface IConfig {
     void setReadOnly(boolean readOnly);
 
     /**
-     * Trus if this database is a read-only database
+     * True if this database is a read-only database
      * @return true if read-only, false otherwise
      */
     boolean isReadOnly();

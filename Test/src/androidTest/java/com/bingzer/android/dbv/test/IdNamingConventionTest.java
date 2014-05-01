@@ -5,8 +5,8 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertInto;
 
 /**
  * Created by Ricky Tobing on 8/13/13.
@@ -39,7 +39,7 @@ public class IdNamingConventionTest extends AndroidTestCase {
         db.get("Person").delete();
 
 
-        IQuery.InsertWith insert = db.get("Person").insert("Name", "Age", "Address");
+        InsertInto insert = db.get("Person").insertInto("Name", "Age", "Address");
         insert.val("John", 23, "Washington DC".getBytes());
         insert.val("Ronaldo", 40, "Madrid".getBytes());
         insert.val("Messi", 25, "Barcelona".getBytes());
@@ -59,7 +59,7 @@ public class IdNamingConventionTest extends AndroidTestCase {
     public void testUpdate(){
         Person person = new Person();
         db.get("Person").select("Name = ?", "John").query(person);  // john
-        int id = person.getId();
+        long id = person.getId();
         // modify
         person.setName("MOD");
         person.setAge(20);

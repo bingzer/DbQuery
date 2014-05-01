@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,41 @@
  */
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.queries.Countable;
-import com.bingzer.android.dbv.queries.Distinguishable;
-import com.bingzer.android.dbv.queries.Droppable;
-import com.bingzer.android.dbv.queries.Function;
-import com.bingzer.android.dbv.queries.RawQueryable;
-import com.bingzer.android.dbv.queries.SelectIdentifiable;
-import com.bingzer.android.dbv.queries.Selectable;
-import com.bingzer.android.dbv.queries.Tangible;
+import com.bingzer.android.dbv.contracts.Countable;
+import com.bingzer.android.dbv.contracts.Distinguishable;
+import com.bingzer.android.dbv.contracts.Droppable;
+import com.bingzer.android.dbv.contracts.Function;
+import com.bingzer.android.dbv.contracts.RawQueryable;
+import com.bingzer.android.dbv.contracts.SelectIdentifiable;
+import com.bingzer.android.dbv.contracts.Selectable;
+import com.bingzer.android.dbv.contracts.Tangible;
 
 /**
  * Represents a <code>View</code>.
- * <code>View</code> is a "read-only" table. You cannot perform
- * <code>DELETE</code>, <code>INSERT</code> or
- * <code>UPDATE</code> operations in a <code>View</code>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.IView} object, once created,
+ * is automatically cached inside the {@link com.bingzer.android.dbv.IView}
+ * So there's no need to reference it outside. Most of the time
+ * <code>db.getView("tableName").<someMethod>()</code> is more preferable to use.
+ * </p>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.IView} does not store any view structure or
+ * any data whatsoever. It only stores its name, alias (if any) and column names.
+ * So it's easy on the memory usage.
+ * </p>
+ *
+ * <p>
+ * <b>Supported operations:</b>
+ * <ul>
+ *     <li>{@link com.bingzer.android.dbv.queries.Select Select}</li>
+ * </ul>
+ * </p>
+ *
+ * @version 2.0
+ * @see com.bingzer.android.dbv.IDatabase
+ * @see com.bingzer.android.dbv.queries.Select
  */
 public interface IView extends
         Selectable, Distinguishable,

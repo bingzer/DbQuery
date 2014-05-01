@@ -4,9 +4,9 @@ import android.database.Cursor;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
 
-import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.content.ContentQuery;
 import com.bingzer.android.dbv.content.IResolver;
+import com.bingzer.android.dbv.queries.Paging;
 
 /**
  * Created by Ricky on 8/22/13.
@@ -14,7 +14,7 @@ import com.bingzer.android.dbv.content.IResolver;
 public class ContentPagingTest extends AndroidTestCase {
 
     IResolver resolver;
-    int baloteliId, pirloId, kakaId, messiId, ronaldoId;
+    long baloteliId, pirloId, kakaId, messiId, ronaldoId;
 
     @Override
     public void setUp(){
@@ -30,8 +30,8 @@ public class ContentPagingTest extends AndroidTestCase {
         ronaldoId = insertToDictionary("Ronaldo");
     }
 
-    int insertToDictionary(String word){
-        int id = resolver.insert("word").val(word).query();
+    long insertToDictionary(String word){
+        long id = resolver.insert("word", word).query();
         assertTrue(id > 0);
         return id;
     }
@@ -44,7 +44,7 @@ public class ContentPagingTest extends AndroidTestCase {
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     public void testPaging_Simple(){
-        IQuery.Paging paging = resolver
+        Paging paging = resolver
                 .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
                 .orderBy("_id")
                 .paging(2);
@@ -84,7 +84,7 @@ public class ContentPagingTest extends AndroidTestCase {
     }
 
     public void testPaging_IEntity(){
-        IQuery.Paging paging = resolver
+        Paging paging = resolver
                 .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
                 .orderBy("_id")
                 .paging(2);
@@ -120,7 +120,7 @@ public class ContentPagingTest extends AndroidTestCase {
     }
 
     public void testPaging_GetTotalPage(){
-        IQuery.Paging paging = resolver
+        Paging paging = resolver
                 .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
                 .orderBy("_id")
                 .paging(2);
@@ -131,7 +131,7 @@ public class ContentPagingTest extends AndroidTestCase {
     }
 
     public void testPaging_SetPageNumber(){
-        IQuery.Paging paging = resolver
+        Paging paging = resolver
                 .select(baloteliId, pirloId, kakaId, messiId, ronaldoId)
                 .orderBy("_id")
                 .paging(2);

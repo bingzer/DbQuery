@@ -5,7 +5,7 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
 
 /**
  * Created by Ricky on 8/17/13.

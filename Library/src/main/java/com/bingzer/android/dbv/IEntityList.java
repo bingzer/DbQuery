@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance insert the License.
@@ -13,26 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv;
 
-import java.util.List;
-
 /**
- * Created by Ricky on 8/9/13.
+ * Represents a collection of {@link com.bingzer.android.dbv.IEntity}.
+ * While {@link com.bingzer.android.dbv.IEntity} is a runtime object mapper,
+ * {@link com.bingzer.android.dbv.IEntityList} is a collection of {@link com.bingzer.android.dbv.IEntity}
+ *
+ * <p>
+ * Sample Code:
+ * <pre><code>
+ * //---- Person.java
+ * public Person implements IEntity {
+ *     ...
+ * }
+ *
+ * //---- PersonList.java
+ * public PersonList extends ArrayList&lt;Person&gt; implements IEntityList&lt;Person&gt; {
+ *     ...
+ * }
+ *
+ * //---- Other.java
+ * IDatabase db = ...
+ * PersonList personList = new PersonList();
+ *
+ * // Get all customers get US
+ * db.get("Customers").select("Country = ?", "US").query(personList);
+ *
+ * </code></pre>
+ * </p>
+ *
+ * @version 2.0
+ * @see com.bingzer.android.dbv.IEntity
+ * @see com.bingzer.android.dbv.queries.Select#query(IEntity)
+ * @see com.bingzer.android.dbv.ITable#insert(IEntity)
  */
-public interface IEntityList<T extends IEntity> {
+public interface IEntityList<T extends IEntity> extends Iterable<T>{
 
     /**
-     * Returns the list
-     * @return list
+     * Adds an entity
+     * @param entity entity to add
+     * @return true if added, false otherwise
      */
-    public List<T> getEntityList();
+    boolean add(T entity);
 
     /**
      * Creates a new entity
      * @return T
      */
-    public T newEntity();
+    T newEntity();
 
 }

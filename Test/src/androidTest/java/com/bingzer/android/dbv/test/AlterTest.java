@@ -6,7 +6,8 @@ import android.test.AndroidTestCase;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.utils.CollectionUtils;
 
 /**
  * Created by Ricky Tobing on 8/16/13.
@@ -56,11 +57,13 @@ public class AlterTest extends AndroidTestCase {
     }
 
     public void testAddColumn(){
-        assertTrue(!db.get("Person").getColumns().contains("Address"));
+        // don't have address yet
+        assertFalse(CollectionUtils.contains(db.get("Person").getColumns(), "Address"));
+
         // we'll add address column
         db.get("Person").alter().addColumn("Address", "Text");
 
-        assertTrue(db.get("Person").getColumns().contains("Address"));
+        assertTrue(CollectionUtils.contains(db.get("Person").getColumns(), "Address"));
     }
 
     public void testRemoveColumn(){

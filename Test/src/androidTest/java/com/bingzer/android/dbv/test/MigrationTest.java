@@ -6,7 +6,7 @@ import android.test.AndroidTestCase;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
 
 /**
  * Created by Ricky on 8/5/13.
@@ -27,15 +27,17 @@ public class MigrationTest extends AndroidTestCase {
 
             @Override
             public boolean onDowngrade(IDatabase database, int oldVersion, int newVersion) {
-                for(int i = 0; i < database.getTables().size(); i++)
-                    database.getTables().get(i).drop();
+                for(ITable table : database.getTables()){
+                    table.drop();
+                }
                 return true;
             }
 
             @Override
             public boolean onUpgrade(IDatabase database, int oldVersion, int newVersion) {
-                for(int i = 0; i < database.getTables().size(); i++)
-                    database.getTables().get(i).drop();
+                for(ITable table : database.getTables()){
+                    table.drop();
+                }
                 return true;
             }
 
@@ -52,7 +54,7 @@ public class MigrationTest extends AndroidTestCase {
         assertNotNull(db.get("Table1"));
         assertNull(db.get("Table2"));
 
-        //db.close();
+        //readonlyDb.close();
     }
 
     public void testUpgrade(){

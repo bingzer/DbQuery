@@ -1,12 +1,13 @@
 package com.bingzer.android.dbv.content.test;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 
 /**
  * Created by Ricky Tobing on 8/23/13.
  */
 public class Word implements IEntity{
-    private int id;
+    private long id;
     private String word;
 
     Word(){
@@ -17,12 +18,12 @@ public class Word implements IEntity{
         this(-1, word);
     }
 
-    Word(int id, String word){
+    Word(long id, String word){
         this.id = id;
         this.word = word;
     }
 
-    void setId(int id) {
+    void setId(long id) {
         this.id = id;
     }
 
@@ -35,25 +36,25 @@ public class Word implements IEntity{
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     @Override
-    public void map(IEntity.Mapper mapper) {
-        mapper.mapId(new IEntity.Action<Integer>(Integer.class) {
+    public void map(Mapper mapper) {
+        mapper.mapId(new Delegate.TypeLong() {
             @Override
-            public void set(Integer value) {
+            public void set(Long value) {
                 setId(value);
             }
 
             @Override
-            public Integer get() {
+            public Long get() {
                 return getId();
             }
         });
 
-        mapper.map("word", new IEntity.Action<String>(String.class){
+        mapper.map("word", new Delegate.TypeString(){
 
             @Override
             public void set(String value) {

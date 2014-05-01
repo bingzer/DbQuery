@@ -18,15 +18,13 @@ package com.bingzer.android.dbv;
 
 import android.content.Context;
 
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
-
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This will be removed
  * Created by Ricky Tobing on 7/16/13.
  */
+@SuppressWarnings("all")
 class TestUsage {
 
     void init(){
@@ -35,48 +33,22 @@ class TestUsage {
         version++;
 
         IDatabase db = DbQuery.getDatabase("Test");
-        db.open(version, new SQLiteBuilder.WithoutModeling(null));
+        db.open(version, new SQLiteBuilder(){
 
-        //db.get("")
-
-
-        Person person = new Person();
-        db.get("Person").select().query(person);
-        //db.get("Person").insert(person).query();
-
-        IQuery.Select select = db.get("Person").select();
-
-
-        PersonList list = new PersonList();
-        db.get("").update(list);
-
-
-        db.begin(new IDatabase.Batch() {
             @Override
-            public void exec(IDatabase database) {
+            public Context getContext() {
+                return null;
+            }
 
+            @Override
+            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
             }
         });
 
-        // -- transaction
-        db.begin(new IDatabase.Batch() {
-            @Override
-            public void exec(IDatabase database) {
-
+        for(ITable table : db.getTables()){
+            for(String str : table.getColumns()){
             }
-        }).commit();
-
-        db.begin(new IDatabase.Batch() {
-            @Override
-            public void exec(IDatabase database) {
-
-            }
-        }).execute();
-        db.get("Person").select().orderBy("Name").paging(10).query(list);
-
-        // --- groupable
-        db.get("").select().groupBy("","").having("","").query();
-        db.get("").select().groupBy("").query();
+        }
 
         version++;
     }
@@ -84,20 +56,15 @@ class TestUsage {
     static class PersonList extends LinkedList<Person> implements IEntityList<Person> {
 
         @Override
-        public List<Person> getEntityList() {
-            return this;
-        }
-
-        @Override
         public Person newEntity() {
             return new Person();
         }
+
     }
 
 
     static class Person implements IEntity{
-
-        private int id;
+        private long id;
         private String name;
         private int age;
 
@@ -108,13 +75,14 @@ class TestUsage {
          * @return the id
          */
         @Override
-        public int getId() {
+        public long getId() {
             return id;
         }
 
         @Override
         public void map(Mapper mapper) {
-            mapper.map("Name", new Action.TypeString(){
+            //mapper.reflect(this);
+            mapper.map("Name", new Delegate.TypeString(){
                 @Override public void set(String value) {
                     name = value;
                 }
@@ -123,7 +91,7 @@ class TestUsage {
                     return name;
                 }
             });
-            mapper.map("Age", new Action.TypeInteger(){
+            mapper.map("Age", new Delegate.TypeInteger(){
 
                 @Override public void set(Integer value) {
                     age = value;
@@ -134,10 +102,10 @@ class TestUsage {
                     return age;
                 }
             });
-            mapper.mapId(new Action.TypeId(this){
+            mapper.mapId(new Delegate.TypeId(this){
 
                 @Override
-                public void set(Integer value) {
+                public void set(Long value) {
                     id = value;
                 }
             });

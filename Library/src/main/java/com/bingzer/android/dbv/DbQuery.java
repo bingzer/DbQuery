@@ -1,8 +1,8 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance insert the License.
  * You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.sqlite.Database;
+import com.bingzer.android.dbv.internal.Database;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
+ * {@linkplain com.bingzer.android.dbv.DbQuery} is your gateway to having
+ * a fluent way of querying SQL in Android.
+ * <p>
  * DbQuery provides access to {@link IDatabase}. To use <code>DbQuery</code>,
  * you must follow special conventions when it comes to "Id" as primary key
  * in every table in your database.
+ * </p>
+ *
  * <p>
  *     <b>Warning:</b><br/>
  *     <code>DbQuery</code> will <code>assume</code>
@@ -32,30 +36,44 @@ import java.util.List;
  *     their identifier scheme. By default, "Id" is assigned
  *     automatically. For more information see {@link IConfig}
  * </p>
+ *
  * <p>
  * Sample Code:
- * <pre>
- *   <code>
- *       IDatabase db = DbQuery.getDatabase("<database-name>");
- *       ...
- *   </code>
- * </pre>
+ * <pre><code>
+ * IDatabase db = DbQuery.getDatabase("<database-name>");
+ * ...
+ * </code></pre>
  * </p>
- * Complete documentation and Wiki:
- * <a href="http://github.com/bingzer/DbQuery/wiki">http://github.com/bingzer/DbQuery/wiki</a>
  *
+ * <p>
+ * DbQuery is totally open!
+ * <ul>
+ *   <li>
+ *     Complete documentation and Wiki:
+ *     <a href="http://github.com/bingzer/DbQuery/wiki">http://github.com/bingzer/DbQuery/wiki</a>
+ *   </li>
+ *   <li>
+ *     Get involved! Pull Requests are welcome
+ *     <a href="http://github.com/bingzer/DbQuery">http://github.com/bingzer/DbQuery</a>
+ *   </li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ *     <b>Important:</b> This entire javadoc is not read-proof. Some may be up to date, others may not
+ * </p>
+ *
+ * @version 2.0
  * @see IConfig
  * @see IDatabase
  * @author Ricky Tobing
  */
 public final class DbQuery {
 
-    private static List<IDatabase> databaseList = new LinkedList<IDatabase>();
+    private static Collection<IDatabase> databaseList = new ArrayList<IDatabase>();
 
     /**
      * Returns the {@link IDatabase} object with the specified name.
-     * If <code>databaseName</code> is not found it will return
-     * <code>null</code>
      *
      * @param databaseName the database
      * @return {@link IDatabase} object

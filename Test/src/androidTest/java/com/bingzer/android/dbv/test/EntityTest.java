@@ -5,8 +5,8 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertInto;
 
 /**
  * Created by Ricky Tobing on 8/9/13.
@@ -36,7 +36,7 @@ public class EntityTest extends AndroidTestCase {
 
         db.get("Person").delete();
 
-        IQuery.InsertWith insert = db.get("Person").insert("Name", "Age", "Address");
+        InsertInto insert = db.get("Person").insertInto("Name", "Age", "Address");
         insert.val("John", 23, "Washington DC".getBytes());
         insert.val("Ronaldo", 40, "Madrid".getBytes());
         insert.val("Messi", 25, "Barcelona".getBytes());
@@ -45,7 +45,7 @@ public class EntityTest extends AndroidTestCase {
 
 
     public void testPerson(){
-        int messId = db.get("Person").selectId("Name = ?", "Messi");
+        long messId = db.get("Person").selectId("Name = ?", "Messi");
 
         Person person = new Person();
         db.get("Person").select(messId).query(person);
@@ -61,11 +61,10 @@ public class EntityTest extends AndroidTestCase {
         person.setAge(100);
         person.setAddressBytes("Turin".getBytes());
 
-        int pirloId = db.get("Person").insert(person).query();
+        long pirloId = db.get("Person").insert(person).query();
         assertTrue(pirloId == person.getId());
         assertTrue(db.get("Person").count("Name = ?", "Andrea Pirlo") > 0);
     }
-
 
     public void testUpdateEntity(){
         Person person = new Person();
@@ -75,6 +74,40 @@ public class EntityTest extends AndroidTestCase {
         person.setAddressBytes("Barcelona Updated".getBytes());
 
         db.get("Person").update(person);
+
+        Person p2 = new Person();
+        db.get("Person").select("Name = ?", "Messi").query(p2);
+
+        assertTrue(p2.getName().equals("Messi"));
+        assertTrue(p2.getAge() == 10000);
+        assertTrue(new String(p2.getAddressBytes()).equalsIgnoreCase("Barcelona Updated"));
+    }
+
+    public void testUpdateEntity2(){
+        Person person = new Person();
+        person.setName("John");
+        person.setAge(-1);
+        person.setId(db.get("Person").selectId("Name = ?", "John"));
+        person.setAddressBytes("Washington DC Updated".getBytes());
+
+        assertEquals(1, (int) db.get("Person").update(person).query());
+
+        Person p2 = new Person();
+        db.get("Person").select("Name = ?", "John").query(p2);
+
+        assertTrue(p2.getName().equals("John"));
+        assertTrue(p2.getAge() == -1);
+        assertTrue(new String(p2.getAddressBytes()).equalsIgnoreCase("Washington DC Updated"));
+    }
+
+    public void testUpdateEntity_Continue(){
+        Person person = new Person();
+        person.setName("Messi");
+        person.setAge(10000);
+        person.setId(db.get("Person").selectId("Name = ?", "Messi"));
+        person.setAddressBytes("Barcelona Updated".getBytes());
+
+        assertEquals(1, (int) db.get("Person").update(person).query());
 
         Person p2 = new Person();
         db.get("Person").select("Name = ?", "Messi").query(p2);

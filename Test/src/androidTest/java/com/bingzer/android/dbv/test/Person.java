@@ -1,5 +1,6 @@
 package com.bingzer.android.dbv.test;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.IEntity;
 
 /**
@@ -7,7 +8,7 @@ import com.bingzer.android.dbv.IEntity;
  */
 public class Person implements IEntity{
 
-    private int id = -1;
+    private long id = -1;
     private String name;
     private int age;
     private byte[] addressBytes;
@@ -38,7 +39,7 @@ public class Person implements IEntity{
         this.age = age;
     }
 
-    public void setId(int id){
+    public void setId(long id){
         this.id = id;
     }
 
@@ -51,13 +52,13 @@ public class Person implements IEntity{
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     @Override
-    public void map(IEntity.Mapper mapper) {
-        mapper.map("Name", new IEntity.Action<String>(String.class) {
+    public void map(Mapper mapper) {
+        mapper.map("Name", new Delegate.TypeString() {
 
             @Override
             public void set(String value) {
@@ -70,7 +71,7 @@ public class Person implements IEntity{
             }
         });
 
-        mapper.map("Address", new Action<byte[]>(byte[].class) {
+        mapper.map("Address", new Delegate.TypeBytes() {
             /**
              * Sets the value
              *
@@ -93,7 +94,7 @@ public class Person implements IEntity{
 
         });
 
-        mapper.map("Age", new IEntity.Action<Integer>(Integer.class){
+        mapper.map("Age", new Delegate.TypeInteger(){
 
             @Override
             public void set(Integer value) {
@@ -106,16 +107,10 @@ public class Person implements IEntity{
             }
         });
 
-        mapper.mapId(new IEntity.Action<Integer>(Integer.class){
-
+        mapper.mapId(new Delegate.TypeId(this){
             @Override
-            public void set(Integer value) {
-                setId(value);
-            }
-
-            @Override
-            public Integer get() {
-                return getId();
+            public void set(Long id) {
+                setId(id);
             }
         });
 

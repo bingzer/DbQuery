@@ -5,7 +5,7 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
 
 /**
  * Created by Ricky Tobing on 8/12/13.
@@ -39,7 +39,7 @@ public class TransactionTest extends AndroidTestCase {
         IDatabase.Transaction transaction =db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
-                database.get("Person").insert("Name", "Age", "Address").val("NewPersonRollback", 100, "Batlimore".getBytes());
+                database.get("Person").insertInto("Name", "Age", "Address").val("NewPersonRollback", 100, "Batlimore".getBytes());
 
                 Person p = new Person();
                 database.get("Person").select("Name = ?", "NewPersonRollback").query(p);
@@ -70,7 +70,7 @@ public class TransactionTest extends AndroidTestCase {
         IDatabase.Transaction transaction = db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
-                database.get("Person").insert("Name", "Age", "Address").val("NewPersonCommit", 100, "Batlimore".getBytes());
+                database.get("Person").insertInto("Name", "Age", "Address").val("NewPersonCommit", 100, "Batlimore".getBytes());
 
                 Person p = new Person();
                 database.get("Person").select("Name = ?", "NewPersonCommit").query(p);
@@ -101,7 +101,7 @@ public class TransactionTest extends AndroidTestCase {
         IDatabase.Transaction transaction = db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
-                database.get("Person").insert("Name", "Age", "Address").val("NewPersonExecute", 100, "Batlimore".getBytes());
+                database.get("Person").insertInto("Name", "Age", "Address").val("NewPersonExecute", 100, "Batlimore".getBytes());
 
                 Person p = new Person();
                 database.get("Person").select("Name = ?", "NewPersonExecute").query(p);

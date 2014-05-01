@@ -5,8 +5,8 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertInto;
 
 /**
  * Created by Ricky Tobing on 8/12/13.
@@ -36,7 +36,7 @@ public class EntityListTest extends AndroidTestCase{
 
         db.get("Person").delete();
 
-        IQuery.InsertWith insert = db.get("Person").insert("Name", "Age", "Address");
+        InsertInto insert = db.get("Person").insertInto("Name", "Age", "Address");
         insert.val("John", 23, "Washington DC".getBytes());
         insert.val("Ronaldo", 40, "Madrid".getBytes());
         insert.val("Messi", 25, "Barcelona".getBytes());
@@ -73,9 +73,35 @@ public class EntityListTest extends AndroidTestCase{
         // re create object
         personList = new PersonList();
         db.get("Person").select().query(personList);
+
+        // test content
         assertTrue(personList.get(0).getAge() == 1000);
         assertTrue("Modified".equals(new String(personList.get(1).getAddressBytes())));
         assertTrue(personList.get(2).getName().equals("This is Number 3"));
+    }
+
+    public void testBulkUpdate_Error_ShouldRollback(){
+        PersonList personList = new PersonList();
+        db.get("Person").select().query(personList);
+
+        assertTrue(personList.size() > 0);
+        personList.get(0).setAge(1000); // john
+        personList.get(1).setAddressBytes("Modified".getBytes());
+        personList.get(2).setName("This is Number 3");
+        // make some id invalid
+        personList.get(1).setId(-1);
+
+        assertEquals(-1, (int) db.get("Person").update(personList).query()); // 6 updates..
+
+        // re create object
+        personList = new PersonList();
+        db.get("Person").select().query(personList);
+
+        // test content
+        // should be original values
+        assertEquals(23, personList.get(0).getAge());
+        assertEquals("Madrid", new String(personList.get(1).getAddressBytes()));
+        assertEquals("Messi", personList.get(2).getName());
     }
 
     public void testBulkInsert(){
@@ -83,7 +109,7 @@ public class EntityListTest extends AndroidTestCase{
         personList.add(new Person("Person7", 77, "Whatever".getBytes()));
         personList.add(new Person("Person8", 88, "Whatever too".getBytes()));
 
-        assertTrue(db.get("Person").insert(personList).query() == 2);
+        assertTrue(db.get("Person").insert(personList).query() > 0);
         personList = new PersonList();
 
         db.get("Person").select().query(personList);

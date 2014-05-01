@@ -1,13 +1,12 @@
 package com.bingzer.android.dbv.test;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
 
 /**
  * Created by Ricky Tobing on 8/12/13.

@@ -1,12 +1,12 @@
 package com.bingzer.android.dbv.test;
 
 import android.content.Context;
-import android.os.Environment;
 import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.utils.CollectionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class PreloadedDatabaseTest extends AndroidTestCase {
     @Override
     public void setUp(){
         // http://chinookdatabase.codeplex.com/wikipage?title=Chinook_Schema&referringTitle=Home
-        // chinook sample db
+        // chinook sample readonlyDb
         dbFile = new File(getContext().getFilesDir(), "Chinook.sqlite");
 
         if(!dbFile.exists()){
@@ -48,7 +48,7 @@ public class PreloadedDatabaseTest extends AndroidTestCase {
     }
 
     public void testDatabaseContent(){
-        assertTrue(db.getTables().size() > 0);
+        assertTrue(CollectionUtils.size(db.getTables()) > 0);
         assertTrue(db.getVersion() == 1);
     }
 

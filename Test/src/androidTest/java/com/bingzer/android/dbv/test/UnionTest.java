@@ -4,15 +4,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.contracts.ColumnSelectable;
+import com.bingzer.android.dbv.queries.Select;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Ricky on 8/16/13.
@@ -49,21 +50,24 @@ public class UnionTest extends AndroidTestCase {
         db.get("Employee").delete();
 
         // bulk insert
-        db.get("Student").insert("Name").val("Student 1");
-        db.get("Student").insert("Name").val("Student 2");
-        db.get("Student").insert("Name").val("Student 3");
-        db.get("Student").insert("Name").val("John");
-        db.get("Student").insert("Name").val("Dave");
+        db.get("Student").insert("Name","Student 1");
+        db.get("Student").insert("Name","Student 2");
+        db.get("Student").insert("Name","Student 3");
+        db.get("Student").insert("Name","John");
+        db.get("Student").insert("Name","Dave");
         // employee
-        db.get("Employee").insert("Name").val("Employee 1");
-        db.get("Employee").insert("Name").val("Employee 2");
-        db.get("Employee").insert("Name").val("Employee 3");
-        db.get("Student").insert("Name").val("John");
-        db.get("Student").insert("Name").val("Dave");
+        db.get("Employee").insert("Name","Employee 1");
+        db.get("Employee").insert("Name","Employee 2");
+        db.get("Employee").insert("Name","Employee 3");
+
+        // duplicate john and dave
+        // this is for testing purpose do not modify
+        db.get("Student").insert("Name","John");
+        db.get("Student").insert("Name","Dave");
     }
 
     public void testUnion_Simple(){
-        IQuery.Select select = db.get("Student").select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
         Cursor cursor = db.get("Employee")
                             .union(select)
                             .select().columns("Name").query();
@@ -71,10 +75,24 @@ public class UnionTest extends AndroidTestCase {
         assertEquals(cursor.getCount(),8);
     }
 
+    public void testUnion_Query_ColumnIndex(){
+        Select select = db.get("Student").select().columns("Name");
+        ColumnSelectable col = db.get("Employee").union(select).select().columns("Name");
+
+        assertEquals("Dave", col.query(0));
+    }
+
+    public void testUnion_Query_ColumnName(){
+        Select select = db.get("Student").select().columns("Name");
+        ColumnSelectable col = db.get("Employee").union(select).select().columns("Name");
+
+        assertEquals("Dave", col.query("Name"));
+    }
+
     public void testUnion_Simple_Entity(){
         TinyPersonList list = new TinyPersonList();
 
-        IQuery.Select select = db.get("Student").select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
         db.get("Employee")
                 .union(select)
                 .select().columns("Name").query(list);
@@ -83,7 +101,7 @@ public class UnionTest extends AndroidTestCase {
     }
 
     public void testUnionAll_Simple(){
-        IQuery.Select select = db.get("Student").select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
         Cursor cursor = db.get("Employee")
                 .unionAll(select)
                 .select().columns("Name").query();
@@ -94,7 +112,7 @@ public class UnionTest extends AndroidTestCase {
     public void testUnionAll_Simple_Entity(){
         TinyPersonList list = new TinyPersonList();
 
-        IQuery.Select select = db.get("Student").select().columns("Name");
+        Select select = db.get("Student").select().columns("Name");
         db.get("Employee")
                 .unionAll(select)
                 .select().columns("Name").query(list);
@@ -106,21 +124,16 @@ public class UnionTest extends AndroidTestCase {
     static class TinyPersonList extends LinkedList<TinyPerson> implements IEntityList<TinyPerson>{
 
         @Override
-        public List<TinyPerson> getEntityList() {
-            return this;
-        }
-
-        @Override
         public TinyPerson newEntity() {
             return new TinyPerson();
         }
     }
 
     static class TinyPerson implements IEntity{
-        private int id;
+        private long id;
         private String name;
 
-        public void setId(int id) {
+        public void setId(long id) {
             this.id = id;
         }
 
@@ -133,25 +146,20 @@ public class UnionTest extends AndroidTestCase {
         }
 
         @Override
-        public int getId() {
+        public long getId() {
             return id;
         }
 
         @Override
         public void map(Mapper mapper) {
-            mapper.mapId(new Action<Integer>(Integer.class) {
+            mapper.mapId(new Delegate.TypeId(this) {
                 @Override
-                public void set(Integer value) {
+                public void set(Long value) {
                     setId(value);
-                }
-
-                @Override
-                public Integer get() {
-                    return getId();
                 }
             });
 
-            mapper.map("Name", new Action<String>(String.class){
+            mapper.map("Name", new Delegate.TypeString(){
 
                 @Override
                 public void set(String value) {

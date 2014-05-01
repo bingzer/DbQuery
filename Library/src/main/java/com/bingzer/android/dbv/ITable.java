@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.queries.Alterable;
-import com.bingzer.android.dbv.queries.Countable;
-import com.bingzer.android.dbv.queries.Deletable;
-import com.bingzer.android.dbv.queries.Distinguishable;
-import com.bingzer.android.dbv.queries.Droppable;
-import com.bingzer.android.dbv.queries.Function;
-import com.bingzer.android.dbv.queries.SelectIdentifiable;
-import com.bingzer.android.dbv.queries.Insertable;
-import com.bingzer.android.dbv.queries.Joinable;
-import com.bingzer.android.dbv.queries.RawQueryable;
-import com.bingzer.android.dbv.queries.Selectable;
-import com.bingzer.android.dbv.queries.Tangible;
-import com.bingzer.android.dbv.queries.Unionable;
-import com.bingzer.android.dbv.queries.Updatable;
-
-import java.util.List;
+import com.bingzer.android.dbv.contracts.Alterable;
+import com.bingzer.android.dbv.contracts.Countable;
+import com.bingzer.android.dbv.contracts.Deletable;
+import com.bingzer.android.dbv.contracts.Distinguishable;
+import com.bingzer.android.dbv.contracts.Droppable;
+import com.bingzer.android.dbv.contracts.Function;
+import com.bingzer.android.dbv.contracts.Insertable;
+import com.bingzer.android.dbv.contracts.Joinable;
+import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
+import com.bingzer.android.dbv.contracts.RawQueryable;
+import com.bingzer.android.dbv.contracts.SelectIdentifiable;
+import com.bingzer.android.dbv.contracts.Selectable;
+import com.bingzer.android.dbv.contracts.Tangible;
+import com.bingzer.android.dbv.contracts.Unionable;
+import com.bingzer.android.dbv.contracts.Updatable;
 
 /**
- * Represents a table. <code>ITable</code> provides full access to achieve
- * common <code>CRUD</code> tasks.
+ * Represents a table. {@link com.bingzer.android.dbv.ITable} provides full
+ * access to achieve common <code>CRUD</code> tasks.
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.ITable} object, once created, is automatically
+ * cached inside the {@link com.bingzer.android.dbv.IDatabase}.
+ * Therefore there's no need to reference it outside. Most of the time
+ * <code>db.get("tableName").<someMethod>()</code> is more preferable to use.
+ * </p>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.ITable} does not store any table structure
+ * or any data whatsoever. It only stores its name, alias (if any) and column names.
+ * So it's easy on the memory usage.
+ * </p>
+ *
+ * <p>
+ * {@link com.bingzer.android.dbv.ITable} provides common methods to perform many
+ * <code>CRUD</code> and other common tasks such as (functions, count, etc...).
+ * This is the object that you will reference to access and manipulate the data with.
+ * </p>
+ *
+ * <p>
+ * <b>Related operations:</b>
+ * <ul>
+ *     <li>{@link com.bingzer.android.dbv.queries.Select Select}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Insert Insert}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Update Update}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Delete Delete}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.InnerJoin InnerJoin}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.OuterJoin OuterJoin}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Union Union}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.GroupBy GroupBy}</li>
+ *     <li>{@link com.bingzer.android.dbv.queries.Having Having}</li>
+ * </ul>
+ * </p>
  * <p>
  *     Find a complete <code>Wiki</code> and documentation here:<br/>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
@@ -48,11 +80,13 @@ import java.util.List;
  *     automatically. For more information see {@link IConfig}
  * </p>
  *
- * @version 1.0
+ * @version 2.0
  * @see IDatabase
+ * @see IConfig
  * @author Ricky Tobing
  */
 public interface ITable extends
+        PrimaryKeyIdentifier,
         Selectable, SelectIdentifiable, Distinguishable,
         Insertable, Deletable, Updatable,
         Joinable.Inner, Joinable.Outer,
@@ -82,7 +116,7 @@ public interface ITable extends
      * Returns the column name
      * @return the list of columns
      */
-    List<String> getColumns();
+    Iterable<String> getColumns();
 
     /**
      * Returns the column count
@@ -90,7 +124,6 @@ public interface ITable extends
      */
     int getColumnCount();
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -146,26 +179,51 @@ public interface ITable extends
         Model ifNotExists();
 
         /**
-         * Foreign key. Create a foreign key references from a column from this current table
+         * Foreign key. Create a foreign key references get a column get this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
          * <code>targetColumn</code> must be defined as <code>[TableName].[ColumnName]</code>
          *
-         * @param columnName the referencing column name (from this table)
-         * @param targetColumn the referenced column name (from the referenced table)
+         * @param columnName the referencing column name (get this table)
+         * @param targetColumn the referenced column name (get the referenced table)
+         *                     {@code targetColumn} must be defined as
+         *                     <code>[TableName].[ColumnName]</code>
+         *                     (i.e: Customers.Id, Products.Number)
          */
         Model foreignKey(String columnName, String targetColumn);
 
         /**
-         * Foreign key. Create a foreign key references from a column from this current table
+         * Foreign key. Create a foreign key references get a column get this current table
+         * to another column on another table. Note that when you call this method,
+         * the referenced table and column needs to exists.
+         * <code>targetColumn</code> must be defined as <code>[TableName].[ColumnName]</code>
+         *
+         * @param columnName the referencing column name (get this table)
+         * @param targetColumn the referenced column name (get the referenced table)
+         *                     {@code targetColumn} must be defined as
+         *                     <code>[TableName].[ColumnName]</code>
+         *                     (i.e: Customers.Id, Products.Number)
+         * @param actionClause additional clause any of these
+         *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"
+         *                     null means "NO ACTION"
+         *
+         */
+        Model foreignKey(String columnName, String targetColumn, String actionClause);
+
+        /**
+         * Foreign key. Create a foreign key references get a column get this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
          *
-         * @param columnName the referencing column name (from this table)
-         * @param targetTable the referenced table
-         * @param targetColumn the referenced column name (from the referenced table)
+         * @param columnName the referencing column name (get this table)
+         * @param targetTable the referenced table (i.e: Customers, Products)
+         * @param targetColumn the referenced column name (get the referenced table)
+         *                     (i.e: Id, Number)
+         * @param actionClause additional clause any of these
+         *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"
+         *                     null means "NO ACTION"
          */
-        Model foreignKey(String columnName, String targetTable, String targetColumn);
+        Model foreignKey(String columnName, String targetTable, String targetColumn, String actionClause);
 
         //////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////
@@ -265,8 +323,7 @@ public interface ITable extends
         Model addBlob(String columnName, String columnDefinition);
     }
 
-    /////////////////////////////////////////////////
-    /////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Handles all alteration (renaming table, add columns, etc...)
@@ -306,7 +363,6 @@ public interface ITable extends
          */
         Alter removeColumn(String columnName);
 
-        ////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////
     }
+
 }

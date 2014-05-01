@@ -22,8 +22,11 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.sqlite.Database;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.internal.Database;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.utils.CollectionUtils;
+
+import java.io.File;
 
 /**
  * Created by Ricky Tobing on 7/18/13.
@@ -67,7 +70,7 @@ public class DatabaseTest extends AndroidTestCase {
 
     public void testGetTables(){
         assertTrue(db.getTables() != null);
-        assertTrue(db.getTables().size() >= 2);
+        assertTrue(CollectionUtils.size(db.getTables()) >= 2);
     }
 
     public void testRaw(){
@@ -114,4 +117,8 @@ public class DatabaseTest extends AndroidTestCase {
         }
     }
 
+    public void testPathExists(){
+        File dbFile = new File(db.getPath());
+        assertTrue(dbFile.exists());
+    }
 }

@@ -1,17 +1,19 @@
 package com.bingzer.android.dbv.test;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.test.AndroidTestCase;
 
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
-import com.bingzer.android.dbv.IQuery;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.ISequence;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertInto;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Ricky on 8/14/13.
@@ -55,20 +57,20 @@ public class EntityJoinTest extends AndroidTestCase {
             db.get("Customers").delete();
 
             // initial value
-            IQuery.InsertWith insert = db.get("Customers").insert("Name", "Address");
+            InsertInto insert = db.get("Customers").insertInto("Name", "Address");
             insert.val("Baloteli", "Italy");
             insert.val("Pirlo", "Italy");
             insert.val("Ronaldo", "Portugal");
             insert.val("Messi", "Argentina");
 
-            insert = db.get("Products").insert("Name", "Price");
+            insert = db.get("Products").insertInto("Name", "Price");
             insert.val("Computer", 600);
             insert.val("Smartphone", 450);
             insert.val("Car", 20000);
             insert.val("House", 500000);
             insert.val("Monitor", 120);
 
-            insert = db.get("Orders").insert("Quantity", "ProductId", "CustomerId");
+            insert = db.get("Orders").insertInto("Quantity", "ProductId", "CustomerId");
             insert.val(2, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Baloteli"));
             insert.val(1, db.get("Products").selectId("Name = ?", "House"), db.get("Customers").selectId("Name = ?", "Ronaldo"));
             insert.val(5, db.get("Products").selectId("Name = ?", "Monitor"), db.get("Customers").selectId("Name = ?", "Messi"));
@@ -93,13 +95,26 @@ public class EntityJoinTest extends AndroidTestCase {
         assertTrue(order.getQuantity() == 5);
     }
 
+    public void testEntityJoin_Enumerable(){
+        db.get("Orders O")
+                .join("Products P", "P.Id = O.ProductId")
+                .join("Customers C", "C.Id = O.CustomerId")
+                .select("C.Name = ? AND P.Name = ?", "Messi", "Monitor")
+                .columns("O.Id AS Id", "Quantity", "P.Name AS ProductName", "C.Name AS CustomerName")
+                .query(new ISequence<Cursor>() {
+                    @Override
+                    public boolean next(Cursor cursor) {
+                        assertEquals("Messi", cursor.getString(cursor.getColumnIndex("CustomerName")));
+                        assertEquals("Monitor", cursor.getString(cursor.getColumnIndex("ProductName")));
+                        assertTrue(cursor.getInt(cursor.getColumnIndex("Id")) > 0);
+                        assertEquals(5, cursor.getInt(cursor.getColumnIndex("Quantity")));
+                        return true;
+                    }
+                });
+    }
+
 
     static class OrderList extends LinkedList<Order> implements IEntityList<Order>{
-
-        @Override
-        public List<Order> getEntityList() {
-            return this;
-        }
 
         @Override
         public Order newEntity() {
@@ -108,11 +123,11 @@ public class EntityJoinTest extends AndroidTestCase {
     }
 
     static class Order implements IEntity {
-        int id = -1;
+        long id = -1;
         int quantity;
-        // from product customerTable
+        // get product customerTable
         String productName;
-        // from customer customerTable
+        // get customer customerTable
         String customerName;
 
         /////////////////////////////
@@ -141,12 +156,12 @@ public class EntityJoinTest extends AndroidTestCase {
             this.quantity = quantity;
         }
 
-        public void setId(int id){
+        public void setId(long id){
             this.id = id;
         }
 
         @Override
-        public int getId() {
+        public long getId() {
             return id;
         }
 
@@ -157,19 +172,14 @@ public class EntityJoinTest extends AndroidTestCase {
          */
         @Override
         public void map(Mapper mapper) {
-            mapper.mapId(new Action<Integer>(Integer.class) {
+            mapper.mapId(new Delegate.TypeId(this) {
                 @Override
-                public void set(Integer value) {
+                public void set(Long value) {
                     setId(value);
-                }
-
-                @Override
-                public Integer get() {
-                    return getId();
                 }
             });
 
-            mapper.map("Quantity", new Action<Integer>(Integer.class){
+            mapper.map("Quantity", new Delegate.TypeInteger(){
 
                 /**
                  * Sets the value
@@ -192,7 +202,7 @@ public class EntityJoinTest extends AndroidTestCase {
                 }
             });
 
-            mapper.map("ProductName", new Action<String>(String.class){
+            mapper.map("ProductName", new Delegate.TypeString(){
 
                 /**
                  * Sets the value
@@ -215,7 +225,7 @@ public class EntityJoinTest extends AndroidTestCase {
                 }
             });
 
-            mapper.map("CustomerName", new Action<String>(String.class){
+            mapper.map("CustomerName", new Delegate.TypeString(){
 
                 /**
                  * Sets the value

@@ -5,7 +5,7 @@ DbQuery
 
 `DbQuery` is a lightweight and fluent SQLite Query API for Android. The API provides a new and simpler way to query data by minimizing the need to write SQL string inside the code.
 
-See complete **wiki** and **documentation** here: 
+See complete **wiki** and **documentation** here:
 [https://github.com/bingzer/DbQuery/wiki](https://github.com/bingzer/DbQuery/wiki)
 
 Download
@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'1.0.0')
+    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.0.0')
 }
 ```
 
@@ -39,7 +39,7 @@ configurations.all {
 }
 
 dependencies {
-    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'1.0.0-SNAPSHOT', changing: true)
+    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.0.0-SNAPSHOT', changing: true)
 }
 ```
 

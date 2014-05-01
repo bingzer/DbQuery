@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.queries.RawQueryable;
-import com.bingzer.android.dbv.queries.SqlExecutable;
-
-import java.util.List;
+import com.bingzer.android.dbv.contracts.RawQueryable;
+import com.bingzer.android.dbv.contracts.SqlExecutable;
 
 /**
- * Represents a database. Provides access to {@link ITable} to achieve common <code>CRUD</code>
- * tasks.
+ * Represents a database. {@linkplain IDatabase} provides access
+ * to {@link ITable} to achieve common <code>CRUD</code> tasks.
  * <p>
  *     Find a complete <code>Wiki</code> and documentation here:<br/>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
@@ -68,11 +65,11 @@ import java.util.List;
  *     automatically. For more information see {@link IConfig}
  * </p>
  *
- * @version 1.0
+ * @version 2.0
  * @see ITable
  * @see Modeling
  * @see Builder
- * @see com.bingzer.android.dbv.sqlite.SQLiteBuilder
+ * @see SQLiteBuilder
  * @author Ricky Tobing
  */
 public interface IDatabase extends RawQueryable, SqlExecutable {
@@ -96,13 +93,23 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @return all tables exists in the database
      */
-    List<ITable> getTables();
+    Iterable<ITable> getTables();
 
     /**
      * Returns table by its <code>tableName</code>. If the table
      * does not exists, this will returns null.
-     * Note: you must first <code>open</code> the database
+     * The {@link com.bingzer.android.dbv.ITable} provides access to
+     * common CRUD operations.
+     * Note: you must first <code>open</code> the database.
+     * <p>
+     * Example Code
+     * <pre><code>
+     * IDatabase db = ...
+     * ITable table = db.get("table-name");
+     * </code></pre>
+     * </p>
      *
+     * @see com.bingzer.android.dbv.ITable
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @see #getView(String)
      * @param tableName the table
@@ -114,7 +121,15 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * Returns view by its <code>viewName</code>.
      * If the view does not exists, this will returns null.
      * Note: you must first <code>open</code> the database
+     * <p>
+     * Example Code
+     * <pre><code>
+     * IDatabase db = ...
+     * IView view = db.getView("view-name");
+     * </code></pre>
+     * </p>
      *
+     * @see com.bingzer.android.dbv.IView
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @see #get(String)
      * @param viewName the view name
@@ -219,6 +234,15 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      */
     Transaction begin(Batch batch);
 
+    /**
+     * Returns the absolute path where this database file exists
+     * Note: you must first <code>open</code> the database
+     *
+     * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
+     * @return the absolute path
+     */
+    String getPath();
+
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 
@@ -229,6 +253,7 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      *
      * @see IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)
      */
+    @SuppressWarnings("unused")
     public static interface Builder {
 
         /**

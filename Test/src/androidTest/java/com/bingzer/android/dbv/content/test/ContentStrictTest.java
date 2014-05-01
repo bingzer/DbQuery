@@ -6,9 +6,9 @@ import android.net.Uri;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
 
-import com.bingzer.android.dbv.IQuery;
 import com.bingzer.android.dbv.content.ContentQuery;
 import com.bingzer.android.dbv.content.IStrictResolver;
+import com.bingzer.android.dbv.queries.Insert;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ContentStrictTest extends AndroidTestCase {
 
     IStrictResolver resolver;
-    int baloteliId, pirloId, kakaId, messiId, ronaldoId;
+    long baloteliId, pirloId, kakaId, messiId, ronaldoId;
 
     @Override
     public void setUp(){
@@ -35,8 +35,8 @@ public class ContentStrictTest extends AndroidTestCase {
         ronaldoId = insertToDictionary("Ronaldo");
     }
 
-    int insertToDictionary(String word){
-        int id = resolver.insert("word").val(word).query();
+    long insertToDictionary(String word){
+        long id = resolver.insert("word", word).query();
         assertTrue(id > 0);
         return id;
     }
@@ -296,7 +296,7 @@ public class ContentStrictTest extends AndroidTestCase {
         ContentValues values = new ContentValues();
         values.put("word", "OLA");
 
-        IQuery.Insert insert = resolver.insert(values);
+        Insert insert = resolver.insert(values);
         assertTrue(insert.query() > 0);
 
         Uri actual = Uri.parse(insert.toString());
@@ -310,7 +310,7 @@ public class ContentStrictTest extends AndroidTestCase {
         Word word = new Word();
         word.setWord("M&M");
 
-        IQuery.Insert insert = resolver.insert(word);
+        Insert insert = resolver.insert(word);
         assertTrue(insert.query() > 0);
 
         Uri actual = Uri.parse(insert.toString());
@@ -327,7 +327,7 @@ public class ContentStrictTest extends AndroidTestCase {
         list.add(new Word("Sweeth Yo"));
 
 
-        IQuery.Insert insert = resolver.insert(list);
+        Insert insert = resolver.insert(list);
         assertTrue(insert.query() == 3); // 3 got inserted
 
         for(Word w : list){
@@ -340,7 +340,7 @@ public class ContentStrictTest extends AndroidTestCase {
     }
 
     public void testInsertWith_Columns(){
-        assertTrue(resolver.insert("word").val("ABCDEFG").query() > 0);
+        assertTrue(resolver.insert("word","ABCDEFG").query() > 0);
         assertTrue(resolver.has("word = ?", "ABCDEFG"));
 
         assertTrue(resolver.delete("word = ? ", "ABCDEFG").query() > 0);
@@ -409,7 +409,7 @@ public class ContentStrictTest extends AndroidTestCase {
     public void testUpdate_ColumnValue_Id(){
         assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
 
-        assertTrue(resolver.update("word", "Ronaldo-Updated", ronaldoId).query() == 1);
+        assertTrue(resolver.update(ronaldoId).columns("word").val("Ronaldo-Updated").query() == 1);
 
         assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
     }
@@ -418,8 +418,8 @@ public class ContentStrictTest extends AndroidTestCase {
         assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
         assertFalse(resolver.has("word = ?", "Messi-Updated"));
 
-        assertTrue(resolver.update("word", "Baloteli-Updated", "word = 'Baloteli'").query() == 1);
-        assertTrue(resolver.update("word", "Messi-Updated", "_id = " + messiId).query() == 1);
+        assertTrue(resolver.update("word = 'Baloteli'").columns("word").val("Baloteli-Updated").query() == 1);
+        assertTrue(resolver.update("_id  = " + messiId).columns("word").val("Messi-Updated").query() == 1);
 
         assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
         assertTrue(resolver.has("word = ?", "Messi-Updated"));
@@ -429,8 +429,8 @@ public class ContentStrictTest extends AndroidTestCase {
         assertFalse(resolver.has("word = ?", "Pirlo-Updated"));
         assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
 
-        assertTrue(resolver.update("word", "Pirlo-Updated", "word = ?", "Pirlo").query() == 1);
-        assertTrue(resolver.update("word", "Ronaldo-Updated", "_id = ?", ronaldoId).query() == 1);
+        assertTrue(resolver.update("word = 'Pirlo'").columns("word").val("Pirlo-Updated").query() == 1);
+        assertTrue(resolver.update("_id  = " + ronaldoId).columns("word").val("Ronaldo-Updated").query() == 1);
 
         assertTrue(resolver.has("word = ?", "Pirlo-Updated"));
         assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
@@ -440,8 +440,8 @@ public class ContentStrictTest extends AndroidTestCase {
         assertFalse(resolver.has("word = ?", "Baloteli-Updated"));
         assertFalse(resolver.has("word = ?", "Messi-Updated"));
 
-        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Baloteli-Updated"}, "word = 'Baloteli'").query() == 1);
-        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Messi-Updated"}, "_id = " + messiId).query() == 1);
+        assertTrue(resolver.update("word = 'Baloteli'").columns(new String[]{"word"}).val(new Object[]{"Baloteli-Updated"}).query() == 1);
+        assertTrue(resolver.update("_id = " + messiId).columns(new String[]{"word"}).val(new Object[]{"Messi-Updated"}).query() == 1);
 
         assertTrue(resolver.has("word = ?", "Baloteli-Updated"));
         assertTrue(resolver.has("word = ?", "Messi-Updated"));
@@ -451,8 +451,8 @@ public class ContentStrictTest extends AndroidTestCase {
         assertFalse(resolver.has("word = ?", "Pirlo-Updated"));
         assertFalse(resolver.has("word = ?", "Ronaldo-Updated"));
 
-        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Pirlo-Updated"}, "word = ?", "Pirlo").query() == 1);
-        assertTrue(resolver.update(new String[]{"word"}, new Object[]{"Ronaldo-Updated"}, "_id = ?", ronaldoId).query() == 1);
+        assertTrue(resolver.update("word = ?", "Pirlo").columns(new String[]{"word"}).val(new Object[]{"Pirlo-Updated"}).query() == 1);
+        assertTrue(resolver.update("_id = ?", ronaldoId).columns(new String[]{"word"}).val(new Object[]{"Ronaldo-Updated"}).query() == 1);
 
         assertTrue(resolver.has("word = ?", "Pirlo-Updated"));
         assertTrue(resolver.has("word = ?", "Ronaldo-Updated"));
@@ -483,7 +483,7 @@ public class ContentStrictTest extends AndroidTestCase {
         assertTrue(resolver.has(messiId));
         assertTrue(resolver.has(kakaId));
 
-        List<Integer> list = new LinkedList<Integer>();
+        List<Long> list = new LinkedList<Long>();
         list.add(baloteliId);
         list.add(messiId);
         list.add(kakaId);

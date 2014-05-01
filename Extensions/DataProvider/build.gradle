@@ -1,4 +1,4 @@
-project.ext.set("archivesBaseName", "dbquery");
+project.ext.set("archivesBaseName", "data-provider");
 
 apply plugin: 'android-library'
 

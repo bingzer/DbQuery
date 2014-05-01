@@ -23,9 +23,11 @@ import android.test.AndroidTestCase;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.IQuery;
+import com.bingzer.android.dbv.queries.ISequence;
 import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.sqlite.SQLiteBuilder;
+import com.bingzer.android.dbv.SQLiteBuilder;
+import com.bingzer.android.dbv.queries.InsertInto;
+import com.bingzer.android.dbv.utils.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,7 +46,7 @@ public class TableTest extends AndroidTestCase{
 
     @Override
     public void setUp(){
-        db = DbQuery.getDatabase("TestDb");
+        db = DbQuery.getDatabase("TableTest");
         db.open(1, new SQLiteBuilder() {
             @Override
             public Context getContext() {
@@ -57,7 +59,7 @@ public class TableTest extends AndroidTestCase{
             }
         });
 
-        if(!populated){
+        if(!populated) {
             db.get("Customers").delete();
             db.get("Products").delete();
             db.get("Orders").delete();
@@ -66,6 +68,11 @@ public class TableTest extends AndroidTestCase{
         }
 
         customerTable = db.get("Customers");
+    }
+
+    @Override
+    public void tearDown(){
+        db.close();
     }
 
 
@@ -89,6 +96,30 @@ public class TableTest extends AndroidTestCase{
         assertTrue(table.getAlias().equals("O"));
     }
 
+    public void testTableAliases_Malformed_OK(){
+        // we will let every after the first space
+
+        ITable table = db.get("Customers C asdf sdfsf");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("C asdf sdfsf"));
+
+        table = db.get("Products P asdf");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("P asdf"));
+
+        table = db.get("Orders O 12~23`1`21434");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("O 12~23`1`21434"));
+
+        table = db.get("Orders T");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("T"));
+
+        table = db.get("Orders T ~!@#$%^&*()_ +");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("T ~!@#$%^&*()_ +"));
+    }
+
     public void testGetCustomerId(){
         assertTrue(getCustomerId("Andrea Pirlo") > 0);
         assertTrue(getCustomerId("Christiano Ronaldo") > 0);
@@ -102,7 +133,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testGetColumns(){
-        assertTrue(customerTable.getColumns().size() > 0);
+        assertTrue(CollectionUtils.size(customerTable.getColumns()) > 0);
         for(String s : customerTable.getColumns()){
             assertTrue(s != null);
         }
@@ -110,14 +141,14 @@ public class TableTest extends AndroidTestCase{
 
     public void testGetColumnCount() {
         assertTrue(customerTable.getColumnCount() > 0);
-        assertTrue(customerTable.getColumnCount() == customerTable.getColumns().size());
+        assertTrue(customerTable.getColumnCount() == CollectionUtils.size(customerTable.getColumns()));
         assertTrue(db.get("Customers C").count() > 0);
     }
 
     ///////////////////////////////////////////////
     // ----------------- HAS() ------------------//
     public void testHas_Id(){
-        int id = getCustomerId("Lionel Messi");
+        long id = getCustomerId("Lionel Messi");
         assertTrue(db.get("Customers").has(id));
 
         assertFalse(db.get("Customers").has(-1));
@@ -171,7 +202,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelect_Id(){
-        int messiId = getCustomerId("Lionel Messi");
+        long messiId = getCustomerId("Lionel Messi");
 
         Cursor c = customerTable.select(messiId).query();
         c.moveToFirst();
@@ -181,8 +212,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelect_Ids(){
-        int messiId = getCustomerId("Lionel Messi");
-        int crId = getCustomerId("Christiano Ronaldo");
+        long messiId = getCustomerId("Lionel Messi");
+        long crId = getCustomerId("Christiano Ronaldo");
         Cursor c = customerTable.select(messiId, crId).query();
         assertTrue(c.getCount() == 2);
         while(c.moveToNext()){
@@ -206,6 +237,46 @@ public class TableTest extends AndroidTestCase{
         if(c.moveToNext()) assertEquals(c.getString(1), "Null Player");
 
         c.close();
+    }
+
+    public void testSelect_EnumerableCursor(){
+        long kakaId = getCustomerId("Kaka");
+        long pirloId = getCustomerId("Andrea Pirlo");
+
+        customerTable.select(kakaId, pirloId).orderBy("Name").query(new ISequence<Cursor>() {
+            int counter = 0;
+
+            @Override
+            public boolean next(Cursor cursor) {
+                // pirlo goes first
+                if (counter == 0)
+                    assertEquals("Andrea Pirlo", cursor.getString(cursor.getColumnIndex("Name")));
+                else
+                    assertEquals("Kaka", cursor.getString(cursor.getColumnIndex("Name")));
+
+                counter++;
+
+                return true;
+            }
+        });
+
+
+        customerTable.select(kakaId, pirloId).orderBy("Name").query(new ISequence<Cursor>() {
+            int counter = 0;
+
+            @Override
+            public boolean next(Cursor cursor) {
+                try {
+                    counter++;
+                    return false;
+                }
+                finally {
+                    // we have two records but since we
+                    // return false, the enumerable should stop enumerating
+                    assertEquals(1, counter);
+                }
+            }
+        });
     }
 
     public void testSelect_Condition(){
@@ -252,7 +323,7 @@ public class TableTest extends AndroidTestCase{
 
     public void testSelect_Top_Condition(){
         int top = 3;
-        int customerId = getCustomerId("Christiano Ronaldo");
+        long customerId = getCustomerId("Christiano Ronaldo");
         Cursor c = db.get("Orders")
                 .select(3, "CustomerId = " + customerId).query();
         c.moveToFirst();
@@ -262,7 +333,7 @@ public class TableTest extends AndroidTestCase{
 
     public void testSelect_Top_WhereClause(){
         int top = 2;
-        int customerId = getCustomerId("Christiano Ronaldo");
+        long customerId = getCustomerId("Christiano Ronaldo");
         Cursor c = db.get("Orders")
                 .select(top, "CustomerId = ?", customerId).query();
         c.moveToFirst();
@@ -280,8 +351,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_Condition(){
-        int pirloId = getCustomerId("Andrea Pirlo");
-        int kakaId = getCustomerId("Kaka");
+        long pirloId = getCustomerId("Andrea Pirlo");
+        long kakaId = getCustomerId("Kaka");
         Cursor cursor = db.get("Orders")
                 .selectDistinct("CustomerId = " + kakaId + " OR CustomerId = " + pirloId)
                 .columns("CustomerId")
@@ -292,8 +363,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_WhereClause(){
-        int pirloId = getCustomerId("Andrea Pirlo");
-        int baloteliId = getCustomerId("Mario Baloteli");
+        long pirloId = getCustomerId("Andrea Pirlo");
+        long baloteliId = getCustomerId("Mario Baloteli");
         Cursor cursor = db.get("Orders")
                 .selectDistinct("CustomerId IN (?,?)", pirloId, baloteliId)
                 .columns("CustomerId")
@@ -313,8 +384,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_TopCondition(){
-        int pirloId = getCustomerId("Andrea Pirlo");
-        int kakaId = getCustomerId("Kaka");
+        long pirloId = getCustomerId("Andrea Pirlo");
+        long kakaId = getCustomerId("Kaka");
         Cursor cursor = db.get("Orders")
                 .selectDistinct(1, "CustomerId = " + kakaId + " OR CustomerId = " + pirloId)
                 .columns("CustomerId")
@@ -333,8 +404,8 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_TopWhereClause(){
-        int pirloId = getCustomerId("Andrea Pirlo");
-        int baloteliId = getCustomerId("Mario Baloteli");
+        long pirloId = getCustomerId("Andrea Pirlo");
+        long baloteliId = getCustomerId("Mario Baloteli");
         Cursor cursor = db.get("Orders")
                 .selectDistinct(1, "CustomerId IN (?,?)", pirloId, baloteliId)
                 .columns("CustomerId")
@@ -350,6 +421,24 @@ public class TableTest extends AndroidTestCase{
         cursor.moveToFirst();
         assertTrue(cursor.getCount() == 3);
         cursor.close();
+    }
+
+    public void testSelect_Query_Column(){
+        String name = db.get("Customers").select("Name = ?", "Mario Baloteli").columns("Name").query(0);
+        assertEquals("Mario Baloteli", name);
+
+        long baloteliId = db.get("Customers").select("Name = ?", "Mario Baloteli").query("Id");
+        assertEquals(baloteliId, getCustomerId("Mario Baloteli"));
+    }
+
+    public void testSelect_Query_Column_Error(){
+        try{
+            int id = db.get("Customers").select("Name = ?", "Mario Baloteli").columns("Name").query(0);
+            fail("Should throw error");
+        }
+        catch (ClassCastException e){
+            assertTrue(true);
+        }
     }
 
     ///////////////////////////////////////////////
@@ -412,10 +501,10 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     // ---------Insert And Delete ----------------//
 
-    int dodolId = -1;
+    long dodolId = -1;
     public void testInsert_Columns(){
         dodolId = db.get("Products")
-                .insert("Name", "Price")
+                .insertInto("Name", "Price")
                 .val("Dodol", 22)
                 .query();
         assertTrue(dodolId > 0);
@@ -445,19 +534,134 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     // ------------------ Update ----------------//
 
+    public void testUpdate_Empty(){
+        assertEquals(0, (int) db.get("Customers").update().query());
+    }
+
+    public void testUpdate_Id(){
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+
+        int updated = db.get("Customers").update(ronaldoId).columns("PostalCode").val(123).query();
+        assertTrue(1 == updated);
+
+        Cursor cursor = db.get("Customers").select(ronaldoId).columns("PostalCode").query();
+        cursor.moveToNext();
+        assertEquals(123, cursor.getInt(0));
+    }
+
+    public void testUpdate_WhereClause(){
+        // update 2 countries customers
+        assertEquals(2, (int) db.get("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").columns("Country").val("US").query());
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = ?", "Christiano Ronaldo").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = ?", "Lionel Messi").columns("Country").val("Spain").query());
+    }
+
+    public void testUpdate_Condition(){
+        // update 2 countries customers
+        assertEquals(2, (int) db.get("Customers").update("Name = 'Christiano Ronaldo' OR Name = 'Lionel Messi'").columns("Country").val("US").query());
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
+    }
+
+    public void testUpdate_ContentValues_Condition(){
+        ContentValues v = new ContentValues();
+        v.put("Country", "US");
+        v.put("City", "City");
+
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+        long messiId = getCustomerId("Lionel Messi");
+
+        // update 2 countries customers
+        assertEquals(2, (int) db.get("Customers").update("Name = 'Christiano Ronaldo' OR Name = 'Lionel Messi'").val(v).query());
+
+        // check the updated
+        Cursor c = db.get("Customers").select(ronaldoId).columns("Country", "City").query();
+        c.moveToNext();
+        assertEquals("US", c.getString(0));
+        assertEquals("City", c.getString(1));
+        c.close();
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country", "City").val("Spain", "Madrid").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country", "City").val("Spain", "Barcelona").query());
+    }
+
+    public void testUpdate_ContentValues_WhereArgs(){
+        ContentValues v = new ContentValues();
+        v.put("Country", "US");
+        v.put("City", "City");
+
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+        long messiId = getCustomerId("Lionel Messi");
+
+        // update 2 countries customers
+        assertEquals(2, (int) db.get("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").val(v).query());
+
+        // check the updated
+        Cursor c = db.get("Customers").select(ronaldoId).columns("Country", "City").query();
+        c.moveToNext();
+        assertEquals("US", c.getString(0));
+        assertEquals("City", c.getString(1));
+        c.close();
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country", "City").val("Spain", "Madrid").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country", "City").val("Spain", "Barcelona").query());
+    }
+
+    public void testUpdate_Ints(){
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+        long messiId = getCustomerId("Lionel Messi");
+
+        assertEquals(2, (int) db.get("Customers").update(ronaldoId, messiId).columns("Country").val("US").query());
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
+    }
+
     public void testUpdate_ContentValues_And_WithId(){
         ContentValues contentValues = new ContentValues();
-        contentValues.put("Name", "John Doe");
+        contentValues.put("PostalCode", 123456);
         contentValues.put("Address", "Whatever Street");
 
-        int crId = db.get("Customers").selectId("Name = ?", "Christiano Ronaldo");
-        int updateId = db.get("Customers").update(contentValues, "Name = ?", "Christiano Ronaldo").query();
-        assertTrue(updateId > 0);
+        long crId = db.get("Customers").selectId("Name = ?", "Christiano Ronaldo");
+        int numUpdated = db.get("Customers").update(contentValues, "Name = ?", "Christiano Ronaldo").query();
+        assertTrue(numUpdated > 0);
+    }
 
-        // reset value..
-        contentValues.put("Name", "Christiano Ronal");
-        contentValues.put("Address", "7 Real Madrid");
-        assertTrue(db.get("Customers").update(contentValues, crId).query() > 0);
+    public void testUpdate_SingleColumns(){
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+
+        assertEquals(1, (int) db.get("Customers").update(ronaldoId).val("Country", "US").query());
+        assertEquals(0, (int) db.get("Customers").update(-1).val("Country", "US").query());
+    }
+
+    public void testUpdate_MultipleColumns(){
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+
+        assertEquals(1, (int) db.get("Customers").update(ronaldoId).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
+        assertEquals(0, (int) db.get("Customers").update(-1).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
+    }
+
+    public void testDelete_All(){
+        assertTrue(db.get("Customers").count() > 0);
+        assertTrue(db.get("Products").count() > 0);
+        assertTrue(db.get("Orders").count() > 0);
+
+        db.get("Customers").delete();
+        db.get("Products").delete();
+        db.get("Orders").delete();
+
+        assertEquals(0, db.get("Customers").count());
+        assertEquals(0, db.get("Products").count());
+        assertEquals(0, db.get("Orders").count());
+
+        populated = false;  // repopulated
     }
 
     ///////////////////////////////////////////////
@@ -487,7 +691,7 @@ public class TableTest extends AndroidTestCase{
         testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is ?", "%player%", null).query());
 
 
-        int rowNullId = db.get("Customers").insert("Name", "Address").val("TestNull", null).query();
+        long rowNullId = db.get("Customers").insertInto("Name", "Address").val("TestNull", null).query();
         assertTrue(rowNullId > 0);
         assertTrue(db.get("Customers").delete("Name = ? AND Address is ?", "TestNull", null).query() > 0);
         assertFalse(db.get("Customers").has(rowNullId));
@@ -731,10 +935,10 @@ public class TableTest extends AndroidTestCase{
         ITable productTable = db.get("Products");
 
         Object average = productTable.avg("Price").asDouble();
-        assertEquals(average, (double) 2688); // this number may change
+        assertEquals((Double) average, 2688.1, 0.01); // this number may change
 
         average = productTable.avg("Price").asFloat();
-        assertEquals(average, (float) 2688);
+        assertEquals((Float) average, 2688.1, 0.01);
 
         average = productTable.avg("Price").asInt();
         assertEquals(average, 2688);
@@ -743,20 +947,64 @@ public class TableTest extends AndroidTestCase{
         assertEquals(average, (long) 2688);
 
         average = productTable.avg("Price").value();
-        assertEquals(average, 2688);
+        assertEquals((Double) average, 2688.1, 0.01);
 
         average = productTable.avg("Price").asString();
-        assertEquals(average, "2688");
+        assertEquals(average, "2688.1");
+    }
+
+    public void testAvg_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.avg("Price", "Price > 100").asDouble();
+        assertEquals((Double) average, (double) 5340, 0.01); // this number may change
+
+        average = productTable.avg("Price", "Price > 100").asFloat();
+        assertEquals((Float) average, (float) 5340, 0.01);
+
+        average = productTable.avg("Price", "Price > 100").asInt();
+        assertEquals(average, 5340);
+
+        average = productTable.avg("Price", "Price > 100").asLong();
+        assertEquals(average, (long) 5340);
+
+        average = productTable.avg("Price", "Price > 100").value();
+        assertEquals((Double) average, 5340, 0.1);
+
+        average = productTable.avg("Price", "Price > 100").asString();
+        assertEquals(average, "5340.0");
+    }
+
+    public void testAvg_WhereClause(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.avg("Price", "Price > ?", 100).asDouble();
+        assertEquals((Double) average, (double) 5340, 0.01); // this number may change
+
+        average = productTable.avg("Price", "Price > ?", 100).asFloat();
+        assertEquals((Float) average, (float) 5340, 0.01);
+
+        average = productTable.avg("Price", "Price > ?", 100).asInt();
+        assertEquals(average, 5340);
+
+        average = productTable.avg("Price", "Price > ?", 100).asLong();
+        assertEquals(average, (long) 5340);
+
+        average = productTable.avg("Price", "Price > ?", 100).value();
+        assertEquals((Double) average, 5340, 0.1);
+
+        average = productTable.avg("Price", "Price > ?", 100).asString();
+        assertEquals(average, "5340.0");
     }
 
     public void testSum(){
         ITable productTable = db.get("Products");
 
         Object average = productTable.sum("Price").asDouble();
-        assertEquals(average, (double) 26881); // this number may change
+        assertEquals((Double) average, 26881.0, 0.01); // this number may change
 
         average = productTable.sum("Price").asFloat();
-        assertEquals(average, (float) 26881);
+        assertEquals((Float) average, (float) 26881, 0.01);
 
         average = productTable.sum("Price").asInt();
         assertEquals(average, 26881);
@@ -765,20 +1013,131 @@ public class TableTest extends AndroidTestCase{
         assertEquals(average, (long) 26881);
 
         average = productTable.sum("Price").value();
-        assertEquals(average, 26881);
+        assertEquals((Double) average, 26881, 0.1);
 
         average = productTable.sum("Price").asString();
-        assertEquals(average, "26881");
+        assertEquals(average, "26881.0");
+    }
+
+    public void testSum_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.sum("Price", "Name like 'C%'").asDouble();
+        assertEquals((Double) average, 21201.0, 0.01); // this number may change
+
+        average = productTable.sum("Price", "Name like 'C%'").asFloat();
+        assertEquals((Float) average, (float) 21201, 0.01);
+
+        average = productTable.sum("Price", "Name like 'C%'").asInt();
+        assertEquals(average, 21201);
+
+        average = productTable.sum("Price", "Name like 'C%'").asLong();
+        assertEquals(average, (long) 21201);
+
+        average = productTable.sum("Price", "Name like 'C%'").value();
+        assertEquals((Double) average, 21201, 0.1);
+
+        average = productTable.sum("Price", "Name like 'C%'").asString();
+        assertEquals(average, "21201.0");
+    }
+
+    public void testSum_WhereClause(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.sum("Price", "Name like ?", "C%").asDouble();
+        assertEquals((Double) average, 21201.0, 0.01); // this number may change
+
+        average = productTable.sum("Price", "Name like ?", "C%").asFloat();
+        assertEquals((Float) average, (float) 21201, 0.01);
+
+        average = productTable.sum("Price", "Name like ?", "C%").asInt();
+        assertEquals(average, 21201);
+
+        average = productTable.sum("Price", "Name like ?", "C%").asLong();
+        assertEquals(average, (long) 21201);
+
+        average = productTable.sum("Price", "Name like ?", "C%").value();
+        assertEquals((Double) average, 21201, 0.1);
+
+        average = productTable.sum("Price", "Name like ?", "C%").asString();
+        assertEquals(average, "21201.0");
+    }
+
+
+    public void testTotal(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.total("Price").asDouble();
+        assertEquals((Double) average, 26881.0, 0.01); // this number may change
+
+        average = productTable.total("Price").asFloat();
+        assertEquals((Float) average, (float) 26881, 0.01);
+
+        average = productTable.total("Price").asInt();
+        assertEquals(average, 26881);
+
+        average = productTable.total("Price").asLong();
+        assertEquals(average, (long) 26881);
+
+        average = productTable.total("Price").value();
+        assertEquals((Double) average, 26881, 0.1);
+
+        average = productTable.total("Price").asString();
+        assertEquals(average, "26881.0");
+    }
+
+    public void testTotal_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.total("Price", "Name like 'C%'").asDouble();
+        assertEquals((Double) average, 21201.0, 0.01); // this number may change
+
+        average = productTable.total("Price", "Name like 'C%'").asFloat();
+        assertEquals((Float) average, (float) 21201, 0.01);
+
+        average = productTable.total("Price", "Name like 'C%'").asInt();
+        assertEquals(average, 21201);
+
+        average = productTable.total("Price", "Name like 'C%'").asLong();
+        assertEquals(average, (long) 21201);
+
+        average = productTable.total("Price", "Name like 'C%'").value();
+        assertEquals((Double) average, 21201, 0.1);
+
+        average = productTable.total("Price", "Name like 'C%'").asString();
+        assertEquals(average, "21201.0");
+    }
+
+    public void testTotal_WhereClause(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.total("Price", "Name like ?", "C%").asDouble();
+        assertEquals((Double) average, 21201.0, 0.01); // this number may change
+
+        average = productTable.total("Price", "Name like ?", "C%").asFloat();
+        assertEquals((Float) average, (float) 21201, 0.01);
+
+        average = productTable.total("Price", "Name like ?", "C%").asInt();
+        assertEquals(average, 21201);
+
+        average = productTable.total("Price", "Name like ?", "C%").asLong();
+        assertEquals(average, (long) 21201);
+
+        average = productTable.total("Price", "Name like ?", "C%").value();
+        assertEquals((Double) average, 21201, 0.1);
+
+        average = productTable.sum("Price", "Name like ?", "C%").asString();
+        assertEquals(average, "21201.0");
     }
 
     public void testMax(){
         ITable productTable = db.get("Products");
 
         Object average = productTable.max("Price").asDouble();
-        assertEquals(average, (double) 20000); // this number may change
+        assertEquals((Double) average, 20000.0, 0.01); // this number may change
 
         average = productTable.max("Price").asFloat();
-        assertEquals(average, (float) 20000);
+        assertEquals((Float) average, (float) 20000, 0.01);
 
         average = productTable.max("Price").asInt();
         assertEquals(average, 20000);
@@ -787,20 +1146,64 @@ public class TableTest extends AndroidTestCase{
         assertEquals(average, (long) 20000);
 
         average = productTable.max("Price").value();
-        assertEquals(average, 20000);
+        assertEquals((Double) average, 20000, 0.1);
 
         average = productTable.max("Price").asString();
-        assertEquals(average, "20000");
+        assertEquals(average, "20000.0");
+    }
+
+    public void testMax_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.max("Price", "Price < 2").asDouble();
+        assertEquals((Double) average, 1.0, 0.01); // this number may change
+
+        average = productTable.max("Price", "Price < 2").asFloat();
+        assertEquals((Float) average, (float) 1, 0.01);
+
+        average = productTable.max("Price", "Price < 2").asInt();
+        assertEquals(average, 1);
+
+        average = productTable.max("Price", "Price < 2").asLong();
+        assertEquals(average, (long) 1);
+
+        average = productTable.max("Price", "Price < 2").value();
+        assertEquals((Double) average, 1, 0.1);
+
+        average = productTable.max("Price", "Price < 2").asString();
+        assertEquals(average, "1.0");
+    }
+
+    public void testMax_Where(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.max("Price", "Price < ?", 2).asDouble();
+        assertEquals((Double)average, 1.0, 0.1); // this number may change
+
+        average = productTable.max("Price", "Price < ?", 2).asFloat();
+        assertEquals((Float)average, (float) 1, 0.1);
+
+        average = productTable.max("Price", "Price < ?", 2).asInt();
+        assertEquals(average, 1);
+
+        average = productTable.max("Price", "Price < ?", 2).asLong();
+        assertEquals(average, (long) 1);
+
+        average = productTable.max("Price", "Price < ?", 2).value();
+        assertEquals((Double) average, 1, 0.1);
+
+        average = productTable.max("Price", "Price < ?", 2).asString();
+        assertEquals(average, "1.0");
     }
 
     public void testMin(){
         ITable productTable = db.get("Products");
 
         Object average = productTable.min("Price").asDouble();
-        assertEquals(average, (double) 1); // this number may change
+        assertEquals((Double) average, 1.0, 0.01); // this number may change
 
         average = productTable.min("Price").asFloat();
-        assertEquals(average, (float) 1);
+        assertEquals((Float) average, (float) 1, 0.01);
 
         average = productTable.min("Price").asInt();
         assertEquals(average, 1);
@@ -809,10 +1212,54 @@ public class TableTest extends AndroidTestCase{
         assertEquals(average, (long) 1);
 
         average = productTable.min("Price").value();
-        assertEquals(average, 1);
+        assertEquals((Double) average, 1, 0.1);
 
         average = productTable.min("Price").asString();
-        assertEquals(average, "1");
+        assertEquals(average, "1.0");
+    }
+
+    public void testMin_Condition(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.min("Price", "Price > 101").asDouble();
+        assertEquals((Double) average, 200.0, 0.01); // this number may change
+
+        average = productTable.min("Price", "Price > 101").asFloat();
+        assertEquals((Float) average, (float) 200, 0.01);
+
+        average = productTable.min("Price", "Price > 101").asInt();
+        assertEquals(average, 200);
+
+        average = productTable.min("Price", "Price > 101").asLong();
+        assertEquals(average, (long) 200);
+
+        average = productTable.min("Price", "Price > 101").value();
+        assertEquals((Double) average, 200, 0.1);
+
+        average = productTable.min("Price", "Price > 101").asString();
+        assertEquals(average, "200.0");
+    }
+
+    public void testMin_WhereClause(){
+        ITable productTable = db.get("Products");
+
+        Object average = productTable.min("Price", "Price > ?", 101).asDouble();
+        assertEquals((Double) average, 200.0, 0.01); // this number may change
+
+        average = productTable.min("Price", "Price > ?", 101).asFloat();
+        assertEquals((Float) average, (float) 200, 0.01);
+
+        average = productTable.min("Price", "Price > ?", 101).asInt();
+        assertEquals(average, 200);
+
+        average = productTable.min("Price", "Price > ?", 101).asLong();
+        assertEquals(average, (long) 200);
+
+        average = productTable.min("Price", "Price > ?", 101).value();
+        assertEquals((Double) average, 200, 0.1);
+
+        average = productTable.min("Price", "Price > ?", 101).asString();
+        assertEquals(average, "200.0");
     }
 
     public void testDrop(){
@@ -855,7 +1302,7 @@ public class TableTest extends AndroidTestCase{
 
 
     private void populateData(){
-        IQuery.InsertWith insert = db.get("Customers").insert("Name", "Address", "City", "PostalCode", "Country");
+        InsertInto insert = db.get("Customers").insertInto("Name", "Address", "City", "PostalCode", "Country");
 
         insert.val("Wayne Rooney", "10 Manchester United", "Manchester", 9812, "UK");
         insert.val("Lionel Messi", "10 Barcelona st.", "Barcelona", 70, "Spain");
@@ -866,7 +1313,7 @@ public class TableTest extends AndroidTestCase{
         insert.val("Null Player", null, null, 22111, "US");
 
 
-        insert = db.get("Products").insert("Name", "Price");
+        insert = db.get("Products").insertInto("Name", "Price");
         insert.val("Car", 20000);
         insert.val("Motorcycle", 5000);
         insert.val("Computer", 1000);
@@ -878,7 +1325,7 @@ public class TableTest extends AndroidTestCase{
         insert.val("Lamp", 20);
         insert.val("Candy", 1);
 
-        insert = db.get("Orders").insert("CustomerId", "ProductId", "Date");
+        insert = db.get("Orders").insertInto("CustomerId", "ProductId", "Date");
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Computer"), getRandomDate());
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Monitor"), getRandomDate());
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Cellphone"), getRandomDate());
@@ -913,11 +1360,11 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     ///////////////////////////////////////////////
     // ------------------ Helper methods ----------------//
-    private int getCustomerId(String name){
+    private long getCustomerId(String name){
         return db.get("Customers").selectId("Name = ?", name);
     }
 
-    private int getProductId(String name){
+    private long getProductId(String name){
         return db.get("Products").selectId("Name = ?", name);
     }
 
