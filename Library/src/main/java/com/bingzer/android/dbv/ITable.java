@@ -186,6 +186,9 @@ public interface ITable extends
          *
          * @param columnName the referencing column name (get this table)
          * @param targetColumn the referenced column name (get the referenced table)
+         *                     {@code targetColumn} must be defined as
+         *                     <code>[TableName].[ColumnName]</code>
+         *                     (i.e: Customers.Id, Products.Number)
          */
         Model foreignKey(String columnName, String targetColumn);
 
@@ -197,6 +200,9 @@ public interface ITable extends
          *
          * @param columnName the referencing column name (get this table)
          * @param targetColumn the referenced column name (get the referenced table)
+         *                     {@code targetColumn} must be defined as
+         *                     <code>[TableName].[ColumnName]</code>
+         *                     (i.e: Customers.Id, Products.Number)
          * @param actionClause additional clause any of these
          *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"
          *                     null means "NO ACTION"
@@ -210,8 +216,9 @@ public interface ITable extends
          * the referenced table and column needs to exists.
          *
          * @param columnName the referencing column name (get this table)
-         * @param targetTable the referenced table
+         * @param targetTable the referenced table (i.e: Customers, Products)
          * @param targetColumn the referenced column name (get the referenced table)
+         *                     (i.e: Id, Number)
          * @param actionClause additional clause any of these
          *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"
          *                     null means "NO ACTION"

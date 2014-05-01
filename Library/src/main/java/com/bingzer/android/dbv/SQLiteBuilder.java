@@ -161,7 +161,11 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
      */
     @Override
     public void onError(Throwable error) {
-        throw new Error(error);
+        // log it
+        android.util.Log.e("SQLiteBuilder", "Error encountered when building database", error);
+
+        // and rethrow if possible as an error
+        throw new Error("Error encountered when building database", error);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
