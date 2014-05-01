@@ -19,6 +19,7 @@ import android.content.ContentValues;
 
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
+import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.queries.Update;
 
 /**
@@ -63,15 +64,18 @@ public interface Updatable {
      * @param entity the entity to update
      * @return Update object
      */
-    Update update(IEntity entity);
+    IQuery<Integer> update(IEntity entity);
 
     /**
-     * Bulk-update using {@link IEntityList} object
+     * Bulk-update using {@link IEntityList} object.
+     * <code>query()</code> method will return -1 if there's an error updating and the
+     * transaction is rollback-ed. Otherwise, it will return the number of records updated
+     *
      * @param entityList IEntityList object
      * @param <E> extends IEntity
      * @return Update object
      */
-    <E extends IEntity> Update update(IEntityList<E> entityList);
+    <E extends IEntity> IQuery<Integer> update(IEntityList<E> entityList);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +86,15 @@ public interface Updatable {
      * @param id the id
      * @return Update object
      */
-    Update update(ContentValues contents, long id);
+    IQuery<Integer> update(ContentValues contents, long id);
+
+    /**
+     * Update using the {@link ContentValues}
+     * @param contents the ContentValues
+     * @param condition the condition
+     * @return Update object
+     */
+    IQuery<Integer> update(ContentValues contents, String condition);
 
     /**
      * Update using the {@link ContentValues}
@@ -91,5 +103,5 @@ public interface Updatable {
      * @param whereArgs arguments
      * @return Update object
      */
-    Update update(ContentValues contents, String whereClause, Object... whereArgs);
+    IQuery<Integer> update(ContentValues contents, String whereClause, Object... whereArgs);
 }

@@ -328,7 +328,7 @@ public class Table implements ITable {
     }
 
     @Override
-    public Update update(IEntity entity) {
+    public IQuery<Integer> update(IEntity entity) {
         db.enforceReadOnly();
 
         if(entity.getId() < 0) throw new IllegalArgumentException("Id has to be over than 0");
@@ -340,12 +340,12 @@ public class Table implements ITable {
     }
 
     @Override
-    public <E extends IEntity> Update update(final IEntityList<E> entityList) {
+    public <E extends IEntity> IQuery<Integer> update(final IEntityList<E> entityList) {
         db.enforceReadOnly();
 
         final UpdateImpl query = new UpdateImpl();
 
-        db.begin(new IDatabase.Batch() {
+        boolean success = db.begin(new IDatabase.Batch() {
             @Override
             public void exec(IDatabase database) {
                 for(IEntity entity : entityList){
@@ -354,18 +354,33 @@ public class Table implements ITable {
             }
         }).execute();
 
+        // if there's any error we should return -1
+        if(!success)
+            query.setValue(-1);
+
         return query;
     }
 
     @Override
-    public Update update(ContentValues contents, long id) {
+    public IQuery<Integer> update(ContentValues contents, long id) {
         db.enforceReadOnly();
 
         return update(contents, generateParamId(id));
     }
 
     @Override
-    public Update update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
+    public IQuery<Integer> update(ContentValues contents, String condition) {
+        db.enforceReadOnly();
+
+        UpdateImpl query = new UpdateImpl();
+        if(contents != null && contents.size() > 0)
+            query.setValue( db.sqLiteDb.update(getName(), contents, condition, null) );
+
+        return query;
+    }
+
+    @Override
+    public IQuery<Integer> update(final ContentValues contents, final String whereClause, final Object... whereArgs) {
         db.enforceReadOnly();
 
         UpdateImpl query = new UpdateImpl();

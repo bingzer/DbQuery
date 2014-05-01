@@ -73,9 +73,35 @@ public class EntityListTest extends AndroidTestCase{
         // re create object
         personList = new PersonList();
         db.get("Person").select().query(personList);
+
+        // test content
         assertTrue(personList.get(0).getAge() == 1000);
         assertTrue("Modified".equals(new String(personList.get(1).getAddressBytes())));
         assertTrue(personList.get(2).getName().equals("This is Number 3"));
+    }
+
+    public void testBulkUpdate_Error_ShouldRollback(){
+        PersonList personList = new PersonList();
+        db.get("Person").select().query(personList);
+
+        assertTrue(personList.size() > 0);
+        personList.get(0).setAge(1000); // john
+        personList.get(1).setAddressBytes("Modified".getBytes());
+        personList.get(2).setName("This is Number 3");
+        // make some id invalid
+        personList.get(1).setId(-1);
+
+        assertEquals(-1, (int) db.get("Person").update(personList).query()); // 6 updates..
+
+        // re create object
+        personList = new PersonList();
+        db.get("Person").select().query(personList);
+
+        // test content
+        // should be original values
+        assertEquals(23, personList.get(0).getAge());
+        assertEquals("Madrid", new String(personList.get(1).getAddressBytes()));
+        assertEquals("Messi", personList.get(2).getName());
     }
 
     public void testBulkInsert(){

@@ -60,6 +60,10 @@ public interface Update extends IQuery<Integer> {
      * The columns
      */
     static interface Columns {
+
+        /**
+         * Sets values
+         */
         IQuery<Integer> val(Object... values);
     }
 }

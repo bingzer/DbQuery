@@ -345,7 +345,14 @@ abstract class BaseResolver implements IBaseResolver {
 
     @Override
     public Update update(ContentValues contents, long id) {
-        return update(contents, generateParamId(id), (Object)null);
+        return update(contents, generateParamId(id));
+    }
+
+    @Override
+    public Update update(ContentValues contents, String condition) {
+        UpdateImpl query = new UpdateImpl();
+        query.setValue(contentResolver.update(uri, contents, condition, null));
+        return query;
     }
 
     @Override

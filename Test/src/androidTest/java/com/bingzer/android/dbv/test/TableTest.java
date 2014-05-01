@@ -96,6 +96,30 @@ public class TableTest extends AndroidTestCase{
         assertTrue(table.getAlias().equals("O"));
     }
 
+    public void testTableAliases_Malformed_OK(){
+        // we will let every after the first space
+
+        ITable table = db.get("Customers C asdf sdfsf");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("C asdf sdfsf"));
+
+        table = db.get("Products P asdf");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("P asdf"));
+
+        table = db.get("Orders O 12~23`1`21434");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("O 12~23`1`21434"));
+
+        table = db.get("Orders T");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("T"));
+
+        table = db.get("Orders T ~!@#$%^&*()_ +");
+        assertTrue(table != null);
+        assertTrue(table.getAlias().equals("T ~!@#$%^&*()_ +"));
+    }
+
     public void testGetCustomerId(){
         assertTrue(getCustomerId("Andrea Pirlo") > 0);
         assertTrue(getCustomerId("Christiano Ronaldo") > 0);
@@ -543,7 +567,30 @@ public class TableTest extends AndroidTestCase{
         assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
     }
 
-    public void testUpdate_WhereClause_ContentValues(){
+    public void testUpdate_ContentValues_Condition(){
+        ContentValues v = new ContentValues();
+        v.put("Country", "US");
+        v.put("City", "City");
+
+        long ronaldoId = getCustomerId("Christiano Ronaldo");
+        long messiId = getCustomerId("Lionel Messi");
+
+        // update 2 countries customers
+        assertEquals(2, (int) db.get("Customers").update("Name = 'Christiano Ronaldo' OR Name = 'Lionel Messi'").val(v).query());
+
+        // check the updated
+        Cursor c = db.get("Customers").select(ronaldoId).columns("Country", "City").query();
+        c.moveToNext();
+        assertEquals("US", c.getString(0));
+        assertEquals("City", c.getString(1));
+        c.close();
+
+        // change them back
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country", "City").val("Spain", "Madrid").query());
+        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country", "City").val("Spain", "Barcelona").query());
+    }
+
+    public void testUpdate_ContentValues_WhereArgs(){
         ContentValues v = new ContentValues();
         v.put("Country", "US");
         v.put("City", "City");
