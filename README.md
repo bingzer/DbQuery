@@ -31,13 +31,6 @@ repositories {
     }
 }
 
-// Force Gradle to get the latest SNAPSHOT everytime
-configurations.all {
-    // check for updates every build
-    // change as needed
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 dependencies {
     compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.0.0-SNAPSHOT', changing: true)
 }
@@ -55,7 +48,7 @@ Cursor cursor = db.query("Customers", // table name
                          null,         // having
                          "Age");       // orderBy
 ```
-The purpose of `DbQuery` is to be able to write this query differently
+The purpose of `DbQuery` is to be able to write this query fluently
 ``` java
 Cursor cursor = db.get("Customers")
                       .select("Id In (?,?,?)", customerId1, customerId2, customerId3) // whereClause
@@ -63,24 +56,21 @@ Cursor cursor = db.get("Customers")
                       .orderBy("Age")  // orderBy 'Age'
                       .query(); 
 ```
-`DbQuery` **will _change_** the way you write query.
 
-
-# License
+LICENSE
+=======
 ``` java
-/**
- * Copyright 2014 Ricky Tobing
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+Copyright 2014 Ricky Tobing
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 ```

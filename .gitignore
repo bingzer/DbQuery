@@ -9,6 +9,9 @@ gradle
 gen/
 uploadArchives.bat
 
+# MY local uploadArchives (Used to deploy to Maven Central)
+uploadArchives.bat
+
 
 #################
 ## Eclipse
