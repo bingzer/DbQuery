@@ -24,6 +24,7 @@ include ':Library'
 // Extensions
 include ':Extensions:ContentQuery'
 include ':Extensions:DataProvider'
+include ':Extensions:Orm'
 
 // test
 include ':Test'
