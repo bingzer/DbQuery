@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.contracts;
+package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.IDatabase;
+/**
+ * Factory that produces an entity.
+ */
+public interface IEntityFactory {
 
-public interface IEnvironment {
-
-    void setDatabase(IDatabase db);
-
-    IDatabase getDatabase();
-
-    void setEntityFactory(IEntityFactory factory);
-
-    IEntityFactory getEntityFactory();
-
+    /**
+     * Maps each table to an entity
+     *
+     * @param tableName The table name to map
+     */
+    IBaseEntity createEntity(String tableName);
 }

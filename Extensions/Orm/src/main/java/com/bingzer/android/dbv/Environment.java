@@ -15,28 +15,37 @@
  */
 package com.bingzer.android.dbv;
 
-import com.bingzer.android.dbv.contracts.IEntityFactory;
-import com.bingzer.android.dbv.contracts.IEnvironment;
-
-
+/**
+ * Default implementation of {@link IEnvironment}
+ */
 public class Environment implements IEnvironment {
 
-    private static IEnvironment environment;
+    private static final IEnvironment environment = new Environment();
+
+    /**
+     * Returns the {@code local} environment.
+     * Local environment is the default environment
+     */
     public static IEnvironment getLocalEnvironment(){
-        if(environment == null)
-            environment = new Environment();
         return environment;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
     private IDatabase database = null;
     private IEntityFactory factory = null;
+
+    /////////////////////////////////////////////////////////////////////////////////
 
     private Environment(){
         this(null, null);
     }
 
+    /**
+     * Creates an environment
+     * @param database the database
+     * @param factory the entity factory
+     */
     public Environment(IDatabase database, IEntityFactory factory){
         this.database = database;
         this.factory = factory;
@@ -44,24 +53,30 @@ public class Environment implements IEnvironment {
 
     /////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void setDatabase(IDatabase db) {
+    protected void setDatabase(IDatabase db) {
         database = db;
     }
 
-    @Override
-    public IDatabase getDatabase(){
-        return database;
-    }
-
-    @Override
-    public void setEntityFactory(IEntityFactory factory) {
+    protected void setEntityFactory(IEntityFactory factory) {
         this.factory = factory;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns the factory
+     */
     @Override
     public IEntityFactory getEntityFactory(){
         return factory;
+    }
+
+    /**
+     * Returns the database
+     */
+    @Override
+    public IDatabase getDatabase(){
+        return database;
     }
 
 

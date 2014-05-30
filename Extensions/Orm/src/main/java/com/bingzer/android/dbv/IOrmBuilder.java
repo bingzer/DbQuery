@@ -13,11 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.contracts;
+package com.bingzer.android.dbv;
+
+import java.util.List;
 
 /**
- * Created by Ricky on 5/20/2014.
+ * Defines a contract interface for an {@code ORM} database builder.
+ * This interface also {@code is} a type of {@link IEntityFactory}
+ * @see com.bingzer.android.dbv.IDatabase.Builder
  */
-public interface IEntityFactory {
-    IBaseEntity createEntity(String tableName);
+public interface IOrmBuilder extends IDatabase.Builder, IEntityFactory {
+
+    /**
+     * Adds an internal table.
+     * @param tableName table name
+     */
+    void addInternalTable(String tableName);
+
+    /**
+     * Returns the list of internal tables
+     */
+    List<String> getInternalTables();
+
 }

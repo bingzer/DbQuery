@@ -13,36 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.contracts;
+package com.bingzer.android.dbv;
 
+/**
+ * Represents a contract interface for an {@code Environment} .
+ * Environment is a virtual place where an {@code IBaseEntity}
+ * will live in.
+ */
+public interface IEnvironment {
 
-import android.database.Cursor;
+    /**
+     * Returns the database
+     */
+    IDatabase getDatabase();
 
-import com.bingzer.android.dbv.IEntity;
+    /**
+     * Returns the factory
+     */
+    IEntityFactory getEntityFactory();
 
-public interface IBaseEntity extends IEntity {
-
-    void setId(long id);
-
-    long getSyncId();
-
-    void setSyncId(long syncId);
-
-    void save();
-
-    void delete();
-
-    void load();
-
-    void load(long id);
-
-    void loadBySyncId();
-
-    void loadBySyncId(long syncId);
-
-    void load(Cursor cursor);
-
-    String getTableName();
-
-    IEnvironment getEnvironment();
 }
