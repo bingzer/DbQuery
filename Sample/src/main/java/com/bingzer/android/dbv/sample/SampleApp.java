@@ -25,22 +25,12 @@ public class SampleApp extends Application {
         IDatabase db = DbQuery.getDatabase("Chinook");
         db.getConfig().setReadOnly(true);
         db.getConfig().setAppendTableNameForId(true);
-        db.open(1, dbFile.getAbsolutePath(), new SQLiteBuilder() {
-            @Override
-            public Context getContext() {
-                return getApplicationContext();
-            }
-
-            @Override
-            public void onModelCreate(IDatabase database, IDatabase.Modeling modeling) {
-                // do nothing
-            }
-        });
+        db.open(1, dbFile.getAbsolutePath(), new SQLiteBuilder.WithoutModeling(this));
     }
 
     private void extractDbFile(){
         // transfer the db file to sd card
-        dbFile = new File(getBaseContext().getFilesDir(), "DbQuery-Sample.sqlite");
+        dbFile = new File(getBaseContext().getFilesDir(), "Chinook.sqlite");
         if(!dbFile.exists()){
             try{
                 IOHelper.copyFile(getResources().getAssets().open("Chinook.sqlite"), dbFile);

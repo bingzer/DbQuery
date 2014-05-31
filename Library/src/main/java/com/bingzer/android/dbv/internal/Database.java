@@ -661,8 +661,7 @@ public class Database implements IDatabase {
 
             if(dbPath != null){
                 try{
-                    if(database.getConfig().isReadOnly()) preloadedSQLiteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READONLY);
-                    else preloadedSQLiteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+                    preloadedSQLiteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
 
                     onOpen(preloadedSQLiteDb);
                     // check version..

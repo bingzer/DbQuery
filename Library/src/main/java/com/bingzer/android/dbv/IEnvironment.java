@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Ricky Tobing
+ * Copyright 2014 Ricky Tobing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.bingzer.android.dbv;
 
 /**
- * You may comment out libraries that you wish to exclude
+ * Represents a contract interface for an {@code Environment} .
+ * Environment is a virtual place where an {@code IBaseEntity}
+ * will live in.
  */
+public interface IEnvironment {
 
-// Main DbQuery Library
-include ':Library'
+    /**
+     * Returns the database
+     */
+    IDatabase getDatabase();
 
-// Extensions
-include ':Extensions:ContentQuery'
-include ':Extensions:DataProvider'
-
-// sample application
-include ':Sample'
+}

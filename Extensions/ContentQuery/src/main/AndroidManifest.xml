@@ -1,3 +1,5 @@
-<manifest package="com.bingzer.android.dbv.content">
-    <application />
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bingzer.android.dbv.content">
+    <application android:allowBackup="true"/>
 </manifest>

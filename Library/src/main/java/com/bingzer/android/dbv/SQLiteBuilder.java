@@ -151,7 +151,7 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
      */
     @Override
     public void onReady(IDatabase database) {
-        // do nothing
+        setupEnvironment(database);
     }
 
     /**
@@ -165,7 +165,14 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
         android.util.Log.e("SQLiteBuilder", "Error encountered when building database", error);
 
         // and rethrow if possible as an error
-        throw new Error("Error encountered when building database", error);
+        throw new RuntimeException("Error encountered when building database", error);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void setupEnvironment(IDatabase db){
+        Environment local = (Environment) Environment.getLocalEnvironment();
+        local.setDatabase(db);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
