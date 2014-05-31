@@ -18,6 +18,8 @@ package com.bingzer.android.dbv;
 import com.bingzer.android.dbv.contracts.RawQueryable;
 import com.bingzer.android.dbv.contracts.SqlExecutable;
 
+import java.util.List;
+
 /**
  * Represents a database. {@linkplain IDatabase} provides access
  * to {@link ITable} to achieve common <code>CRUD</code> tasks.
@@ -93,7 +95,7 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
      * @return all tables exists in the database
      */
-    Iterable<ITable> getTables();
+    List<ITable> getTables();
 
     /**
      * Returns table by its <code>tableName</code>. If the table

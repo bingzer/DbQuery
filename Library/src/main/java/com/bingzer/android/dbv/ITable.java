@@ -31,6 +31,8 @@ import com.bingzer.android.dbv.contracts.Tangible;
 import com.bingzer.android.dbv.contracts.Unionable;
 import com.bingzer.android.dbv.contracts.Updatable;
 
+import java.util.List;
+
 /**
  * Represents a table. {@link com.bingzer.android.dbv.ITable} provides full
  * access to achieve common <code>CRUD</code> tasks.
@@ -116,7 +118,7 @@ public interface ITable extends
      * Returns the column name
      * @return the list of columns
      */
-    Iterable<String> getColumns();
+    List<String> getColumns();
 
     /**
      * Returns the column count

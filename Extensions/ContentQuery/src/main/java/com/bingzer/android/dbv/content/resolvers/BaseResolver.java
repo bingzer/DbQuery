@@ -32,14 +32,15 @@ import com.bingzer.android.dbv.content.queries.InsertIntoImpl;
 import com.bingzer.android.dbv.content.queries.UpdateImpl;
 import com.bingzer.android.dbv.content.utils.UriUtils;
 import com.bingzer.android.dbv.queries.Delete;
+import com.bingzer.android.dbv.queries.Insert;
 import com.bingzer.android.dbv.queries.InsertInto;
+import com.bingzer.android.dbv.queries.Update;
 import com.bingzer.android.dbv.utils.CollectionUtils;
 import com.bingzer.android.dbv.utils.ContentValuesUtils;
 import com.bingzer.android.dbv.utils.Utils;
-import com.bingzer.android.dbv.queries.Insert;
-import com.bingzer.android.dbv.queries.Update;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -102,7 +103,7 @@ abstract class BaseResolver implements IBaseResolver {
     }
 
     @Override
-    public Delete delete(Iterable<Long> ids) {
+    public Delete delete(Collection<Long> ids) {
         long[] idz = new long[CollectionUtils.size(ids)];
         int counter = 0;
         for (long id : ids) {

@@ -20,6 +20,8 @@ import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.queries.Delete;
 
+import java.util.Collection;
+
 /**
  * Created by Ricky Tobing on 7/17/13.
  */
@@ -45,7 +47,7 @@ public interface Deletable {
      * @param ids collection of ids to delete
      * @return Delete object
      */
-    Delete delete(Iterable<Long> ids);
+    Delete delete(Collection<Long> ids);
 
     //////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////
