@@ -98,6 +98,17 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
     List<ITable> getTables();
 
     /**
+     * Returns the {@code Builder} that was used to build this database.
+     * This method requires {@link #open(int, com.bingzer.android.dbv.IDatabase.Builder)}
+     * or {@link #open(int, String, com.bingzer.android.dbv.IDatabase.Builder)} to be
+     * called first.
+     * This will throw an exception if {@code open()} hasn't been called yet.
+     *
+     * @return the builder (type of {@link Builder})
+     */
+    Builder getBuilder();
+
+    /**
      * Returns table by its <code>tableName</code>. If the table
      * does not exists, this will returns null.
      * The {@link com.bingzer.android.dbv.ITable} provides access to

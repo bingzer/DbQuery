@@ -80,6 +80,12 @@ public class Database implements IDatabase {
     }
 
     @Override
+    public Builder getBuilder() {
+        ensureDbHelperIsReady();
+        return dbHelper.builder;
+    }
+
+    @Override
     public ITable get(String tableName) {
         String alias = null;
         if(tableName.contains(SPACE)){
