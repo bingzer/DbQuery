@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.0.0')
+    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.1.0')
 }
 ```
 
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.0.0-SNAPSHOT', changing: true)
+    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.1.0-SNAPSHOT', changing: true)
 }
 ```
 
@@ -48,7 +48,7 @@ Cursor cursor = db.query("Customers", // table name
                          null,         // having
                          "Age");       // orderBy
 ```
-The purpose of `DbQuery` is to be able to write this query fluently
+The purpose of `DbQuery` is to be able to write this query **fluently**
 ``` java
 Cursor cursor = db.get("Customers")
                       .select("Id In (?,?,?)", customerId1, customerId2, customerId3) // whereClause
