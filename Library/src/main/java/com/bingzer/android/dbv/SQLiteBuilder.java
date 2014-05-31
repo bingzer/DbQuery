@@ -90,6 +90,22 @@ import android.content.Context;
  */
 public abstract class SQLiteBuilder implements IDatabase.Builder {
 
+    private IEnvironment environment;
+
+    /**
+     * Creates a SQLiteBuilder
+     */
+    public SQLiteBuilder(){
+        this(Environment.getLocalEnvironment());
+    }
+
+    /**
+     * Creates a SQLiteBuilder using custom environment
+     */
+    public SQLiteBuilder(IEnvironment environment){
+        this.environment = environment;
+    }
+
     /**
      * Returns the GOD-object <code>context</code>.
      * You should return your <code>ApplicationContext</code> here
@@ -151,7 +167,9 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
      */
     @Override
     public void onReady(IDatabase database) {
-        setupEnvironment(database);
+        if(environment == Environment.getLocalEnvironment()){
+            ((Environment) Environment.getLocalEnvironment()).setDatabase(database);
+        }
     }
 
     /**
@@ -161,18 +179,8 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
      */
     @Override
     public void onError(Throwable error) {
-        // log it
-        android.util.Log.e("SQLiteBuilder", "Error encountered when building database", error);
-
         // and rethrow if possible as an error
         throw new RuntimeException("Error encountered when building database", error);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    protected void setupEnvironment(IDatabase db){
-        Environment local = (Environment) Environment.getLocalEnvironment();
-        local.setDatabase(db);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
