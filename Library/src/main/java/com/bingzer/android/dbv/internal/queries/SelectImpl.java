@@ -129,7 +129,9 @@ public abstract class SelectImpl extends QueryImpl<Cursor> implements Select, Se
     @Override
     public void query(IEntity entity) {
         final Cursor cursor = query();
-        EntityUtils.mapEntityFromCursor(table, entity, cursor);
+        if(cursor.moveToNext()){
+            EntityUtils.mapEntityFromCursor(table, entity, cursor);
+        }
 
         cursor.close();
     }

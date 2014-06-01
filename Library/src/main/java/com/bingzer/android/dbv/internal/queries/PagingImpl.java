@@ -124,7 +124,9 @@ public class PagingImpl extends QueryImpl<Cursor> implements Paging {
     @Override
     public void query(IEntity entity) {
         final Cursor cursor = query();
-        EntityUtils.mapEntityFromCursor(select.table, entity, cursor);
+        if(cursor.moveToNext()){
+            EntityUtils.mapEntityFromCursor(select.table, entity, cursor);
+        }
 
         cursor.close();
     }

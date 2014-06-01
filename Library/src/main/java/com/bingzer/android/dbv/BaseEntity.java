@@ -138,11 +138,21 @@ public abstract class BaseEntity implements IBaseEntity {
     }
 
     /**
-     * Convenient method to load data from a {@code Cursor} object
+     * Convenient method to load data from a {@code Cursor} object.
+     * Note that cursor current position must be moved to the first pointer first.
+     * <p><pre><code>
+     *   Person person = new Person();
+     *   Cursor cursor = db.get(\"Person\").select("Name = ?", "John").query();
+     *   if(cursor.moveToNext()){
+     *      person.load(cursor);
+     *   }
+     *   ...
+     * </code></pre></p>
+     * }
      */
     @Override
     public final boolean load(Cursor cursor){
-        if(cursor != null && cursor.getCount() > 0){
+        if(cursor != null){
             onBeforeLoad();
             ITable table = environment.getDatabase().get(getTableName());
             EntityUtils.mapEntityFromCursor(table, this, cursor);

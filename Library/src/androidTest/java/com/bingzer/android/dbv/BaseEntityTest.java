@@ -1,6 +1,7 @@
 package com.bingzer.android.dbv;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.test.AndroidTestCase;
 
 import java.util.UUID;
@@ -106,7 +107,10 @@ public class BaseEntityTest extends AndroidTestCase {
 
     public void test_load_cursor(){
         OrmPerson person = new OrmPerson();
-        person.load(db.get("Person").select("Name = ?", "Person2").query());
+        Cursor cursor = db.get("Person").select("Name = ?", "Person2").query();
+        if(cursor.moveToNext()){
+            person.load(cursor);
+        }
 
         assertEquals("Person2", person.getName());
         assertEquals(2, person.getAge());
