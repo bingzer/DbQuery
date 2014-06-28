@@ -6,8 +6,8 @@ env:
 android:
   components:
     - build-tools-19.1
-    - android-19
-    - sysimg-19
+    - android-20
+    - sysimg-20
     - extra-android-support
 
 licenses:
