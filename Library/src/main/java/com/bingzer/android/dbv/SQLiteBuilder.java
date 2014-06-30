@@ -167,8 +167,7 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
      */
     @Override
     public void onReady(IDatabase database) {
-        // ORM Support: Sets the default environment only when the db is null
-        if(environment == Environment.getLocalEnvironment() && environment.getDatabase() == null){
+        if(environment == Environment.getLocalEnvironment()){
             ((Environment) Environment.getLocalEnvironment()).setDatabase(database);
         }
     }
