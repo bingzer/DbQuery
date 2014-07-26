@@ -1,3 +1,10 @@
+VERSION 2.1.0 (07/26/2014)
+=============
+* Built-in supports for ORM (`BaseEntity` + `IEnvironment`)
+* Iterables changed to Collection
+* Smarter error handler
+* Various bug fixes
+
 VERSION 2.0.0 (04/30/2014)
 =============
 * Various bug fixes
