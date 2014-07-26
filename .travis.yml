@@ -19,4 +19,4 @@ before_script:
 
 script:
   - ./wait_for_emulator
-  - gradle connectedCheck -PdisablePreDex
+  - ./gradlew connectedCheck -PdisablePreDex
