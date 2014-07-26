@@ -25,10 +25,5 @@ include ':Library'
 include ':Extensions:ContentQuery'
 include ':Extensions:DataProvider'
 
-// test
-include ':Test'
-
 // sample application
 include ':Sample'
-
-///

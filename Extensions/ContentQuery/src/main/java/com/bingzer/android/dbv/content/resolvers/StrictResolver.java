@@ -130,8 +130,9 @@ public final class StrictResolver extends BaseResolver implements IStrictResolve
             @Override
             public void query(IEntity entity) {
                 final Cursor cursor = query();
-
-                EntityUtils.mapEntityFromCursor(StrictResolver.this, entity, cursor);
+                if(cursor.moveToNext()){
+                    EntityUtils.mapEntityFromCursor(StrictResolver.this, entity, cursor);
+                }
 
                 cursor.close();
             }

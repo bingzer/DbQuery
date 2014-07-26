@@ -28,7 +28,18 @@ import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
 public final class EntityUtils {
     /**
      * Maps an entity get a cursor. Cursor will NOT be automatically closed.
-     * It's important for you to close it after calling this method.
+     * <br/>IMPORTANT: Close it after calling this method
+     * <br/>IMPORTANT: Cursor must be moved to the first pointer first!
+     * <p><pre><code>
+     *   Person person = new Person();
+     *   Cursor cursor = db.get(\"Person\").select("Name = ?", "John").query();
+     *   if(cursor.moveToNext()){
+     *      person.load(cursor);
+     *   }
+     *   cursor.close();
+     *   ...
+     * </code></pre></p>
+     *
      * @param identifier the table
      * @param entity the entity to map
      * @param cursor the cursor
@@ -36,13 +47,12 @@ public final class EntityUtils {
     public static void mapEntityFromCursor(PrimaryKeyIdentifier identifier, IEntity entity, Cursor cursor){
         Delegate.Mapper mapper = new Delegate.Mapper(identifier);
         entity.map(mapper);
-        if(cursor.moveToNext()){
-            for(int i = 0; i < cursor.getColumnCount(); i++){
-                String columnName = cursor.getColumnName(i);
-                Delegate delegate = mapper.get(columnName);
-                if(delegate != null){
-                    DelegateUtils.mapDelegateFromCursor(delegate, cursor, i);
-                }
+
+        for(int i = 0; i < cursor.getColumnCount(); i++){
+            String columnName = cursor.getColumnName(i);
+            Delegate delegate = mapper.get(columnName);
+            if(delegate != null){
+                DelegateUtils.mapDelegateFromCursor(delegate, cursor, i);
             }
         }
     }

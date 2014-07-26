@@ -80,6 +80,12 @@ public class Database implements IDatabase {
     }
 
     @Override
+    public Builder getBuilder() {
+        ensureDbHelperIsReady();
+        return dbHelper.builder;
+    }
+
+    @Override
     public ITable get(String tableName) {
         String alias = null;
         if(tableName.contains(SPACE)){
@@ -201,9 +207,7 @@ public class Database implements IDatabase {
 
     @Override
     public String getPath() {
-        ensureDbHelperIsReady();
-
-        return sqLiteDb.getPath();
+        return getSQLiteDatabase().getPath();
     }
 
     @Override
@@ -213,11 +217,10 @@ public class Database implements IDatabase {
 
     @Override
     public IQuery<Cursor> raw(final String sql, final Object... args) {
-        ensureDbHelperIsReady();
         return new IQuery<Cursor>() {
             @Override
             public Cursor query() {
-                return sqLiteDb.rawQuery(sql, Utils.toStringArray(args));
+                return getSQLiteDatabase().rawQuery(sql, Utils.toStringArray(args));
             }
         };
     }
@@ -225,8 +228,7 @@ public class Database implements IDatabase {
     @Override
     public void execSql(String sql) {
         enforceReadOnly();
-        ensureDbHelperIsReady();
-        sqLiteDb.execSQL(sql);
+        getSQLiteDatabase().execSQL(sql);
     }
 
     @Override
@@ -235,8 +237,7 @@ public class Database implements IDatabase {
 
         if(args == null) execSql(sql);
         else{
-            ensureDbHelperIsReady();
-            sqLiteDb.execSQL(Utils.bindArgs(sql, args));
+            getSQLiteDatabase().execSQL(Utils.bindArgs(sql, args));
         }
     }
 
@@ -301,13 +302,11 @@ public class Database implements IDatabase {
     }
 
     public void begin(){
-        ensureDbHelperIsReady();
-        sqLiteDb.beginTransaction();
+        getSQLiteDatabase().beginTransaction();
     }
 
     public void commit(){
-        ensureDbHelperIsReady();
-        sqLiteDb.setTransactionSuccessful();
+        getSQLiteDatabase().setTransactionSuccessful();
     }
 
     public void rollback(){
@@ -317,14 +316,14 @@ public class Database implements IDatabase {
 
     public void end(){
         ensureDbHelperIsReady();
-        sqLiteDb.endTransaction();
+        getSQLiteDatabase().endTransaction();
     }
 
     void setForeignKeySupport(boolean on){
         if(on)
-            sqLiteDb.execSQL("PRAGMA FOREIGN_KEYS = ON");
+            getSQLiteDatabase().execSQL("PRAGMA FOREIGN_KEYS = ON");
         else
-            sqLiteDb.execSQL("PRAGMA FOREIGN_KEYS = OFF");
+            getSQLiteDatabase().execSQL("PRAGMA FOREIGN_KEYS = OFF");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -661,8 +660,7 @@ public class Database implements IDatabase {
 
             if(dbPath != null){
                 try{
-                    if(database.getConfig().isReadOnly()) preloadedSQLiteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READONLY);
-                    else preloadedSQLiteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+                    preloadedSQLiteDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
 
                     onOpen(preloadedSQLiteDb);
                     // check version..

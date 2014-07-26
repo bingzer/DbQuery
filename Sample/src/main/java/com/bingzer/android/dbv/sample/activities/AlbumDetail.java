@@ -8,11 +8,9 @@ import android.widget.SimpleCursorAdapter;
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
 
-/**
- * Created by Ricky on 8/17/13.
- */
 public class AlbumDetail extends ListActivity {
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

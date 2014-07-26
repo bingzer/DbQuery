@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bingzer.android.dbv.sample"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.bingzer.android.dbv.sample">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
-    <uses-sdk
-        android:minSdkVersion="7"
-        android:targetSdkVersion="16" />
+    <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
+    <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY"/>
 
     <application
         android:allowBackup="true"
@@ -28,5 +25,11 @@
                 android:name=".activities.AlbumDetail"
                 android:label="@string/app_name" >
         </activity>
+
+        <provider
+            android:authorities="com.bingzer.android.dbv.providers.sample"
+            android:name=".ChinookDataProvider"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
     </application>
 </manifest>

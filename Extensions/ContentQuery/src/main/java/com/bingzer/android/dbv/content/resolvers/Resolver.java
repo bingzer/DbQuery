@@ -141,8 +141,9 @@ public final class Resolver extends BaseResolver implements IResolver {
             @Override
             public void query(IEntity entity) {
                 final Cursor cursor = query();
-
-                EntityUtils.mapEntityFromCursor(Resolver.this, entity, cursor);
+                if(cursor.moveToNext()){
+                    EntityUtils.mapEntityFromCursor(Resolver.this, entity, cursor);
+                }
 
                 cursor.close();
             }
