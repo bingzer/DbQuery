@@ -30,6 +30,7 @@ import com.bingzer.android.dbv.internal.queries.DropImpl;
 import com.bingzer.android.dbv.internal.queries.InnerJoinImpl;
 import com.bingzer.android.dbv.internal.queries.InsertImpl;
 import com.bingzer.android.dbv.internal.queries.InsertIntoImpl;
+import com.bingzer.android.dbv.internal.queries.LeftJoinImpl;
 import com.bingzer.android.dbv.internal.queries.MaxImpl;
 import com.bingzer.android.dbv.internal.queries.MinImpl;
 import com.bingzer.android.dbv.internal.queries.OuterJoinImpl;
@@ -45,6 +46,7 @@ import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.queries.InnerJoin;
 import com.bingzer.android.dbv.queries.Insert;
 import com.bingzer.android.dbv.queries.InsertInto;
+import com.bingzer.android.dbv.queries.LeftJoin;
 import com.bingzer.android.dbv.queries.Max;
 import com.bingzer.android.dbv.queries.Min;
 import com.bingzer.android.dbv.queries.OuterJoin;
@@ -130,8 +132,8 @@ public class Table implements ITable {
         long id = -1;
         Cursor cursor =
                 select(whereClause, args)
-                .columns(getPrimaryKeyColumn())
-                .query();
+                        .columns(getPrimaryKeyColumn())
+                        .query();
 
         if(cursor.moveToNext()){
             id = cursor.getLong(0);
@@ -474,7 +476,7 @@ public class Table implements ITable {
     @Override
     public boolean has(String whereClause, Object... whereArgs) {
         StringBuilder sql = new StringBuilder("SELECT 1 FROM ").append(getName())
-                            .append(" WHERE ").append(Utils.bindArgs(whereClause, whereArgs));
+                .append(" WHERE ").append(Utils.bindArgs(whereClause, whereArgs));
         Cursor cursor = null;
         try{
             cursor = raw(sql.toString()).query();
@@ -588,6 +590,21 @@ public class Table implements ITable {
     public OuterJoin outerJoin(String tableName, String column1, String column2) {
         return outerJoin(tableName, name + "." + column1 + "=" + tableName + "." + column2);
     }
+
+    @Override
+    public LeftJoin leftJoin(String tableName, String onClause) {
+        return new LeftJoinImpl(this, tableName, onClause){
+            @Override public Cursor query(){
+                return db.sqLiteDb.rawQuery(toString(), null);
+            }
+        };
+    }
+
+    @Override
+    public LeftJoin leftJoin(String tableName, String column1, String column2) {
+        return leftJoin(tableName, name + "." + column1 + "=" + tableName + "." + column2);
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 

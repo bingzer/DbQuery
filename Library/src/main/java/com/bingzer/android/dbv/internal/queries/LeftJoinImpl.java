@@ -16,13 +16,13 @@
 package com.bingzer.android.dbv.internal.queries;
 
 import com.bingzer.android.dbv.internal.Table;
-import com.bingzer.android.dbv.queries.InnerJoin;
+import com.bingzer.android.dbv.queries.LeftJoin;
 
 /**
  * Created by Ricky on 4/26/2014.
  */
-public abstract class InnerJoinImpl extends JoinImpl implements InnerJoin {
-    public InnerJoinImpl(Table table, String tableNameToJoin, String onClause) {
-        super(table, "INNER JOIN", tableNameToJoin, onClause);
+public abstract class LeftJoinImpl extends JoinImpl implements LeftJoin {
+    public LeftJoinImpl(Table table, String tableNameToJoin, String onClause) {
+        super(table, "LEFT JOIN", tableNameToJoin, onClause);
     }
 }

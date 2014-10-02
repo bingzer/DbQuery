@@ -91,7 +91,7 @@ public interface ITable extends
         PrimaryKeyIdentifier,
         Selectable, SelectIdentifiable, Distinguishable,
         Insertable, Deletable, Updatable,
-        Joinable.Inner, Joinable.Outer,
+        Joinable.Inner, Joinable.Outer, Joinable.Left,
         RawQueryable, Countable, Tangible,
         Droppable, Function,
         Alterable, Unionable {

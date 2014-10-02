@@ -20,15 +20,16 @@ import com.bingzer.android.dbv.internal.Table;
 import com.bingzer.android.dbv.contracts.Distinguishable;
 import com.bingzer.android.dbv.contracts.Selectable;
 import com.bingzer.android.dbv.queries.InnerJoin;
+import com.bingzer.android.dbv.queries.LeftJoin;
 import com.bingzer.android.dbv.queries.OuterJoin;
 import com.bingzer.android.dbv.queries.Select;
 
 import java.util.Locale;
 
 /**
-* Created by Ricky on 4/26/2014.
-*/
-public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoin, Selectable, Distinguishable {
+ * Created by Ricky on 4/26/2014.
+ */
+public abstract class JoinImpl extends SelectImpl implements InnerJoin, LeftJoin, OuterJoin, Selectable, Distinguishable {
 
     private  final Table table;
     protected StringBuilder joinBuilder;
@@ -156,6 +157,7 @@ public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoi
         return join(tableName, column1 + " = " + column2);
     }
 
+
     @Override
     public OuterJoin outerJoin(String tableName, String onClause) {
         if(onClause.toLowerCase(Locale.getDefault()).startsWith("on "))
@@ -171,6 +173,26 @@ public abstract class JoinImpl extends SelectImpl implements InnerJoin, OuterJoi
     public OuterJoin outerJoin(String tableName, String column1, String column2) {
         return outerJoin(tableName, column1 + " = " + column2);
     }
+
+
+    @Override
+    public LeftJoin leftJoin(String tableName, String column1, String column2) {
+        return leftJoin(tableName, column1 + " = " + column2);
+    }
+
+
+    @Override
+    public LeftJoin leftJoin(String tableName, String onClause) {
+        if(onClause.toLowerCase(Locale.getDefault()).startsWith("on "))
+            this.joinBuilder.append(Database.SPACE).append("LEFT JOIN").append(Database.SPACE)
+                    .append(tableName).append(Database.SPACE).append(onClause);
+        else
+            this.joinBuilder.append(Database.SPACE).append("LEFT JOIN").append(Database.SPACE)
+                    .append(tableName).append(" ON ").append(onClause);
+        return this;
+    }
+
+
 
     private void consume(Select select){
         // consume

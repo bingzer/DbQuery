@@ -20,15 +20,15 @@ import com.bingzer.android.dbv.contracts.Joinable;
 import com.bingzer.android.dbv.contracts.Selectable;
 
 /**
- * Represents an outer join statement
+ * Represents an inner join statement
  * <p>
  *     Find a complete <code>Wiki</code> and documentation here:<br/>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  *
- * @see com.bingzer.android.dbv.queries.InnerJoin
+ * @see OuterJoin
  */
-public interface OuterJoin extends
+public interface LeftJoin extends
         Joinable, Joinable.Inner, Joinable.Outer, Joinable.Left, Selectable, Select, Distinguishable {
 
 }

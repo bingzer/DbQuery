@@ -19,8 +19,8 @@ import com.bingzer.android.dbv.internal.Table;
 import com.bingzer.android.dbv.queries.OuterJoin;
 
 /**
-* Created by Ricky on 4/26/2014.
-*/
+ * Created by Ricky on 4/26/2014.
+ */
 public abstract class OuterJoinImpl extends JoinImpl implements OuterJoin {
     public OuterJoinImpl(Table table, String tableNameToJoin, String onClause) {
         super(table, "OUTER JOIN", tableNameToJoin, onClause);
