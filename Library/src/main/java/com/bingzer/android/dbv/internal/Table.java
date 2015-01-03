@@ -23,23 +23,6 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEntityList;
 import com.bingzer.android.dbv.ITable;
-import com.bingzer.android.dbv.internal.queries.AverageImpl;
-import com.bingzer.android.dbv.internal.queries.ContentSet;
-import com.bingzer.android.dbv.internal.queries.DeleteImpl;
-import com.bingzer.android.dbv.internal.queries.DropImpl;
-import com.bingzer.android.dbv.internal.queries.InnerJoinImpl;
-import com.bingzer.android.dbv.internal.queries.InsertImpl;
-import com.bingzer.android.dbv.internal.queries.InsertIntoImpl;
-import com.bingzer.android.dbv.internal.queries.LeftJoinImpl;
-import com.bingzer.android.dbv.internal.queries.MaxImpl;
-import com.bingzer.android.dbv.internal.queries.MinImpl;
-import com.bingzer.android.dbv.internal.queries.OuterJoinImpl;
-import com.bingzer.android.dbv.internal.queries.QueryImpl;
-import com.bingzer.android.dbv.internal.queries.SelectImpl;
-import com.bingzer.android.dbv.internal.queries.SumImpl;
-import com.bingzer.android.dbv.internal.queries.TotalImpl;
-import com.bingzer.android.dbv.internal.queries.UnionImpl;
-import com.bingzer.android.dbv.internal.queries.UpdateImpl;
 import com.bingzer.android.dbv.queries.Average;
 import com.bingzer.android.dbv.queries.Delete;
 import com.bingzer.android.dbv.queries.IQuery;
@@ -66,7 +49,7 @@ import java.util.List;
 /**
  * Created by Ricky Tobing on 7/16/13.
  */
-public class Table implements ITable {
+class Table implements ITable {
     private String alias;
     private String name;
     private final List<String> columns;

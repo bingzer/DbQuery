@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
 
+import com.bingzer.android.dbv.content.contracts.IResolver;
 import com.bingzer.android.dbv.queries.Paging;
 
 /**
@@ -17,8 +18,8 @@ public class ContentPagingTest extends AndroidTestCase {
     @Override
     public void setUp(){
         resolver = ContentQuery.resolve(UserDictionary.Words.CONTENT_URI, getContext());
-        resolver.getConfig().setDefaultProjections("_id", "word");
-        resolver.getConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
+        resolver.getContentConfig().setDefaultProjections("_id", "word");
+        resolver.getContentConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
         resolver.delete("word IN (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo").query();
 
         baloteliId = insertToDictionary("Baloteli");

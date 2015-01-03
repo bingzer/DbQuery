@@ -13,30 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bingzer.android.dbv.content;
+package com.bingzer.android.dbv.content.contracts;
 
-import android.content.Context;
-
-import com.bingzer.android.dbv.DbQuery;
-import com.bingzer.android.dbv.IDatabase;
-import com.bingzer.android.dbv.content.contracts.IResolver;
-import com.bingzer.android.dbv.content.contracts.IStrictResolver;
+import com.bingzer.android.dbv.content.contracts.Selectable;
+import com.bingzer.android.dbv.content.contracts.IBaseResolver;
 
 /**
- * This will be removed
  * Created by Ricky Tobing on 8/20/13.
  */
-class TestUsage {
-    String uri = "";
-    Context context = null;
-
-    void test(){
-
-        IDatabase db = DbQuery.getDatabase("");
-
-        IResolver resolver = ContentQuery.resolve(uri, context);
-
-        IStrictResolver strictResolver = ContentQuery.strictlyResolve(uri, context);
-
-    }
+public interface IResolver extends IBaseResolver, Selectable {
 }

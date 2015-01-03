@@ -26,7 +26,6 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.IView;
 import com.bingzer.android.dbv.SQLiteBuilder;
-import com.bingzer.android.dbv.internal.queries.TransactionImpl;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.utils.Utils;
 
