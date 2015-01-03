@@ -33,7 +33,7 @@ public class CreateIndexTest extends AndroidTestCase {
             }
         });
 
-        db.get("Person").delete();
+        db.from("Person").delete();
     }
 
     @Override

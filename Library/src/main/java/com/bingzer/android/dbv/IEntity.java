@@ -43,7 +43,7 @@ package com.bingzer.android.dbv;
  *             public void set(String value){
  *                 setName(value);
  *             }
- *             public String get(){
+ *             public String from(){
  *                 return getName();
  *             }
  *         });
@@ -53,7 +53,7 @@ package com.bingzer.android.dbv;
  * // Other.java
  * IDatabase db = ...
  * Person john = new Person();
- * db.get("Persons").select("Name = ?", "John Doe").query(person);
+ * db.from("Persons").select("Name = ?", "John Doe").query(person);
  *
  * assertEquals("John Doe", person.getName());
  *
@@ -90,7 +90,7 @@ public interface IEntity {
         /**
          *
          * @param column the column name
-         * @param delegate the action used to set/get
+         * @param delegate the action used to set/from
          */
         void map(String column, Delegate delegate);
 

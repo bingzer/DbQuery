@@ -44,16 +44,16 @@ public class PaginationTest extends AndroidTestCase {
             }
         });
 
-        db.get("Person").delete();
-        db.get("Jobs").delete();
+        db.from("Person").delete();
+        db.from("Jobs").delete();
 
-        InsertInto insert = db.get("Jobs").insertInto("Position");
+        InsertInto insert = db.from("Jobs").insertInto("Position");
         managerId = insert.val("Manager").query();
         janitorId = insert.val("Janitor").query();
         guardId = insert.val("Guard").query();
         supervisorId = insert.val("Supervisor").query();
 
-        insert = db.get("Person").insertInto("Name", "Age", "Address", "JobId");
+        insert = db.from("Person").insertInto("Name", "Age", "Address", "JobId");
         // must be 6 individuals for test to be a ok
         insert.val("John", 23, "Washington DC".getBytes(), managerId);
         insert.val("Ronaldo", 40, "Madrid".getBytes(), guardId);
@@ -64,7 +64,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_Simple(){
-        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.from("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -121,7 +121,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_Query_Enumerable(){
-        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.from("Person").select().orderBy("Id").paging(2);
 
         paging.query(new ISequence<Cursor>() {
             int counter = 0;
@@ -140,7 +140,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_Query_PageNumber(){
-        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.from("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -158,7 +158,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_Query_PageNumber_IEntityList(){
-        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.from("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -173,7 +173,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_SetPageNumber(){
-        Paging paging = db.get("Person").select().orderBy("Id").paging(3);
+        Paging paging = db.from("Person").select().orderBy("Id").paging(3);
         assertTrue(paging.getRowLimit() == 3);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -192,7 +192,7 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testPaging_SetPageNumber2(){
-        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.from("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getPageNumber() == 0);
 
@@ -211,7 +211,7 @@ public class PaginationTest extends AndroidTestCase {
 
 
     public void testPaging_WithJoin(){
-        Paging paging = db.get("Person P")
+        Paging paging = db.from("Person P")
                 .join("Jobs J", "J.Id = P.JobId")
                 .select()
                 .columns("P.*", "J.Position")
@@ -265,22 +265,22 @@ public class PaginationTest extends AndroidTestCase {
     }
 
     public void testGetTotalPage(){
-        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.from("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getPageNumber() == 0);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getTotalPage() == 3);
     }
 
     public void testGetTotalPage_2(){
-        Paging paging = db.get("Person").select().orderBy("Id").paging(2);
+        Paging paging = db.from("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getTotalPage() == 3);
 
         // insert one so now row count should be 7
-        db.get("Person").insertInto("Name", "Age", "Address").val("S", 22, "Bytes".getBytes());
+        db.from("Person").insertInto("Name", "Age", "Address").val("S", 22, "Bytes".getBytes());
 
         // recheck
-        paging = db.get("Person").select().orderBy("Id").paging(2);
+        paging = db.from("Person").select().orderBy("Id").paging(2);
         assertTrue(paging.getRowLimit() == 2);
         assertTrue(paging.getTotalPage() == 4);
     }
