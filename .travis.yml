@@ -10,7 +10,6 @@ android:
 
 before_install:
   - chmod +x gradlew
-  - chmod u+x wait_for_emulator
 
 before_script:
   # Create and start emulator 
@@ -18,6 +17,7 @@ before_script:
   - emulator -avd test -no-skin -no-audio -no-window &
   - adb wait-for-device
   - adb shell input keyevent 82 &
+  - chmod u+x wait_for_emulator
   - ./wait_for_emulator
 
 script:
