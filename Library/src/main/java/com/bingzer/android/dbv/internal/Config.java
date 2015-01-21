@@ -27,7 +27,7 @@ import com.bingzer.android.dbv.IConfig;
  *
  * Created by Ricky Tobing on 7/19/13.
  */
-public class Config implements IConfig {
+class Config implements IConfig {
     private String idNamingConvention;
     private boolean appendTableName;
     private boolean foreignKeySupport;

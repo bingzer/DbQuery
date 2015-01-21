@@ -66,7 +66,7 @@ public class UtilsTest extends AndroidTestCase{
             }
         });
 
-        Cursor cursor = db.get("Customers")
+        Cursor cursor = db.from("Customers")
                 .select("Name = ?", "$Yo$")
                 .query();
         cursor.close();

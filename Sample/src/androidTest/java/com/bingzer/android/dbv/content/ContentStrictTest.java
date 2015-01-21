@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
 
+import com.bingzer.android.dbv.content.contracts.IStrictResolver;
 import com.bingzer.android.dbv.queries.Insert;
 
 import java.util.LinkedList;
@@ -22,8 +23,8 @@ public class ContentStrictTest extends AndroidTestCase {
     @Override
     public void setUp(){
         resolver = ContentQuery.strictlyResolve(UserDictionary.Words.CONTENT_URI, getContext());
-        resolver.getConfig().setDefaultProjections("_id", "word");
-        resolver.getConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
+        resolver.getContentConfig().setDefaultProjections("_id", "word");
+        resolver.getContentConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
         resolver.delete("word IN (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo").query();
 
         baloteliId = insertToDictionary("Baloteli");

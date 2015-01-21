@@ -53,36 +53,36 @@ public class ForeignKeyTest2 extends AndroidTestCase {
             }
         });
 
-        db.get("Orders").delete();
-        db.get("Products").delete();
-        db.get("Customers").delete();
+        db.from("Orders").delete();
+        db.from("Products").delete();
+        db.from("Customers").delete();
 
         // two customers
-        db.get("Customers").insertInto("Name", "Address").val("Baloteli", "Italy");
-        db.get("Customers").insertInto("Name", "Address").val("Pirlo", "Italy");
+        db.from("Customers").insertInto("Name", "Address").val("Baloteli", "Italy");
+        db.from("Customers").insertInto("Name", "Address").val("Pirlo", "Italy");
         // two products
-        db.get("Products").insertInto("Name", "Price").val("Computer", 1000);
-        db.get("Products").insertInto("Name", "Price").val("Cellphone", 500);
+        db.from("Products").insertInto("Name", "Price").val("Computer", 1000);
+        db.from("Products").insertInto("Name", "Price").val("Cellphone", 500);
 
-        long baloteliId = db.get("Customers").selectId("Name = ?", "Baloteli");
-        long computerId = db.get("Products").selectId("Name = ?", "Computer");
+        long baloteliId = db.from("Customers").selectId("Name = ?", "Baloteli");
+        long computerId = db.from("Products").selectId("Name = ?", "Computer");
         // orders
-        db.get("Orders").insertInto("Quantity", "CustomerId", "ProductId")
+        db.from("Orders").insertInto("Quantity", "CustomerId", "ProductId")
                 .val(10, baloteliId, computerId);
     }
 
     // test away..
     public void testDeleteCascade(){
-        long baloteliId = db.get("Customers").selectId("Name = ?", "Baloteli");
-        long computerId = db.get("Products").selectId("Name = ?", "Computer");
+        long baloteliId = db.from("Customers").selectId("Name = ?", "Baloteli");
+        long computerId = db.from("Products").selectId("Name = ?", "Computer");
 
-        assertTrue(db.get("Orders").has("CustomerId = ? AND ProductId = ?", baloteliId, computerId));
+        assertTrue(db.from("Orders").has("CustomerId = ? AND ProductId = ?", baloteliId, computerId));
 
         // delete baloteli
-        assertEquals(1, (int) db.get("Customers").delete("Name = ?", "Baloteli").query());
+        assertEquals(1, (int) db.from("Customers").delete("Name = ?", "Baloteli").query());
         // baloteli should be deleted
-        assertFalse(db.get("Customers").has(baloteliId));
+        assertFalse(db.from("Customers").has(baloteliId));
 
-        assertFalse(db.get("Orders").has("CustomerId = ? AND ProductId = ?", baloteliId, computerId));
+        assertFalse(db.from("Orders").has("CustomerId = ? AND ProductId = ?", baloteliId, computerId));
     }
 }

@@ -19,6 +19,8 @@ import android.content.Context;
 
 import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.content.contracts.IResolver;
+import com.bingzer.android.dbv.content.contracts.IStrictResolver;
 
 /**
  * This will be removed

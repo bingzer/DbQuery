@@ -26,7 +26,6 @@ import com.bingzer.android.dbv.IDatabase;
 import com.bingzer.android.dbv.ITable;
 import com.bingzer.android.dbv.IView;
 import com.bingzer.android.dbv.SQLiteBuilder;
-import com.bingzer.android.dbv.internal.queries.TransactionImpl;
 import com.bingzer.android.dbv.queries.IQuery;
 import com.bingzer.android.dbv.utils.Utils;
 
@@ -86,10 +85,10 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public ITable get(String tableName) {
+    public ITable from(String tableName) {
         String alias = null;
         if(tableName.contains(SPACE)){
-            // split and get alias..
+            // split and from alias..
             int index = tableName.indexOf(SPACE);
             alias = tableName.substring(index).trim();
             tableName = tableName.substring(0, index).trim();
@@ -117,10 +116,10 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public IView getView(String viewName) {
+    public IView fromView(String viewName) {
         String alias = null;
         if(viewName.contains(SPACE)){
-            // split and get alias..
+            // split and from alias..
             int index = viewName.indexOf(SPACE);
             alias = viewName.substring(index).trim();
             viewName = viewName.substring(0, index).trim();
@@ -242,7 +241,7 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Convenient method to get SQLiteOpenHelper object.
+     * Convenient method to from SQLiteOpenHelper object.
      * {@link IDatabase} must be opened first by calling
      * {@link IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
      *
@@ -256,7 +255,7 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Convenient method to get SQLiteDatabase object
+     * Convenient method to from SQLiteDatabase object
      * {@link IDatabase} must be opened first by calling
      * {@link IDatabase#open(int, com.bingzer.android.dbv.IDatabase.Builder)}
      *

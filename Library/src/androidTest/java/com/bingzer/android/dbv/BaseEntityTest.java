@@ -33,13 +33,13 @@ public class BaseEntityTest extends AndroidTestCase {
             }
         });
 
-        if(!db.get("Person").has("Name = ?", "Person1"))
-            db.get("Person").insert(new OrmPerson("Person1", 1));
-        if(!db.get("Person").has("Name = ?", "Person2"))
-            db.get("Person").insert(new OrmPerson("Person2", 2));
+        if(!db.from("Person").has("Name = ?", "Person1"))
+            db.from("Person").insert(new OrmPerson("Person1", 1));
+        if(!db.from("Person").has("Name = ?", "Person2"))
+            db.from("Person").insert(new OrmPerson("Person2", 2));
 
-        person1Id = db.get("Person").selectId("Name = ?", "Person1");
-        person2Id = db.get("Person").selectId("Name = ?", "Person2");
+        person1Id = db.from("Person").selectId("Name = ?", "Person1");
+        person2Id = db.from("Person").selectId("Name = ?", "Person2");
     }
 
     public void test_getsetId(){
@@ -107,7 +107,7 @@ public class BaseEntityTest extends AndroidTestCase {
 
     public void test_load_cursor(){
         OrmPerson person = new OrmPerson();
-        Cursor cursor = db.get("Person").select("Name = ?", "Person2").query();
+        Cursor cursor = db.from("Person").select("Name = ?", "Person2").query();
         if(cursor.moveToNext()){
             person.load(cursor);
         }

@@ -3,8 +3,7 @@ package com.bingzer.android.dbv.content;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
-import com.bingzer.android.dbv.content.ContentQuery;
-import com.bingzer.android.dbv.content.IResolver;
+import com.bingzer.android.dbv.content.contracts.IResolver;
 
 /**
  * Basic resolve setter/getter test
@@ -26,31 +25,31 @@ public class ResolverTest extends AndroidTestCase {
     }
 
     public void testGetConfig(){
-        assertNotNull(resolver.getConfig());
+        assertNotNull(resolver.getContentConfig());
     }
 
     public void testGetDefaultProjections(){
-        assertNotNull(resolver.getConfig().getDefaultProjections());
-        assertTrue(resolver.getConfig().getDefaultProjections().length > 0);
-        assertEquals(resolver.getConfig().getDefaultProjections()[0], resolver.getConfig().getIdNamingConvention());
+        assertNotNull(resolver.getContentConfig().getDefaultProjections());
+        assertTrue(resolver.getContentConfig().getDefaultProjections().length > 0);
+        assertEquals(resolver.getContentConfig().getDefaultProjections()[0], resolver.getContentConfig().getIdNamingConvention());
     }
 
     public void testGetAuthority(){
         // defaults
-        assertNull(resolver.getConfig().getDefaultAuthority());
+        assertNull(resolver.getContentConfig().getDefaultAuthority());
 
-        resolver.getConfig().setDefaultAuthority("MyAuthority");
-        assertNotNull(resolver.getConfig().getDefaultAuthority());
-        assertEquals("MyAuthority", resolver.getConfig().getDefaultAuthority());
+        resolver.getContentConfig().setDefaultAuthority("MyAuthority");
+        assertNotNull(resolver.getContentConfig().getDefaultAuthority());
+        assertEquals("MyAuthority", resolver.getContentConfig().getDefaultAuthority());
     }
 
     /////////////////////// config /////////////////////////////////
 
     public void test_ConfigGetIdNamingConvention(){
         // default
-        assertEquals("_id", resolver.getConfig().getIdNamingConvention());
+        assertEquals("_id", resolver.getContentConfig().getIdNamingConvention());
 
-        resolver.getConfig().setIdNamingConvention("XXID");
-        assertEquals("XXID", resolver.getConfig().getIdNamingConvention());
+        resolver.getContentConfig().setIdNamingConvention("XXID");
+        assertEquals("XXID", resolver.getContentConfig().getIdNamingConvention());
     }
 }
