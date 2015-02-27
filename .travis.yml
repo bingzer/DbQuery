@@ -26,14 +26,13 @@ android:
     # - openjdk7
     - oraclejdk7
 
-before_install:
-  - chmod +x gradlew
-  - chmod u+x wait-for-emulator
 
 # Emulator Management: Create, Start and Wait
 before_script:
+  - chmod +x ./gradlew
   - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window &
+  - chmod u+x ./wait-for-emulator
   - ./wait-for-emulator
   - adb shell input keyevent 82 &
 
