@@ -27,8 +27,12 @@ public class TestUsage {
 
             }
         });
+        db.begin(new IDatabase.Batch() {
+            @Override
+            public void exec(IDatabase database) {
 
-
+            }
+        });
     }
 
     public class EntityTest implements IEntity {

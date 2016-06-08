@@ -72,7 +72,7 @@ public final class DbQuery {
 
     private static Collection<IDatabase> databaseList = new ArrayList<IDatabase>();
 
-    public static final String Version = "2.0";
+    public static final String Version = "2.2";
 
     /**
      * Returns the {@link IDatabase} object with the specified name.
