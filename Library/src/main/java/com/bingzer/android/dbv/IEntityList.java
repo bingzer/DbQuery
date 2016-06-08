@@ -37,8 +37,8 @@ package com.bingzer.android.dbv;
  * IDatabase db = ...
  * PersonList personList = new PersonList();
  *
- * // Get all customers get US
- * db.get("Customers").select("Country = ?", "US").query(personList);
+ * // Get all customers from US
+ * db.from("Customers").select("Country = ?", "US").query(personList);
  *
  * </code></pre>
  * </p>

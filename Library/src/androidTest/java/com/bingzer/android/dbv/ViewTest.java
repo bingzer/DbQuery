@@ -64,47 +64,47 @@ public class ViewTest extends AndroidTestCase {
         });
 
         if(!populated){
-            db.get("Orders").delete();
-            db.get("Products").delete();
-            db.get("Customers").delete();
+            db.from("Orders").delete();
+            db.from("Products").delete();
+            db.from("Customers").delete();
 
             // initial value
-            InsertInto insert = db.get("Customers").insertInto("Name", "Address");
+            InsertInto insert = db.from("Customers").insertInto("Name", "Address");
             insert.val("Baloteli", "Italy");
             insert.val("Pirlo", "Italy");
             insert.val("Ronaldo", "Portugal");
             insert.val("Messi", "Argentina");
 
-            insert = db.get("Products").insertInto("Name", "Price");
+            insert = db.from("Products").insertInto("Name", "Price");
             insert.val("Computer", 600);
             insert.val("Smartphone", 450);
             insert.val("Car", 20000);
             insert.val("House", 500000);
             insert.val("Monitor", 120);
 
-            insert = db.get("Orders").insertInto("Quantity", "ProductId", "CustomerId");
-            insert.val(2, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Baloteli"));
-            insert.val(1, db.get("Products").selectId("Name = ?", "House"), db.get("Customers").selectId("Name = ?", "Ronaldo"));
-            insert.val(5, db.get("Products").selectId("Name = ?", "Monitor"), db.get("Customers").selectId("Name = ?", "Messi"));
-            insert.val(1, db.get("Products").selectId("Name = ?", "Computer"), db.get("Customers").selectId("Name = ?", "Messi"));
+            insert = db.from("Orders").insertInto("Quantity", "ProductId", "CustomerId");
+            insert.val(2, db.from("Products").selectId("Name = ?", "Computer"), db.from("Customers").selectId("Name = ?", "Baloteli"));
+            insert.val(1, db.from("Products").selectId("Name = ?", "House"), db.from("Customers").selectId("Name = ?", "Ronaldo"));
+            insert.val(5, db.from("Products").selectId("Name = ?", "Monitor"), db.from("Customers").selectId("Name = ?", "Messi"));
+            insert.val(1, db.from("Products").selectId("Name = ?", "Computer"), db.from("Customers").selectId("Name = ?", "Messi"));
             populated = true;
         }
     }
 
     public void testTableNull(){
-        assertNotNull(db.getView("CustomerView"));
-        assertNotNull(db.getView("OrderView"));
-        assertNull(db.getView("ProductView"));
+        assertNotNull(db.fromView("CustomerView"));
+        assertNotNull(db.fromView("OrderView"));
+        assertNull(db.fromView("ProductView"));
     }
 
     public void testTableAliases(){
-        IView view = db.getView("CustomerView C");
+        IView view = db.fromView("CustomerView C");
         assertNotNull(view);
         assertEquals(view.getName(), "CustomerView");
         assertEquals(view.getAlias(), "C");
         assertEquals(view.toString(), "CustomerView C");
 
-        view = db.getView("OrderView O");
+        view = db.fromView("OrderView O");
         assertNotNull(view);
         assertEquals(view.getName(), "OrderView");
         assertEquals(view.getAlias(), "O");
@@ -114,14 +114,14 @@ public class ViewTest extends AndroidTestCase {
     /////////////////////////////////////////////////////////////////////////////////////////////
 
     public void testSelect_Id(){
-        Cursor c = db.getView("CustomerView").select("Name = ?", "Baloteli").columns("Id").query();
+        Cursor c = db.fromView("CustomerView").select("Name = ?", "Baloteli").columns("Id").query();
         assertEquals(c.getCount(), 1);
         c.moveToFirst();
         int id = c.getInt(0);
         c.close();
 
         ////
-        c = db.getView("CustomerView").select(id).columns("Id", "Name").query();
+        c = db.fromView("CustomerView").select(id).columns("Id", "Name").query();
         assertEquals(c.getCount(), 1);
         if(c.moveToNext()){
             assertEquals(c.getInt(0), id);
@@ -131,7 +131,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Top_Condition(){
-        Cursor c = db.getView("OrderView").select(3, "CustomerName not null").query();
+        Cursor c = db.fromView("OrderView").select(3, "CustomerName not null").query();
         assertTrue(c.getCount() == 3);
         if(c.moveToNext()) assertEquals(c.getString(c.getColumnIndex("CustomerName")), "Baloteli");
         if(c.moveToNext()) assertEquals(c.getString(c.getColumnIndex("CustomerName")), "Ronaldo");
@@ -140,7 +140,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Top_WhereClause(){
-        Cursor c = db.getView("OrderView").select(1, "CustomerName = ?", "Messi").query();
+        Cursor c = db.fromView("OrderView").select(1, "CustomerName = ?", "Messi").query();
         assertTrue(c.getCount() == 1);
         while(c.moveToNext()){
             assertEquals(c.getString(c.getColumnIndex("CustomerName")), "Messi");
@@ -149,11 +149,11 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Ids(){
-        long messiId = db.getView("CustomerView").selectId("Name = ?", "Messi");
-        long pirloId = db.getView("CustomerView").selectId("Name = ?", "Pirlo");
+        long messiId = db.fromView("CustomerView").selectId("Name = ?", "Messi");
+        long pirloId = db.fromView("CustomerView").selectId("Name = ?", "Pirlo");
         long[] ids = new long[]{messiId, pirloId};
 
-        Cursor c = db.getView("CustomerView").select(ids).orderBy("Name").query();
+        Cursor c = db.fromView("CustomerView").select(ids).orderBy("Name").query();
         assertEquals(c.getCount(), 2);
 
         assertTrue(c.moveToNext());
@@ -168,7 +168,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Condition(){
-        Cursor c = db.getView("OrderView").select("ProductName not null").query();
+        Cursor c = db.fromView("OrderView").select("ProductName not null").query();
         assertEquals(c.getCount(), 4);
 
         assertTrue(c.moveToNext());
@@ -184,7 +184,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_WhereClause(){
-        Cursor c = db.getView("OrderView").select("ProductName <> ?", "Computer").query();
+        Cursor c = db.fromView("OrderView").select("ProductName <> ?", "Computer").query();
         assertEquals(c.getCount(), 2);
 
         assertTrue(c.moveToNext());
@@ -196,7 +196,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Distinct(){
-        Cursor c = db.getView("OrderView").selectDistinct().columns("ProductName").query();
+        Cursor c = db.fromView("OrderView").selectDistinct().columns("ProductName").query();
         assertEquals(c.getCount(), 3);
 
         assertTrue(c.moveToNext());
@@ -210,7 +210,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Distinct_Top(){
-        Cursor c = db.getView("OrderView").selectDistinct(2).columns("ProductName").query();
+        Cursor c = db.fromView("OrderView").selectDistinct(2).columns("ProductName").query();
         assertEquals(c.getCount(), 2);
 
         assertTrue(c.moveToNext());
@@ -222,7 +222,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Distinct_Top_Condition(){
-        Cursor c = db.getView("OrderView")
+        Cursor c = db.fromView("OrderView")
                 .selectDistinct(1, "ProductName <> 'Computer'")
                 .columns("ProductName")
                 .query();
@@ -235,7 +235,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Distinct_Top_WhereClause(){
-        Cursor c = db.getView("OrderView")
+        Cursor c = db.fromView("OrderView")
                 .selectDistinct(1, "ProductName <> ?", "Computer")
                 .columns("ProductName")
                 .orderBy("ProductName DESC")
@@ -250,7 +250,7 @@ public class ViewTest extends AndroidTestCase {
 
 
     public void testSelect_Distinct_Condition(){
-        Cursor c = db.getView("OrderView")
+        Cursor c = db.fromView("OrderView")
                 .selectDistinct("ProductName <> 'House'")
                 .columns("ProductName")
                 .orderBy("ProductName DESC")
@@ -266,7 +266,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Distinct_WhereClause(){
-        Cursor c = db.getView("OrderView")
+        Cursor c = db.fromView("OrderView")
                 .selectDistinct("ProductName <> ?", "Monitor")
                 .columns("ProductName")
                 .query();
@@ -282,7 +282,7 @@ public class ViewTest extends AndroidTestCase {
 
 
     public void testSelect_Simple(){
-        Cursor cursor = db.getView("CustomerView").select("Address = ?", "Italy").orderBy("Id").query();
+        Cursor cursor = db.fromView("CustomerView").select("Address = ?", "Italy").orderBy("Id").query();
         assertTrue(cursor.getCount() == 2);
         if(cursor.moveToNext()){
             assertTrue(cursor.getString(1).equals("Baloteli"));
@@ -296,7 +296,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Simple_OrderBy(){
-        Cursor cursor = db.getView("CustomerView").select("Address = ?", "Italy").orderBy("Name DESC").query();
+        Cursor cursor = db.fromView("CustomerView").select("Address = ?", "Italy").orderBy("Name DESC").query();
         assertTrue(cursor.getCount() == 2);
         if(cursor.moveToNext()){
             assertTrue(cursor.getString(1).equals("Pirlo"));
@@ -310,7 +310,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelect_Complex(){
-        Cursor cursor = db.getView("OrderView").select("CustomerName IN (?,?)", "Messi", "Ronaldo").orderBy("CustomerName").query();
+        Cursor cursor = db.fromView("OrderView").select("CustomerName IN (?,?)", "Messi", "Ronaldo").orderBy("CustomerName").query();
 
         assertTrue(cursor.getCount() == 3);
         if(cursor.moveToNext()){
@@ -329,7 +329,7 @@ public class ViewTest extends AndroidTestCase {
     }
 
     public void testSelectId_Condition(){
-        Cursor cursor = db.getView("OrderView").select("CustomerName = ? AND ProductName = ?", "Ronaldo", "House").query();
+        Cursor cursor = db.fromView("OrderView").select("CustomerName = ? AND ProductName = ?", "Ronaldo", "House").query();
         assertTrue(cursor.getCount() > 0);
         assertTrue(cursor.moveToNext());
         int id = cursor.getInt(cursor.getColumnIndex("O.Id"));
@@ -338,11 +338,11 @@ public class ViewTest extends AndroidTestCase {
         assertTrue(id > 0);
 
         // select id
-        assertEquals(id, db.getView("OrderView").selectId("CustomerName = 'Ronaldo' AND ProductName = 'House'"));
+        assertEquals(id, db.fromView("OrderView").selectId("CustomerName = 'Ronaldo' AND ProductName = 'House'"));
     }
 
     public void testSelectId_WhereClause(){
-        Cursor cursor = db.getView("OrderView").select("CustomerName = ? AND ProductName = ?", "Ronaldo", "House").query();
+        Cursor cursor = db.fromView("OrderView").select("CustomerName = ? AND ProductName = ?", "Ronaldo", "House").query();
         assertTrue(cursor.getCount() > 0);
         assertTrue(cursor.moveToNext());
         int id = cursor.getInt(cursor.getColumnIndex("O.Id"));
@@ -351,59 +351,59 @@ public class ViewTest extends AndroidTestCase {
         assertTrue(id > 0);
 
         // select id
-        assertEquals(id, db.getView("OrderView").selectId("CustomerName = ? AND ProductName = ?", "Ronaldo", "House"));
+        assertEquals(id, db.fromView("OrderView").selectId("CustomerName = ? AND ProductName = ?", "Ronaldo", "House"));
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     public void testCount(){
-        assertEquals(db.getView("OrderView").count(), 4);
-        assertEquals(db.getView("CustomerView").count(), 4);
+        assertEquals(db.fromView("OrderView").count(), 4);
+        assertEquals(db.fromView("CustomerView").count(), 4);
     }
 
     public void testCount_Condition(){
-        assertEquals(db.getView("OrderView").count("CustomerName = 'Messi'"), 2);
-        assertEquals(db.getView("CustomerView").count("Name IN ('Messi','Baloteli','Pirlo')"), 3);
+        assertEquals(db.fromView("OrderView").count("CustomerName = 'Messi'"), 2);
+        assertEquals(db.fromView("CustomerView").count("Name IN ('Messi','Baloteli','Pirlo')"), 3);
     }
 
     public void testCount_WhereClause(){
-        assertEquals(db.getView("OrderView").count("CustomerName = ? OR CustomerName = ?", "Messi", "Baloteli"), 3);
-        assertEquals(db.getView("CustomerView").count("Name = ?", "Ronaldo"), 1);
+        assertEquals(db.fromView("OrderView").count("CustomerName = ? OR CustomerName = ?", "Messi", "Baloteli"), 3);
+        assertEquals(db.fromView("CustomerView").count("Name = ?", "Ronaldo"), 1);
     }
 
     public void testHas_Id(){
-        long id = db.getView("OrderView").selectId("CustomerName = ?", "Ronaldo");
+        long id = db.fromView("OrderView").selectId("CustomerName = ?", "Ronaldo");
         assertTrue(id > 0);
-        assertTrue(db.getView("OrderView").has(id));
+        assertTrue(db.fromView("OrderView").has(id));
     }
 
     public void testHas_Condition(){
-        assertTrue(db.getView("OrderView").has("CustomerName is not null And ProductName not null"));
-        assertTrue(db.getView("CustomerView").has("Name = 'Ronaldo'"));
+        assertTrue(db.fromView("OrderView").has("CustomerName is not null And ProductName not null"));
+        assertTrue(db.fromView("CustomerView").has("Name = 'Ronaldo'"));
     }
 
     public void testHas_WhereClause(){
-        assertTrue(db.getView("OrderView").has("CustomerName = ?", "Baloteli"));
-        assertTrue(db.getView("CustomerView").has("Name is not null OR Name = ?", "Ronaldo"));
+        assertTrue(db.fromView("OrderView").has("CustomerName = ?", "Baloteli"));
+        assertTrue(db.fromView("CustomerView").has("Name is not null OR Name = ?", "Ronaldo"));
     }
 
     public void testDrop(){
-        if(db.getView("ViewToDrop") != null){
-            assertTrue(db.getView("ViewToDrop").drop().query());
-            assertNull(db.getView("ViewToDrop"));
+        if(db.fromView("ViewToDrop") != null){
+            assertTrue(db.fromView("ViewToDrop").drop().query());
+            assertNull(db.fromView("ViewToDrop"));
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // raw
     public void testRaw(){
-        Cursor c = db.getView("CustomerView").raw("SELECT * FROM Customers").query();
+        Cursor c = db.fromView("CustomerView").raw("SELECT * FROM Customers").query();
         assertTrue(c.getCount() > 0);
         c.close();
     }
 
     public void testRaw_Args(){
-        Cursor c = db.getView("CustomerView").raw("SELECT * FROM Customers WHERE Name = ?", "Messi").query();
+        Cursor c = db.fromView("CustomerView").raw("SELECT * FROM Customers WHERE Name = ?", "Messi").query();
         assertTrue(c.getCount() > 0);
         c.close();
     }
@@ -412,57 +412,57 @@ public class ViewTest extends AndroidTestCase {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // functiosn
     public void testAvg(){
-        Average avg = db.getView("OrderView").avg("ProductPrice");
+        Average avg = db.fromView("OrderView").avg("ProductPrice");
         assertEquals(125330, (Double) avg.value(), 0.01);
 
-        avg = db.get("OrderView").avg("ProductPrice", "ProductName = 'Computer'");
+        avg = db.from("OrderView").avg("ProductPrice", "ProductName = 'Computer'");
         assertEquals(600, (Double) avg.value(), 0.1);
 
-        avg = db.get("OrderView").avg("ProductPrice", "ProductName = ?", "Computer");
+        avg = db.from("OrderView").avg("ProductPrice", "ProductName = ?", "Computer");
         assertEquals(600, (Double)avg.value(), 0.1);
     }
 
     public void testSum(){
-        Sum sum = db.getView("OrderView").sum("ProductPrice");
+        Sum sum = db.fromView("OrderView").sum("ProductPrice");
         assertEquals(501320.0, (Double) sum.value(), 0.01);
 
-        sum = db.get("OrderView").sum("ProductPrice", "ProductName IN ('Car', 'Computer')");
+        sum = db.from("OrderView").sum("ProductPrice", "ProductName IN ('Car', 'Computer')");
         assertEquals(1200.0, (Double) sum.value(), 0.1);
 
-        sum = db.get("OrderView").sum("ProductPrice", "ProductName IN (?,?)", "Car", "Computer");
+        sum = db.from("OrderView").sum("ProductPrice", "ProductName IN (?,?)", "Car", "Computer");
         assertEquals(1200.0, (Double) sum.value(), 0.1);
     }
 
     public void testTotal(){
-        Total total = db.getView("OrderView").total("ProductPrice");
+        Total total = db.fromView("OrderView").total("ProductPrice");
         assertEquals(501320.0, (Double) total.value(), 0.1);
 
-        total = db.get("OrderView").total("ProductPrice", "ProductName IN ('Car', 'Computer')");
+        total = db.from("OrderView").total("ProductPrice", "ProductName IN ('Car', 'Computer')");
         assertEquals(1200.0, (Double) total.value(), 0.1);
 
-        total = db.get("OrderView").total("ProductPrice", "ProductName IN (?,?)", "Car", "Computer");
+        total = db.from("OrderView").total("ProductPrice", "ProductName IN (?,?)", "Car", "Computer");
         assertEquals(1200.0, (Double) total.value(), 0.1);
     }
 
     public void testMax(){
-        Max max = db.getView("OrderView").max("ProductPrice");
+        Max max = db.fromView("OrderView").max("ProductPrice");
         assertEquals(500000.0, (Double) max.value(), 0.1);
 
-        max = db.getView("OrderView").max("ProductPrice", "ProductName Like 'M%' Or ProductName Like 'C%'");
+        max = db.fromView("OrderView").max("ProductPrice", "ProductName Like 'M%' Or ProductName Like 'C%'");
         assertEquals(600.0, (Double) max.value(), 0.1);
 
-        max = db.getView("OrderView").max("ProductPrice", "ProductName Like ? Or ProductName Like ?", "M%", "C%");
+        max = db.fromView("OrderView").max("ProductPrice", "ProductName Like ? Or ProductName Like ?", "M%", "C%");
         assertEquals(600.0, (Double) max.value(), 0.1);
     }
 
     public void testMin(){
-        Min min = db.getView("OrderView").min("ProductPrice");
+        Min min = db.fromView("OrderView").min("ProductPrice");
         assertEquals(120.0,(Double) min.value(), 0.1);
 
-        min = db.getView("OrderView").min("ProductPrice", "ProductPrice > 450");
+        min = db.fromView("OrderView").min("ProductPrice", "ProductPrice > 450");
         assertEquals(600.0, (Double) min.value(), 0.1);
 
-        min = db.getView("OrderView").min("ProductPrice", "ProductPrice > ?", 450);
+        min = db.fromView("OrderView").min("ProductPrice", "ProductPrice > ?", 450);
         assertEquals(600.0, (Double) min.value(), 0.1);
     }
 }

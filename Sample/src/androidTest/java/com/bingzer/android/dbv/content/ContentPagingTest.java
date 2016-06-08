@@ -3,12 +3,15 @@ package com.bingzer.android.dbv.content;
 import android.database.Cursor;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.Suppress;
 
+import com.bingzer.android.dbv.content.contracts.IResolver;
 import com.bingzer.android.dbv.queries.Paging;
 
 /**
  * Created by Ricky on 8/22/13.
  */
+@Suppress
 public class ContentPagingTest extends AndroidTestCase {
 
     IResolver resolver;
@@ -17,8 +20,8 @@ public class ContentPagingTest extends AndroidTestCase {
     @Override
     public void setUp(){
         resolver = ContentQuery.resolve(UserDictionary.Words.CONTENT_URI, getContext());
-        resolver.getConfig().setDefaultProjections("_id", "word");
-        resolver.getConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
+        resolver.getContentConfig().setDefaultProjections("_id", "word");
+        resolver.getContentConfig().setDefaultAuthority(UserDictionary.AUTHORITY);
         resolver.delete("word IN (?,?,?,?,?)", "Baloteli", "Pirlo", "Kaka", "Messi", "Ronaldo").query();
 
         baloteliId = insertToDictionary("Baloteli");

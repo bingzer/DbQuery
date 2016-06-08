@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.1.0')
+    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.2.0')
 }
 ```
 
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.1.0-SNAPSHOT', changing: true)
+    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.2.0-SNAPSHOT', changing: true)
 }
 ```
 

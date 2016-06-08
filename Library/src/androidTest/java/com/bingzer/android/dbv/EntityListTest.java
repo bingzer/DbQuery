@@ -31,9 +31,9 @@ public class EntityListTest extends AndroidTestCase{
             }
         });
 
-        db.get("Person").delete();
+        db.from("Person").delete();
 
-        InsertInto insert = db.get("Person").insertInto("Name", "Age", "Address");
+        InsertInto insert = db.from("Person").insertInto("Name", "Age", "Address");
         insert.val("John", 23, "Washington DC".getBytes());
         insert.val("Ronaldo", 40, "Madrid".getBytes());
         insert.val("Messi", 25, "Barcelona".getBytes());
@@ -45,7 +45,7 @@ public class EntityListTest extends AndroidTestCase{
 
     public void testSelectEntityList(){
         PersonList personList = new PersonList();
-        db.get("Person").select().query(personList);
+        db.from("Person").select().query(personList);
 
         assertTrue(personList.size() > 0);
         assertTrue(personList.get(0).getName().equals("John"));
@@ -58,18 +58,18 @@ public class EntityListTest extends AndroidTestCase{
 
     public void testBulkUpdate(){
         PersonList personList = new PersonList();
-        db.get("Person").select().query(personList);
+        db.from("Person").select().query(personList);
 
         assertTrue(personList.size() > 0);
         personList.get(0).setAge(1000); // john
         personList.get(1).setAddressBytes("Modified".getBytes());
         personList.get(2).setName("This is Number 3");
 
-        assertTrue(db.get("Person").update(personList).query() == 6); // 6 updates..
+        assertTrue(db.from("Person").update(personList).query() == 6); // 6 updates..
 
         // re create object
         personList = new PersonList();
-        db.get("Person").select().query(personList);
+        db.from("Person").select().query(personList);
 
         // test content
         assertTrue(personList.get(0).getAge() == 1000);
@@ -79,7 +79,7 @@ public class EntityListTest extends AndroidTestCase{
 
     public void testBulkUpdate_Error_ShouldRollback(){
         PersonList personList = new PersonList();
-        db.get("Person").select().query(personList);
+        db.from("Person").select().query(personList);
 
         assertTrue(personList.size() > 0);
         personList.get(0).setAge(1000); // john
@@ -88,11 +88,11 @@ public class EntityListTest extends AndroidTestCase{
         // make some id invalid
         personList.get(1).setId(-1);
 
-        assertEquals(-1, (int) db.get("Person").update(personList).query()); // 6 updates..
+        assertEquals(-1, (int) db.from("Person").update(personList).query()); // 6 updates..
 
         // re create object
         personList = new PersonList();
-        db.get("Person").select().query(personList);
+        db.from("Person").select().query(personList);
 
         // test content
         // should be original values
@@ -106,20 +106,20 @@ public class EntityListTest extends AndroidTestCase{
         personList.add(new Person("Person7", 77, "Whatever".getBytes()));
         personList.add(new Person("Person8", 88, "Whatever too".getBytes()));
 
-        assertTrue(db.get("Person").insert(personList).query() > 0);
+        assertTrue(db.from("Person").insert(personList).query() > 0);
         personList = new PersonList();
 
-        db.get("Person").select().query(personList);
+        db.from("Person").select().query(personList);
         assertTrue(personList.get(personList.size() - 2).getName().equals("Person7"));
         assertTrue(personList.get(personList.size() - 1).getName().equals("Person8"));
     }
 
     public void testBulkDelete(){
         PersonList personList = new PersonList();
-        db.get("Person").select().query(personList);
+        db.from("Person").select().query(personList);
 
         // delete all
-        assertTrue(db.get("Person").delete(personList).query() == personList.size());
-        assertTrue(db.get("Person").count() == 0);
+        assertTrue(db.from("Person").delete(personList).query() == personList.size());
+        assertTrue(db.from("Person").count() == 0);
     }
 }

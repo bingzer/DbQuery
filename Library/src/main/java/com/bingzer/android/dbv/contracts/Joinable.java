@@ -17,6 +17,7 @@
 package com.bingzer.android.dbv.contracts;
 
 import com.bingzer.android.dbv.queries.InnerJoin;
+import com.bingzer.android.dbv.queries.LeftJoin;
 import com.bingzer.android.dbv.queries.OuterJoin;
 
 /**
@@ -45,6 +46,26 @@ public interface Joinable {
          * @return {@link com.bingzer.android.dbv.queries.InnerJoin}
          */
         InnerJoin join(String tableName, String column1, String column2);
+    }
+
+    public static interface Left extends Joinable{
+
+        /**
+         * Left join a table
+         * @param tableName table name to join
+         * @param onClause the on clause
+         * @return {@link com.bingzer.android.dbv.queries.LeftJoin}
+         */
+        LeftJoin leftJoin(String tableName, String onClause);
+
+        /**
+         * Left join a table
+         * @param tableName table name to join
+         * @param column1 first column
+         * @param column2 second column
+         * @return {@link com.bingzer.android.dbv.queries.LeftJoin}
+         */
+        LeftJoin leftJoin(String tableName, String column1, String column2);
     }
 
     /**

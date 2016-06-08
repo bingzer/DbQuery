@@ -27,12 +27,12 @@ import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
  */
 public final class EntityUtils {
     /**
-     * Maps an entity get a cursor. Cursor will NOT be automatically closed.
+     * Maps an entity from a cursor. Cursor will NOT be automatically closed.
      * <br/>IMPORTANT: Close it after calling this method
      * <br/>IMPORTANT: Cursor must be moved to the first pointer first!
      * <p><pre><code>
      *   Person person = new Person();
-     *   Cursor cursor = db.get(\"Person\").select("Name = ?", "John").query();
+     *   Cursor cursor = db.from(\"Person\").select("Name = ?", "John").query();
      *   if(cursor.moveToNext()){
      *      person.load(cursor);
      *   }
@@ -58,7 +58,7 @@ public final class EntityUtils {
     }
 
     /**
-     * Maps an entity list get cursor. Cursor will NOT be automatically closed.
+     * Maps an entity list from cursor. Cursor will NOT be automatically closed.
      * It's important for you to close it after calling this method.
      * @param identifier the table
      * @param entityList the list to map

@@ -41,7 +41,7 @@ import java.util.List;
  * {@link com.bingzer.android.dbv.ITable} object, once created, is automatically
  * cached inside the {@link com.bingzer.android.dbv.IDatabase}.
  * Therefore there's no need to reference it outside. Most of the time
- * <code>db.get("tableName").<someMethod>()</code> is more preferable to use.
+ * <code>db.from("tableName").<someMethod>()</code> is more preferable to use.
  * </p>
  *
  * <p>
@@ -91,7 +91,7 @@ public interface ITable extends
         PrimaryKeyIdentifier,
         Selectable, SelectIdentifiable, Distinguishable,
         Insertable, Deletable, Updatable,
-        Joinable.Inner, Joinable.Outer,
+        Joinable.Inner, Joinable.Outer, Joinable.Left,
         RawQueryable, Countable, Tangible,
         Droppable, Function,
         Alterable, Unionable {
@@ -181,13 +181,13 @@ public interface ITable extends
         Model ifNotExists();
 
         /**
-         * Foreign key. Create a foreign key references get a column get this current table
+         * Foreign key. Create a foreign key references from a column from this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
          * <code>targetColumn</code> must be defined as <code>[TableName].[ColumnName]</code>
          *
-         * @param columnName the referencing column name (get this table)
-         * @param targetColumn the referenced column name (get the referenced table)
+         * @param columnName the referencing column name (from this table)
+         * @param targetColumn the referenced column name (from the referenced table)
          *                     {@code targetColumn} must be defined as
          *                     <code>[TableName].[ColumnName]</code>
          *                     (i.e: Customers.Id, Products.Number)
@@ -195,13 +195,13 @@ public interface ITable extends
         Model foreignKey(String columnName, String targetColumn);
 
         /**
-         * Foreign key. Create a foreign key references get a column get this current table
+         * Foreign key. Create a foreign key references from a column from this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
          * <code>targetColumn</code> must be defined as <code>[TableName].[ColumnName]</code>
          *
-         * @param columnName the referencing column name (get this table)
-         * @param targetColumn the referenced column name (get the referenced table)
+         * @param columnName the referencing column name (from this table)
+         * @param targetColumn the referenced column name (from the referenced table)
          *                     {@code targetColumn} must be defined as
          *                     <code>[TableName].[ColumnName]</code>
          *                     (i.e: Customers.Id, Products.Number)
@@ -213,13 +213,13 @@ public interface ITable extends
         Model foreignKey(String columnName, String targetColumn, String actionClause);
 
         /**
-         * Foreign key. Create a foreign key references get a column get this current table
+         * Foreign key. Create a foreign key references from a column from this current table
          * to another column on another table. Note that when you call this method,
          * the referenced table and column needs to exists.
          *
-         * @param columnName the referencing column name (get this table)
+         * @param columnName the referencing column name (from this table)
          * @param targetTable the referenced table (i.e: Customers, Products)
-         * @param targetColumn the referenced column name (get the referenced table)
+         * @param targetColumn the referenced column name (from the referenced table)
          *                     (i.e: Id, Number)
          * @param actionClause additional clause any of these
          *                     "NO ACTION", "RESTRICT", "SET NULL", "SET DEFAULT" or "CASCADE"

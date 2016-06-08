@@ -22,19 +22,19 @@ public interface ColumnSelectable {
 
     /**
      * Single query a column value.
-     * This is a convenient method to get a value of a single column
+     * This is a convenient method to from a value of a single column
      * specified by its column index.
      *
      * <p>
-     * Sample code to get the customer name get a customer table
+     * Sample code to from the customer name from a customer table
      * <pre><code>
-     * String customerName = db.get("customers").select().columns("Name", "Age").query(0);
+     * String customerName = db.from("customers").select().columns("Name", "Age").query(0);
      * </code>
      * </pre>
      *
-     * Sample code to get the customer's age get a customer table
+     * Sample code to from the customer's age from a customer table
      * <pre><code>
-     * int customerAge = db.get("customers").select().columns("Name", "Age").query(1);
+     * int customerAge = db.from("customers").select().columns("Name", "Age").query(1);
      * </code>
      * </pre>
      * </p>
@@ -46,18 +46,18 @@ public interface ColumnSelectable {
 
     /**
      * Single query a column value.
-     * This is a convenient method to get a value of a single column
+     * This is a convenient method to from a value of a single column
      * specified by its column name.
      *
      * <p>
-     * Sample code to get the customer name get a customer table
+     * Sample code to from the customer name from a customer table
      * <pre><code>
-     * String customerName = db.get("customers").select().columns("Name", "Age").query("Name");
+     * String customerName = db.from("customers").select().columns("Name", "Age").query("Name");
      * </code>
      * </pre>
-     * Sample code to get the customer's age get a customer table
+     * Sample code to from the customer's age from a customer table
      * <pre><code>
-     * int customerAge = db.get("customers").select().columns("Name", "Age").query("Age");
+     * int customerAge = db.from("customers").select().columns("Name", "Age").query("Age");
      * </code>
      * </pre>
      * </p>

@@ -29,7 +29,7 @@ public interface Countable {
     int count(String condition);
 
     /**
-     * Returns the count of row get the whereClause
+     * Returns the count of row from the whereClause
      * (condition)
      * @param whereClause whereClause
      * @param whereArgs arguments

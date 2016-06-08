@@ -19,7 +19,7 @@ public class AlbumDetail extends ListActivity {
 
         IDatabase db = DbQuery.getDatabase("Chinook");
 
-        Cursor cursor = db.get("Album").select("ArtistId = ?", artistId).columns("*", "rowid as _id").query();
+        Cursor cursor = db.from("Album").select("ArtistId = ?", artistId).columns("*", "rowid as _id").query();
         SimpleCursorAdapter adapter =
                 new SimpleCursorAdapter(this,
                         android.R.layout.simple_list_item_1,

@@ -18,9 +18,10 @@ package com.bingzer.android.dbv.content;
 import android.content.Context;
 import android.net.Uri;
 
-import com.bingzer.android.dbv.content.queries.Config;
-import com.bingzer.android.dbv.content.resolvers.Resolver;
-import com.bingzer.android.dbv.content.resolvers.StrictResolver;
+import com.bingzer.android.dbv.content.contracts.IResolver;
+import com.bingzer.android.dbv.content.contracts.IStrictResolver;
+import com.bingzer.android.dbv.internal.Resolver;
+import com.bingzer.android.dbv.internal.StrictResolver;
 
 /**
  * ContentQuery allows DbQuery style while
@@ -29,16 +30,16 @@ import com.bingzer.android.dbv.content.resolvers.StrictResolver;
  * For complete documentation please refer to:
  * <a href="https://github.com/bingzer/DbQuery/wiki/ContentQuery">https://github.com/bingzer/DbQuery/wiki/ContentQuery</a>
  *
- * @see IResolver
- * @see IStrictResolver
+ * @see com.bingzer.android.dbv.content.contracts.IResolver
+ * @see com.bingzer.android.dbv.content.contracts.IStrictResolver
  */
 public final class ContentQuery {
 
     /**
-     * Creates an {@link IResolver} for the specified URI
+     * Creates an {@link com.bingzer.android.dbv.content.contracts.IResolver} for the specified URI
      * @param uri the uri string
      * @param context GOD-object {@link Context}
-     * @return {@link IResolver}
+     * @return {@link com.bingzer.android.dbv.content.contracts.IResolver}
      */
     public static IResolver resolve(String uri, Context context){
         return resolve(Uri.parse(uri), context);
@@ -51,14 +52,14 @@ public final class ContentQuery {
      * @return {@link IResolver}
      */
     public static IResolver resolve(Uri uri, Context context){
-        return new Resolver(new Config(), uri, context);
+        return new Resolver(uri, context);
     }
 
     /**
-     * Creates an {@link IStrictResolver} for the specified URI
+     * Creates an {@link com.bingzer.android.dbv.content.contracts.IStrictResolver} for the specified URI
      * @param uri the uri string
      * @param context GOD-object {@link Context}
-     * @return {@link IStrictResolver}
+     * @return {@link com.bingzer.android.dbv.content.contracts.IStrictResolver}
      */
     public static IStrictResolver strictlyResolve(String uri, Context context){
         return strictlyResolve(Uri.parse(uri), context);
@@ -71,7 +72,7 @@ public final class ContentQuery {
      * @return {@link IStrictResolver}
      */
     public static IStrictResolver strictlyResolve(Uri uri, Context context){
-        return new StrictResolver(new Config(), uri, context);
+        return new StrictResolver(uri, context);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////

@@ -2,8 +2,11 @@ package com.example;
 
 import android.content.Context;
 
+import com.bingzer.android.dbv.DbQuery;
+import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.Environment;
 import com.bingzer.android.dbv.IDatabase;
+import com.bingzer.android.dbv.IEntity;
 import com.bingzer.android.dbv.IEnvironment;
 import com.bingzer.android.dbv.SQLiteBuilder;
 
@@ -25,5 +28,25 @@ public class TestUsage {
 
             }
         });
+        db.begin(new IDatabase.Batch() {
+            @Override
+            public void exec(IDatabase database) {
+
+            }
+        });
+
+        db.from("").select();
+    }
+
+    public class EntityTest implements IEntity {
+
+        @Override
+        public long getId() {
+            return 0;
+        }
+
+        @Override
+        public void map(Mapper mapper) {
+        }
     }
 }

@@ -87,13 +87,13 @@ public abstract class BaseEntity implements IBaseEntity {
     public final boolean save(){
         if(id <= 0) {
             onBeforeInsert();
-            id = environment.getDatabase().get(getTableName()).insert(this).query();
+            id = environment.getDatabase().from(getTableName()).insert(this).query();
             onAfterInsert();
             return id > 0;
         }
         else {
             onBeforeUpdate();
-            int numUpdated = environment.getDatabase().get(getTableName()).update(this).query();
+            int numUpdated = environment.getDatabase().from(getTableName()).update(this).query();
             onAfterUpdate();
             return numUpdated == 1;
         }
@@ -107,7 +107,7 @@ public abstract class BaseEntity implements IBaseEntity {
     public final boolean delete(){
         if(id > 0){
             onBeforeDelete();
-            int numDeleted = environment.getDatabase().get(getTableName()).delete(this).query();
+            int numDeleted = environment.getDatabase().from(getTableName()).delete(this).query();
             id = -1;
             onAfterDelete();
 
@@ -132,7 +132,7 @@ public abstract class BaseEntity implements IBaseEntity {
     @Override
     public final boolean load(long id){
         onBeforeLoad();
-        environment.getDatabase().get(getTableName()).select(id).query(this);
+        environment.getDatabase().from(getTableName()).select(id).query(this);
         onAfterLoad();
         return this.id == id;
     }
@@ -142,7 +142,7 @@ public abstract class BaseEntity implements IBaseEntity {
      * Note that cursor current position must be moved to the first pointer first.
      * <p><pre><code>
      *   Person person = new Person();
-     *   Cursor cursor = db.get(\"Person\").select("Name = ?", "John").query();
+     *   Cursor cursor = db.from(\"Person\").select("Name = ?", "John").query();
      *   if(cursor.moveToNext()){
      *      person.load(cursor);
      *   }
@@ -154,7 +154,7 @@ public abstract class BaseEntity implements IBaseEntity {
     public final boolean load(Cursor cursor){
         if(cursor != null){
             onBeforeLoad();
-            ITable table = environment.getDatabase().get(getTableName());
+            ITable table = environment.getDatabase().from(getTableName());
             EntityUtils.mapEntityFromCursor(table, this, cursor);
             onAfterLoad();
             return true;

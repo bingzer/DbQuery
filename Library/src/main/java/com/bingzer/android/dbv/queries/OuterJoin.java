@@ -29,6 +29,6 @@ import com.bingzer.android.dbv.contracts.Selectable;
  * @see com.bingzer.android.dbv.queries.InnerJoin
  */
 public interface OuterJoin extends
-        Joinable, Joinable.Inner, Joinable.Outer, Selectable, Select, Distinguishable {
+        Joinable, Joinable.Inner, Joinable.Outer, Joinable.Left, Selectable, Select, Distinguishable {
 
 }

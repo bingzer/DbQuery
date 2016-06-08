@@ -56,14 +56,14 @@ public class TableTest extends AndroidTestCase{
         });
 
         if(!populated) {
-            db.get("Customers").delete();
-            db.get("Products").delete();
-            db.get("Orders").delete();
+            db.from("Customers").delete();
+            db.from("Products").delete();
+            db.from("Orders").delete();
             populateData();
             populated = true;
         }
 
-        customerTable = db.get("Customers");
+        customerTable = db.from("Customers");
     }
 
     @Override
@@ -73,21 +73,21 @@ public class TableTest extends AndroidTestCase{
 
 
     public void testTableNull(){
-        assertTrue(db.get("Customers") != null);
-        assertTrue(db.get("Products") != null);
-        assertTrue(db.get("Orders") != null);
+        assertTrue(db.from("Customers") != null);
+        assertTrue(db.from("Products") != null);
+        assertTrue(db.from("Orders") != null);
     }
 
     public void testTableAliases(){
-        ITable table = db.get("Customers C");
+        ITable table = db.from("Customers C");
         assertTrue(table != null);
         assertTrue(table.getAlias().equals("C"));
 
-        table = db.get("Products P");
+        table = db.from("Products P");
         assertTrue(table != null);
         assertTrue(table.getAlias().equals("P"));
 
-        table = db.get("Orders O");
+        table = db.from("Orders O");
         assertTrue(table != null);
         assertTrue(table.getAlias().equals("O"));
     }
@@ -95,23 +95,23 @@ public class TableTest extends AndroidTestCase{
     public void testTableAliases_Malformed_OK(){
         // we will let every after the first space
 
-        ITable table = db.get("Customers C asdf sdfsf");
+        ITable table = db.from("Customers C asdf sdfsf");
         assertTrue(table != null);
         assertTrue(table.getAlias().equals("C asdf sdfsf"));
 
-        table = db.get("Products P asdf");
+        table = db.from("Products P asdf");
         assertTrue(table != null);
         assertTrue(table.getAlias().equals("P asdf"));
 
-        table = db.get("Orders O 12~23`1`21434");
+        table = db.from("Orders O 12~23`1`21434");
         assertTrue(table != null);
         assertTrue(table.getAlias().equals("O 12~23`1`21434"));
 
-        table = db.get("Orders T");
+        table = db.from("Orders T");
         assertTrue(table != null);
         assertTrue(table.getAlias().equals("T"));
 
-        table = db.get("Orders T ~!@#$%^&*()_ +");
+        table = db.from("Orders T ~!@#$%^&*()_ +");
         assertTrue(table != null);
         assertTrue(table.getAlias().equals("T ~!@#$%^&*()_ +"));
     }
@@ -138,51 +138,51 @@ public class TableTest extends AndroidTestCase{
     public void testGetColumnCount() {
         assertTrue(customerTable.getColumnCount() > 0);
         assertTrue(customerTable.getColumnCount() == CollectionUtils.size(customerTable.getColumns()));
-        assertTrue(db.get("Customers C").count() > 0);
+        assertTrue(db.from("Customers C").count() > 0);
     }
 
     ///////////////////////////////////////////////
     // ----------------- HAS() ------------------//
     public void testHas_Id(){
         long id = getCustomerId("Lionel Messi");
-        assertTrue(db.get("Customers").has(id));
+        assertTrue(db.from("Customers").has(id));
 
-        assertFalse(db.get("Customers").has(-1));
-        assertFalse(db.get("Customers").has(-89));
+        assertFalse(db.from("Customers").has(-1));
+        assertFalse(db.from("Customers").has(-89));
     }
 
     public void testHas_Condition(){
-        assertTrue(db.get("Customers").has("Name LIKE '%Messi'"));
-        assertTrue(db.get("Customers").has("Name LIKE '%Pirlo'"));
+        assertTrue(db.from("Customers").has("Name LIKE '%Messi'"));
+        assertTrue(db.from("Customers").has("Name LIKE '%Pirlo'"));
 
-        assertFalse(db.get("Customers").has("Name LIKE '%YoMama'"));
-        assertFalse(db.get("Customers").has("Name IS NULL"));
+        assertFalse(db.from("Customers").has("Name LIKE '%YoMama'"));
+        assertFalse(db.from("Customers").has("Name IS NULL"));
     }
 
     public void testHas_WhereClause(){
-        assertTrue(db.get("Customers").has("Name LIKE ?", "%Messi"));
-        assertTrue(db.get("Customers").has("Name LIKE ?", "%Ronaldo"));
-        assertTrue(db.get("Orders").has("CustomerId = ?", db.get("Customers").selectId("Name LIKE ?", "%Messi")));
+        assertTrue(db.from("Customers").has("Name LIKE ?", "%Messi"));
+        assertTrue(db.from("Customers").has("Name LIKE ?", "%Ronaldo"));
+        assertTrue(db.from("Orders").has("CustomerId = ?", db.from("Customers").selectId("Name LIKE ?", "%Messi")));
 
-        assertFalse(db.get("Orders").has("CustomerId IS NULL"));
-        assertFalse(db.get("Customers").has("Name = ?", "Sanatan"));
+        assertFalse(db.from("Orders").has("CustomerId IS NULL"));
+        assertFalse(db.from("Customers").has("Name = ?", "Sanatan"));
     }
 
     ///////////////////////////////////////////////
     // ----------------- count() ------------------//
     public void testCount(){
-        assertEquals(7, db.get("Customers").count());
-        assertEquals(10, db.get("Products").count());
+        assertEquals(7, db.from("Customers").count());
+        assertEquals(10, db.from("Products").count());
     }
 
     public void testCount_Condition(){
-        assertEquals(2, db.get("Customers").count("Name = 'Lionel Messi' or Name = 'Christiano Ronaldo'"));
-        assertEquals(2, db.get("Customers").count("Name = 'Lionel Messi' or Name = 'Christiano Ronaldo' or Name = 'NONE'"));
+        assertEquals(2, db.from("Customers").count("Name = 'Lionel Messi' or Name = 'Christiano Ronaldo'"));
+        assertEquals(2, db.from("Customers").count("Name = 'Lionel Messi' or Name = 'Christiano Ronaldo' or Name = 'NONE'"));
     }
 
     public void testCount_WhereClause(){
-        assertEquals(7, db.get("Customers").count("Name = ? or Id is not null", "Lionel Messi"));
-        assertEquals(1, db.get("Products").count("Name = ?", "Computer"));
+        assertEquals(7, db.from("Customers").count("Name = ? or Id is not null", "Lionel Messi"));
+        assertEquals(1, db.from("Products").count("Name = ?", "Computer"));
     }
 
     ///////////////////////////////////////////////
@@ -190,7 +190,7 @@ public class TableTest extends AndroidTestCase{
     // ------------------ SELECT ----------------//
 
     public void testSelect_SimpleWithAlias(){
-        Cursor c = db.get("Customers c").select().query();
+        Cursor c = db.from("Customers c").select().query();
         assertTrue(c != null);
         c.moveToNext();
         assertTrue(c.getCount() > 0);
@@ -310,7 +310,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelect_Top(){
-        Cursor c = db.get("Orders")
+        Cursor c = db.from("Orders")
                 .select(2, "CustomerId = ?", getCustomerId("Christiano Ronaldo")).query();
         c.moveToFirst();
         assertTrue(c.getCount() == 2);
@@ -320,7 +320,7 @@ public class TableTest extends AndroidTestCase{
     public void testSelect_Top_Condition(){
         int top = 3;
         long customerId = getCustomerId("Christiano Ronaldo");
-        Cursor c = db.get("Orders")
+        Cursor c = db.from("Orders")
                 .select(3, "CustomerId = " + customerId).query();
         c.moveToFirst();
         assertTrue(c.getCount() == 3);
@@ -330,7 +330,7 @@ public class TableTest extends AndroidTestCase{
     public void testSelect_Top_WhereClause(){
         int top = 2;
         long customerId = getCustomerId("Christiano Ronaldo");
-        Cursor c = db.get("Orders")
+        Cursor c = db.from("Orders")
                 .select(top, "CustomerId = ?", customerId).query();
         c.moveToFirst();
         assertTrue(c.getCount() == top);
@@ -338,7 +338,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct(){
-        Cursor cursor = db.get("Customers")
+        Cursor cursor = db.from("Customers")
                 .selectDistinct()
                 .query();
         cursor.moveToFirst();
@@ -349,7 +349,7 @@ public class TableTest extends AndroidTestCase{
     public void testSelectDistinct_Condition(){
         long pirloId = getCustomerId("Andrea Pirlo");
         long kakaId = getCustomerId("Kaka");
-        Cursor cursor = db.get("Orders")
+        Cursor cursor = db.from("Orders")
                 .selectDistinct("CustomerId = " + kakaId + " OR CustomerId = " + pirloId)
                 .columns("CustomerId")
                 .query();
@@ -361,7 +361,7 @@ public class TableTest extends AndroidTestCase{
     public void testSelectDistinct_WhereClause(){
         long pirloId = getCustomerId("Andrea Pirlo");
         long baloteliId = getCustomerId("Mario Baloteli");
-        Cursor cursor = db.get("Orders")
+        Cursor cursor = db.from("Orders")
                 .selectDistinct("CustomerId IN (?,?)", pirloId, baloteliId)
                 .columns("CustomerId")
                 .query();
@@ -371,7 +371,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelectDistinct_Top(){
-        Cursor cursor = db.get("Customers")
+        Cursor cursor = db.from("Customers")
                 .selectDistinct(2)
                 .query();
         cursor.moveToFirst();
@@ -382,7 +382,7 @@ public class TableTest extends AndroidTestCase{
     public void testSelectDistinct_TopCondition(){
         long pirloId = getCustomerId("Andrea Pirlo");
         long kakaId = getCustomerId("Kaka");
-        Cursor cursor = db.get("Orders")
+        Cursor cursor = db.from("Orders")
                 .selectDistinct(1, "CustomerId = " + kakaId + " OR CustomerId = " + pirloId)
                 .columns("CustomerId")
                 .query();
@@ -390,7 +390,7 @@ public class TableTest extends AndroidTestCase{
         assertTrue(cursor.getCount() == 1);
         cursor.close();
 
-        cursor = db.get("Orders")
+        cursor = db.from("Orders")
                 .selectDistinct(3, "CustomerId not null")
                 .columns("CustomerId")
                 .query();
@@ -402,7 +402,7 @@ public class TableTest extends AndroidTestCase{
     public void testSelectDistinct_TopWhereClause(){
         long pirloId = getCustomerId("Andrea Pirlo");
         long baloteliId = getCustomerId("Mario Baloteli");
-        Cursor cursor = db.get("Orders")
+        Cursor cursor = db.from("Orders")
                 .selectDistinct(1, "CustomerId IN (?,?)", pirloId, baloteliId)
                 .columns("CustomerId")
                 .query();
@@ -410,7 +410,7 @@ public class TableTest extends AndroidTestCase{
         assertTrue(cursor.getCount() == 1);
         cursor.close();
 
-        cursor = db.get("Orders")
+        cursor = db.from("Orders")
                 .selectDistinct(3, "CustomerId <> ?", -1)
                 .columns("CustomerId")
                 .query();
@@ -420,16 +420,16 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSelect_Query_Column(){
-        String name = db.get("Customers").select("Name = ?", "Mario Baloteli").columns("Name").query(0);
+        String name = db.from("Customers").select("Name = ?", "Mario Baloteli").columns("Name").query(0);
         assertEquals("Mario Baloteli", name);
 
-        long baloteliId = db.get("Customers").select("Name = ?", "Mario Baloteli").query("Id");
+        long baloteliId = db.from("Customers").select("Name = ?", "Mario Baloteli").query("Id");
         assertEquals(baloteliId, getCustomerId("Mario Baloteli"));
     }
 
     public void testSelect_Query_Column_Error(){
         try{
-            int id = db.get("Customers").select("Name = ?", "Mario Baloteli").columns("Name").query(0);
+            int id = db.from("Customers").select("Name = ?", "Mario Baloteli").columns("Name").query(0);
             fail("Should throw error");
         }
         catch (ClassCastException e){
@@ -442,7 +442,7 @@ public class TableTest extends AndroidTestCase{
     // ---------Insert And Delete ----------------//
     public void testOrderBy(){
         List<Integer> list = new LinkedList<Integer>();
-        Cursor cursor = db.get("Orders").selectDistinct(null).columns("CustomerId").orderBy("CustomerId").query();
+        Cursor cursor = db.from("Orders").selectDistinct(null).columns("CustomerId").orderBy("CustomerId").query();
         while(cursor.moveToNext()){
             list.add(cursor.getInt(0));
         }
@@ -455,7 +455,7 @@ public class TableTest extends AndroidTestCase{
 
     public void testOrderBy_2(){
         List<Integer> list = new LinkedList<Integer>();
-        Cursor cursor = db.get("Orders").selectDistinct("CustomerId not null").columns("CustomerId").orderBy("CustomerId").query();
+        Cursor cursor = db.from("Orders").selectDistinct("CustomerId not null").columns("CustomerId").orderBy("CustomerId").query();
         while(cursor.moveToNext()){
             list.add(cursor.getInt(0));
         }
@@ -468,7 +468,7 @@ public class TableTest extends AndroidTestCase{
 
     public void testOrderDescendingBy(){
         List<Integer> list = new LinkedList<Integer>();
-        Cursor cursor = db.get("Products").selectDistinct(null).columns("Price").orderBy("Price DESC").query();
+        Cursor cursor = db.from("Products").selectDistinct(null).columns("Price").orderBy("Price DESC").query();
         while(cursor.moveToNext()){
             list.add(cursor.getInt(0));
         }
@@ -481,7 +481,7 @@ public class TableTest extends AndroidTestCase{
 
     public void testOrderDescendingBy_2(){
         List<Integer> list = new LinkedList<Integer>();
-        Cursor cursor = db.get("Products").selectDistinct("Price is not ?", (Object)null).columns("Price").orderBy("Price DESC").query();
+        Cursor cursor = db.from("Products").selectDistinct("Price is not ?", (Object)null).columns("Price").orderBy("Price DESC").query();
         while(cursor.moveToNext()){
             list.add(cursor.getInt(0));
         }
@@ -499,12 +499,12 @@ public class TableTest extends AndroidTestCase{
 
     long dodolId = -1;
     public void testInsert_Columns(){
-        dodolId = db.get("Products")
+        dodolId = db.from("Products")
                 .insertInto("Name", "Price")
                 .val("Dodol", 22)
                 .query();
         assertTrue(dodolId > 0);
-        assertTrue(db.get("Products").delete("Name = ?", "Dodol").query() > 0);
+        assertTrue(db.from("Products").delete("Name = ?", "Dodol").query() > 0);
     }
 
     public void testInsert_ContentValues(){
@@ -512,18 +512,18 @@ public class TableTest extends AndroidTestCase{
         contentValues.put("Name", "Dodol");
         contentValues.put("Price", 22);
 
-        dodolId = db.get("Products").insert(contentValues).query();
+        dodolId = db.from("Products").insert(contentValues).query();
         assertTrue(dodolId > 0);
-        assertTrue(db.get("Products").delete("Name = ?", "Dodol").query() > 0);
+        assertTrue(db.from("Products").delete("Name = ?", "Dodol").query() > 0);
     }
 
     public void testInsert_UsingArray(){
         String[] columns = new String[]{"Name", "Price"};
         Object[] values = new Object[]{"Dodol", 33};
 
-        dodolId = db.get("Products").insert(columns, values).query();
+        dodolId = db.from("Products").insert(columns, values).query();
         assertTrue(dodolId > 0);
-        assertTrue(db.get("Products").delete("Name = ?", "Dodol").query() > 0);
+        assertTrue(db.from("Products").delete("Name = ?", "Dodol").query() > 0);
     }
 
     ///////////////////////////////////////////////
@@ -531,36 +531,36 @@ public class TableTest extends AndroidTestCase{
     // ------------------ Update ----------------//
 
     public void testUpdate_Empty(){
-        assertEquals(0, (int) db.get("Customers").update().query());
+        assertEquals(0, (int) db.from("Customers").update().query());
     }
 
     public void testUpdate_Id(){
         long ronaldoId = getCustomerId("Christiano Ronaldo");
 
-        int updated = db.get("Customers").update(ronaldoId).columns("PostalCode").val(123).query();
+        int updated = db.from("Customers").update(ronaldoId).columns("PostalCode").val(123).query();
         assertTrue(1 == updated);
 
-        Cursor cursor = db.get("Customers").select(ronaldoId).columns("PostalCode").query();
+        Cursor cursor = db.from("Customers").select(ronaldoId).columns("PostalCode").query();
         cursor.moveToNext();
         assertEquals(123, cursor.getInt(0));
     }
 
     public void testUpdate_WhereClause(){
         // update 2 countries customers
-        assertEquals(2, (int) db.get("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").columns("Country").val("US").query());
+        assertEquals(2, (int) db.from("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").columns("Country").val("US").query());
 
         // change them back
-        assertEquals(1, (int) db.get("Customers").update("Name = ?", "Christiano Ronaldo").columns("Country").val("Spain").query());
-        assertEquals(1, (int) db.get("Customers").update("Name = ?", "Lionel Messi").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = ?", "Christiano Ronaldo").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = ?", "Lionel Messi").columns("Country").val("Spain").query());
     }
 
     public void testUpdate_Condition(){
         // update 2 countries customers
-        assertEquals(2, (int) db.get("Customers").update("Name = 'Christiano Ronaldo' OR Name = 'Lionel Messi'").columns("Country").val("US").query());
+        assertEquals(2, (int) db.from("Customers").update("Name = 'Christiano Ronaldo' OR Name = 'Lionel Messi'").columns("Country").val("US").query());
 
         // change them back
-        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country").val("Spain").query());
-        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = 'Christiano Ronaldo'").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
     }
 
     public void testUpdate_ContentValues_Condition(){
@@ -572,18 +572,18 @@ public class TableTest extends AndroidTestCase{
         long messiId = getCustomerId("Lionel Messi");
 
         // update 2 countries customers
-        assertEquals(2, (int) db.get("Customers").update("Name = 'Christiano Ronaldo' OR Name = 'Lionel Messi'").val(v).query());
+        assertEquals(2, (int) db.from("Customers").update("Name = 'Christiano Ronaldo' OR Name = 'Lionel Messi'").val(v).query());
 
         // check the updated
-        Cursor c = db.get("Customers").select(ronaldoId).columns("Country", "City").query();
+        Cursor c = db.from("Customers").select(ronaldoId).columns("Country", "City").query();
         c.moveToNext();
         assertEquals("US", c.getString(0));
         assertEquals("City", c.getString(1));
         c.close();
 
         // change them back
-        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country", "City").val("Spain", "Madrid").query());
-        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country", "City").val("Spain", "Barcelona").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = 'Christiano Ronaldo'").columns("Country", "City").val("Spain", "Madrid").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = 'Lionel Messi'").columns("Country", "City").val("Spain", "Barcelona").query());
     }
 
     public void testUpdate_ContentValues_WhereArgs(){
@@ -595,29 +595,29 @@ public class TableTest extends AndroidTestCase{
         long messiId = getCustomerId("Lionel Messi");
 
         // update 2 countries customers
-        assertEquals(2, (int) db.get("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").val(v).query());
+        assertEquals(2, (int) db.from("Customers").update("Name = ? OR Name = ?", "Christiano Ronaldo", "Lionel Messi").val(v).query());
 
         // check the updated
-        Cursor c = db.get("Customers").select(ronaldoId).columns("Country", "City").query();
+        Cursor c = db.from("Customers").select(ronaldoId).columns("Country", "City").query();
         c.moveToNext();
         assertEquals("US", c.getString(0));
         assertEquals("City", c.getString(1));
         c.close();
 
         // change them back
-        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country", "City").val("Spain", "Madrid").query());
-        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country", "City").val("Spain", "Barcelona").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = 'Christiano Ronaldo'").columns("Country", "City").val("Spain", "Madrid").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = 'Lionel Messi'").columns("Country", "City").val("Spain", "Barcelona").query());
     }
 
     public void testUpdate_Ints(){
         long ronaldoId = getCustomerId("Christiano Ronaldo");
         long messiId = getCustomerId("Lionel Messi");
 
-        assertEquals(2, (int) db.get("Customers").update(ronaldoId, messiId).columns("Country").val("US").query());
+        assertEquals(2, (int) db.from("Customers").update(ronaldoId, messiId).columns("Country").val("US").query());
 
         // change them back
-        assertEquals(1, (int) db.get("Customers").update("Name = 'Christiano Ronaldo'").columns("Country").val("Spain").query());
-        assertEquals(1, (int) db.get("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = 'Christiano Ronaldo'").columns("Country").val("Spain").query());
+        assertEquals(1, (int) db.from("Customers").update("Name = 'Lionel Messi'").columns("Country").val("Spain").query());
     }
 
     public void testUpdate_ContentValues_And_WithId(){
@@ -625,37 +625,37 @@ public class TableTest extends AndroidTestCase{
         contentValues.put("PostalCode", 123456);
         contentValues.put("Address", "Whatever Street");
 
-        long crId = db.get("Customers").selectId("Name = ?", "Christiano Ronaldo");
-        int numUpdated = db.get("Customers").update(contentValues, "Name = ?", "Christiano Ronaldo").query();
+        long crId = db.from("Customers").selectId("Name = ?", "Christiano Ronaldo");
+        int numUpdated = db.from("Customers").update(contentValues, "Name = ?", "Christiano Ronaldo").query();
         assertTrue(numUpdated > 0);
     }
 
     public void testUpdate_SingleColumns(){
         long ronaldoId = getCustomerId("Christiano Ronaldo");
 
-        assertEquals(1, (int) db.get("Customers").update(ronaldoId).val("Country", "US").query());
-        assertEquals(0, (int) db.get("Customers").update(-1).val("Country", "US").query());
+        assertEquals(1, (int) db.from("Customers").update(ronaldoId).val("Country", "US").query());
+        assertEquals(0, (int) db.from("Customers").update(-1).val("Country", "US").query());
     }
 
     public void testUpdate_MultipleColumns(){
         long ronaldoId = getCustomerId("Christiano Ronaldo");
 
-        assertEquals(1, (int) db.get("Customers").update(ronaldoId).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
-        assertEquals(0, (int) db.get("Customers").update(-1).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
+        assertEquals(1, (int) db.from("Customers").update(ronaldoId).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
+        assertEquals(0, (int) db.from("Customers").update(-1).val(new String[]{"Country", "City"}, new Object[]{"Country", "City"}).query());
     }
 
     public void testDelete_All(){
-        assertTrue(db.get("Customers").count() > 0);
-        assertTrue(db.get("Products").count() > 0);
-        assertTrue(db.get("Orders").count() > 0);
+        assertTrue(db.from("Customers").count() > 0);
+        assertTrue(db.from("Products").count() > 0);
+        assertTrue(db.from("Orders").count() > 0);
 
-        db.get("Customers").delete();
-        db.get("Products").delete();
-        db.get("Orders").delete();
+        db.from("Customers").delete();
+        db.from("Products").delete();
+        db.from("Orders").delete();
 
-        assertEquals(0, db.get("Customers").count());
-        assertEquals(0, db.get("Products").count());
-        assertEquals(0, db.get("Orders").count());
+        assertEquals(0, db.from("Customers").count());
+        assertEquals(0, db.from("Products").count());
+        assertEquals(0, db.from("Orders").count());
 
         populated = false;  // repopulated
     }
@@ -665,32 +665,32 @@ public class TableTest extends AndroidTestCase{
     // ------------------ Null tests ----------------//
     public void testNullValues_AllTests(){
         // select id
-        assertTrue(db.get("Customers").selectId("Name is not null And Address is null") > 0);
-        assertTrue(db.get("Customers").selectId("Name LIKE ? AND Address is ?", "%player%", null) > 0);
+        assertTrue(db.from("Customers").selectId("Name is not null And Address is null") > 0);
+        assertTrue(db.from("Customers").selectId("Name LIKE ? AND Address is ?", "%player%", null) > 0);
 
         // count
-        assertTrue(db.get("Customers").count("Name is not null And Address is null") > 0);
-        assertTrue(db.get("Customers").count("Name LIKE ? AND Address is ?", "%player%", null) > 0);
+        assertTrue(db.from("Customers").count("Name is not null And Address is null") > 0);
+        assertTrue(db.from("Customers").count("Name LIKE ? AND Address is ?", "%player%", null) > 0);
         // has row
-        assertTrue(db.get("Customers").has("Name is not null And Address is null"));
-        assertTrue(db.get("Customers").has("Name like ? And Address is null", "%player%", null));
+        assertTrue(db.from("Customers").has("Name is not null And Address is null"));
+        assertTrue(db.from("Customers").has("Name like ? And Address is null", "%player%", null));
 
         // select
-        testNullCursor(db.get("Customers").select("Address is null").query());
-        testNullCursor(db.get("Customers").select("Address is ?", (Object)null).query());
-        testNullCursor(db.get("Customers").select("Name LIKE ? AND Address is null", "%player%").query());
-        testNullCursor(db.get("Customers").select("Name LIKE ? AND Address is ?", "%player%", null).query());
+        testNullCursor(db.from("Customers").select("Address is null").query());
+        testNullCursor(db.from("Customers").select("Address is ?", (Object)null).query());
+        testNullCursor(db.from("Customers").select("Name LIKE ? AND Address is null", "%player%").query());
+        testNullCursor(db.from("Customers").select("Name LIKE ? AND Address is ?", "%player%", null).query());
         // select distinct
-        testNullCursor(db.get("Customers").selectDistinct("Address is null").query());
-        testNullCursor(db.get("Customers").selectDistinct("Address is ?", (Object)null).query());
-        testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is null", "%player%").query());
-        testNullCursor(db.get("Customers").selectDistinct("Name LIKE ? AND Address is ?", "%player%", null).query());
+        testNullCursor(db.from("Customers").selectDistinct("Address is null").query());
+        testNullCursor(db.from("Customers").selectDistinct("Address is ?", (Object)null).query());
+        testNullCursor(db.from("Customers").selectDistinct("Name LIKE ? AND Address is null", "%player%").query());
+        testNullCursor(db.from("Customers").selectDistinct("Name LIKE ? AND Address is ?", "%player%", null).query());
 
 
-        long rowNullId = db.get("Customers").insertInto("Name", "Address").val("TestNull", null).query();
+        long rowNullId = db.from("Customers").insertInto("Name", "Address").val("TestNull", null).query();
         assertTrue(rowNullId > 0);
-        assertTrue(db.get("Customers").delete("Name = ? AND Address is ?", "TestNull", null).query() > 0);
-        assertFalse(db.get("Customers").has(rowNullId));
+        assertTrue(db.from("Customers").delete("Name = ? AND Address is ?", "TestNull", null).query() > 0);
+        assertFalse(db.from("Customers").has(rowNullId));
 
     }
 
@@ -707,38 +707,38 @@ public class TableTest extends AndroidTestCase{
     // ------------------ JOIN ----------------//
 
     public void testJoin(){
-        Cursor c = db.get("Orders").join("Customers", "Customers.Id = Orders.CustomerId")
+        Cursor c = db.from("Orders").join("Customers", "Customers.Id = Orders.CustomerId")
                 .query();
         assertTrue(c.getCount() > 0);
         c.close();
 
-        c = db.get("Orders").join("Customers", "Customers.Id = Orders.CustomerId")
+        c = db.from("Orders").join("Customers", "Customers.Id = Orders.CustomerId")
                 .select("Customers.Name LIKE ?", "%Messi%").query();
         assertTrue(c.getCount() > 0);
         c.close();
     }
 
     public void testJoin_WithAlias(){
-        Cursor c = db.get("Orders O").join("Customers", "Customers.Id = O.CustomerId")
+        Cursor c = db.from("Orders O").join("Customers", "Customers.Id = O.CustomerId")
                 .select("Customers.Name LIKE ?", "%Messi%").query();
         assertTrue(c.getCount() > 0);
         c.close();
 
-        c = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        c = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .select("C.Name LIKE ?", "%Messi%").query();
         assertTrue(c.getCount() > 0);
         c.close();
     }
 
     public void testJoin_Select(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .select(3, "C.Name = ?", "Christiano Ronaldo").query();
         assertTrue(cursor.getCount() == 3);
         cursor.close();
     }
 
     public void testJoin_SelectWithColumns(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .select(3, "C.Name = ?", "Christiano Ronaldo")
                 .columns("C.Name", "O.Date")
                 .query();
@@ -753,7 +753,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_Select_Id(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .select(3, "C.Name = ?", "Christiano Ronaldo")
                 .columns("O.Id, C.Id")
                 .query();
@@ -762,7 +762,7 @@ public class TableTest extends AndroidTestCase{
         int id = cursor.getInt(0);
         cursor.close();
 
-        cursor = db.get("Orders").select(id).columns("Id", "CustomerId").query();
+        cursor = db.from("Orders").select(id).columns("Id", "CustomerId").query();
         assertTrue(cursor.getCount() == 1);
 
         cursor.moveToFirst();
@@ -771,21 +771,21 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_Select_Top_Condition(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .select(2, "C.Name = 'Christiano Ronaldo'").query();
         assertTrue(cursor.getCount() == 2);
         cursor.close();
     }
 
     public void testJoin_Select_Top_WhereClause(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .select(3, "C.Name = ?", "Lionel Messi").query();
         assertTrue(cursor.getCount() == 3);
         cursor.close();
     }
 
     public void testJoin_Select_Condition(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .select("C.Name = 'Mario Baloteli'")
                 .columns("C.Name AS CustomerName")
                 .query();
@@ -797,7 +797,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_Select_WhereClause(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .select("C.Name = ?", "Lionel Messi")
                 .columns("C.Name AS CustomerName")
                 .query();
@@ -809,7 +809,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_SelectDistinct_All(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .selectDistinct()
                 .columns("C.Name AS CustomerName")
                 .orderBy("O.Id")
@@ -825,7 +825,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_SelectDistinct_Condition(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .selectDistinct("Name <> 'Kaka'")
                 .columns("C.Name AS CustomerName")
                 .orderBy("O.Id")
@@ -840,7 +840,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_SelectDistinct_WhereClause(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .selectDistinct("Name NOT IN (?,?)", "Wayne Rooney", "Kaka")
                 .columns("C.Name AS CustomerName")
                 .orderBy("O.Id")
@@ -854,7 +854,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_SelectDistinct_Top(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .selectDistinct(3)
                 .columns("C.Name AS CustomerName")
                 .orderBy("O.Id")
@@ -867,7 +867,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_SelectDistinct_Top_Condition(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .selectDistinct(3, "Name <> 'Wayne Rooney'")
                 .columns("C.Name AS CustomerName")
                 .orderBy("O.Id")
@@ -880,7 +880,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testJoin_SelectDistinct_Top_WhereClause(){
-        Cursor cursor = db.get("Orders O").join("Customers C", "C.Id = O.CustomerId")
+        Cursor cursor = db.from("Orders O").join("Customers C", "C.Id = O.CustomerId")
                 .selectDistinct(3, "Name <> ?", "Christiano Ronaldo")
                 .columns("C.Name AS CustomerName")
                 .orderBy("O.Id")
@@ -894,12 +894,12 @@ public class TableTest extends AndroidTestCase{
 
     public void testRaw(){
         // inception
-        Cursor c = db.get("Orders O").raw("SELECT * FROM Orders").query();
+        Cursor c = db.from("Orders O").raw("SELECT * FROM Orders").query();
         assertTrue(c.getCount() > 0);
         c.close();
 
         try{
-            c = db.get("Orders O").raw("SELECT * FROM Orders WHERE Name is invalidy syntax").query();
+            c = db.from("Orders O").raw("SELECT * FROM Orders WHERE Name is invalidy syntax").query();
             assertFalse("Should throw an exception", true);
         }
         catch (Exception e){
@@ -912,12 +912,12 @@ public class TableTest extends AndroidTestCase{
 
     public void testRaw_Args(){
         // inception
-        Cursor c = db.get("Orders O").raw("SELECT * FROM Customers WHERE Name = ?", "Lionel Messi").query();
+        Cursor c = db.from("Orders O").raw("SELECT * FROM Customers WHERE Name = ?", "Lionel Messi").query();
         assertTrue(c.getCount() > 0);
         c.close();
 
         // inception
-        c = db.get("Orders O").raw("SELECT * FROM Customers WHERE Name = ?", "Lionel Baloteli").query();
+        c = db.from("Orders O").raw("SELECT * FROM Customers WHERE Name = ?", "Lionel Baloteli").query();
         assertTrue(c.getCount() == 0);
         c.close();
     }
@@ -928,7 +928,7 @@ public class TableTest extends AndroidTestCase{
     // ------------------ Functions ----------------//
 
     public void testAvg(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.avg("Price").asDouble();
         assertEquals((Double) average, 2688.1, 0.01); // this number may change
@@ -950,7 +950,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testAvg_Condition(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.avg("Price", "Price > 100").asDouble();
         assertEquals((Double) average, (double) 5340, 0.01); // this number may change
@@ -972,7 +972,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testAvg_WhereClause(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.avg("Price", "Price > ?", 100).asDouble();
         assertEquals((Double) average, (double) 5340, 0.01); // this number may change
@@ -994,7 +994,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSum(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.sum("Price").asDouble();
         assertEquals((Double) average, 26881.0, 0.01); // this number may change
@@ -1016,7 +1016,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSum_Condition(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.sum("Price", "Name like 'C%'").asDouble();
         assertEquals((Double) average, 21201.0, 0.01); // this number may change
@@ -1038,7 +1038,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testSum_WhereClause(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.sum("Price", "Name like ?", "C%").asDouble();
         assertEquals((Double) average, 21201.0, 0.01); // this number may change
@@ -1061,7 +1061,7 @@ public class TableTest extends AndroidTestCase{
 
 
     public void testTotal(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.total("Price").asDouble();
         assertEquals((Double) average, 26881.0, 0.01); // this number may change
@@ -1083,7 +1083,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testTotal_Condition(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.total("Price", "Name like 'C%'").asDouble();
         assertEquals((Double) average, 21201.0, 0.01); // this number may change
@@ -1105,7 +1105,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testTotal_WhereClause(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.total("Price", "Name like ?", "C%").asDouble();
         assertEquals((Double) average, 21201.0, 0.01); // this number may change
@@ -1127,7 +1127,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testMax(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.max("Price").asDouble();
         assertEquals((Double) average, 20000.0, 0.01); // this number may change
@@ -1149,7 +1149,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testMax_Condition(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.max("Price", "Price < 2").asDouble();
         assertEquals((Double) average, 1.0, 0.01); // this number may change
@@ -1171,7 +1171,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testMax_Where(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.max("Price", "Price < ?", 2).asDouble();
         assertEquals((Double)average, 1.0, 0.1); // this number may change
@@ -1193,7 +1193,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testMin(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.min("Price").asDouble();
         assertEquals((Double) average, 1.0, 0.01); // this number may change
@@ -1215,7 +1215,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testMin_Condition(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.min("Price", "Price > 101").asDouble();
         assertEquals((Double) average, 200.0, 0.01); // this number may change
@@ -1237,7 +1237,7 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testMin_WhereClause(){
-        ITable productTable = db.get("Products");
+        ITable productTable = db.from("Products");
 
         Object average = productTable.min("Price", "Price > ?", 101).asDouble();
         assertEquals((Double) average, 200.0, 0.01); // this number may change
@@ -1259,9 +1259,9 @@ public class TableTest extends AndroidTestCase{
     }
 
     public void testDrop(){
-        if(db.get("TableToDrop") != null){
-            assertTrue(db.get("TableToDrop").drop().query());
-            assertNull(db.get("TableToDrop"));
+        if(db.from("TableToDrop") != null){
+            assertTrue(db.from("TableToDrop").drop().query());
+            assertNull(db.from("TableToDrop"));
         }
     }
 
@@ -1298,7 +1298,7 @@ public class TableTest extends AndroidTestCase{
 
 
     private void populateData(){
-        InsertInto insert = db.get("Customers").insertInto("Name", "Address", "City", "PostalCode", "Country");
+        InsertInto insert = db.from("Customers").insertInto("Name", "Address", "City", "PostalCode", "Country");
 
         insert.val("Wayne Rooney", "10 Manchester United", "Manchester", 9812, "UK");
         insert.val("Lionel Messi", "10 Barcelona st.", "Barcelona", 70, "Spain");
@@ -1309,7 +1309,7 @@ public class TableTest extends AndroidTestCase{
         insert.val("Null Player", null, null, 22111, "US");
 
 
-        insert = db.get("Products").insertInto("Name", "Price");
+        insert = db.from("Products").insertInto("Name", "Price");
         insert.val("Car", 20000);
         insert.val("Motorcycle", 5000);
         insert.val("Computer", 1000);
@@ -1321,7 +1321,7 @@ public class TableTest extends AndroidTestCase{
         insert.val("Lamp", 20);
         insert.val("Candy", 1);
 
-        insert = db.get("Orders").insertInto("CustomerId", "ProductId", "Date");
+        insert = db.from("Orders").insertInto("CustomerId", "ProductId", "Date");
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Computer"), getRandomDate());
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Monitor"), getRandomDate());
         insert.val(getCustomerId("Wayne Rooney"), getProductId("Cellphone"), getRandomDate());
@@ -1357,11 +1357,11 @@ public class TableTest extends AndroidTestCase{
     ///////////////////////////////////////////////
     // ------------------ Helper methods ----------------//
     private long getCustomerId(String name){
-        return db.get("Customers").selectId("Name = ?", name);
+        return db.from("Customers").selectId("Name = ?", name);
     }
 
     private long getProductId(String name){
-        return db.get("Products").selectId("Name = ?", name);
+        return db.from("Products").selectId("Name = ?", name);
     }
 
     private String getRandomDate(){

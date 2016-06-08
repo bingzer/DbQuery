@@ -133,7 +133,7 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
     public abstract void onModelCreate(IDatabase database, IDatabase.Modeling modeling);
 
     /**
-     * Called when upgrade get oldVersion to newVersion
+     * Called when upgrade from oldVersion to newVersion
      *
      * @param database   the database
      * @param oldVersion the old version
@@ -147,7 +147,7 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
     }
 
     /**
-     * Called when downgrading get oldVersion to newVersion
+     * Called when downgrading from oldVersion to newVersion
      *
      * @param database   the database
      * @param oldVersion the old version

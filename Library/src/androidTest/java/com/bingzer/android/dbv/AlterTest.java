@@ -37,16 +37,16 @@ public class AlterTest extends AndroidTestCase {
     }
 
     public void testRenameColumn(){
-        assertNotNull(db.get("Person"));
+        assertNotNull(db.from("Person"));
         // alter
-        ITable table = db.get("Person");
+        ITable table = db.from("Person");
         table.alter().rename("PersonAltered");
         assertTrue(table.getName().equals("PersonAltered"));
 
         // re check person
-        assertNull(db.get("Person"));
+        assertNull(db.from("Person"));
         // should not be null
-        assertNotNull(db.get("PersonAltered"));
+        assertNotNull(db.from("PersonAltered"));
 
         // renamed to Person
         table.alter().rename("Person");
@@ -54,18 +54,18 @@ public class AlterTest extends AndroidTestCase {
 
     public void testAddColumn(){
         // don't have address yet
-        assertFalse(CollectionUtils.contains(db.get("Person").getColumns(), "Address"));
+        assertFalse(CollectionUtils.contains(db.from("Person").getColumns(), "Address"));
 
         // we'll add address column
-        db.get("Person").alter().addColumn("Address", "Text");
+        db.from("Person").alter().addColumn("Address", "Text");
 
-        assertTrue(CollectionUtils.contains(db.get("Person").getColumns(), "Address"));
+        assertTrue(CollectionUtils.contains(db.from("Person").getColumns(), "Address"));
     }
 
     public void testRemoveColumn(){
         try{
             // should throw exception
-            db.get("Person").alter().removeColumn("Name");
+            db.from("Person").alter().removeColumn("Name");
             assertTrue(false);
         }
         catch (Exception e){
