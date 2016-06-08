@@ -2,12 +2,14 @@ package com.bingzer.android.dbv.content;
 
 import android.net.Uri;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.bingzer.android.dbv.content.contracts.IResolver;
 
 /**
  * Basic resolve setter/getter test
  */
+@Suppress
 public class ResolverTest extends AndroidTestCase {
 
     IResolver resolver;

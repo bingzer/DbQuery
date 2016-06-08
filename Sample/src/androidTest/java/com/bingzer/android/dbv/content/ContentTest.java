@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.bingzer.android.dbv.content.contracts.IResolver;
 import com.bingzer.android.dbv.queries.Insert;
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * Created by Ricky on 8/21/13.
  */
+@Suppress
 public class ContentTest extends AndroidTestCase {
 
     IResolver resolver;

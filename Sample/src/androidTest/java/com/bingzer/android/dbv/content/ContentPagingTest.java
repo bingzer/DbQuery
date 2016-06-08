@@ -3,6 +3,7 @@ package com.bingzer.android.dbv.content;
 import android.database.Cursor;
 import android.provider.UserDictionary;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.bingzer.android.dbv.content.contracts.IResolver;
 import com.bingzer.android.dbv.queries.Paging;
@@ -10,6 +11,7 @@ import com.bingzer.android.dbv.queries.Paging;
 /**
  * Created by Ricky on 8/22/13.
  */
+@Suppress
 public class ContentPagingTest extends AndroidTestCase {
 
     IResolver resolver;

@@ -2,6 +2,7 @@ package com.example;
 
 import android.content.Context;
 
+import com.bingzer.android.dbv.DbQuery;
 import com.bingzer.android.dbv.Delegate;
 import com.bingzer.android.dbv.Environment;
 import com.bingzer.android.dbv.IDatabase;
@@ -33,6 +34,8 @@ public class TestUsage {
 
             }
         });
+
+        db.from("").select();
     }
 
     public class EntityTest implements IEntity {

@@ -1,9 +1,11 @@
 package com.bingzer.android.dbv.content;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.bingzer.android.dbv.content.contracts.IResolver;
 
+@Suppress
 public class ContentConfigTest extends AndroidTestCase{
 
     IResolver resolver;
