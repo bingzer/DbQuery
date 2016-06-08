@@ -17,6 +17,7 @@ package com.bingzer.android.dbv.providers;
 
 import android.database.Cursor;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.Suppress;
 
 import com.bingzer.android.dbv.content.ContentQuery;
 import com.bingzer.android.dbv.content.contracts.IResolver;
@@ -24,6 +25,7 @@ import com.bingzer.android.dbv.content.contracts.IResolver;
 /**
  * Created by Ricky Tobing on 8/28/13.
  */
+@Suppress
 public class BasicDataProviderTest extends AndroidTestCase {
 
 
