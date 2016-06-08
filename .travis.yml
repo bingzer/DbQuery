@@ -5,5 +5,8 @@ android:
     - build-tools-23.0.3
     - android-23
 
+before_install:
+ - chmod +x ./gradlew
+
 script:
    - ./gradlew build connectedCheck
