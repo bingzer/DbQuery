@@ -50,11 +50,11 @@ Cursor cursor = db.query("Customers", // table name
 ```
 The purpose of `DbQuery` is to be able to write this query **fluently**
 ``` java
-Cursor cursor = db.get("Customers")
-                      .select("Id In (?,?,?)", customerId1, customerId2, customerId3) // whereClause
-                      .columns("Id", "Address", "Age")    // columns
-                      .orderBy("Age")  // orderBy 'Age'
-                      .query(); 
+Cursor cursor = db.from("Customers")
+                  .select("Id In (?,?,?)", customerId1, customerId2, customerId3) // whereClause
+                  .columns("Id", "Address", "Age")    // columns
+                  .orderBy("Age")  // orderBy 'Age'
+                  .query(); 
 ```
 
 LICENSE
