@@ -42,7 +42,7 @@ import java.util.HashMap;
  * {@link com.bingzer.android.dbv.Delegate} is used inside the
  * {@link com.bingzer.android.dbv.IEntity#map(com.bingzer.android.dbv.IEntity.Mapper)}
  * implementations.
- * <br/>
+ * <br>
  * Sample code:
  * <pre><code>
  * public class Person implements IEntity {
@@ -111,8 +111,8 @@ public abstract class Delegate<T> {
     /**
      * Delegate type for Id.
      * Helper class for {@link com.bingzer.android.dbv.IEntity.Mapper#mapId(Delegate)}
-     * <code>
      * <pre>
+     * <code>
      * ...
      * mapper.mapId(new Action.TypeId(this){
      *    public void set(Integer value) {
@@ -120,8 +120,8 @@ public abstract class Delegate<T> {
      *    }
      * });
      * ...
-     * </pre>
      * </code>
+     * </pre>
      *
      * @see com.bingzer.android.dbv.IEntity.Mapper
      * @see Delegate

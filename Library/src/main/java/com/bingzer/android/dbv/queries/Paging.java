@@ -26,7 +26,7 @@ import com.bingzer.android.dbv.contracts.EntitySelectable;
 /**
  * Represents a paging and select statement
  * <p>
- *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     Find a complete <code>Wiki</code> and documentation here:<br>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  */
@@ -63,7 +63,7 @@ public interface Paging extends IQuery<Cursor>, EntitySelectable, CursorEnumerab
 
     /**
      * Go to the previous page.
-     * If the previous page is < 0. It will return page 0 (first page)
+     * If the previous page is less than 0. It will return page 0 (first page)
      * @return this
      */
     Paging previous();
@@ -103,13 +103,15 @@ public interface Paging extends IQuery<Cursor>, EntitySelectable, CursorEnumerab
     /**
      * Query and store the result to an {@link com.bingzer.android.dbv.IEntityList}.
      * Equivalent to calling
-     * <code><pre>
+     * <pre>
+     *     <code>
      *   IPaging paging = ...
      *   IEntityList list = ...
      *
      *   paging.setPageNumber(pageNumber);
      *   paging.query(list);
-     * </pre></code>
+     *     </code>
+     * </pre>
      * @see com.bingzer.android.dbv.IEntityList
      * @param pageNumber the page number to set
      * @param entityList IEntityList

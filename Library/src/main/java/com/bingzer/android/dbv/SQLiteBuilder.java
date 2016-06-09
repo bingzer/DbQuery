@@ -41,7 +41,7 @@ import android.content.Context;
  * If upgrade is needed: {@link #onUpgrade(IDatabase, int, int)} will be called.
  * When downgrade is needed {@link #onDowngrade(IDatabase, int, int)} will be called.
  * When no database is found (fresh) {@link #onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
- * <br/>
+ * <br>
  * Sample Code:
  * <pre><code>
  * int version = 1;
@@ -65,12 +65,12 @@ import android.content.Context;
  *     public void onError(Throwable error);
  * });
  * </code></pre>
- * </p>
+ *
  *
  * <p>
  * {@link com.bingzer.android.dbv.SQLiteBuilder.WithoutModeling} is another implementation
  * of {@link com.bingzer.android.dbv.SQLiteBuilder} that can be used to open a pre-existing
- * SQLite file in the file system.<br/>
+ * SQLite file in the file system.<br>
  * Sample Code:
  * <pre><code>
  * int version = 1;
@@ -79,7 +79,7 @@ import android.content.Context;
  *
  * db.open(version, dbFile, new SQLiteBuilder.WithoutModeling(getContext());
  * </code></pre>
- * </p>
+ *
  *
  * @see IDatabase.Builder
  * @see com.bingzer.android.dbv.SQLiteBuilder.WithoutModeling
@@ -109,15 +109,15 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
     /**
      * Returns the GOD-object <code>context</code>.
      * You should return your <code>ApplicationContext</code> here
-     * <code>
      * <pre>
+     * <code>
      * ...
      * public Context getContext(){
      *     return getApplicationContext();
      * }
      * ...
-     * </pre>
      * </code>
+     * </pre>
      * @return context
      */
     public abstract Context getContext();
@@ -188,14 +188,14 @@ public abstract class SQLiteBuilder implements IDatabase.Builder {
     /**
      * Convenient class to use if you don't need to model your database at all.
      * This class is really convenient if you have a pre-loaded database
-     * <code>
      * <pre>
+     * <code>
      * Context context = ...
      * IDatabase db = DbQuery.getDatabase("Test");
      *
      * db.open(version, new SQLiteBuilder.WithoutModeling(context));
-     * </pre>
      * </code>
+     * </pre>
      */
     public static final class WithoutModeling extends SQLiteBuilder {
 

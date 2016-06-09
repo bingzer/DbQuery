@@ -31,7 +31,7 @@ public interface Droppable {
      * <code>db.from("TableName").drop().query();
      * </code>
      * </pre>
-     * </p>
+     *
      * @return true if success, false if otherwise.
      */
     IQuery<Boolean> drop();

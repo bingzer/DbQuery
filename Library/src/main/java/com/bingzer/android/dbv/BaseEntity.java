@@ -79,7 +79,8 @@ public abstract class BaseEntity implements IBaseEntity {
 
     /**
      * Save any changes.
-     * If {@code getId()} is anything lower than or equal to 0 (Id <= 0)
+     * If {@code getId()} is anything lower than or equal to 0
+     * (Id less than or equals to 0)
      * then, an INSERTION operation will be performed.
      * Otherwise, it is an UPDATE operation.
      */
@@ -147,7 +148,7 @@ public abstract class BaseEntity implements IBaseEntity {
      *      person.load(cursor);
      *   }
      *   ...
-     * </code></pre></p>
+     * </code></pre>
      * }
      */
     @Override

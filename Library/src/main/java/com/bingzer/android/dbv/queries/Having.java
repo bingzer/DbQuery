@@ -25,7 +25,7 @@ import com.bingzer.android.dbv.contracts.Pagination;
 /**
  * Represents <code>HAVING</code>
  * <p>
- *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     Find a complete <code>Wiki</code> and documentation here:<br>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  *

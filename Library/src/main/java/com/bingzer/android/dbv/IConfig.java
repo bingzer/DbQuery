@@ -19,7 +19,7 @@ package com.bingzer.android.dbv;
  * Defines a configuration interface.
  * Note that you should always configure your database before opening it.
  * <p>
- * <code><pre>
+ * <pre><code>
  * ...
  * IDatabase db = ...
  * // configure first
@@ -27,15 +27,15 @@ package com.bingzer.android.dbv;
  * db.getConfig().setIdNamingConvention(..);
  * // open
  * db.open(1, new SQLiteBuilder());
- * </pre></code>
- * </p>
+ * </code></pre>
+ *
  * <p>
- *     <b>Warning:</b><br/>
+ *     <b>Warning:</b><br>
  *     <code>DbQuery</code> will <code>assume</code>
  *     that every table will follow a naming convention for
  *     their identifier scheme. By default, "Id" is assigned
  *     automatically. For more information see {@link IConfig}
- * </p>
+ *
  * <p>
  *     For example, if you call:
  *     <code>db.getConfig().setIdNamingConvention("IDX")</code>
@@ -45,7 +45,7 @@ package com.bingzer.android.dbv;
  *     some methods will not work. Especially, the one that uses "Id"
  *     (i.e: {@link ITable#select(long)} ,{@link ITable#update(android.content.ContentValues, long)},
  *     and many more
- * </p>
+ *
  *
  * @author Ricky
  * @version 2.0
