@@ -36,7 +36,6 @@ public interface EntitySelectable {
      * db.from("TableName").select("Name = ?", "John").query(customer);
      * </code>
      * </pre>
-     * </p>
      * @see IEntity
      * @param entity the IEntity object
      */
@@ -52,7 +51,6 @@ public interface EntitySelectable {
      * db.from("TableName").select("Country = ?", "US").query(customerList);
      * </code>
      * </pre>
-     * </p>
      * @see IEntityList
      * @param entityList the IEntityList object
      * @param <E> IEntity

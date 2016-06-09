@@ -24,48 +24,49 @@ import java.util.List;
  * Represents a database. {@linkplain IDatabase} provides access
  * to {@link ITable} to achieve common <code>CRUD</code> tasks.
  * <p>
- *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     Find a complete <code>Wiki</code> and documentation here:<br>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  * <p>
  * To properly gain access to {@link IDatabase} object, you must
  * call {@link #open(int, com.bingzer.android.dbv.IDatabase.Builder)} and
  * provides the database modeling with your own term.
- * <code>
  * <pre>
- * IDatabase db = DbQuery.getDatabase("<database-name>");
+ * <code>
+ * IDatabase db = DbQuery.getDatabase("{database-name}");
  * db.open(dbVersion, new SQLiteBuilder() {
  *       ...
  * }
- * </pre>
  * </code>
- * </p>
+ * </pre>
+ *
  * <p>
  *     To upgrade or downgrade. The <code>Builder</code> should provide the following:
- *     <code>
  *     <pre>
+ *     <code>
  * public boolean onUpgrade(IDatabase db, int oldVersion, int newVersion);
  * public boolean onDowngrade(IDatabase db, int oldVersion, int newVersion);
- *     </pre>
  *     </code>
+ *     </pre>
  *     <code>newVersion</code> is the current <code>dbVersion</code>.
- * </p>
+ *
  * <p>
  * {@link IDatabase} has one ore more tables. To gain access to {@link ITable},
  * use this code snippet:
- * <code>
  * <pre>
- * ITable table = db.from("<table-name>");
- * </pre>
+ * <code>
+ * ITable table = db.from("{table-name}");
+ *
  * </code>
- * </p>
+ * </pre>
+ *
  * <p>
- *     <b>Warning:</b><br/>
+ *     <b>Warning:</b><br>
  *     <code>DbQuery</code> will <code>assume</code>
  *     that every table will follow a naming convention for
  *     their identifier scheme. By default, "Id" is assigned
  *     automatically. For more information see {@link IConfig}
- * </p>
+ *
  *
  * @version 2.0
  * @see ITable
@@ -120,7 +121,7 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * IDatabase db = ...
      * ITable table = db.from("table-name");
      * </code></pre>
-     * </p>
+     *
      *
      * @see com.bingzer.android.dbv.ITable
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
@@ -140,7 +141,7 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * IDatabase db = ...
      * IView view = db.fromView("view-name");
      * </code></pre>
-     * </p>
+     *
      *
      * @see com.bingzer.android.dbv.IView
      * @see #open(int, com.bingzer.android.dbv.IDatabase.Builder)
@@ -204,8 +205,8 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * However, if you choose to do this route you must follow this code for safety.
      * The proper way of calling {@link com.bingzer.android.dbv.IDatabase.Transaction#commit()}
      * as follows:
-     * <code>
      * <pre>
+     * <code>
      * Transaction transaction = db.begin(new Batch(){
      *      public void exec(IDatabase db){
      *          // do intensive sql here
@@ -223,8 +224,8 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      *      // must call this
      *      transaction.end();
      * }
-     * </pre>
      * </code>
+     * </pre>
      * <p>
      * Another way of doing transaction to simply call
      * {@link com.bingzer.android.dbv.IDatabase.Transaction#execute()} which
@@ -328,8 +329,8 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      * {@link Builder#onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)}
      * to create the initial model of your database.
      * Sample code:
-     * <code>
      * <pre>
+     * <code>
      *         ...
      *         public void onModelCreate(IDatabase db, Modeling modeling){
      *             modeling.add("Customers")
@@ -346,8 +347,8 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
      *                      .index("CustomerId");
      *         }
      *         ...
-     * </pre>
      * </code>
+     * </pre>
      *
      * @see Builder#onModelCreate(IDatabase, com.bingzer.android.dbv.IDatabase.Modeling)
      */
@@ -412,8 +413,8 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
 
         /**
          * This method will do the following
-         * <code>
          * <pre>
+         * <code>
          * try{
          *     transaction.commit();
          *     return true;
@@ -425,8 +426,8 @@ public interface IDatabase extends RawQueryable, SqlExecutable {
          * finally{
          *     transaction.end();
          * }
-         * </pre>
          * </code>
+         * </pre>
          *
          * @return true if the batch is successfully committed, false if rollback
          */

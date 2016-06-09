@@ -40,7 +40,6 @@ public interface CursorEnumerable {
      *       });
      * </code>
      * </pre>
-     * </p>
      * @param cursor the cursor
      */
     void query(ISequence<Cursor> cursor);

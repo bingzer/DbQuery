@@ -30,7 +30,7 @@ import java.util.Collection;
  * </p>
  *
  * <p>
- *     <b>Warning:</b><br/>
+ *     <b>Warning:</b><br>
  *     <code>DbQuery</code> will <code>assume</code>
  *     that every table will follow a naming convention for
  *     their identifier scheme. By default, "Id" is assigned
@@ -40,10 +40,10 @@ import java.util.Collection;
  * <p>
  * Sample Code:
  * <pre><code>
- * IDatabase db = DbQuery.getDatabase("<database-name>");
+ * IDatabase db = DbQuery.getDatabase("{database-name}");
  * ...
  * </code></pre>
- * </p>
+ *
  *
  * <p>
  * DbQuery is totally open!
@@ -57,11 +57,11 @@ import java.util.Collection;
  *     <a href="http://github.com/bingzer/DbQuery">http://github.com/bingzer/DbQuery</a>
  *   </li>
  * </ul>
- * </p>
+ *
  *
  * <p>
  *     <b>Important:</b> This entire javadoc is not read-proof. Some may be up to date, others may not
- * </p>
+ *
  *
  * @version 2.0
  * @see IConfig

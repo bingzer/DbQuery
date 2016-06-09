@@ -26,7 +26,7 @@ import com.bingzer.android.dbv.contracts.Pagination;
 /**
  * For select statement
  * <p>
- *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     Find a complete <code>Wiki</code> and documentation here:<br>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  */
@@ -45,11 +45,11 @@ public interface Select extends IQuery<Cursor>, EntitySelectable,
     /**
      * Order by. To create multiple orderBy ASC or DESC or both,
      * this is possible
-     * <code>
-     * <pre>
+     *
+     * <pre><code>
      *   db.from("Table").select().orderBy("Id", "Name", "Price DESC");
-     * </pre>
      * </code>
+     * </pre>
      * @param columns column names
      * @return {@link com.bingzer.android.dbv.queries.Select}
      */

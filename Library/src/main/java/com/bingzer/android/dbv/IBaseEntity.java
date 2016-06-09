@@ -33,7 +33,7 @@ public interface IBaseEntity extends IEntity {
 
     /**
      * Save any changes.
-     * If {@code getId()} is anything lower than or equal to 0 (Id <= 0)
+     * If {@code getId()} is anything lower than or equal to 0
      * then, an INSERTION operation will be performed.
      * Otherwise, it is an UPDATE operation.
      */

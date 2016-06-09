@@ -37,7 +37,6 @@ public interface ColumnSelectable {
      * int customerAge = db.from("customers").select().columns("Name", "Age").query(1);
      * </code>
      * </pre>
-     * </p>
      * @param columnIndex the column index
      * @param <T> any type to return
      * @return any type
@@ -60,7 +59,6 @@ public interface ColumnSelectable {
      * int customerAge = db.from("customers").select().columns("Name", "Age").query("Age");
      * </code>
      * </pre>
-     * </p>
      * @param columnName the column name
      * @param <T> any type to return
      * @return any type

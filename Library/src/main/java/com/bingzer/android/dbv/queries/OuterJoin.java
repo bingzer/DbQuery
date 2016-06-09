@@ -22,7 +22,7 @@ import com.bingzer.android.dbv.contracts.Selectable;
 /**
  * Represents an outer join statement
  * <p>
- *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     Find a complete <code>Wiki</code> and documentation here:<br>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  *

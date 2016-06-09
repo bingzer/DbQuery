@@ -28,9 +28,10 @@ import com.bingzer.android.dbv.contracts.PrimaryKeyIdentifier;
 public final class EntityUtils {
     /**
      * Maps an entity from a cursor. Cursor will NOT be automatically closed.
-     * <br/>IMPORTANT: Close it after calling this method
-     * <br/>IMPORTANT: Cursor must be moved to the first pointer first!
-     * <p><pre><code>
+     * <br>IMPORTANT: Close it after calling this method
+     * <br>IMPORTANT: Cursor must be moved to the first pointer first!
+     * <p>
+     *     <pre><code>
      *   Person person = new Person();
      *   Cursor cursor = db.from(\"Person\").select("Name = ?", "John").query();
      *   if(cursor.moveToNext()){
@@ -38,7 +39,7 @@ public final class EntityUtils {
      *   }
      *   cursor.close();
      *   ...
-     * </code></pre></p>
+     *      </code></pre>
      *
      * @param identifier the table
      * @param entity the entity to map

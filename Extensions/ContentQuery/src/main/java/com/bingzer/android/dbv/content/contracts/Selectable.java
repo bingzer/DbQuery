@@ -76,7 +76,7 @@ public interface Selectable {
     /**
      * For select statement
      * <p>
-     *     Find a complete <code>Wiki</code> and documentation here:<br/>
+     *     Find a complete <code>Wiki</code> and documentation here:<br>
      *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
      * </p>
      */
@@ -93,11 +93,11 @@ public interface Selectable {
         /**
          * Order by. To create multiple orderBy ASC or DESC or both,
          * this is possible
-         * <code>
          * <pre>
+         * <code>
          *   db.from("Table").select().orderBy("Id", "Name", "Price DESC");
-         * </pre>
          * </code>
+         * </pre>
          * @param columns column names
          * @return {@link com.bingzer.android.dbv.content.contracts.Selectable.Select}
          */

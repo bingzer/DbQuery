@@ -41,7 +41,7 @@ import java.util.List;
  * {@link com.bingzer.android.dbv.ITable} object, once created, is automatically
  * cached inside the {@link com.bingzer.android.dbv.IDatabase}.
  * Therefore there's no need to reference it outside. Most of the time
- * <code>db.from("tableName").<someMethod>()</code> is more preferable to use.
+ * <code>db.from("tableName").{someMethod}()</code> is more preferable to use.
  * </p>
  *
  * <p>
@@ -69,18 +69,18 @@ import java.util.List;
  *     <li>{@link com.bingzer.android.dbv.queries.GroupBy GroupBy}</li>
  *     <li>{@link com.bingzer.android.dbv.queries.Having Having}</li>
  * </ul>
- * </p>
+ *
  * <p>
- *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     Find a complete <code>Wiki</code> and documentation here:<br>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
- * </p>
+ *
  * <p>
- *     <b>Warning:</b><br/>
+ *     <b>Warning:</b><br>
  *     <code>DbQuery</code> will <code>assume</code>
  *     that every table will follow a naming convention for
  *     their identifier scheme. By default, "Id" is assigned
  *     automatically. For more information see {@link IConfig}
- * </p>
+ *
  *
  * @version 2.0
  * @see IDatabase
@@ -159,16 +159,17 @@ public interface ITable extends
         /**
          * Create index on the specified column name. The index name will always be
          * <code>[TABLE_NAME]_[COLUMN_NAME]_IDX</code>
-         * <code>
          * <pre>
+         * <code>
          *     Model.add("Person")
          *          .addPrimaryKey("Id")         // Column Id
          *          .addText("Name", "not null") // Column Name
          *          .addInteger("Age")           // Column Age
          *          .addText("Address")          // Column Address
          *          .index("Name", "Age")        // Index of Column Name and Age
-         * </pre>
+         *
          * </code>
+         * </pre>
          * @param columnNames array of column names in this table to index
          * @return this
          */
