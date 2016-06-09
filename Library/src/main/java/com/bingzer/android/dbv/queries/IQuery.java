@@ -17,7 +17,7 @@ package com.bingzer.android.dbv.queries;
 
 /**
  * <p>
- *     Find a complete <code>Wiki</code> and documentation here:<br/>
+ *     Find a complete <code>Wiki</code> and documentation here:<br>
  *     <a href="https://github.com/bingzer/DbQuery/wiki">https://github.com/bingzer/DbQuery/wiki</a>
  * </p>
  * Created by Ricky Tobing on 7/16/13.

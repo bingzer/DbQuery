@@ -41,7 +41,6 @@ package com.bingzer.android.dbv;
  * db.from("Customers").select("Country = ?", "US").query(personList);
  *
  * </code></pre>
- * </p>
  *
  * @version 2.0
  * @see com.bingzer.android.dbv.IEntity
