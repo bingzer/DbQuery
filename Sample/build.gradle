@@ -6,6 +6,10 @@ dependencies {
     compile project(':Library')
     compile project(':Extensions:ContentQuery')
     compile project(':Extensions:DataProvider')
+
+//    compile (group:'com.bingzer.android.dbv', name: 'dbquery', version:'2.2.0')
+//    compile (group:'com.bingzer.android.dbv', name: 'data-provider', version:'2.2.0')
+//    compile (group:'com.bingzer.android.dbv', name: 'content-query', version:'2.2.0')
 }
 
 android {
